@@ -16,6 +16,7 @@ Value type name     tv ::= ts | ta
 Method declaration     ::= func (x tv) mM {return e} 
                          | func (x tv) mM { as; return e}
 
-An array type can have either a type name t as its element type, or another
-array type a, allowing for n-dimensional array types (e.g. [2][3]any), without
-having to first declare a new type using the (type t T) syntax.
+An array type can have either a type name `t` as its element type, or another
+array type literal `a`, allowing for n-dimensional array types literals (e.g.
+`[2][3]any`), without having to first declare a new named array type using the
+`type t T` syntax.
