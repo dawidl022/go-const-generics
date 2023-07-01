@@ -1,0 +1,12 @@
+Array type           a := [n]t, n ∈ int
+                            _
+Array literal       al := a{e}, al ∈ e
+
+Array get           ag := e[e], aa ∈ e
+
+Array set           as := e[e] = e
+
+Array length      alen := len(e), alen ∈ e
+
+Method declaration     := func (x ts) mM {return e} 
+                        | func (x ts) mM { as; return e}
