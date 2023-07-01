@@ -1,4 +1,5 @@
-Array type           a := [n]t, n ∈ int
+Array type           a := [n]t
+                        | [n]a, n ∈ int, a ∈ T
                             _
 Array literal       al := a{e}, al ∈ e
 
@@ -10,3 +11,7 @@ Array length      alen := len(e), alen ∈ e
 
 Method declaration     := func (x ts) mM {return e} 
                         | func (x ts) mM { as; return e}
+
+An array type can have either a type name t as its element type, or another
+array type a, allowing for n-dimensional array types (e.g. [2][3]any), without
+having to first declare a new type using the (type t T) syntax.
