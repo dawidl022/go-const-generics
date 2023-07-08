@@ -1,0 +1,138 @@
+\documentclass[acmsmall,screen]{acmart}
+\usepackage{mathpartir}
+
+\begin{document}
+
+\include{macros}
+
+
+\begin{figure}
+    \begin{mathpar}
+        \inferrule
+        {
+        (\type~t_A~ [n]u) \in \ov{D} \\
+        t <: u
+        }
+        {t = \elementtype(t_A)}
+
+        \inferrule
+        {~}
+        {a = \elementtype([n]a)}
+
+        \inferrule
+        {t <: u}
+        {t = \elementtype([n]u)}
+
+        \inferrule
+        {n \ge 0}
+        {\nonnegative(n)}
+    \end{mathpar}
+    \caption{FG auxiliary functions for arrays}
+\end{figure}
+
+
+\begin{figure}
+    Implements
+    \hfill \fbox{$t \imp u$}
+    \begin{mathpar}
+
+        \inferrule[<:$_V$]
+        {~}
+        {t_V <: t_V}
+
+    \end{mathpar}
+
+    Well-formed type literals
+    \hfill \fbox{$T \ok$}
+    \begin{mathpar}
+
+        \inferrule[t-array-named]
+        {
+            \nonnegative(n)\\
+            t \ok
+        }
+        {[n]t \ok}
+
+        \inferrule[t-array-rec]
+        {
+            \nonnegative(n)\\
+            a \ok
+        }
+        {[n]a \ok}
+
+    \end{mathpar}
+
+    Well-formed declarations \hfill \fbox{$D \ok$}
+    \begin{mathpar}
+
+        \inferrule[t-func-arrayset]
+        {
+            t = \elementtype(t_A) \\
+            t_A \ok
+        }
+        {
+            \func~(x~t_A) ~m(x_1~\kw{int},~x_2~t) ~t_A~
+            \br{ x[x_1] = x_2;~\return~x }
+        }
+
+    \end{mathpar}
+
+    Expressions \hfill \fbox{$\Gamma \vdash e : t$}
+    \begin{mathpar}
+
+        \inferrule[t-array-literal-named]
+        {
+            t_A \ok \\
+            \Gamma \vdash \ov{e : t} \\
+            \ov{t = \elementtype(t_A)}
+        }
+        { \Gamma \vdash t_A\br{\ov{e}} : t_A }
+
+        \inferrule[t-array-literal]
+        {
+            a \ok \\
+            \Gamma \vdash \ov{e : t} \\
+            \ov{t = \elementtype(a)}
+        }
+        { \Gamma \vdash a\br{\ov{e}} : a }
+
+
+        \inferrule[int-literal]
+        {~}
+        { \Gamma \vdash n : \kw{int} }
+
+
+        \inferrule[t-array-index-named]
+        {
+        t_A \ok \\
+        \Gamma \vdash e_1 : t_A,~e_2 : \kw{int} \\
+        t = \elementtype(t_A)
+        }
+        { \Gamma \vdash e_1[e_2] : t }
+
+        \inferrule[t-array-index]
+        {
+        a \ok \\
+        \Gamma \vdash e_1 : a,~e_2 : \kw{int} \\
+        t = \elementtype(a)
+        }
+        { \Gamma \vdash e_1[e_2] : t }
+
+
+        \inferrule[t-array-named]
+        {
+            \Gamma \vdash e: t_A \\
+        }
+        { \Gamma \vdash len(e) : \kw{int} }
+
+        \inferrule[t-array-length]
+        {
+            \Gamma \vdash e: a \\
+        }
+        { \Gamma \vdash len(e) : \kw{int} }
+
+    \end{mathpar}
+
+    \caption{FG typing for arrays}
+\end{figure}
+\end{document}
