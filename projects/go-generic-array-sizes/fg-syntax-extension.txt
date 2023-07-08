@@ -1,11 +1,9 @@
 Array type literal  a ::= [n]t
                         | [n]a, n ∈ int, a ∈ T
-                            _
+                             _
 Array literal       al ::= a{e}, al ∈ e
 
-Array get           ag ::= e[e], aa ∈ e
-
-Array set           as ::= e[e] = e
+Index expression    ag ::= e[e], ag ∈ e
 
 Array length      alen ::= len(e), alen ∈ e
 
@@ -14,7 +12,7 @@ Array type name     ta, ta ∈ t
 Value type name     tv ::= ts | ta
 
 Method declaration     ::= func (x tv) mM {return e} 
-                         | func (x tv) mM { as; return e}
+                         | func (x ta) m(x1 int, x2 t) ta { x[x1] = x2; return x }
 
 An array type can have either a type name `t` as its element type, or another
 array type literal `a`, allowing for n-dimensional array types literals (e.g.

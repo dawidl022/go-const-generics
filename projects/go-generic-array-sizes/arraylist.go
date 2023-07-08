@@ -19,25 +19,25 @@ type List interface {
 // len of an array is a constant expression
 const arrLen = len([2]int{})
 
-type ArrayList [arrLen]any
+type AnyArray2 [arrLen]any
 
-func (this ArrayList) Map(f Function) List {
+func (this AnyArray2) Map(f Function) List {
 	return this.MapRec(0, f)
 }
 
-func (this ArrayList) MapRec(i int, f Function) ArrayList {
+func (this AnyArray2) MapRec(i int, f Function) AnyArray2 {
 	if i == len(this) {
 		return this
 	}
 	return this.Set(i, f.Apply(this[i])).MapRec(i+1, f)
 }
 
-func (this ArrayList) Set(i int, v any) ArrayList {
+func (this AnyArray2) Set(i int, v any) AnyArray2 {
 	this[i] = v
 	return this
 }
 
 func main() {
-	var l List = ArrayList{1, 2}
+	var l List = AnyArray2{1, 2}
 	fmt.Printf("%#v\n", l.Map(negate{}))
 }
