@@ -26,7 +26,7 @@ func (this AnyArray2) Map(f Function) List {
 }
 
 func (this AnyArray2) MapRec(i int, f Function) AnyArray2 {
-	if i == len(this) {
+	if i == 2 {
 		return this
 	}
 	return this.Set(i, f.Apply(this[i])).MapRec(i+1, f)

@@ -85,12 +85,6 @@
         }
         { \Gamma \vdash e_1[e_2] : t }
 
-        \inferrule[t-array-length]
-        {
-            \Gamma \vdash e: t_A \\
-        }
-        { \Gamma \vdash len(e) : \kw{int} }
-
     \end{mathpar}
 
     \caption{FG typing for arrays}
