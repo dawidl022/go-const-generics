@@ -16,14 +16,6 @@
         {t = \elementtype(t_A)}
 
         \inferrule
-        {~}
-        {a = \elementtype([n]a)}
-
-        \inferrule
-        {t <: u}
-        {t = \elementtype([n]u)}
-
-        \inferrule
         {n \ge 0}
         {\nonnegative(n)}
     \end{mathpar}
@@ -46,19 +38,12 @@
     \hfill \fbox{$T \ok$}
     \begin{mathpar}
 
-        \inferrule[t-array-named]
+        \inferrule[t-array]
         {
             \nonnegative(n)\\
             t \ok
         }
         {[n]t \ok}
-
-        \inferrule[t-array-rec]
-        {
-            \nonnegative(n)\\
-            a \ok
-        }
-        {[n]a \ok}
 
     \end{mathpar}
 
@@ -80,7 +65,7 @@
     Expressions \hfill \fbox{$\Gamma \vdash e : t$}
     \begin{mathpar}
 
-        \inferrule[t-array-literal-named]
+        \inferrule[t-array-literal]
         {
             t_A \ok \\
             \Gamma \vdash \ov{e : t} \\
@@ -88,21 +73,11 @@
         }
         { \Gamma \vdash t_A\br{\ov{e}} : t_A }
 
-        \inferrule[t-array-literal]
-        {
-            a \ok \\
-            \Gamma \vdash \ov{e : t} \\
-            \ov{t = \elementtype(a)}
-        }
-        { \Gamma \vdash a\br{\ov{e}} : a }
-
-
         \inferrule[int-literal]
         {~}
         { \Gamma \vdash n : \kw{int} }
 
-
-        \inferrule[t-array-index-named]
+        \inferrule[t-array-index]
         {
         t_A \ok \\
         \Gamma \vdash e_1 : t_A,~e_2 : \kw{int} \\
@@ -110,24 +85,9 @@
         }
         { \Gamma \vdash e_1[e_2] : t }
 
-        \inferrule[t-array-index]
-        {
-        a \ok \\
-        \Gamma \vdash e_1 : a,~e_2 : \kw{int} \\
-        t = \elementtype(a)
-        }
-        { \Gamma \vdash e_1[e_2] : t }
-
-
-        \inferrule[t-array-named]
-        {
-            \Gamma \vdash e: t_A \\
-        }
-        { \Gamma \vdash len(e) : \kw{int} }
-
         \inferrule[t-array-length]
         {
-            \Gamma \vdash e: a \\
+            \Gamma \vdash e: t_A \\
         }
         { \Gamma \vdash len(e) : \kw{int} }
 

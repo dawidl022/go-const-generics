@@ -19,7 +19,7 @@
                 \black{Value type name}    & \black{$t_V, u_V$ ::= $t_S \mid t_A$}                          \\
                 Method signature           & $M$ ::= $(\ov{x~t})~t$                                         \\
                 Method specification       & $S$ ::= $mM$                                                   \\
-                \black{Array type literal} & \black{$a$ ::= $[n]t \mid [n]a$}                               \\
+                \black{Array type literal} & \black{$a$ ::= $[n]t$}                                         \\
                 Type Literal               & $T$ ::=                                                        \\
                 \quad Structure            & \quad $\struct~\br{\ov{f~t}}$                                  \\
                 \quad Interface            & \quad $\interface~\br{\ov{S}}$                                 \\
@@ -35,15 +35,15 @@
         \hspace{-0.5\textwidth}
         \begin{minipage}[t]{0.4\textwidth}
             \begin{tabular}[t]{ll}
-                Expression                     & $d, e$ ::=                                      \\
-                \quad \black{Integer literal } & \quad\black{$n$}                                \\
-                \quad Variable                 & \quad $x$                                       \\
-                \quad Method call              & \quad $e.m(\ov{e})$                             \\
-                \quad Structure literal        & \quad $t_S\br{\ov{e}}$                          \\
-                \quad Select                   & \quad $e.f$                                     \\
-                \quad Type assertion           & \quad $e.(t)$                                   \\
-                \quad \black{Array literal}    & \quad\black{$a\br{\ov{e}} \mid t_A\br{\ov{e}}$} \\
-                \quad \black{Array index}      & \quad\black{$e_1$[$e_2$]}                       \\
+                Expression                     & $d, e$ ::=                    \\
+                \quad \black{Integer literal } & \quad\black{$n$}              \\
+                \quad Variable                 & \quad $x$                     \\
+                \quad Method call              & \quad $e.m(\ov{e})$           \\
+                \quad Structure literal        & \quad $t_S\br{\ov{e}}$        \\
+                \quad Select                   & \quad $e.f$                   \\
+                \quad Type assertion           & \quad $e.(t)$                 \\
+                \quad \black{Array literal}    & \quad\black{$t_A\br{\ov{e}}$} \\
+                \quad \black{Array index}      & \quad\black{$e_1$[$e_2$]}     \\
                 \quad \black{Array length}     & \quad\black{$\len{e}$}
             \end{tabular}
         \end{minipage}
