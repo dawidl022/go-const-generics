@@ -1,0 +1,54 @@
+\documentclass[acmsmall,screen]{acmart}
+\usepackage{xcolor}
+
+\begin{document}
+
+\include{macros}
+
+\begin{figure}
+    \gray{
+        \begin{minipage}[t]{\textwidth}
+            \begin{tabular}[t]{ll}
+                Field name                 & $f$                                                            \\
+                Method name                & $m$                                                            \\
+                Variable name              & $x$                                                            \\
+                Structure type name        & $t_S, u_S$                                                     \\
+                Interface type name        & $t_I, u_I$                                                     \\
+                \black{Array type name}    & \black{$t_A, u_A$}                                             \\
+                Type name                  & $t, u$ ::= $t_S \mid t_I~$\black{$\mid t_A$}                   \\
+                \black{Value type name}    & \black{$t_V, u_V$ ::= $t_S \mid t_A$}                          \\
+                Method signature           & $M$ ::= $(\ov{x~t})~t$                                         \\
+                Method specification       & $S$ ::= $mM$                                                   \\
+                \black{Array type literal} & \black{$a$ ::= $[n]t \mid [n]a$}                               \\
+                Type Literal               & $T$ ::=                                                        \\
+                \quad Structure            & \quad $\struct~\br{\ov{f~t}}$                                  \\
+                \quad Interface            & \quad $\interface~\br{\ov{S}}$                                 \\
+                \quad \black{Array}        & \quad\black{$a$}                                               \\
+                Declaration                & $D$ ::=                                                        \\
+                \quad Type declaration     & \quad $\type~t~T$                                              \\
+                \quad Method declaration   & \quad $\func~(x~$\black{$t_V$}$)~mM~\br{\return~e}$            \\
+                                           & \quad \black{$\mid \func~(x~t_A) ~m(x_1~\kw{int},~x_2~t) ~t_A~
+                \br{ x[x_1] = x_2;~\return~x }$}                                                            \\
+                Program                    & $P$ ::= $\package~\main;~\ov{D}~\func~\main()~\br{\un=e}$
+            \end{tabular}
+        \end{minipage}
+        \hspace{-0.5\textwidth}
+        \begin{minipage}[t]{0.4\textwidth}
+            \begin{tabular}[t]{ll}
+                Expression                     & $d, e$ ::=                                      \\
+                \quad \black{Integer literal } & \quad\black{$n$}                                \\
+                \quad Variable                 & \quad $x$                                       \\
+                \quad Method call              & \quad $e.m(\ov{e})$                             \\
+                \quad Structure literal        & \quad $t_S\br{\ov{e}}$                          \\
+                \quad Select                   & \quad $e.f$                                     \\
+                \quad Type assertion           & \quad $e.(t)$                                   \\
+                \quad \black{Array literal}    & \quad\black{$a\br{\ov{e}} \mid t_A\br{\ov{e}}$} \\
+                \quad \black{Array index}      & \quad\black{e[e]}                               \\
+                \quad \black{Array length}     & \quad\black{$\len{e}$}
+            \end{tabular}
+        \end{minipage}
+    }
+    \caption{FG syntax with arrays}
+    \label{fig:fg-syntax}
+\end{figure}
+\end{document}
