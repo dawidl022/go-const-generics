@@ -1,0 +1,77 @@
+\documentclass[acmsmall,screen]{acmart}
+\usepackage{mathpartir}
+\usepackage{xcolor}
+
+\begin{document}
+
+\include{macros}
+
+\begin{figure}
+    \begin{mathpar}
+        \inferrule
+        {
+        (\type~t_A~ [n]t) \in \ov{D}
+        }
+        { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \bounds(t_A)}
+
+        \inferrule
+        {(\func~(x~t_A) ~m(x_1~\kw{int},~x_2~t) ~t_A~
+            \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}}
+        {\isarraysetmethod(t_A.m)}
+    \end{mathpar}
+    \caption{FG auxiliary functions for array reduction}
+\end{figure}
+
+
+\begin{figure}
+    \begin{center}
+        Value \qquad $v$ ::= $t_S\br{\ov{v}} \mid t_A\br{\ov{v}}$
+    \end{center}
+
+    \begin{center}
+        \gray{
+            \begin{minipage}{0.5\textwidth}
+                \begin{tabular}{ll}
+                    Evaluation context          & $E$ ::=                      \\
+                    \quad Hole                  & \quad $\Hole$                \\
+                    \quad Method call receiver  & \quad $E.m(\ov{e})$          \\
+                    \quad Method call arguments & \quad $v.m(\ov{v},E,\ov{e})$
+                \end{tabular}
+            \end{minipage}
+            \begin{minipage}{0.4\textwidth}
+                \begin{tabular}{ll}
+                    ~                                                                \\
+                    \quad Structure              & \quad $t_S\br{\ov{v},E,\ov{e}}$   \\
+                    \quad Select                 & \quad $E.f$                       \\
+                    \quad \black{Index receiver} & \quad \black{$E[e]$}              \\
+                    \quad \black{Index argument} & \quad \black{$t_A\br{\ov{v}}[E]$} \\
+                    \quad Type assertion         & \quad $E.(t)$
+                \end{tabular}
+            \end{minipage}
+        }
+    \end{center}
+
+    Reduction \hfill \fbox{$d \becomes e$}
+    \begin{mathpar}
+
+        \inferrule[r-index]
+        % possible naming conflict with bounds helper used in Featherweight Go paper
+        {
+            e \becomes i \\
+            i \in \bounds(t_A)
+        }
+        { t_A\br{\ov{v}}[e] \becomes v_i }
+
+        \inferrule[r-array-set]
+        {
+            i \in \bounds(t_A) \\
+            \isarraysetmethod(t_A.m) \\
+            d \becomes e
+        }
+        { t_A\br{\ov{v}}.m(i, d) \becomes t_A\br{\ov{v}, v_i := e} }
+
+    \end{mathpar}
+    \caption{FG reduction for arrays}
+\end{figure}
+
+\end{document}
