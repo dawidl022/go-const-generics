@@ -64,11 +64,12 @@
 
         \inferrule[r-array-set]
         {
+            e \becomes i \\
             i \in \bounds(t_A) \\
             \isarraysetmethod(t_A.m) \\
-            d \becomes e
+            d \becomes d'
         }
-        { t_A\br{\ov{v}}.m(i, d) \becomes t_A\br{\ov{v}, v_i := e} }
+        { t_A\br{\ov{v}}.m(e, d) \becomes t_A\br{\ov{v}, v_i := d'} }
 
     \end{mathpar}
     \caption{FG reduction for arrays}
