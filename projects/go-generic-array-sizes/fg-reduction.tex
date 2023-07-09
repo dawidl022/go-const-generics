@@ -25,7 +25,7 @@
 
 \begin{figure}
     \begin{center}
-        Value \qquad $v$ ::= $t_S\br{\ov{v}} \mid t_A\br{\ov{v}}$
+        Value \qquad $v$ ::= $t_S\br{\ov{v}} \mid t_A\br{\ov{v}} \mid n$
     \end{center}
 
     \begin{center}
@@ -57,19 +57,17 @@
         \inferrule[r-index]
         % possible naming conflict with bounds helper used in Featherweight Go paper
         {
-            e \becomes i \\
-            i \in \bounds(t_A)
+            n \in \bounds(t_A)
         }
-        { t_A\br{\ov{v}}[e] \becomes v_i }
+        { t_A\br{\ov{v}}[n] \becomes v_i }
 
+        % potential ambiguity with regular r-call?
         \inferrule[r-array-set]
         {
-            e \becomes i \\
-            i \in \bounds(t_A) \\
+            n \in \bounds(t_A) \\
             \isarraysetmethod(t_A.m) \\
-            d \becomes d'
         }
-        { t_A\br{\ov{v}}.m(e, d) \becomes t_A\br{\ov{v}, v_i := d'} }
+        { t_A\br{\ov{v}}.m(n, v) \becomes t_A\br{\ov{v}, v_i := v} }
 
     \end{mathpar}
     \caption{FG reduction for arrays}
