@@ -1,0 +1,54 @@
+\documentclass[acmsmall,screen]{acmart}
+\usepackage{xcolor}
+
+\begin{document}
+
+\include{macros}
+
+
+\begin{figure}
+    \gray{
+        \begin{minipage}[t]{\textwidth}
+            \begin{tabular}[t]{ll}
+                Field name               & $f$                                                       \\
+                Method name              & $m$                                                       \\
+                Variable name            & $x$                                                       \\
+                Structure type name      & $t_S, u_S$                                                \\
+                Interface type name      & $t_I, u_I$                                                \\
+                Type name                & $t, u$ ::= $t_S \mid t_I$                                 \\
+                \black{Type parameter}   & \black{$\alpha$}                                          \\
+                Method signature         & $M$ ::= $(\ov{x~\black{\tau}})~\black{\tau}$              \\
+                Method specification     & $S$ ::= $mM$                                              \\
+                Type Literal             & $T$ ::=                                                   \\
+                \quad Structure          & \quad $\struct~\br{\ov{f~\black{\tau}}}$                  \\
+                \quad Interface          & \quad $\interface~\br{\ov{S}}$                            \\
+                Declaration              & $D$ ::=                                                   \\
+                \quad Type declaration   & \quad $\type~t\black{[\Phi]}~T$                           \\
+                \quad Method declaration & \quad $\func~(x~t_S\black{[\Phi]})~mM~\br{\return~e}$     \\
+                Program                  & $P$ ::= $\package~\main;~\ov{D}~\func~\main()~\br{\un=e}$
+            \end{tabular}
+        \end{minipage}
+        \hspace{-0.5\textwidth}
+        \begin{minipage}[t]{0.4\textwidth}
+            \begin{tabular}[t]{ll}
+                \black{Type}                 & \black{$\tau, \sigma$ ::=}                         \\
+                \quad \black{Type parameter} & \quad \black{$\alpha$}                             \\
+                \quad \black{Named type}     & \quad \black{$t[\ov{\tau}]$}                       \\
+                \black{Structure type}       & \black{$\tau_S,\sigma_S$ ::= $t_S[\ov{\tau}]$}     \\
+                \black{Interface type}       & \black{$\tau_I,\sigma_I$ ::= $t_I[\ov{\tau}]$}     \\
+                \black{Interface-like type}  & \black{$\tau_J,\sigma_J$ ::= $\alpha \mid \tau_I$} \\
+                \black{Type formal}          & \black{$\Phi$, $\Psi$ ::= $\ov{\alpha~\tau_I}$}    \\
+                \black{Type actual}          & \black{$\phi$, $\psi$ ::= $\ov{\tau}$}             \\
+                Expression                   & $e$ ::=                                            \\
+                \quad Variable               & \quad $x$                                          \\
+                \quad Method call            & \quad $e.m(\ov{e})$                                \\
+                \quad Structure literal      & \quad $\black{\tau_S}\br{\ov{e}}$                  \\
+                \quad Select                 & \quad $e.f$                                        \\
+                \quad Type assertion         & \quad $e.(\black{\tau})$
+            \end{tabular}
+        \end{minipage}
+    }
+    \caption{FGG syntax}
+    \vspace{3ex}
+\end{figure}
+\end{document}
