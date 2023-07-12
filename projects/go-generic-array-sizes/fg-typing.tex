@@ -9,10 +9,7 @@
 \begin{figure}
     \begin{mathpar}
         \inferrule
-        {
-        (\type~t_A~ [n]u) \in \ov{D} \\
-        t <: u
-        }
+        {(\type~t_A~ [n]t) \in \ov{D}}
         {t = \elementtype(t_A)}
 
         \inferrule
@@ -52,7 +49,8 @@
 
         \inferrule[t-func-arrayset]
         {
-            t = \elementtype(t_A) \\
+            u = \elementtype(t_A) \\
+            t <: u \\
             t_A \ok
         }
         {
@@ -69,7 +67,8 @@
         {
             t_A \ok \\
             \Gamma \vdash \ov{e : t} \\
-            \ov{t = \elementtype(t_A)}
+            u = \elementtype(t_A) \\
+            \ov{t <: u}
         }
         { \Gamma \vdash t_A\br{\ov{e}} : t_A }
 

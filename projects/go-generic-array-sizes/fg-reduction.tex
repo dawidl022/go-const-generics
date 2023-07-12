@@ -59,15 +59,16 @@
         {
             n \in \bounds(t_A)
         }
-        { t_A\br{\ov{v}}[n] \becomes v_i }
+        { t_A\br{\ov{v}}[n] \becomes v_n }
 
         % potential ambiguity with regular r-call?
+        % no, because isarraysetmethod(t_A.m) and body(t_A.m) are mutually exclusive
         \inferrule[r-array-set]
         {
             n \in \bounds(t_A) \\
             \isarraysetmethod(t_A.m) \\
         }
-        { t_A\br{\ov{v}}.m(n, v) \becomes t_A\br{\ov{v}, v_i := v} }
+        { t_A\br{\ov{v}}.m(n, v) \becomes t_A\br{\ov{v}}[n := v]}
 
     \end{mathpar}
     \caption{FG reduction for arrays}
