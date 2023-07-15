@@ -34,7 +34,28 @@ func (this AnyArray2) Set(i int, v any) AnyArray2 {
 	return this
 }
 
+type AnyMatrix2By2 [2]AnyArray2
+
+func (this AnyMatrix2By2) Map(f Function) List {
+	return this.MapRec(AnyMatrix2By2{}, 0, f)
+}
+
+func (this AnyMatrix2By2) MapRec(target AnyMatrix2By2, i int, f Function) AnyMatrix2By2 {
+	if i == 2 {
+		return target
+	}
+	return this.MapRec(target.Set(i, this[i].MapRec(AnyArray2{}, 0, f)), i+1, f)
+}
+
+func (this AnyMatrix2By2) Set(i int, v AnyArray2) AnyMatrix2By2 {
+	this[i] = v
+	return this
+}
+
 func main() {
 	var l List = AnyArray2{1, 2}
 	fmt.Printf("%#v\n", l.Map(negate{}))
+
+	var m List = AnyMatrix2By2{{1, 2}, {3, 4}}
+	fmt.Printf("%#v\n", m.Map(negate{}))
 }
