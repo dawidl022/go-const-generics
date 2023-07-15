@@ -16,20 +16,17 @@ type List interface {
 	Map(f Function) List
 }
 
-// len of an array is a constant expression
-const arrLen = len([2]int{})
-
-type AnyArray2 [arrLen]any
+type AnyArray2 [2]any
 
 func (this AnyArray2) Map(f Function) List {
-	return this.MapRec(0, f)
+	return this.MapRec(AnyArray2{}, 0, f)
 }
 
-func (this AnyArray2) MapRec(i int, f Function) AnyArray2 {
+func (this AnyArray2) MapRec(target AnyArray2, i int, f Function) AnyArray2 {
 	if i == 2 {
-		return this
+		return target
 	}
-	return this.Set(i, f.Apply(this[i])).MapRec(i+1, f)
+	return this.MapRec(target.Set(i, f.Apply(this[i])), i+1, f)
 }
 
 func (this AnyArray2) Set(i int, v any) AnyArray2 {
