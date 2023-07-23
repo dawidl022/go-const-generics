@@ -34,14 +34,13 @@
         \hspace{-0.5\textwidth}
         \begin{minipage}[t]{0.4\textwidth}
             \begin{tabular}[t]{ll}
-                Expression                     & $d, e$ ::=                    \\
-                \quad \black{Integer literal } & \quad\black{$n$}              \\
-                \quad Variable                 & \quad $x$                     \\
-                \quad Method call              & \quad $e.m(\ov{e})$           \\
-                \quad Structure literal        & \quad $t_S\br{\ov{e}}$        \\
-                \quad Select                   & \quad $e.f$                   \\
-                \quad Type assertion           & \quad $e.(t)$                 \\
-                \quad \black{Array literal}    & \quad\black{$t_A\br{\ov{e}}$} \\
+                Expression                     & $d, e$ ::=                     \\
+                \quad \black{Integer literal } & \quad\black{$n$}               \\
+                \quad Variable                 & \quad $x$                      \\
+                \quad Method call              & \quad $e.m(\ov{e})$            \\
+                \quad \black{Value literal}    & \quad $\black{t_V}\br{\ov{e}}$ \\
+                \quad Select                   & \quad $e.f$                    \\
+                \quad Type assertion           & \quad $e.(t)$                  \\
                 \quad \black{Array index}      & \quad\black{$e$[$e$]}
             \end{tabular}
         \end{minipage}
