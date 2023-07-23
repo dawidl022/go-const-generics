@@ -24,11 +24,14 @@
                 Type Literal             & $T$ ::=                                                      \\
                 \quad Structure          & \quad $\struct~\br{\ov{f~\black{\tau}}}$                     \\
                 \quad Interface          & \quad $\interface~\br{\ov{S}}$                               \\
-                \quad Array              & \quad$[n]t$                                                  \\
+                \quad Array              & \quad$[n]t~\black{ \mid[\alpha]t}$                           \\
+                \\
+                \\
                 Declaration              & $D$ ::=                                                      \\
                 \quad Type declaration   & \quad $\type~t\black{[\Phi]}~T$                              \\
                 \quad Method declaration & \quad $\func~(x~t_V\black{[\ov{\alpha}]})~mM~\br{\return~e}$ \\
-                                         & \quad $\mid \func~(x~t_A) ~m(x_1~\kw{int},~x_2~t) ~t_A~
+                                         & \quad $\mid \func~(x~t_A\black{[\ov{\alpha}]})
+                    ~m(x_1~\kw{int},~x_2~\black{\tau}) ~t_A\black{[\ov{\alpha}]}~
                 \br{ x[x_1] = x_2;~\return~x }$                                                         \\
                 Program                  & $P$ ::= $\package~\main;~\ov{D}~\func~\main()~\br{\un=e}$
             \end{tabular}
@@ -36,23 +39,25 @@
         \hspace{-0.5\textwidth}
         \begin{minipage}[t]{0.4\textwidth}
             \begin{tabular}[t]{ll}
-                \black{Type}                 & \black{$\tau, \sigma$ ::=}                         \\
-                \quad \black{Type parameter} & \quad \black{$\alpha$}                             \\
-                \quad \black{Named type}     & \quad \black{$t[\ov{\tau}]$}                       \\
-                \black{Structure type}       & \black{$\tau_S,\sigma_S$ ::= $t_S[\ov{\tau}]$}     \\
-                \black{Interface type}       & \black{$\tau_I,\sigma_I$ ::= $t_I[\ov{\tau}]$}     \\
-                \black{Interface-like type}  & \black{$\tau_J,\sigma_J$ ::= $\alpha \mid \tau_I$} \\
-                \black{Type formal}          & \black{$\Phi$, $\Psi$ ::= $\ov{\alpha~\tau_I}$}    \\
-                \black{Type actual}          & \black{$\phi$, $\psi$ ::= $\ov{\tau}$}             \\
-                Expression                   & $e$ ::=                                            \\
-                \quad Integer literal        & \quad$n$                                           \\
-                \quad Variable               & \quad $x$                                          \\
-                \quad Method call            & \quad $e.m(\ov{e})$                                \\
-                \quad Structure literal      & \quad $\black{\tau_S}\br{\ov{e}}$                  \\
-                \quad Select                 & \quad $e.f$                                        \\
-                \quad Type assertion         & \quad $e.(\black{\tau})$                           \\
-                \quad Array literal          & \quad$t_A\br{\ov{e}}$                              \\
-                \quad Array index            & \quad$e$[$e$]
+                \black{Type}                      & \black{$\tau, \sigma$ ::=}                               \\
+                \quad \black{Type parameter}      & \quad \black{$\alpha$}                                   \\
+                \quad \black{Named type}          & \quad \black{$t[\ov{\tau}]$}                             \\
+                \black{Structure type}            & \black{$\tau_S,\sigma_S$ ::= $t_S[\ov{\tau}]$}           \\
+                \black{Interface type}            & \black{$\tau_I,\sigma_I$ ::= $t_I[\ov{\tau}]$}           \\
+                \black{Array type}                & \black{$\tau_A,\sigma_A$ ::= $t_A[\ov{\tau}]$}           \\
+                \black{Interface-like type}       & \black{$\tau_J,\sigma_J$ ::= $\alpha \mid \tau_I$}       \\
+                \black{Type parameter constraint} & \black{$\theta$ ::= $\alpha ~\tau_I \mid \const~\alpha$} \\
+                \black{Type formal}               & \black{$\Phi$, $\Psi$ ::= $\ov{\theta}$}                 \\
+                \black{Type actual}               & \black{$\phi$, $\psi$ ::= $\ov{\tau}$}                   \\
+                Expression                        & $e$ ::=                                                  \\
+                \quad Integer literal             & \quad$n$                                                 \\
+                \quad Variable                    & \quad $x$                                                \\
+                \quad Method call                 & \quad $e.m(\ov{e})$                                      \\
+                \quad Structure literal           & \quad $\black{\tau_S}\br{\ov{e}}$                        \\
+                \quad Select                      & \quad $e.f$                                              \\
+                \quad Type assertion              & \quad $e.(\black{\tau})$                                 \\
+                \quad Array literal               & \quad$\black{\tau_A}\br{\ov{e}}$                         \\
+                \quad Array index                 & \quad$e$[$e$]
             \end{tabular}
         \end{minipage}
     }
