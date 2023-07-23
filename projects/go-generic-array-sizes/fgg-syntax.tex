@@ -10,21 +10,21 @@
     \gray{
         \begin{minipage}[t]{\textwidth}
             \begin{tabular}[t]{ll}
-                Field name               & $f$                                                        \\
-                Method name              & $m$                                                        \\
-                Variable name            & $x$                                                        \\
-                Structure type name      & $t_S, u_S$                                                 \\
-                Interface type name      & $t_I, u_I$                                                 \\
-                Type name                & $t, u$ ::= $t_S \mid t_I$                                  \\
-                \black{Type parameter}   & \black{$\alpha$}                                           \\
-                Method signature         & $M$ ::= $\black{[\Psi]}(\ov{x~\black{\tau}})~\black{\tau}$ \\
-                Method specification     & $S$ ::= $mM$                                               \\
-                Type Literal             & $T$ ::=                                                    \\
-                \quad Structure          & \quad $\struct~\br{\ov{f~\black{\tau}}}$                   \\
-                \quad Interface          & \quad $\interface~\br{\ov{S}}$                             \\
-                Declaration              & $D$ ::=                                                    \\
-                \quad Type declaration   & \quad $\type~t\black{[\Phi]}~T$                            \\
-                \quad Method declaration & \quad $\func~(x~t_S\black{[\Phi]})~mM~\br{\return~e}$      \\
+                Field name               & $f$                                                          \\
+                Method name              & $m$                                                          \\
+                Variable name            & $x$                                                          \\
+                Structure type name      & $t_S, u_S$                                                   \\
+                Interface type name      & $t_I, u_I$                                                   \\
+                Type name                & $t, u$ ::= $t_S \mid t_I$                                    \\
+                \black{Type parameter}   & \black{$\alpha$}                                             \\
+                Method signature         & $M$ ::= $\black{[\Psi]}(\ov{x~\black{\tau}})~\black{\tau}$   \\
+                Method specification     & $S$ ::= $mM$                                                 \\
+                Type Literal             & $T$ ::=                                                      \\
+                \quad Structure          & \quad $\struct~\br{\ov{f~\black{\tau}}}$                     \\
+                \quad Interface          & \quad $\interface~\br{\ov{S}}$                               \\
+                Declaration              & $D$ ::=                                                      \\
+                \quad Type declaration   & \quad $\type~t\black{[\Phi]}~T$                              \\
+                \quad Method declaration & \quad $\func~(x~t_S\black{[\ov{\alpha}]})~mM~\br{\return~e}$ \\
                 Program                  & $P$ ::= $\package~\main;~\ov{D}~\func~\main()~\br{\un=e}$
             \end{tabular}
         \end{minipage}
