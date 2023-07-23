@@ -15,16 +15,21 @@
                 Variable name            & $x$                                                          \\
                 Structure type name      & $t_S, u_S$                                                   \\
                 Interface type name      & $t_I, u_I$                                                   \\
-                Type name                & $t, u$ ::= $t_S \mid t_I$                                    \\
+                Array type name          & $t_A, u_A$                                                   \\
+                Type name                & $t, u$ ::= $t_S \mid t_I \mid t_A$                           \\
+                Value type name          & $t_V, u_V$ ::= $t_S \mid t_A$                                \\
                 \black{Type parameter}   & \black{$\alpha$}                                             \\
                 Method signature         & $M$ ::= $\black{[\Psi]}(\ov{x~\black{\tau}})~\black{\tau}$   \\
                 Method specification     & $S$ ::= $mM$                                                 \\
                 Type Literal             & $T$ ::=                                                      \\
                 \quad Structure          & \quad $\struct~\br{\ov{f~\black{\tau}}}$                     \\
                 \quad Interface          & \quad $\interface~\br{\ov{S}}$                               \\
+                \quad Array              & \quad$[n]t$                                                  \\
                 Declaration              & $D$ ::=                                                      \\
                 \quad Type declaration   & \quad $\type~t\black{[\Phi]}~T$                              \\
-                \quad Method declaration & \quad $\func~(x~t_S\black{[\ov{\alpha}]})~mM~\br{\return~e}$ \\
+                \quad Method declaration & \quad $\func~(x~t_V\black{[\ov{\alpha}]})~mM~\br{\return~e}$ \\
+                                         & \quad $\mid \func~(x~t_A) ~m(x_1~\kw{int},~x_2~t) ~t_A~
+                \br{ x[x_1] = x_2;~\return~x }$                                                         \\
                 Program                  & $P$ ::= $\package~\main;~\ov{D}~\func~\main()~\br{\un=e}$
             \end{tabular}
         \end{minipage}
@@ -40,11 +45,14 @@
                 \black{Type formal}          & \black{$\Phi$, $\Psi$ ::= $\ov{\alpha~\tau_I}$}    \\
                 \black{Type actual}          & \black{$\phi$, $\psi$ ::= $\ov{\tau}$}             \\
                 Expression                   & $e$ ::=                                            \\
+                \quad Integer literal        & \quad$n$                                           \\
                 \quad Variable               & \quad $x$                                          \\
                 \quad Method call            & \quad $e.m(\ov{e})$                                \\
                 \quad Structure literal      & \quad $\black{\tau_S}\br{\ov{e}}$                  \\
                 \quad Select                 & \quad $e.f$                                        \\
-                \quad Type assertion         & \quad $e.(\black{\tau})$
+                \quad Type assertion         & \quad $e.(\black{\tau})$                           \\
+                \quad Array literal          & \quad$t_A\br{\ov{e}}$                              \\
+                \quad Array index            & \quad$e$[$e$]
             \end{tabular}
         \end{minipage}
     }
