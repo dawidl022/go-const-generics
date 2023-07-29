@@ -12,9 +12,6 @@
         {(\type~t_A~ [n]t) \in \ov{D}}
         {t = \elementtype(t_A)}
 
-        \inferrule
-        {n \ge 0}
-        {\nonnegative(n)}
     \end{mathpar}
     \caption{FG auxiliary functions for array typing}
 \end{figure}
@@ -37,7 +34,7 @@
 
         \inferrule[t-array]
         {
-            \nonnegative(n)\\
+            n \ge 0\\
             t \ok
         }
         {[n]t \ok}
