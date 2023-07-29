@@ -4,3 +4,5 @@ https://github.com/golang/go/issues/44253
 https://go.dev/ref/spec#Array_types
 https://go.googlesource.com/example/+/HEAD/gotypes/go-types.md
 https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md
+https://www.youtube.com/watch?v=TborQFPY2IM
+https://www.youtube.com/watch?v=Pa_e9EeCdy8
