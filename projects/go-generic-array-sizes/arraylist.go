@@ -2,31 +2,21 @@ package main
 
 import "fmt"
 
-type Function interface {
-	Apply(x any) any
-}
-
-type negate struct{}
-
-func (negate) Apply(x any) any {
-	return -x.(int)
-}
-
 type List interface {
-	Map(f Function) List
+	Reverse() List
 }
 
 type AnyArray2 [2]any
 
-func (this AnyArray2) Map(f Function) List {
-	return this.MapRec(AnyArray2{}, 0, f)
+func (this AnyArray2) Reverse() List {
+	return this.ReverseRec(AnyArray2{}, 0)
 }
 
-func (this AnyArray2) MapRec(target AnyArray2, i int, f Function) AnyArray2 {
+func (this AnyArray2) ReverseRec(target AnyArray2, i int) AnyArray2 {
 	if i == 2 {
 		return target
 	}
-	return this.MapRec(target.Set(i, f.Apply(this[i])), i+1, f)
+	return this.ReverseRec(target.Set(2-i-1, (this[i])), i+1)
 }
 
 func (this AnyArray2) Set(i int, v any) AnyArray2 {
@@ -34,28 +24,7 @@ func (this AnyArray2) Set(i int, v any) AnyArray2 {
 	return this
 }
 
-type AnyMatrix2By2 [2]AnyArray2
-
-func (this AnyMatrix2By2) Map(f Function) List {
-	return this.MapRec(AnyMatrix2By2{}, 0, f)
-}
-
-func (this AnyMatrix2By2) MapRec(target AnyMatrix2By2, i int, f Function) AnyMatrix2By2 {
-	if i == 2 {
-		return target
-	}
-	return this.MapRec(target.Set(i, this[i].MapRec(AnyArray2{}, 0, f)), i+1, f)
-}
-
-func (this AnyMatrix2By2) Set(i int, v AnyArray2) AnyMatrix2By2 {
-	this[i] = v
-	return this
-}
-
 func main() {
 	var l List = AnyArray2{1, 2}
-	fmt.Printf("%#v\n", l.Map(negate{}))
-
-	var m List = AnyMatrix2By2{{1, 2}, {3, 4}}
-	fmt.Printf("%#v\n", m.Map(negate{}))
+	fmt.Printf("%#v\n", l.Reverse())
 }
