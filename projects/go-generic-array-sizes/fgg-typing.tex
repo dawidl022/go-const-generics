@@ -1,0 +1,295 @@
+\documentclass[acmsmall,screen]{acmart}
+\usepackage{mathpartir}
+
+\begin{document}
+
+\include{macros}
+
+
+\begin{figure}
+    \begin{mathpar}
+        \inferrule
+        {(\type~t_A[\ov{\Phi}]~ [\tau_n]\tau) \in \ov{D}}
+        {\tau = \elementtype(t_A)}
+
+        \inferrule
+        {(\type~t[\ov{\Phi}]~T) \in \ov{D}}
+        {\ov{\Phi} = \typeparams(t)}
+
+        \inferrule
+        {
+            (\ov{\alpha~\gamma}) = \ov{\Phi} \\
+            \gray{\eta = (\ov{\alpha \by \tau})}
+        }
+        {(\ov{\Phi \by \tau}) = \eta}
+
+        \inferrule
+        {
+            (\ov{\alpha~\gamma}) = \ov{\Phi} \\
+            \eta = (\ov{\Phi \by \tau}) \\
+            \Delta \vdash (\ov{\alpha \imp \gamma})[\eta]
+        }
+        {(\ov{\Phi \by_\Delta \tau}) = \eta}
+
+        % TODO include reaming auxiliary functions - for some reason LaTeX
+        % doesn't compile when doing so, possibly due to no more space on page
+    \end{mathpar}
+    \caption{FGG auxiliary functions for array typing}
+\end{figure}
+
+\begin{figure}
+
+    Implements
+    \hfill \fbox{$\Delta \vdash \tau \imp \sigma$}
+    \begin{mathpar}
+        \gray{
+            \inferrule[<:-param]
+            { ~ }
+            { \Delta \vdash \alpha \imp \alpha }
+        }
+
+        \inferrule[<:$_V$]
+        { ~ }
+        { \Delta \vdash \tau_V \imp \tau_V }
+
+        \gray{
+            \inferrule[<:$_I$]
+            {
+                \methods_\Delta(\tau) \supseteq \methods_\Delta(\tau_I) \\
+                \black{\Delta \vdash \tau~\not \imp \const}
+            }
+            { \Delta \vdash \tau \imp \tau_I }
+        }
+        \\
+        \inferrule[<:const-n]
+        { n \ge 0 }
+        { \Delta \vdash n \imp \const }
+
+        \inferrule[<:const-param]
+        { (\alpha : \const) \in \Delta }
+        { \Delta \vdash \alpha \imp \const }
+
+        \inferrule[<:-formals]
+        {
+            \gray{\emptyset \vdash \ov{\tau_I \imp \sigma_I}}
+        }
+        {[\ov{\alpha~\tau_I}] \imp [\ov{\alpha~\sigma_I}]}
+    \end{mathpar}
+
+    Well-formed type
+    \hfill \fbox{$\Delta \vdash \tau \ok$}
+    \begin{mathpar}
+        \inferrule[t-param]
+        { (\alpha : \gamma) \in \Delta }
+        { \Delta \vdash \alpha \ok }
+
+        \inferrule[t-named]
+        {
+            \Delta \vdash \ov{\tau \ok}
+            \and
+            (\type~t[\ov{\Phi}]~T) \in \ov{D}
+            \and
+            \eta = (\ov{\Phi \by_\Delta \tau})
+        }
+        { \Delta \vdash t[\ov{\tau}] \ok }
+    \end{mathpar}
+
+    Well-formed method specifications and type literals
+    \hfill \fbox{$\ov{\Phi} \vdash S \ok$} \qquad \fbox{$\ov{\Phi} \vdash T \ok$}
+    \begin{mathpar}
+        \inferrule[t-specification]
+        {
+        \emptyset \vdash \ov{\Phi \ok} \\
+        \distinct(\ov{x}) \\
+        { \ov{\Phi} \vdash \ov{\tau \imp \tau_I }} \\
+        { \ov{\Phi} \vdash \tau \imp \tau_I }
+        }
+        { \ov{\Phi} \vdash m(\ov{x~\tau})~\tau \ok }
+
+        \inferrule[t-struct]
+        {
+        \distinct(\ov{f}) \\
+        { \ov{\Phi} \vdash \ov{\tau \imp \tau_I }}
+        }
+        { \ov{\Phi} \vdash \struct~\br{\ov{f~\tau}} \ok }
+
+        \inferrule[t-interface]
+        {
+            \unique(\ov{S}) \\
+            \ov{\Phi} \vdash \ov{S \ok}
+        }
+        { \ov{\Phi} \vdash \interface~\br{\ov{S}} }
+
+        \inferrule[t-array]
+        {
+        \tau_n \imp \const \\
+        { \ov{\Phi} \vdash \tau \imp \tau_I }
+        }
+        {[\tau_n]\tau \ok}
+    \end{mathpar}
+
+    Well-formed declarations \hfill \fbox{$D \ok$}
+    \begin{mathpar}
+        \inferrule[t-type]
+        {
+        \emptyset \vdash \ov{\Phi \ok} \\
+        \ov{\Phi} \vdash T \ok
+        }
+        { \type~t[\ov{\Phi}]~T \ok }
+
+        \inferrule[t-func]
+        {
+        \distinct(x, \ov{x}) \\
+        (\type~t_V[\ov{\Phi}]~T) \in \ov{D} \\
+        (\ov{\alpha~\gamma}) = \ov{\Phi}\\\\
+        { \ov{\Phi} \vdash \ov{\tau \imp \tau_I }} \\
+        \ov{\Phi} \vdash \sigma \ok \\
+        \ov{\Phi} \stoup
+        x : t_V[\ov{\Phi}] \comma \ov{x : \tau} \vdash e : \tau \\
+        \ov{\Phi} \vdash \tau \imp \sigma \\
+        \ov{\Phi} \vdash \sigma \imp \sigma_I
+        }
+        { \func~(x~t_V[\ov{\alpha}])~m(\ov{x~\tau})~\sigma~\br{\return~e} \ok }
+
+        \inferrule[t-func-arrayset]
+        {
+        \sigma = \elementtype(t_A) \\
+        \tau \imp \sigma \\
+        \ov{\Phi} = \typeparams(t_A)\\
+        (\ov{\alpha~\gamma}) = \ov{\Phi}
+        }
+        {
+        \func~(x~t_A[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau) ~t_A~
+        \br{ x[x_1] = x_2;~\return~x }
+        }
+    \end{mathpar}
+\end{figure}
+
+\begin{figure}
+
+    Expressions \hfill \fbox{$\Delta \stoup \Gamma \vdash e : \tau<$}
+    \begin{mathpar}
+        \inferrule[t-int-literal]
+        {~}
+        { \Delta;\Gamma \vdash n : \kw{int} }
+
+        \inferrule[t-int]
+        { \Delta \vdash \alpha \imp \const}
+        { \Delta;\Gamma \vdash \alpha : \kw{int} }
+
+        \gray{
+            \inferrule[t-var]
+            {
+                (x : \tau) \in \Gamma
+            }
+            { \Delta \stoup \Gamma \vdash x : \tau }
+        }
+
+        \inferrule[t-call]
+        {
+            (m(\ov{x~\sigma})~\sigma) \in \methods_\Delta(\tau)  \\
+            \Delta \stoup \Gamma \vdash e : \tau \\
+            \Delta \stoup \Gamma \vdash \ov{e : \tau} \\
+            \Delta \vdash (\ov{\tau \imp \sigma})
+        }
+        { \Delta \stoup \Gamma \vdash e.m(\ov{e}) : \sigma }
+
+        % TODO continue here
+
+        \inferrule[t-array-literal]
+        {
+        \Delta \vdash \tau_A \ok \\
+        \ov{\Phi} = \typeparams(t_A)\\
+        \tau_A = t_A[\ov{\sigma}] \\
+        \eta = (\ov{\Phi \by \sigma})\\
+        \sigma = \elementtype(t_A)[\eta] \\
+        \Delta ; \Gamma \vdash \ov{e : \tau} \\
+        \ov{\tau <: \sigma}
+        }
+        { \Delta;\Gamma \vdash \tau_A\br{\ov{e}} : \tau_A }
+
+        \inferrule[t-array-index]
+        {
+        \Delta \vdash \tau_A \ok \\
+        \ov{\Phi} = \typeparams(t_A)\\
+        \tau_A = t_A[\ov{\tau}] \\
+        \eta = (\ov{\Phi \by \tau})\\
+        \tau = \elementtype(t_A)[\eta]\\
+        \Delta; \Gamma \vdash e_1 : \tau_A,~e_2 : \kw{int} \\
+        }
+        { \Gamma \vdash e_1[e_2] : \tau }
+
+        \gray{
+            \inferrule[t-struct-literal]
+            {
+                \Delta \vdash \tau_S \ok
+                \quad
+                \Delta \stoup \Gamma \vdash \ov{e : \tau}
+                \quad
+                (\ov{f~\sigma}) = \fields(\tau_S)
+                \quad
+                \Delta \vdash \ov{\tau \imp \sigma}
+            }
+            { \Delta \stoup \Gamma \vdash \tau_S\br{\ov{e}} : \tau_S }
+        }
+
+        \gray{
+            \inferrule[t-field]
+            {
+                \Delta \stoup \Gamma \vdash e : \tau_S
+                \quad
+                (\ov{f~\tau}) = \fields(\tau_S)
+            }
+            { \Delta \stoup \Gamma \vdash e.f_i : \tau_i }
+        }
+        \\
+        \gray{
+            \inferrule[t-assert$_I$]
+            {
+                \Delta \vdash \tau_J \ok \gap
+                \Delta \stoup \Gamma \vdash e : \sigma_J
+            }
+            { \Delta \stoup \Gamma \vdash e.(\tau_J) : \tau_J }
+        }
+
+        \squeeze
+        \gray{
+            \inferrule[t-assert\black{$_V$}]
+            {
+                \Delta \vdash \tau_\black{V} \ok \gap
+                \Delta \stoup \Gamma \vdash e : \sigma_J \gap
+                \tau_\black{V} \imp \bounds_\Delta(\sigma_J)
+            }
+            { \Delta \stoup \Gamma \vdash e.(\tau_\black{V}) : \tau_\black{V} }
+        }
+        \squeeze
+
+        \gray{
+            \fbox{
+                \inferrule[t-stupid]
+                {
+                    \Delta \vdash \tau  \ok \gap
+                    \Delta \stoup \Gamma \vdash e : \sigma_\black{V}
+                }
+                { \Delta \stoup \Gamma \vdash e.(\tau) : \tau }
+            }
+        }
+    \end{mathpar}
+
+    Programs  \hfill \fbox{$P \ok$}
+    \begin{mathpar}
+        \gray{
+            \inferrule[t-prog]
+            {
+                \distinct(\tdecls(\ov{D})) \\
+                \distinct(\mdecls(\ov{D})) \\
+                \ov{D \ok} \\
+                \emptyset \stoup \emptyset \vdash e : \tau
+            }
+            { \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \ok }
+        }
+    \end{mathpar}
+
+    \caption{FGG typing  with arrays}
+\end{figure}
+\end{document}
