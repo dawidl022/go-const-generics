@@ -1,0 +1,175 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{ebproof}
+\usepackage[left=0.5cm, right=0.5cm]{geometry}
+
+\begin{document}
+
+\include{macros}
+
+\alias{AnyArrayTwo}{AnyArray2}
+\register{any}
+\register{this}
+\register{First}
+
+\begin{align*}
+    D_0    & = \type~\any~\interface\br{}                                       \\
+    D_1    & = \type~\AnyArrayTwo~[2]\any                                       \\
+    D_2    & = \func (\this~\AnyArrayTwo)~\First()~\any~\br{ \return~\this[0] } \\
+    \ov{D} & = (D_0, D_1, D_2)                                                  \\
+    e      & = \AnyArrayTwo\br{1, 2}.\First()
+\end{align*}
+
+\ws
+
+\begin{prooftree}
+    \infer0[T-Interface]{
+        \interface\br{} \ok
+    }
+    \infer1[T-Type]{
+        D_0 \ok
+    }
+\end{prooftree}
+\wss
+
+\begin{prooftree}
+    \infer0{
+        2 \ge 0
+    }
+    \infer0{
+        D_0 \in \ov{D}
+    }
+    \infer1[T-Named]{
+        \any \ok
+    }
+    \infer2[T-Array]{
+        [2]\any \ok
+    }
+    \infer1[T-Type]{
+        D_1 \ok
+    }
+\end{prooftree}
+\wss
+\begin{prooftree}
+    \infer0{
+        (\this : \AnyArrayTwo) \in (\this : \AnyArrayTwo)
+    }
+    \infer1[T-Var + T-Int-Literal]{
+        \this : \AnyArrayTwo \vdash \this : \AnyArrayTwo, 0 : \kw{int}
+    }
+    \infer0{
+        D_1 \in \ov{D}
+    }
+    \infer1{
+        \any = \elementtype(\AnyArrayTwo)
+    }
+    \infer2[T-Array-Index]{
+        \this : \AnyArrayTwo \vdash \this[0] : \any
+    }
+\end{prooftree}
+\wss
+\begin{prooftree}
+    \infer0{
+        \methods(\any) \supseteq  \methods(\any)
+    }
+    \infer1[I]{
+        \any \imp \any
+    }
+\end{prooftree}
+\wss
+\begin{prooftree}
+    \infer0{
+        \distinct(\this)
+    }
+    \infer0{
+        D_1 \in \ov{D}
+    }
+    \infer1[T-Named]{
+        \AnyArrayTwo \ok
+    }
+    \infer0{
+        D_0 \in \ov{D}
+    }
+    \infer1[T-named]{
+        \any \ok
+    }
+    \hypo{
+        \this : \AnyArrayTwo \vdash \this[0] : \any
+    }
+    \hypo{
+        \any \imp \any
+    }
+    \infer5[T-Func]{
+        D_2 \ok
+    }
+\end{prooftree}
+\wss
+\begin{prooftree}
+    \infer0{
+        D_1 \in \ov{D}
+    }
+    \infer1[T-Named]{
+        \AnyArrayTwo \ok
+    }
+    \infer0[T-Int-Literal]{
+        \emptyset \vdash 1: \kw{int}, 2: \kw{int}
+    }
+    \infer0{
+        D_1 \in \ov{D}
+    }
+    \infer1{
+        \any = \elementtype(\AnyArrayTwo)
+    }
+    \infer0{
+        \methods(\kw{int}) \supseteq  \methods(\any)
+    }
+    \infer1[I]{
+        \kw{int} \imp \any
+    }
+    \infer4[T-Array-Literal]{
+        \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
+    }
+\end{prooftree}
+\wss
+\begin{prooftree}
+    \hypo{
+        \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
+    }
+    \infer0{
+        \methods(\AnyArrayTwo) = \{ (\First()~\any) \}
+    }
+    \infer1{
+        (\First()~\any) \in \methods(\AnyArrayTwo)
+    }
+    \infer2[T-Call]{
+        \emptyset \vdash e : \any
+    }
+\end{prooftree}
+\wss
+\begin{prooftree}
+    \infer0{
+        \distinct(\tdecls(\ov{D}))
+    }
+    \infer0{
+        \distinct(\mdecls(\ov{D}))
+    }
+    \hypo{
+        D_0 \ok
+    }
+    \hypo{
+        D_1 \ok
+    }
+    \hypo{
+        D_2 \ok
+    }
+    \infer3{
+        \ov{D \ok}
+    }
+    \hypo{
+        \emptyset \vdash e : \any
+    }
+    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \ok }
+\end{prooftree}
+
+\end{document}
