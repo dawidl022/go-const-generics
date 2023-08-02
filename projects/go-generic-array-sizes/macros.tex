@@ -67,6 +67,12 @@
     }
 }
 
+\newcommand{\aliasparam}[1]{
+    \expandafter\newcommand\csname #1Param\endcsname{
+        \operatorname{#1}
+    }
+}
+
 \newcommand{\ws} {
     % create some whitespace
     \begin{equation*}

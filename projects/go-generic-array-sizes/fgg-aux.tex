@@ -1,0 +1,39 @@
+\documentclass[acmsmall,screen]{acmart}
+\usepackage{mathpartir}
+
+\begin{document}
+
+\include{macros}
+
+\begin{figure}
+    \begin{mathpar}
+        \inferrule
+        {(\type~t_A[\ov{\Phi}]~ [\tau_n]\tau) \in \ov{D}}
+        {\tau = \elementtype(t_A)}
+
+        \inferrule
+        {(\type~t[\ov{\Phi}]~T) \in \ov{D}}
+        {\ov{\Phi} = \typeparams(t)}
+
+        \inferrule
+        {
+            (\ov{\alpha~\gamma}) = \ov{\Phi} \\
+            \gray{\eta = (\ov{\alpha \by \tau})}
+        }
+        {(\ov{\Phi \by \tau}) = \eta}
+
+        \inferrule
+        {
+            (\ov{\alpha~\gamma}) = \ov{\Phi} \\
+            \eta = (\ov{\Phi \by \tau}) \\
+            \Delta \vdash (\ov{\alpha \imp \gamma})[\eta]
+        }
+        {(\ov{\Phi \by_\Delta \tau}) = \eta}
+
+        % TODO include reaming auxiliary functions - for some reason LaTeX
+        % doesn't compile when doing so, possibly due to no more space on page
+    \end{mathpar}
+    \caption{FGG auxiliary functions for array typing}
+\end{figure}
+
+\end{document}
