@@ -12,19 +12,32 @@
         {(\type~t_A~ [n]t) \in \ov{D}}
         {t = \elementtype(t_A)}
 
+
+        \inferrule
+        {~}
+        {\methods(\kw{int}) = \{\}}
+
     \end{mathpar}
     \caption{FG auxiliary functions for array typing}
 \end{figure}
 
 
 \begin{figure}
-    Implements
-    \hfill \fbox{$t \imp u$}
+    Implements, well-formed type
+    \hfill \fbox{$t \imp u$} \qquad \fbox{$t \ok$}
     \begin{mathpar}
 
         \inferrule[<:$_V$]
         {~}
         {t_V <: t_V}
+
+        \inferrule[<:$_{int}$]
+        {~}
+        {\kw{int} <: \kw{int}}
+
+        \inferrule[t-named-int]
+        {~}
+        {\kw{int} \ok}
 
     \end{mathpar}
 
@@ -75,7 +88,8 @@
 
         \inferrule[t-array-index]
         {
-        \Gamma \vdash e_1 : t_A,~e_2 : \kw{int} \\
+        \Gamma \vdash e_1 : t_A \\
+        \Gamma \vdash e_2 : \kw{int} \\
         t = \elementtype(t_A)
         }
         { \Gamma \vdash e_1[e_2] : t }

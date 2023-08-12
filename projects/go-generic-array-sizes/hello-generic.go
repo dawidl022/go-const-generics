@@ -4,10 +4,10 @@ type any interface{}
 
 type Array[N const, T any] [N]T
 
-func (this Array[N, T]) First() T {
-	return this[0]
+func (this Array[N, T]) Get(i int) T {
+	return this[i]
 }
 
 func main() {
-	_ = Array[2, int]{1, 2}.First()
+	_ = Array[2, int]{1, 2}.Get(0)
 }

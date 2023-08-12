@@ -72,12 +72,12 @@
     \end{mathpar}
 
     Well-formed type formals
-    \hfill \fbox{$\ov{\Phi} \ok$}
+    \hfill \fbox{$\Delta \vdash \const \ok$} \qquad \fbox{$\ov{\Phi} \ok$}
     \begin{mathpar}
         \inferrule[t-const]
         {~}
         {
-            \emptyset \vdash \const \ok
+            \Delta \vdash \const \ok
         }
 
         \inferrule[t-formal]
