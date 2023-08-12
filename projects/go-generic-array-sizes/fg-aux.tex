@@ -1,0 +1,46 @@
+\documentclass[acmsmall,screen]{acmart}
+\usepackage{mathpartir}
+
+\begin{document}
+
+\include{macros}
+
+\begin{figure}
+    \begin{mathpar}
+        \inferrule
+        {(\type~t_A~ [n]t) \in \ov{D}}
+        {t = \elementtype(t_A)}
+
+        \inferrule
+        {(\type~t_A~ [n]t) \in \ov{D}}
+        {n = \len(t_A)}
+
+        \inferrule
+        {~}
+        {\methods(\kw{int}) = \{\}}
+
+        \inferrule
+        {~}
+        {\methods(n) = \{\}}
+
+        \gray{
+            \inferrule
+            {}
+            {\methods(\black{t_V}) = \{
+                mM \mid
+                (\func~(x~\black{t_V})~mM~\br{\return~e}) \in \ov{D} \\
+                \black{\lor~
+                    (\func~(x~t_V) ~m(x_1~\kw{int},~x_2~t) ~t_V~
+                    \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}
+                }\}}
+
+            \inferrule
+            {\type~t_I~\interface\br{\ov{S}} \in \ov{D}}
+            {\methods(t_I) = \ov{S}}
+        }
+
+    \end{mathpar}
+    \caption{FG auxiliary functions for array typing}
+\end{figure}
+
+\end{document}

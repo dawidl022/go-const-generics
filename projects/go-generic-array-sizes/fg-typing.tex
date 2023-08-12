@@ -5,26 +5,6 @@
 
 \include{macros}
 
-
-\begin{figure}
-    \begin{mathpar}
-        \inferrule
-        {(\type~t_A~ [n]t) \in \ov{D}}
-        {t = \elementtype(t_A)}
-
-        \inferrule
-        {(\type~t_A~ [n]t) \in \ov{D}}
-        {n = \len(t_A)}
-
-        \inferrule
-        {~}
-        {\methods(\kw{int}) = \{\}}
-
-    \end{mathpar}
-    \caption{FG auxiliary functions for array typing}
-\end{figure}
-
-
 \begin{figure}
     Implements, well-formed type
     \hfill \fbox{$t \imp u$} \qquad \fbox{$t \ok$}
@@ -46,14 +26,30 @@
         {~}
         { n \imp \kw{int} }
 
+        \gray{
+            \inferrule[<:$_I$]
+            {
+                \methods(t) \supseteq \methods(t_I)
+            }
+            { t \imp t_I }
+        }
+
         \inferrule[t-named-int]
         {~}
         {\kw{int} \ok}
 
+        \gray{
+            \inferrule[t-named]
+            {
+                (\type~t~T) \in \ov{D}
+            }
+            { t \ok }
+        }
+
     \end{mathpar}
 
-    Well-formed type literals
-    \hfill \fbox{$T \ok$}
+    Well-formed method specifications and type literals
+    \hfill \fbox {$S \ok$} \qquad \fbox{$T \ok$}
     \begin{mathpar}
 
         \inferrule[t-array]
@@ -63,10 +59,53 @@
         }
         {[n]t \ok}
 
+        \gray{
+            \inferrule[t-specification]
+            {
+                \distinct(\ov{x}) \\
+                \ov{t \ok} \\
+                t \ok
+            }
+            { m(\ov{x~t})~t \ok }
+
+            \inferrule[t-struct]
+            {
+                \distinct(\ov{f}) \\
+                \ov{t \ok}
+            }
+            { \struct~\br{\ov{f~t}} \ok }
+
+            \inferrule[t-interface]
+            {
+                \unique(\ov{S}) \\
+                \ov{S \ok}
+            }
+            { \interface~\br{\ov{S}} \ok }
+        }
+
     \end{mathpar}
 
     Well-formed declarations \hfill \fbox{$D \ok$}
     \begin{mathpar}
+
+        \gray{
+            \inferrule[t-type]
+            {
+                T \ok
+            }
+            { \type~t~T \ok }
+
+            \inferrule[t-func]
+            {
+                \distinct(x, \ov{x}) \\\\
+                \black{t_V} \ok \\
+                \ov{t \ok} \\
+                u \ok \\
+                x : \black{t_V} \comma \ov{x : t} \vdash e : t \\
+                t \imp u
+            }
+            { \func~(x~\black{t_V})~m(\ov{x~t})~u~\br{\return~e} \ok }
+        }
 
         \inferrule[t-func-arrayset]
         {
@@ -83,6 +122,39 @@
 
     Expressions \hfill \fbox{$\Gamma \vdash e : t$}
     \begin{mathpar}
+
+        \gray{
+            \inferrule[t-var]
+            { (x : t) \in \Gamma }
+            { \Gamma \vdash x : t }
+
+            \inferrule[t-call]
+            {
+                \Gamma \vdash e : t \\
+                \Gamma \vdash \ov{e : t} \\
+                (m(\ov{x~u})~u) \in \methods(t) \\
+                \ov{t \imp u}
+            }
+            { \Gamma \vdash e.m(\ov{e}) : u }
+        }
+
+        \gray{
+            \inferrule[t-struct-literal]
+            {
+                t_S \ok \\
+                \Gamma \vdash \ov{e : t} \\
+                (\ov{f~u}) = \fields(t_S) \\
+                \ov{t \imp u}
+            }
+            { \Gamma \vdash t_S\br{\ov{e}} : t_S }
+
+            \inferrule[t-field]
+            {
+                \Gamma \vdash e : t_S \\
+                (\ov{f~u}) = \fields(t_S)
+            }
+            { \Gamma \vdash e.f_i : u_i }
+        }
 
         \inferrule[t-array-literal]
         {
@@ -114,7 +186,25 @@
         }
         { \Gamma \vdash e_1[e_2] : t }
 
+    \end{mathpar}
+    \caption{FG typing for arrays}
 
+\end{figure}
+
+\begin{figure}
+
+    Programs \hfill \fbox{$P \ok$}
+    \begin{mathpar}
+        \gray{
+            \inferrule[t-prog]
+            {
+                \distinct(\tdecls(\ov{D})) \\
+                \distinct(\mdecls(\ov{D})) \\
+                \ov{D \ok} \\
+                \emptyset \vdash e : t
+            }
+            { \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \ok }
+        }
     \end{mathpar}
 
     \caption{FG typing for arrays}
