@@ -12,6 +12,9 @@
         {(\type~t_A~ [n]t) \in \ov{D}}
         {t = \elementtype(t_A)}
 
+        \inferrule
+        {(\type~t_A~ [n]t) \in \ov{D}}
+        {n = \len(t_A)}
 
         \inferrule
         {~}
@@ -34,6 +37,14 @@
         \inferrule[<:$_{int}$]
         {~}
         {\kw{int} <: \kw{int}}
+
+        \inferrule[<:$_{n}$]
+        {~}
+        {n <: n}
+
+        \inferrule[<:int-n]
+        {~}
+        { n \imp \kw{int} }
 
         \inferrule[t-named-int]
         {~}
@@ -84,7 +95,7 @@
 
         \inferrule[t-int-literal]
         {~}
-        { \Gamma \vdash n : \kw{int} }
+        { \Gamma \vdash n : n }
 
         \inferrule[t-array-index]
         {
@@ -93,6 +104,16 @@
         t = \elementtype(t_A)
         }
         { \Gamma \vdash e_1[e_2] : t }
+
+        \inferrule[t-array-index-literal]
+        {
+        \Gamma \vdash e_1 : t_A \\
+        \Gamma \vdash e_2 : n \\
+        0 \le n < \len(t_A) \\
+        t = \elementtype(t_A)
+        }
+        { \Gamma \vdash e_1[e_2] : t }
+
 
     \end{mathpar}
 
