@@ -13,14 +13,18 @@
 \register{Array}
 \register{any}
 \register{this}
-\register{First}
+\register{Get}
+\aliasparam{i}
+\register{Length}
 
 \begin{align*}
-    D_0       & = \type~\any~\interface\br{}                                                   \\
-    D_1       & = \type~\Array[\NParam~\const, \TParam~\any]~[\NParam]\TParam                  \\
-    D_2       & = \func (\this~\Array[\NParam, \TParam])~\First()~\any~\br{ \return~\this[0] } \\
-    \ov{D}    & = (D_0, D_1, D_2)                                                              \\
-    e         & = \Array[2, \kw{int}]\br{1, 2}.\First()                                        \\
+    D_0       & = \type~\any~\interface\br{}                                                                       \\
+    D_1       & = \type~\Array[\NParam~\const, \TParam~\any]~[\NParam]\TParam                                      \\
+    D_2       & = \func (\this~\Array[\NParam, \TParam])~\Get(\iParam~\kw{int})~\any~\br{ \return~\this[\iParam] } \\
+    D_3       & = \func (\this~\Array[\NParam, \TParam])~\Length()~\kw{int}~\br{ \return~\NParam }                 \\
+    \ov{D}    & = (D_0, D_1, D_2, D_3)                                                                             \\
+    e_1       & = \Array[2, \kw{int}]\br{1, 2}.\Get(0)                                                             \\
+    e_2       & = \Array[2, \kw{int}]\br{1, 2}.\Length()                                                           \\
     \ov{\Phi} & = (\NParam~\const,\TParam~\any)
 \end{align*}
 
@@ -49,25 +53,6 @@
 \wss
 
 \begin{prooftree}
-    \infer0{
-        (\TParam: \any) \in \ov{\Phi}
-    }
-    \infer1{
-        \methods_{\ov{\Phi}}(\TParam) = \methods_{\ov{\Phi}}(\any)
-    }
-    \infer1{
-        \methods_{\ov{\Phi}}(\TParam) \supseteq \methods_{\ov{\Phi}}(\any)
-    }
-    \infer0{
-        \ov{\Phi} \vdash \TParam \notimp \const
-    }
-    \infer2[I]{
-        \ov{\Phi} \vdash \TParam \imp \any
-    }
-\end{prooftree}
-\wss
-
-\begin{prooftree}
     \hypo{
         \ov{\Phi} \ok
     }
@@ -77,14 +62,64 @@
     \infer1[Const-Param]{
         \ov{\Phi} \vdash \NParam \imp \const
     }
-    \hypo{
-        \ov{\Phi} \vdash \TParam \imp \any
+    \infer1{
+        \isconst_{\ov{\Phi}}(\NParam)
     }
-    \infer2[T-Array]{
+    \infer0{
+        (\TParam : \any) \in \ov{\Phi}
+    }
+    \infer1[T-Param]{
+        \ov{\Phi} \vdash \TParam \ok
+    }
+    \infer0{
+        \neg \isconst_{\ov{\Phi}}(\TParam)
+    }
+    \infer3[T-Array]{
         [\NParam]\TParam \imp \any
     }
     \infer2[T-Type]{
         D_1 \ok
+    }
+\end{prooftree}
+\wss
+
+
+\begin{prooftree}
+    \infer0{
+        \distinct(\this)
+    }
+\end{prooftree}
+\wss
+
+
+\begin{prooftree}
+    \infer0{
+        D_1 \in \ov{D}
+    }
+\end{prooftree}
+\wss
+
+
+\begin{prooftree}
+    \infer0{
+        \neg \isconst_{\ov{\Phi}}(\kw{int})
+    }
+\end{prooftree}
+\wss
+
+\begin{prooftree}
+    \infer0[T-Int-Type]{
+        \ov{\Phi} \vdash \kw{int} \ok
+    }
+\end{prooftree}
+\wss
+
+\begin{prooftree}
+    \infer0{
+        (\TParam : \any) \in \ov{\Phi}
+    }
+    \infer1[T-Param]{
+        \ov{\Phi} \vdash \TParam \ok
     }
 \end{prooftree}
 \wss
@@ -121,12 +156,19 @@
 
 \begin{prooftree}
     \infer0{
-        (\Array[\NParam, \TParam]) \in (\this: \Array[\NParam, \TParam])
+        (\this : \Array[\NParam, \TParam]) \in (\this: \Array[\NParam, \TParam])
     }
-    \infer1[T-Var + T-Int-Literal]{
+    \infer1[T-Var]{
         \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash
-        \this : \Array[\NParam, \TParam],
-        0 : \kw{int}
+        \this : \Array[\NParam, \TParam]
+    }
+\end{prooftree}
+\wss
+
+\begin{prooftree}
+    \infer0[T-Int-Literal]{
+        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash
+        0 : 0
     }
 \end{prooftree}
 \wss
@@ -149,32 +191,74 @@
 \wss
 
 \begin{prooftree}
-    \infer0{
-        \distinct(\this)
-    }
-    \infer0{
-        D_1 \in \ov{D}
-    }
-    \infer0{
-        (\TParam : \any) \in \ov{\Phi}
-    }
-    \infer1[T-Param]{
-        \ov{\Phi} \vdash \TParam \ok
-    }
-    \hypo{
-        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \this[0] : \TParam
-    }
     \infer0[Param]{
         \ov{\Phi} \vdash \TParam \imp \TParam
     }
-    \hypo{
-        \ov{\Phi} \vdash \TParam \imp \any
+\end{prooftree}
+\wss
+
+\begin{prooftree}
+    \infer0{
+        \neg \isconst_{\ov{\Phi}}(T)
     }
-    \infer6[T-Func]{
+\end{prooftree}
+\wss
+
+\begin{prooftree}
+    \hypo{
+        \begin{matrix}
+            \distinct(\this)                                                           \\
+            D_1 \in \ov{D}                                                             \\
+            \neg \isconst_{\ov{\Phi}}(\kw{int})                                        \\
+            \ov{\Phi} \vdash \kw{int} \ok                                              \\
+            \ov{\Phi} \vdash \TParam \ok                                               \\
+            \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \this[\iParam] : \TParam \\
+            \ov{\Phi} \vdash \TParam \imp \TParam                                      \\
+            \neg \isconst_{\ov{\Phi}}(T)
+        \end{matrix}
+    }
+    \infer1[T-Func]{
         D_2 \ok
     }
 \end{prooftree}
-\ws
+\wss
+
+\begin{prooftree}
+    \infer0{
+        (\NParam : \const) \in \ov{\Phi}
+    }
+    \infer1[Const-Param]{
+        \ov{\Phi} \vdash \NParam \imp \const
+    }
+    \infer1[T-Int]{
+        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \NParam : \NParam
+    }
+\end{prooftree}
+\wss
+
+\begin{prooftree}
+    \hypo{
+        \distinct(\this)                                                    }
+    \hypo{
+        D_1 \in \ov{D}                                                      }
+    \hypo{
+        \ov{\Phi} \vdash \kw{int} \ok                                       }
+    \hypo{
+        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \NParam : \NParam }
+    \infer0{
+        (\NParam : \const) \in \ov{\Phi}
+    }
+    \infer1[Int-Param]{
+        \ov{\Phi} \vdash \NParam \imp \kw{int}                               }
+    \infer0{
+        \neg \isconst_{\ov{\Phi}}(\kw{int})
+    }
+    \infer6[T-Func]{
+        D_3 \ok
+    }
+\end{prooftree}
+\wss
+
 \begin{prooftree}
     \hypo{
         \eta_1 = (\NParam \by 2,
@@ -188,27 +272,24 @@
         2 \ge 0
     }
     \infer0{
-        \methods_{\ov{\Phi}}(\kw{int}) \supseteq \methods_{\ov{\Phi}}(\any)
+        \methods_\emptyset(\kw{int}) \supseteq \methods_\emptyset(\any)
     }
-    \infer0{
-        \ov{\Phi} \vdash \kw{int} \notimp \const
-    }
-    \infer3[Const-N + I]{
-        \ov{\Phi} \vdash 2 \imp \const, \kw{int} \imp \any
+    \infer2[Const-N + I]{
+        \emptyset \vdash 2 \imp \const, \kw{int} \imp \any
     }
     \infer2{
-        \eta_1 = (\NParam~\const \by_{\ov{\Phi}} 2,
-        \TParam~\any \by_{\ov{\Phi}} \kw{int})
+        \eta_1 = (\NParam~\const \by_\emptyset 2,
+        \TParam~\any \by_\emptyset \kw{int})
     }
 \end{prooftree}
 \wss
 
 \begin{prooftree}
     \hypo{
-        (\First()~\kw{int}) \in \{(First()~\TParam)[\eta_1] \}
+        (\Get(\iParam~\kw{int})~\kw{int}) \in \{(\Get(\iParam~\kw{int})~\TParam)[\eta_1], (\Length()~\kw{int})[\eta_1] \}
     }
     \infer1{
-        (\First()~\kw{int}) \in \methods_{\ov{\Phi}}(\Array[2, \kw{int}])
+        (\Get(\iParam~\kw{int})~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
     }
 \end{prooftree}
 \wss
@@ -258,26 +339,33 @@
 \wss
 \begin{prooftree}
     \infer0[T-Int-Literal]{
-        \emptyset \vdash 1: \kw{int}, 2: \kw{int}
+        \emptyset \vdash 1: 1, 2: 2
     }
 \end{prooftree}
 \wss
 \begin{prooftree}
     \infer0[V]{
-        \emptyset \vdash \kw{int} \imp \kw{int}
+        \emptyset \vdash 1 \imp \kw{int}
+    }
+\end{prooftree}
+\wss
+\begin{prooftree}
+    \infer0[V]{
+        \emptyset \vdash 2 \imp \kw{int}
     }
 \end{prooftree}
 \wss
 \begin{prooftree}
     \hypo{
         \begin{matrix}
-            \emptyset \vdash \Array[2, \kw{int}] \ok  \\
-            \ov{\Phi} = \typeparams(\Array)           \\
+            \emptyset \vdash \Array[2, \kw{int}] \ok \\
+            \ov{\Phi} = \typeparams(\Array)          \\
             \eta_2 = (\NParam \by 2,
-            \TParam \by \kw{int})                     \\
-            \kw{int} = \elementtype(\Array)[\eta_2]   \\
-            \emptyset \vdash 1: \kw{int}, 2: \kw{int} \\
-            \emptyset \vdash \kw{int} \imp \kw{int}
+            \TParam \by \kw{int})                    \\
+            \kw{int} = \elementtype(\Array)[\eta_2]  \\
+            \emptyset \vdash 1: 1, 2: 2              \\
+            \emptyset \vdash 1 \imp \kw{int}         \\
+            \emptyset \vdash 2 \imp \kw{int}         \\
         \end{matrix}
     }
     \infer1[T-Array-Literal]{
@@ -287,20 +375,26 @@
 \wss
 \begin{prooftree}
     \hypo{
-        (\First() \kw{int}) \in \methods_{\ov{\Phi}}(\Array[2, \kw{int}])
+        (\Get(\iParam~\kw{int})~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
     }
     \hypo{
         \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
     }
-    \infer2[T-Call]{
-        \emptyset \vdash e : \kw{int}
+    \infer0[T-Int-Literal]{
+        \emptyset \vdash 0 : 0
+    }
+    \infer0[Int-N]{
+        \emptyset \vdash 0 \imp \kw{int}
+    }
+    \infer4[T-Call]{
+        \emptyset \vdash e_1 : \kw{int}
     }
 \end{prooftree}
 \wss
 
 \begin{prooftree}
     \infer0{
-        \distinct(\tdecls(\ov{D}))
+        \distinct(\tdecls(\ov{D}), \kw{int})
     }
     \infer0{
         \distinct(\mdecls(\ov{D}))
@@ -314,13 +408,68 @@
     \hypo{
         D_2 \ok
     }
-    \infer3{
+    \hypo{
+        D_3 \ok
+    }
+    \infer4{
         \ov{D \ok}
     }
     \hypo{
-        \emptyset \vdash e : \kw{int}
+        \emptyset \vdash e_1 : \kw{int}
     }
-    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \ok }
+    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_1} \ok }
+\end{prooftree}
+\wss
+
+\begin{prooftree}
+    \hypo{
+        (\Length()~\kw{int}) \in \{(\Get(\iParam~\kw{int})~\TParam)[\eta_1], (\Length()~\kw{int})[\eta_1] \}
+    }
+    \infer1{
+        (\Length()~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
+    }
+\end{prooftree}
+\wss
+
+\begin{prooftree}
+    \hypo{
+        (\Length()~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
+    }
+    \hypo{
+        \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
+    }
+    \infer2[T-Call]{
+        \emptyset \vdash e_2 : \kw{int}
+    }
+\end{prooftree}
+\wss
+
+\begin{prooftree}
+    \infer0{
+        \distinct(\tdecls(\ov{D}), \kw{int})
+    }
+    \infer0{
+        \distinct(\mdecls(\ov{D}))
+    }
+    \hypo{
+        D_0 \ok
+    }
+    \hypo{
+        D_1 \ok
+    }
+    \hypo{
+        D_2 \ok
+    }
+    \hypo{
+        D_3 \ok
+    }
+    \infer4{
+        \ov{D \ok}
+    }
+    \hypo{
+        \emptyset \vdash e_2 : \kw{int}
+    }
+    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_2} \ok }
 \end{prooftree}
 
 \end{document}

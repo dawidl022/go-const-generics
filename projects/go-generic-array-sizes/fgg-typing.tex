@@ -156,16 +156,22 @@
         {
         \distinct(x, \ov{x}) \\
         (\type~t_V[\ov{\Phi}]~T) \in \ov{D} \\
-        (\ov{\alpha~\gamma}) = \ov{\Phi}\\\\
-        { \ov{\Phi} \vdash \ov{\tau \imp \tau_I }} \\
+        (\ov{\alpha~\gamma}) = \ov{\Phi}\\
+        \ov{\neg \isconst_{\ov{\Phi}}(\tau)}\\
+        \ov{\Phi} \vdash \ov{\tau \ok} \\
         \ov{\Phi} \vdash \sigma \ok \\
         \ov{\Phi} \stoup
         x : t_V[\ov{\alpha}] \comma \ov{x : \tau} \vdash e : \tau \\
         \ov{\Phi} \vdash \tau \imp \sigma \\
-        \ov{\Phi} \vdash \sigma \imp \sigma_I
+        \neg \isconst_{\ov{\Phi}}(\sigma)
         }
         { \func~(x~t_V[\ov{\alpha}])~m(\ov{x~\tau})~\sigma~\br{\return~e} \ok }
+    \end{mathpar}
+\end{figure}
 
+\begin{figure}
+
+    \begin{mathpar}
         \inferrule[t-func-arrayset]
         {
         \sigma = \elementtype(t_A) \\
@@ -178,9 +184,6 @@
         \br{ x[x_1] = x_2;~\return~x }
         }
     \end{mathpar}
-\end{figure}
-
-\begin{figure}
 
     Expressions \hfill \fbox{$\Delta \stoup \Gamma \vdash e : \tau$}
     \begin{mathpar}
