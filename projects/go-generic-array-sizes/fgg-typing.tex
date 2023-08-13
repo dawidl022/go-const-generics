@@ -105,7 +105,6 @@
     Well-formed method specifications and type literals
     \hfill \fbox{$\ov{\Phi} \vdash S \ok$} \qquad \fbox{$\ov{\Phi} \vdash T \ok$}
     \begin{mathpar}
-        % TODO consider replacing \ov{\Phi} with \Delta
         \inferrule[t-specification]
         {
             \distinct(\ov{x}) \\
@@ -183,7 +182,7 @@
 
 \begin{figure}
 
-    Expressions \hfill \fbox{$\Delta \stoup \Gamma \vdash e : \tau<$}
+    Expressions \hfill \fbox{$\Delta \stoup \Gamma \vdash e : \tau$}
     \begin{mathpar}
         \inferrule[t-int-literal]
         {~}
