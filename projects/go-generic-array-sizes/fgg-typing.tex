@@ -276,7 +276,7 @@
         \gray{
             \inferrule[t-prog]
             {
-                \distinct(\tdecls(\ov{D})) \\
+                \distinct(\tdecls(\ov{D})\black{, \kw{int}}) \\
                 \distinct(\mdecls(\ov{D})) \\
                 \ov{D \ok} \\
                 \emptyset \stoup \emptyset \vdash e : \tau

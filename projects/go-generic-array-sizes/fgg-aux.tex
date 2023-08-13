@@ -43,6 +43,10 @@ implicitly coerce to type environments.
             \Delta \vdash (\ov{\alpha \imp \gamma})[\eta]
         }
         {(\ov{\Phi \by_\Delta \tau}) = \eta}
+
+        \inferrule
+        {\Delta \vdash \tau \imp \const}
+        {\isconst_\Delta(\tau)}
         \\
         \inferrule
         {~}
@@ -56,12 +60,59 @@ implicitly coerce to type environments.
         {~}
         {\methods(n) = \{\}}
 
+        \gray{
         \inferrule
-        {\Delta \vdash \tau \imp \const}
-        {\isconst_\Delta(\tau)}
+        {}
+        {
+        \methods_\Delta(\black{t_V[\ov{\tau}]}) =
+        \{(mM)[\eta]
+        \mid (\func~(x~\black{t_V[\ov{\Phi}]})~mM~\br{\return~e}) \in \ov{D}
+        \comma
+        \eta = (\black{\ov{\Phi \by_\Delta \tau}})\}
+        \\
+        \black{\cup~\{
+        m(x_1~\kw{int},~x_2~\tau[\eta]) \mid
+        (\func~(x~t_V[\ov{\Phi}]) ~m(x_1~\kw{int},~x_2~\tau[\eta]) ~t_V~
+        \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}
+        \comma
+        \eta = (\black{\ov{\Phi \by_\Delta \tau}})
+        \}}}
+        }
 
-        % TODO include reaming auxiliary functions - for some reason LaTeX
-        % doesn't compile when doing so, possibly due to no more space on page
+        \gray{
+            \inferrule
+            {\type~t_I\black{[\ov{\Phi}]}~\interface~\br{\ov{S}} \in \ov{D} \\
+                \eta = (\black{\ov{\Phi \by \tau}})}
+            {\methods_\Delta(t_I\black{[\ov{\tau}]}) = \ov{S}[\eta]}
+
+            \inferrule
+            {(\alpha : \black{\gamma}) \in \Delta}
+            {\methods_\Delta(\alpha) = \methods_\Delta(\black{\gamma})}
+        }
+
+        \gray{
+            \inferrule
+            {
+                (\type~t_S\black{[\ov{\Phi}]}~\struct~\br{\ov{f~\tau}}) \in \ov{D} \\
+                \eta = (\black{\ov{\Phi \by \sigma}})
+            }
+            {\fields(t_S\black{[\ov{\sigma}]}) = (\ov{f~\tau})[\eta]}
+
+            \inferrule
+            {\text{$mM_1, mM_2 \in \ov{S}$ implies $M_1 = M_2$}}
+            {\unique(\ov{S})}
+        }
+
+        \gray{
+        \inferrule
+        {}
+        {\tdecls(\ov{D}) = \lst{\black{t_D} \mid (\type~\black{t_D[\ov{\Phi}]}~T) \in \ov{D}}}
+
+        \inferrule
+        {}
+        {\mdecls(\ov{D}) = \lst{\black{t_V}.m \mid
+        (\func~(x~\black{t_V[\ov{\Phi}]})~mM~\br{\return~e}) \in \ov{D}}}
+        }
     \end{mathpar}
     \caption{FGG auxiliary functions for array typing}
 \end{figure}
