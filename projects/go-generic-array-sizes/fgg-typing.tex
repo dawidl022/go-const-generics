@@ -237,38 +237,6 @@
             }
             { \Delta \stoup \Gamma \vdash e.f_i : \tau_i }
         }
-        \\
-        \gray{
-            \inferrule[t-assert$_I$]
-            {
-                \Delta \vdash \tau_J \ok \gap
-                \Delta \stoup \Gamma \vdash e : \sigma_J
-            }
-            { \Delta \stoup \Gamma \vdash e.(\tau_J) : \tau_J }
-        }
-
-        \squeeze
-        \gray{
-            \inferrule[t-assert\black{$_V$}]
-            {
-                \Delta \vdash \tau_\black{V} \ok \gap
-                \Delta \stoup \Gamma \vdash e : \sigma_J \gap
-                \tau_\black{V} \imp \bounds_\Delta(\sigma_J)
-            }
-            { \Delta \stoup \Gamma \vdash e.(\tau_\black{V}) : \tau_\black{V} }
-        }
-        \squeeze
-
-        \gray{
-            \fbox{
-                \inferrule[t-stupid]
-                {
-                    \Delta \vdash \tau  \ok \gap
-                    \Delta \stoup \Gamma \vdash e : \sigma_\black{V}
-                }
-                { \Delta \stoup \Gamma \vdash e.(\tau) : \tau }
-            }
-        }
     \end{mathpar}
 
     Programs  \hfill \fbox{$P \ok$}
