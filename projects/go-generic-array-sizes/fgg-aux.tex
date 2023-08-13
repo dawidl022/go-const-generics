@@ -5,11 +5,24 @@
 
 \include{macros}
 
+$\Delta$ is defined as a typing environment mapping type parameters $\alpha$
+to their bounds $\gamma$. Type parameter constraint sequences $\ov{\Phi}$ may
+implicitly coerce to type environments.
+
 \begin{figure}
     \begin{mathpar}
         \inferrule
         {(\type~t_A[\ov{\Phi}]~ [\tau_n]\tau) \in \ov{D}}
         {\tau = \elementtype(t_A)}
+
+        \inferrule
+        {(\type~t_A[\ov{\Phi}]~ [n]\tau) \in \ov{D}}
+        {n = \len(t_A)}
+
+        \inferrule
+        {(\type~t_A[\ov{\Phi}]~ [\alpha]\tau) \in \ov{D}}
+        {0 = \len(t_A)}
+
 
         \inferrule
         {(\type~t[\ov{\Phi}]~T) \in \ov{D}}
@@ -29,6 +42,22 @@
             \Delta \vdash (\ov{\alpha \imp \gamma})[\eta]
         }
         {(\ov{\Phi \by_\Delta \tau}) = \eta}
+        \\
+        \inferrule
+        {~}
+        {\methods(\kw{int}) = \{\}}
+
+        \inferrule
+        {~}
+        {\methods(\const) = \{\}}
+
+        \inferrule
+        {~}
+        {\methods(n) = \{\}}
+
+        \inferrule
+        {\Delta \vdash \tau \imp \const}
+        {\isconst_\Delta(\tau)}
 
         % TODO include reaming auxiliary functions - for some reason LaTeX
         % doesn't compile when doing so, possibly due to no more space on page

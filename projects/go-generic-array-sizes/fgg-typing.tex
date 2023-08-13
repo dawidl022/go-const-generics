@@ -20,29 +20,41 @@
         { ~ }
         { \Delta \vdash \tau_V \imp \tau_V }
 
+        \inferrule[<:$_{int}$]
+        {~}
+        {\Delta \vdash \kw{int} <: \kw{int}}
+
+        \inferrule[<:$_{const}$]
+        {~}
+        {\Delta \vdash \const <: \const}
+
+        \inferrule[<:$_{n}$]
+        {~}
+        {\Delta \vdash n <: n}
+
         \gray{
             \inferrule[<:$_I$]
             {
                 \methods_\Delta(\tau) \supseteq \methods_\Delta(\tau_I) \\
-                \black{\Delta \vdash \tau~\notimp \const}
             }
             { \Delta \vdash \tau \imp \tau_I }
         }
         \\
+        \inferrule[<:int-n]
+        { ~ }
+        { \Delta \vdash n \imp \kw{int} }
+
         \inferrule[<:const-n]
         { n \ge 0 }
         { \Delta \vdash n \imp \const }
 
+        \inferrule[<:int-param]
+        { (\alpha : \const) \in \Delta }
+        { \Delta \vdash \alpha \imp \kw{int} }
+
         \inferrule[<:const-param]
         { (\alpha : \const) \in \Delta }
         { \Delta \vdash \alpha \imp \const }
-
-        % perhaps this should use gamma instead?
-        \inferrule[<:-formals]
-        {
-            \gray{\emptyset \vdash \ov{\tau_I \imp \sigma_I}}
-        }
-        {(\ov{\alpha~\tau_I}) \imp (\ov{\alpha~\sigma_I})}
     \end{mathpar}
 
     Well-formed type
@@ -93,19 +105,26 @@
     Well-formed method specifications and type literals
     \hfill \fbox{$\ov{\Phi} \vdash S \ok$} \qquad \fbox{$\ov{\Phi} \vdash T \ok$}
     \begin{mathpar}
+        % TODO consider replacing \ov{\Phi} with \Delta
         \inferrule[t-specification]
         {
-        \ov{\Phi \ok} \\
-        \distinct(\ov{x}) \\
-        { \ov{\Phi} \vdash \ov{\tau \imp \tau_I }} \\
-        { \ov{\Phi} \vdash \tau \imp \tau_I }
+            \distinct(\ov{x}) \\
+            \ov{\Phi} \vdash \ov{\tau \ok}\\
+            \ov{\Phi} \vdash \tau \ok\\
+            \ov{
+                \neg \isconst_{\ov{\Phi}}(\tau)
+            }\\
+            \neg \isconst_{\ov{\Phi}}(\tau)
         }
         { \ov{\Phi} \vdash m(\ov{x~\tau})~\tau \ok }
 
         \inferrule[t-struct]
         {
-        \distinct(\ov{f}) \\
-        { \ov{\Phi} \vdash \ov{\tau \imp \tau_I }}
+            \distinct(\ov{f}) \\
+            \ov{\Phi} \vdash \ov{\tau \ok}\\
+            \ov{
+                \neg \isconst_{\ov{\Phi}}(\tau)
+            }
         }
         { \ov{\Phi} \vdash \struct~\br{\ov{f~\tau}} \ok }
 
@@ -118,8 +137,9 @@
 
         \inferrule[t-array]
         {
-            \ov{\Phi} \vdash \tau_n \imp \const \\
-            \ov{\Phi} \vdash \tau \imp \tau_I
+            \isconst_{\ov{\Phi}}(\tau_n)\\
+            \ov{\Phi} \vdash \tau \ok\\
+            \neg \isconst_{\ov{\Phi}}(\tau)
         }
         {\ov{\Phi} \vdash [\tau_n]\tau \ok}
     \end{mathpar}
@@ -167,11 +187,11 @@
     \begin{mathpar}
         \inferrule[t-int-literal]
         {~}
-        { \Delta;\Gamma \vdash n : \kw{int} }
+        { \Delta;\Gamma \vdash n : n }
 
         \inferrule[t-int]
         { \Delta \vdash \alpha \imp \const}
-        { \Delta;\Gamma \vdash \alpha : \kw{int} }
+        { \Delta;\Gamma \vdash \alpha : \alpha }
 
         \gray{
             \inferrule[t-var]
@@ -210,7 +230,20 @@
         \tau_A = t_A[\ov{\tau}] \\
         \eta = (\ov{\Phi \by \tau})\\
         \tau = \elementtype(t_A)[\eta]\\
-        \Delta; \Gamma \vdash e_1 : \tau_A,~e_2 : \kw{int} \\
+        \Delta; \Gamma \vdash e_1 : \tau_A\\
+        \Delta; \Gamma \vdash ~e_2 : \kw{int} \\
+        }
+        { \Delta;\Gamma \vdash e_1[e_2] : \tau }
+
+        \inferrule[t-array-index-literal]
+        {
+        \ov{\Phi} = \typeparams(t_A)\\
+        \tau_A = t_A[\ov{\tau}] \\
+        \eta = (\ov{\Phi \by \tau})\\
+        \tau = \elementtype(t_A)[\eta]\\
+        \Delta; \Gamma \vdash e_1 : \tau_A\\
+        \Delta; \Gamma \vdash ~e_2 : n \\
+        0 \le n < \len(t_A)
         }
         { \Delta;\Gamma \vdash e_1[e_2] : \tau }
 
