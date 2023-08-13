@@ -339,7 +339,7 @@
 \wss
 \begin{prooftree}
     \infer0[T-Int-Literal]{
-        \emptyset \vdash 1: 1, 2: 2
+        \emptyset; \emptyset \vdash 1: 1, 2: 2
     }
 \end{prooftree}
 \wss
@@ -363,13 +363,13 @@
             \eta_2 = (\NParam \by 2,
             \TParam \by \kw{int})                    \\
             \kw{int} = \elementtype(\Array)[\eta_2]  \\
-            \emptyset \vdash 1: 1, 2: 2              \\
+            \emptyset; \emptyset \vdash 1: 1, 2: 2   \\
             \emptyset \vdash 1 \imp \kw{int}         \\
             \emptyset \vdash 2 \imp \kw{int}         \\
         \end{matrix}
     }
     \infer1[T-Array-Literal]{
-        \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
+        \emptyset; \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
     }
 \end{prooftree}
 \wss
@@ -378,16 +378,16 @@
         (\Get(\iParam~\kw{int})~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
     }
     \hypo{
-        \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
+        \emptyset; \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
     }
     \infer0[T-Int-Literal]{
-        \emptyset \vdash 0 : 0
+        \emptyset; \emptyset \vdash 0 : 0
     }
     \infer0[Int-N]{
         \emptyset \vdash 0 \imp \kw{int}
     }
     \infer4[T-Call]{
-        \emptyset \vdash e_1 : \kw{int}
+        \emptyset; \emptyset \vdash e_1 : \kw{int}
     }
 \end{prooftree}
 \wss
@@ -415,7 +415,7 @@
         \ov{D \ok}
     }
     \hypo{
-        \emptyset \vdash e_1 : \kw{int}
+        \emptyset; \emptyset \vdash e_1 : \kw{int}
     }
     \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_1} \ok }
 \end{prooftree}
@@ -436,10 +436,10 @@
         (\Length()~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
     }
     \hypo{
-        \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
+        \emptyset; \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
     }
     \infer2[T-Call]{
-        \emptyset \vdash e_2 : \kw{int}
+        \emptyset; \emptyset \vdash e_2 : \kw{int}
     }
 \end{prooftree}
 \wss
@@ -467,7 +467,7 @@
         \ov{D \ok}
     }
     \hypo{
-        \emptyset \vdash e_2 : \kw{int}
+        \emptyset; \emptyset \vdash e_2 : \kw{int}
     }
     \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_2} \ok }
 \end{prooftree}

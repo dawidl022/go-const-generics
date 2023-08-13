@@ -212,8 +212,6 @@
         }
         { \Delta \stoup \Gamma \vdash e.m(\ov{e}) : \sigma }
 
-        % TODO continue here
-
         \inferrule[t-array-literal]
         {
         \Delta \vdash \tau_A \ok \\
@@ -222,7 +220,7 @@
         \eta = (\ov{\Phi \by \sigma})\\
         \sigma = \elementtype(t_A)[\eta] \\
         \Delta ; \Gamma \vdash \ov{e : \tau} \\
-        \Delta ; \Gamma \vdash \ov{\tau <: \sigma}
+        \Delta \vdash \ov{\tau <: \sigma}
         }
         { \Delta;\Gamma \vdash \tau_A\br{\ov{e}} : \tau_A }
 
