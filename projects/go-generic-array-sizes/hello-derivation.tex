@@ -12,13 +12,17 @@
 \register{any}
 \register{this}
 \register{First}
+\register{Length}
 
 \begin{align*}
     D_0    & = \type~\any~\interface\br{}                                       \\
     D_1    & = \type~\AnyArrayTwo~[2]\any                                       \\
     D_2    & = \func (\this~\AnyArrayTwo)~\First()~\any~\br{ \return~\this[0] } \\
-    \ov{D} & = (D_0, D_1, D_2)                                                  \\
-    e      & = \AnyArrayTwo\br{1, 2}.\First()
+    D_3    & = \func (\this~\AnyArrayTwo)~\Length()~\kw{int}~\br{ \return~2 }   \\
+    \ov{D} & = (D_0, D_1, D_2, D_3)                                             \\
+    e_1    & = \AnyArrayTwo\br{1, 2}.\First()                                   \\
+    e_2    & = \AnyArrayTwo\br{1, 2}.\Length()                                  \\
+    AA2    & = \AnyArrayTwo
 \end{align*}
 
 \ws
@@ -53,19 +57,28 @@
 \wss
 \begin{prooftree}
     \infer0{
-        (\this : \AnyArrayTwo) \in (\this : \AnyArrayTwo)
+        (\this : AA2) \in (\this : AA2)
     }
-    \infer1[T-Var + T-Int-Literal]{
-        \this : \AnyArrayTwo \vdash \this : \AnyArrayTwo, 0 : \kw{int}
+    \infer1[T-Var]{
+        \this : AA2 \vdash \this : AA2
+    }
+    \infer0[T-Int-Literal]{
+        \this : AA2 \vdash  0 : 0
+    }
+    \infer0{
+        0 \le 0 < 2
+    }
+    \infer1{
+        0 \le 0 < \len(AA2)
     }
     \infer0{
         D_1 \in \ov{D}
     }
     \infer1{
-        \any = \elementtype(\AnyArrayTwo)
+        \any = \elementtype(AA2)
     }
-    \infer2[T-Array-Index]{
-        \this : \AnyArrayTwo \vdash \this[0] : \any
+    \infer4[T-Array-Index]{
+        \this : AA2 \vdash \this[0] : \any
     }
 \end{prooftree}
 \wss
@@ -107,13 +120,55 @@
 \wss
 \begin{prooftree}
     \infer0{
+        \distinct(\this)
+    }
+    \infer0{
+        D_1 \in \ov{D}
+    }
+    \infer1[T-Named]{
+        \AnyArrayTwo \ok
+    }
+    \infer0[T-Int-Type]{
+        \kw{int} \ok
+    }
+    \infer0[T-Int-Literal]{
+        \this : \AnyArrayTwo \vdash 2 : 2
+    }
+    \infer0[Int-N]{
+        2 \imp \kw{int}
+    }
+    \infer5[T-Func]{
+        D_3 \ok
+    }
+\end{prooftree}
+\wss
+\begin{prooftree}
+    \infer0{
+        \methods(1) \supseteq  \methods(\any)
+    }
+    \infer1[I]{
+        1 \imp \any
+    }
+\end{prooftree}
+\wss
+\begin{prooftree}
+    \infer0{
+        \methods(2) \supseteq  \methods(\any)
+    }
+    \infer1[I]{
+        2 \imp \any
+    }
+\end{prooftree}
+\wss
+\begin{prooftree}
+    \infer0{
         D_1 \in \ov{D}
     }
     \infer1[T-Named]{
         \AnyArrayTwo \ok
     }
     \infer0[T-Int-Literal]{
-        \emptyset \vdash 1: \kw{int}, 2: \kw{int}
+        \emptyset \vdash 1: 1, 2: 2
     }
     \infer0{
         D_1 \in \ov{D}
@@ -121,13 +176,13 @@
     \infer1{
         \any = \elementtype(\AnyArrayTwo)
     }
-    \infer0{
-        \methods(\kw{int}) \supseteq  \methods(\any)
+    \hypo{
+        1 \imp \any
     }
-    \infer1[I]{
-        \kw{int} \imp \any
+    \hypo{
+        2 \imp \any
     }
-    \infer4[T-Array-Literal]{
+    \infer5[T-Array-Literal]{
         \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
     }
 \end{prooftree}
@@ -137,15 +192,60 @@
         \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
     }
     \infer0{
-        \methods(\AnyArrayTwo) = \{ (\First()~\any) \}
+        \methods(\AnyArrayTwo) = \{ (\First()~\any), (\Length()~\kw{int}) \}
     }
     \infer1{
         (\First()~\any) \in \methods(\AnyArrayTwo)
     }
     \infer2[T-Call]{
-        \emptyset \vdash e : \any
+        \emptyset \vdash e_1 : \any
     }
 \end{prooftree}
+\wss
+\begin{prooftree}
+    \infer0{
+        \distinct(\tdecls(\ov{D}), \kw{int})
+    }
+    \infer0{
+        \distinct(\mdecls(\ov{D}))
+    }
+    \hypo{
+        D_0 \ok
+    }
+    \hypo{
+        D_1 \ok
+    }
+    \hypo{
+        D_2 \ok
+    }
+    \hypo{
+        D_3 \ok
+    }
+    \infer4{
+        \ov{D \ok}
+    }
+    \hypo{
+        \emptyset \vdash e_1 : \any
+    }
+    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_1} \ok }
+\end{prooftree}
+
+\wss
+\begin{prooftree}
+    \hypo{
+        \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
+    }
+    \infer0{
+        \methods(\AnyArrayTwo) = \{ (\First()~\any), (\Length()~\kw{int}) \}
+    }
+    \infer1{
+        (\Length()~\kw{int}) \in \methods(\AnyArrayTwo)
+    }
+    \infer2[T-Call]{
+        \emptyset \vdash e_2 : \kw{int}
+    }
+\end{prooftree}
+
 \wss
 \begin{prooftree}
     \infer0{
@@ -163,13 +263,16 @@
     \hypo{
         D_2 \ok
     }
-    \infer3{
+    \hypo{
+        D_3 \ok
+    }
+    \infer4{
         \ov{D \ok}
     }
     \hypo{
-        \emptyset \vdash e : \any
+        \emptyset \vdash e_2 : \kw{int}
     }
-    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \ok }
+    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_2} \ok }
 \end{prooftree}
 
 \end{document}
