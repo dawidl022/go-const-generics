@@ -156,19 +156,22 @@
 
 \begin{prooftree}
     \infer0{
-        (\this : \Array[\NParam, \TParam]) \in (\this: \Array[\NParam, \TParam])
+        (\this : \Array[\NParam, \TParam]) \in (\this: \Array[\NParam, \TParam], \iParam : \kw{int})
     }
     \infer1[T-Var]{
-        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash
+        \ov{\Phi}; \this: \Array[\NParam, \TParam], \iParam : \kw{int} \vdash
         \this : \Array[\NParam, \TParam]
     }
 \end{prooftree}
 \wss
 
 \begin{prooftree}
-    \infer0[T-Int-Literal]{
-        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash
-        0 : 0
+    \infer0{
+        (        \iParam : \kw{int}) \in (\this: \Array[\NParam, \TParam], \iParam : \kw{int})
+    }
+    \infer1[T-Var]{
+        \ov{\Phi}; \this: \Array[\NParam, \TParam], \iParam : \kw{int} \vdash
+        \iParam : \kw{int}
     }
 \end{prooftree}
 \wss
@@ -179,13 +182,14 @@
             \ov{\Phi} = \typeparams(\Array)                                 \\
             \eta_0 = (\NParam~\const \by \NParam, \TParam~\any \by \TParam) \\
             \TParam = \elementtype(\Array)[\eta_0]                          \\
-            \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash
-            \this : \Array[\NParam, \TParam],
-            0 : \kw{int}
+            \ov{\Phi}; \this: \Array[\NParam, \TParam], \iParam : \kw{int} \vdash
+            \this : \Array[\NParam, \TParam]                                \\
+            \ov{\Phi}; \this: \Array[\NParam, \TParam], \iParam : \kw{int} \vdash
+            \iParam : \kw{int}
         \end{matrix}
     }
     \infer1[T-Array-Index]{
-        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \this[0] : \TParam
+        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \this[\iParam] : \TParam
     }
 \end{prooftree}
 \wss
