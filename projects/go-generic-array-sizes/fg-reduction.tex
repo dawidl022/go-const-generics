@@ -12,7 +12,7 @@
         {
         (\type~t_A~ [n]t) \in \ov{D}
         }
-        { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \bounds(t_A)}
+        { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \indexbounds(t_A)}
 
         \inferrule
         {(\func~(x~t_A) ~m(x_1~\kw{int},~x_2~t) ~t_A~
@@ -44,8 +44,7 @@
                     \quad Structure              & \quad $t_S\br{\ov{v},E,\ov{e}}$   \\
                     \quad Select                 & \quad $E.f$                       \\
                     \quad \black{Index receiver} & \quad \black{$E[e]$}              \\
-                    \quad \black{Index argument} & \quad \black{$t_A\br{\ov{v}}[E]$} \\
-                    \quad Type assertion         & \quad $E.(t)$
+                    \quad \black{Index argument} & \quad \black{$t_A\br{\ov{v}}[E]$}
                 \end{tabular}
             \end{minipage}
         }
@@ -54,10 +53,11 @@
     Reduction \hfill \fbox{$d \becomes e$}
     \begin{mathpar}
 
+        % TODO add remaining reduction rules from FG paper source
+
         \inferrule[r-index]
-        % possible naming conflict with bounds helper used in Featherweight Go paper
         {
-            n \in \bounds(t_A)
+            n \in \indexbounds(t_A)
         }
         { t_A\br{\ov{v}}[n] \becomes v_n }
 
