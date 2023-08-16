@@ -66,17 +66,27 @@ implicitly coerce to type environments.
         {
         \methods_\Delta(\black{t_V[\ov{\tau}]}) =
         \{(mM)[\eta]
-        \mid (\func~(x~\black{t_V[\ov{\Phi}]})~mM~\br{\return~e}) \in \ov{D}
-        \comma
-        \eta = (\black{\ov{\Phi \by_\Delta \tau}})\}
+        \mid (\func~(x~\black{t_V[\ov{\alpha}]})~mM~\br{\return~e}) \in \ov{D}
+        \comma\\
+        \eta = \black{
+            (\ov{\Phi \by_\Delta \tau})
+            \comma
+            (\type~t_V[\ov{\Phi}]) \in \ov{D}
+        }
+        \}
         \\
         \black{\cup~\{
         m(x_1~\kw{int},~x_2~\tau[\eta]) \mid
-        (\func~(x~t_V[\ov{\Phi}]) ~m(x_1~\kw{int},~x_2~\tau[\eta]) ~t_V~
+        (\func~(x~t_V[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau[\eta]) ~t_V~
         \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}
         \comma
-        \eta = (\black{\ov{\Phi \by_\Delta \tau}})
-        \}}}
+        }
+        \\
+        \black{
+            \eta = (\black{\ov{\Phi \by_\Delta \tau}})
+            \comma
+            (\type~t_V[\ov{\Phi}]) \in \ov{D}
+            \}}}
         }
 
         \gray{
