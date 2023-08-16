@@ -21,8 +21,7 @@
     D_0       & = \type~\any~\interface\br{}                                                                       \\
     D_1       & = \type~\Array[\NParam~\const, \TParam~\any]~[\NParam]\TParam                                      \\
     D_2       & = \func (\this~\Array[\NParam, \TParam])~\Get(\iParam~\kw{int})~\any~\br{ \return~\this[\iParam] } \\
-    D_3       & = \func (\this~\Array[\NParam, \TParam])~\Length()~\kw{int}~\br{ \return~\NParam }                 \\
-    \ov{D}    & = (D_0, D_1, D_2, D_3)                                                                             \\
+    \ov{D}    & = (D_0, D_1, D_2)                                                                                  \\
     e_1       & = \Array[2, \kw{int}]\br{1, 2}.\Get(0)                                                             \\
     e_2       & = \Array[2, \kw{int}]\br{1, 2}.\Length()                                                           \\
     \ov{\Phi} & = (\NParam~\const,\TParam~\any)
@@ -228,42 +227,6 @@
 \wss
 
 \begin{prooftree}
-    \infer0{
-        (\NParam : \const) \in \ov{\Phi}
-    }
-    \infer1[Const-Param]{
-        \ov{\Phi} \vdash \NParam \imp \const
-    }
-    \infer1[T-Int]{
-        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \NParam : \NParam
-    }
-\end{prooftree}
-\wss
-
-\begin{prooftree}
-    \hypo{
-        \distinct(\this)                                                    }
-    \hypo{
-        D_1 \in \ov{D}                                                      }
-    \hypo{
-        \ov{\Phi} \vdash \kw{int} \ok                                       }
-    \hypo{
-        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \NParam : \NParam }
-    \infer0{
-        (\NParam : \const) \in \ov{\Phi}
-    }
-    \infer1[Int-Param]{
-        \ov{\Phi} \vdash \NParam \imp \kw{int}                               }
-    \infer0{
-        \neg \isconst_{\ov{\Phi}}(\kw{int})
-    }
-    \infer6[T-Func]{
-        D_3 \ok
-    }
-\end{prooftree}
-\wss
-
-\begin{prooftree}
     \hypo{
         \eta_1 = (\NParam \by 2,
         \TParam \by \kw{int})
@@ -376,6 +339,7 @@
         \emptyset; \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
     }
 \end{prooftree}
+
 \wss
 \begin{prooftree}
     \hypo{
@@ -424,56 +388,5 @@
     \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_1} \ok }
 \end{prooftree}
 \wss
-
-\begin{prooftree}
-    \hypo{
-        (\Length()~\kw{int}) \in \{(\Get(\iParam~\kw{int})~\TParam)[\eta_1], (\Length()~\kw{int})[\eta_1] \}
-    }
-    \infer1{
-        (\Length()~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
-    }
-\end{prooftree}
-\wss
-
-\begin{prooftree}
-    \hypo{
-        (\Length()~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
-    }
-    \hypo{
-        \emptyset; \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
-    }
-    \infer2[T-Call]{
-        \emptyset; \emptyset \vdash e_2 : \kw{int}
-    }
-\end{prooftree}
-\wss
-
-\begin{prooftree}
-    \infer0{
-        \distinct(\tdecls(\ov{D}), \kw{int})
-    }
-    \infer0{
-        \distinct(\mdecls(\ov{D}))
-    }
-    \hypo{
-        D_0 \ok
-    }
-    \hypo{
-        D_1 \ok
-    }
-    \hypo{
-        D_2 \ok
-    }
-    \hypo{
-        D_3 \ok
-    }
-    \infer4{
-        \ov{D \ok}
-    }
-    \hypo{
-        \emptyset; \emptyset \vdash e_2 : \kw{int}
-    }
-    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_2} \ok }
-\end{prooftree}
 
 \end{document}

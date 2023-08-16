@@ -48,10 +48,6 @@
         { n \ge 0 }
         { \Delta \vdash n \imp \const }
 
-        \inferrule[<:int-param]
-        { (\alpha : \const) \in \Delta }
-        { \Delta \vdash \alpha \imp \kw{int} }
-
         \inferrule[<:const-param]
         { (\alpha : \const) \in \Delta }
         { \Delta \vdash \alpha \imp \const }
@@ -190,10 +186,6 @@
         \inferrule[t-int-literal]
         {~}
         { \Delta;\Gamma \vdash n : n }
-
-        \inferrule[t-int]
-        { \Delta \vdash \alpha \imp \const}
-        { \Delta;\Gamma \vdash \alpha : \alpha }
 
         \gray{
             \inferrule[t-var]
