@@ -1,0 +1,94 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{ebproof}
+\usepackage[left=0.5cm, right=0.5cm]{geometry}
+
+\begin{document}
+
+\include{macros}
+
+\alias{AnyArrayTwo}{AnyArray2}
+\register{any}
+\register{this}
+\register{First}
+\register{Set}
+\aliasparam{i}
+\aliasparam{v}
+
+\begin{align*}
+    D_0    & = \type~\any~\interface\br{}                                       \\
+    D_1    & = \type~\AnyArrayTwo~[2]\any                                       \\
+    D_2    & = \func (\this~\AnyArrayTwo)~\First()~\any~\br{ \return~\this[0] } \\
+    D_3    & = \func (\this~\AnyArrayTwo)~\Set(
+    \iParam~\kw{int}, \vParam~\any
+    )~\AnyArrayTwo~\br{
+        \this[\iParam] = \vParam;~\return~\this
+    }                                                                           \\
+    \ov{D} & = (D_0, D_1, D_2, D_3)
+\end{align*}
+
+\begin{prooftree}
+    \infer0{
+        D_1 \in \ov{D}
+    }
+    \infer1{
+        \{0, 1\} = \indexbounds(\AnyArrayTwo)
+    }
+    \infer1{
+        0 \in \indexbounds(\AnyArrayTwo)
+    }
+    \infer0{
+        D_3 \in \ov{D}
+    }
+    \infer1{
+        \isarraysetmethod(\AnyArrayTwo.\Set)
+    }
+    \infer2[R-Array-Set]{
+        \AnyArrayTwo\br{1, 2}.\Set(0, 3)
+        \to
+        \AnyArrayTwo\br{3, 2}
+    }
+    \infer1[R-Context]{
+        \AnyArrayTwo\br{1, 2}.\Set(0, 3).\First()
+        \to
+        \AnyArrayTwo\br{3, 2}.\First()
+    }
+\end{prooftree}
+
+\wss
+
+\begin{prooftree}
+    \infer0{
+        D_2 \in \ov{D}
+    }
+    \infer1{
+        (\this: \AnyArrayTwo).\this[0] = \mbody(\AnyArrayTwo.\First)
+    }
+    \infer1[R-Call]{
+        \AnyArrayTwo\br{3, 2}.\First()
+        \to
+        \AnyArrayTwo\br{3, 2}[0]
+    }
+\end{prooftree}
+
+\wss
+
+\begin{prooftree}
+    \infer0{
+        D_1 \in \ov{D}
+    }
+    \infer1{
+        \{0, 1\} = \indexbounds(\AnyArrayTwo)
+    }
+    \infer1{
+        0 \in \indexbounds(\AnyArrayTwo)
+    }
+    \infer1[R-Index]{
+        \AnyArrayTwo\br{3, 2}[0]
+        \to
+        3
+    }
+\end{prooftree}
+
+\end{document}
