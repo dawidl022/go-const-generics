@@ -10,20 +10,34 @@
     \begin{mathpar}
         \inferrule
         {
-        (\type~t_A~ [n]t) \in \ov{D}
+        (\type~t_A[\ov{\Phi}]~ [n]\tau) \in \ov{D}\\
+        \tau_A = t_A[\ov{\tau}]
         }
-        { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \indexbounds(t_A)}
+        { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \indexbounds(\tau_A)}
+
+        \inferrule
+        {
+        (\type~t_A[\alpha~\const, \ov{\Phi}]~ [\alpha]\tau) \in \ov{D}\\
+        \tau_A = t_A[n, \ov{\tau}]
+        }
+        { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \indexbounds(\tau_A)}
 
         \gray{
-            \inferrule
-            {(\func~(x~\black{t_V})~m(\ov{x~t})~t~\br{\return~e}) \in \ov{D}}
-            {\mbody(\black{t_V}.m) = (x:\black{t_V},\ov{x:t}).e}
+        \inferrule
+        {
+        (\func~(x~\black{t_V[\ov{\alpha}]})~m(\ov{x~\tau})~\tau~\br{\return~e}) \in \ov{D} \\
+        \theta = (\ov{\Phi \by \sigma})
+        }
+        {\mbody(t_V[\ov{\sigma}].m) = (x:t_V[\ov{\sigma}],\ov{x:\tau}).e[\theta]}
         }
 
         \inferrule
-        {(\func~(x~t_A) ~m(x_1~\kw{int},~x_2~t) ~t_A~
-            \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}}
-        {\isarraysetmethod(t_A.m)}
+        {
+        (\func~(x~t_A[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau) ~t_A[\ov{\alpha}]~
+        \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}\\
+        \tau_A = t_A[\ov{\tau}]
+        }
+        {\isarraysetmethod(\tau_A.m)}
     \end{mathpar}
     \caption{FG auxiliary functions for array reduction}
 \end{figure}
@@ -46,11 +60,11 @@
             \end{minipage}
             \begin{minipage}{0.4\textwidth}
                 \begin{tabular}{ll}
-                    ~                                                                      \\
-                    \quad Value literal          & \quad $\black{t_V}\br{\ov{v},E,\ov{e}}$ \\
-                    \quad Select                 & \quad $E.f$                             \\
-                    \quad \black{Index receiver} & \quad \black{$E[e]$}                    \\
-                    \quad \black{Index argument} & \quad \black{$t_A\br{\ov{v}}[E]$}
+                    ~                                                                         \\
+                    \quad Value literal          & \quad $\black{\tau_V}\br{\ov{v},E,\ov{e}}$ \\
+                    \quad Select                 & \quad $E.f$                                \\
+                    \quad \black{Index receiver} & \quad \black{$E[e]$}                       \\
+                    \quad \black{Index argument} & \quad \black{$\tau_A\br{\ov{v}}[E]$}
                 \end{tabular}
             \end{minipage}
         }
@@ -61,15 +75,15 @@
 
         \gray{
             \inferrule[r-field]
-            { (\ov{f~t}) = \fields(t_S) }
-            { t_S\br{\ov{v}}.f_i \becomes v_i }
+            { (\ov{f~t}) = \fields(\tau_S) }
+            { \tau_S\br{\ov{v}}.f_i \becomes v_i }
         }
 
         \inferrule[r-index]
         {
-            n \in \indexbounds(t_A)
+            n \in \indexbounds(\tau_A)
         }
-        { t_A\br{\ov{v}}[n] \becomes v_n }
+        { \tau_A\br{\ov{v}}[n] \becomes v_n }
 
         \gray{
             \inferrule[r-call]
@@ -81,10 +95,10 @@
         % no, because isarraysetmethod(t_A.m) and body(t_A.m) are mutually exclusive
         \inferrule[r-array-set]
         {
-            n \in \indexbounds(t_A) \\
-            \isarraysetmethod(t_A.m) \\
+            n \in \indexbounds(\tau_A) \\
+            \isarraysetmethod(\tau_A.m) \\
         }
-        { t_A\br{\ov{v}}.m(n, v) \becomes t_A\br{\ov{v}}[n := v]}
+        { \tau_A\br{\ov{v}}.m(n, v) \becomes \tau_A\br{\ov{v}}[n := v]}
 
         \gray{
             \inferrule[r-context]
@@ -93,7 +107,7 @@
         }
 
     \end{mathpar}
-    \caption{FG reduction for arrays}
+    \caption{FGG reduction for arrays}
 \end{figure}
 
 \end{document}
