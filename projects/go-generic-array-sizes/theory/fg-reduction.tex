@@ -14,6 +14,12 @@
         }
         { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \indexbounds(t_A)}
 
+        \gray{
+            \inferrule
+            {(\func~(x~\black{t_V})~m(\ov{x~t})~t~\br{\return~e}) \in \ov{D}}
+            {\mbody(\black{t_V}.m) = (x:\black{t_V},\ov{x:t}).e}
+        }
+
         \inferrule
         {(\func~(x~t_A) ~m(x_1~\kw{int},~x_2~t) ~t_A~
             \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}}
@@ -53,13 +59,23 @@
     Reduction \hfill \fbox{$d \becomes e$}
     \begin{mathpar}
 
-        % TODO add remaining reduction rules from FG paper source
+        \gray{
+            \inferrule[r-field]
+            { (\ov{f~t}) = \fields(t_S) }
+            { t_S\br{\ov{v}}.f_i \becomes v_i }
+        }
 
         \inferrule[r-index]
         {
             n \in \indexbounds(t_A)
         }
         { t_A\br{\ov{v}}[n] \becomes v_n }
+
+        \gray{
+            \inferrule[r-call]
+            { (x : \black{t_V},\ov{x: t}).e = \mbody(\vtype(v).m) }
+            { v.m(\ov{v}) \becomes e[x \by v, \ov{x \by v}] }
+        }
 
         % potential ambiguity with regular r-call?
         % no, because isarraysetmethod(t_A.m) and body(t_A.m) are mutually exclusive
@@ -69,6 +85,12 @@
             \isarraysetmethod(t_A.m) \\
         }
         { t_A\br{\ov{v}}.m(n, v) \becomes t_A\br{\ov{v}}[n := v]}
+
+        \gray{
+            \inferrule[r-context]
+            { d \becomes e }
+            { E[d] \becomes E[e] }
+        }
 
     \end{mathpar}
     \caption{FG reduction for arrays}
