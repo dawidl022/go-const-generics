@@ -143,11 +143,11 @@ func (a *AntlrASTBuilder) VisitIntegerLiteral(ctx *parser.IntegerLiteralContext)
 }
 
 func (a *AntlrASTBuilder) VisitDecimalLiteral(ctx *parser.DecimalLiteralContext) interface{} {
-	val, err := strconv.Atoi(ctx.GetText())
+	val, err := strconv.ParseInt(ctx.GetText(), 0, 64)
 	if err != nil {
 		panic(err)
 	}
-	return ast.IntegerLiteral{Value: val}
+	return ast.IntegerLiteral{Value: int(val)}
 }
 
 func (a *AntlrASTBuilder) VisitMethodReceiver(ctx *parser.MethodReceiverContext) interface{} {

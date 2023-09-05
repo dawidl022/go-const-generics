@@ -32,7 +32,7 @@ methodParameter: variable typeName;
 
 arrayLiteral: '[' integerLiteral ']' typeName;
 integerLiteral: decimalLiteral;
-decimalLiteral: ZERO | POS_DECIMAL_DIGIT ('_'? (ZERO | POS_DECIMAL_DIGIT))*;
+decimalLiteral: DEC_DIGITS;
 
 expression:
 	integerLiteral										# intLiteral
@@ -49,6 +49,9 @@ typeName: ID;
 methodName: ID;
 fieldName: ID;
 
+DEC_DIGITS:
+	ZERO
+	| POS_DECIMAL_DIGIT ('_'? (ZERO | POS_DECIMAL_DIGIT))*;
 ZERO: '0';
 POS_DECIMAL_DIGIT: [1-9];
 
