@@ -21,7 +21,7 @@ func (_1 AnyArray2) Nth(_n int) any {
 	return _1[_n]
 }
 
-func (this AnyArray2) foo(foo Foo) any {
+func (this AnyArray2) foo(foo Foo) string {
 	return foo.y
 }
 

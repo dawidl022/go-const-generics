@@ -14,7 +14,7 @@ typeDeclaration: 'type' typeName typeLiteral;
 methodDeclaration:
 	'func' methodReceiver methodSpecification '{' 'return' expression '}';
 arraySetMethodDeclaration:
-	'func' methodReceiver methodName '(' variable typeName ',' variable typeName ')' typeName '{'
+	'func' methodReceiver methodName '(' methodParameter ',' methodParameter ')' typeName '{'
 		variable '[' variable ']' '=' variable ';' 'return' variable '}';
 
 typeLiteral: structLiteral | interfaceLiteral | arrayLiteral;
@@ -23,15 +23,16 @@ structLiteral: 'struct' '{' field* '}';
 field: fieldName typeName;
 
 interfaceLiteral: 'interface' '{' methodSpecification* '}';
-methodSpecification: methodName methodSigniture;
-methodSigniture: '(' methodParams ')' typeName;
-methodParams: (variable typeName)? (',' variable typeName)*;
+
+methodReceiver: '(' methodParameter ')';
+methodSpecification: methodName methodSignature;
+methodSignature: '(' methodParams ')' typeName;
+methodParams: methodParameter? (',' methodParameter)*;
+methodParameter: variable typeName;
 
 arrayLiteral: '[' integerLiteral ']' typeName;
 integerLiteral: decimalLiteral;
-decimalLiteral: ZERO | POS_DECIMAL_DIGIT ('_'? ZERO | POS_DECIMAL_DIGIT)*;
-
-methodReceiver: '(' variable typeName ')';
+decimalLiteral: ZERO | POS_DECIMAL_DIGIT ('_'? (ZERO | POS_DECIMAL_DIGIT))*;
 
 expression:
 	integerLiteral										# intLiteral
