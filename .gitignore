@@ -6,3 +6,8 @@
 *.pdf
 *.out
 *.synctex.gz
+
+# ANTLR generated files:
+.antlr
+parser
+*.jar
