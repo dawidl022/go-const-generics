@@ -29,9 +29,9 @@ func fields(declarations []ast.Declaration, structTypeName string) ([]ast.Field,
 		typeDecl, isTypeDecl := decl.(ast.TypeDeclaration)
 
 		if isTypeDecl {
-			structTypeDecl, isStructTypeDecl := typeDecl.TypeLiteral.(ast.StructTypeLiteral)
-			if isStructTypeDecl && typeDecl.TypeName == structTypeName {
-				return structTypeDecl.Fields, nil
+			structTypeLit, isStructTypeLit := typeDecl.TypeLiteral.(ast.StructTypeLiteral)
+			if isStructTypeLit && typeDecl.TypeName == structTypeName {
+				return structTypeLit.Fields, nil
 			}
 		}
 	}

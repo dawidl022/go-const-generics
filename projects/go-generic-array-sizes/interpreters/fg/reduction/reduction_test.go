@@ -23,3 +23,8 @@ func parseFGProgram(code []byte) ast.Program {
 	astBuilder := parsetree.NewAntlrASTBuilder(tree)
 	return astBuilder.BuildAST()
 }
+
+func parseAndReduceOneStep(program []byte) (ast.Value, error) {
+	p := parseFGProgram(program)
+	return ReduceOneStep(p)
+}

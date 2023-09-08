@@ -5,5 +5,12 @@ import (
 )
 
 func ReduceOneStep(program ast.Program) (ast.Value, error) {
-	return reduceField(program.Declarations, program.Expression.(ast.Select))
+	expression := program.Expression
+	switch expression.(type) {
+	case ast.Select:
+		return reduceField(program.Declarations, expression.(ast.Select))
+	case ast.ArrayIndex:
+		return reduceIndex(program.Declarations, expression.(ast.ArrayIndex))
+	}
+	panic("unsupported expression type")
 }
