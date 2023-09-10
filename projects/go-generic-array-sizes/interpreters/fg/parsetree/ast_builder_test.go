@@ -169,8 +169,8 @@ func TestAntlrAstBuilder_givenHelloGoProgram_buildsAst(t *testing.T) {
 			},
 		},
 		Expression: ast.MethodCall{
-			Expression: ast.MethodCall{
-				Expression: ast.ValueLiteral{
+			Receiver: ast.MethodCall{
+				Receiver: ast.ValueLiteral{
 					TypeName: "AnyArray2",
 					Values: []ast.Expression{
 						ast.IntegerLiteral{IntValue: 1},

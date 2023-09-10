@@ -35,18 +35,7 @@ func (v Variable) Value() Value {
 }
 
 func (v Variable) String() string {
-	// TODO implement me
-	panic("implement me")
-}
-
-func (m MethodCall) Reduce(declarations []Declaration) (Expression, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (m MethodCall) Value() Value {
-	//TODO implement me
-	panic("implement me")
+	return v.Id
 }
 
 func (m MethodCall) String() string {

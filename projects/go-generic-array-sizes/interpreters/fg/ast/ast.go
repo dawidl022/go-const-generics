@@ -80,7 +80,7 @@ type Variable struct {
 }
 
 type MethodCall struct {
-	Expression Expression
+	Receiver   Expression
 	MethodName string
 	Arguments  []Expression
 }

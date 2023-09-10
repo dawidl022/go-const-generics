@@ -194,7 +194,7 @@ func (a *AntlrASTBuilder) VisitMethodCall(ctx *parser.MethodCallContext) interfa
 	methodCall := ast.MethodCall{
 		MethodName: a.Visit(ctx.MethodName()).(string),
 	}
-	methodCall.Expression = a.Visit(ctx.Expression()).(ast.Expression)
+	methodCall.Receiver = a.Visit(ctx.Expression()).(ast.Expression)
 	methodCall.Arguments = a.Visit(ctx.ExpressionList()).([]ast.Expression)
 
 	return methodCall
