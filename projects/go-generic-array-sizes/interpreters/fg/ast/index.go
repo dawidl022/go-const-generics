@@ -1,15 +1,15 @@
-package reduction
+package ast
 
-import (
-	"fmt"
+import "fmt"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
-)
-
-func reduceIndex(declarations []ast.Declaration, idx ast.ArrayIndex) (ast.Value, error) {
-	receiver := idx.Receiver.(ast.ValueLiteral)
+func (a ArrayIndex) Reduce(declarations []Declaration) (Expression, error) {
+	//isValue, value := a.Receiver.(ValueLiteral)
+	//if !isValue {
+	//	return ast.ArrayIndex{Index: idx.Index, Receiver: ReduceOneStep(idx.Receiver)}
+	//}
+	receiver := a.Receiver.Value().(ValueLiteral)
 	arrTypeName := receiver.TypeName
-	i := idx.Index.(ast.IntegerLiteral).Value
+	i := a.Index.Value().(IntegerLiteral).IntValue
 
 	withinBounds, err := inIndexBounds(declarations, arrTypeName, i)
 	if err != nil {
@@ -21,22 +21,26 @@ func reduceIndex(declarations []ast.Declaration, idx ast.ArrayIndex) (ast.Value,
 	if len(receiver.Values) <= i {
 		return nil, fmt.Errorf("array literal missing value at index %d", i)
 	}
-	return receiver.Values[i].(ast.Value), nil
+	return receiver.Values[i], nil
 }
 
-func inIndexBounds(declarations []ast.Declaration, arrayTypeName string, n int) (bool, error) {
+func inIndexBounds(declarations []Declaration, arrayTypeName string, n int) (bool, error) {
 	if n < 0 {
 		return false, nil
 	}
 	for _, decl := range declarations {
-		typeDecl, isTypeDecl := decl.(ast.TypeDeclaration)
+		typeDecl, isTypeDecl := decl.(TypeDeclaration)
 
 		if isTypeDecl {
-			arrayTypeLit, isArrayTypeLit := typeDecl.TypeLiteral.(ast.ArrayTypeLiteral)
+			arrayTypeLit, isArrayTypeLit := typeDecl.TypeLiteral.(ArrayTypeLiteral)
 			if isArrayTypeLit && typeDecl.TypeName == arrayTypeName {
 				return n < arrayTypeLit.Length, nil
 			}
 		}
 	}
 	return false, fmt.Errorf("no array type named %q found in declarations", arrayTypeName)
+}
+
+func (a ArrayIndex) Value() Value {
+	return nil
 }

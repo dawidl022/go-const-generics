@@ -69,12 +69,8 @@ type ArraySetMethodDeclaration struct {
 	ReturnVariable        string
 }
 
-type Expression interface {
-	expressionNode()
-}
-
 type IntegerLiteral struct {
-	Value int
+	IntValue int
 }
 
 type Variable struct {

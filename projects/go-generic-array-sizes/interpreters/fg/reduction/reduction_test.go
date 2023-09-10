@@ -24,7 +24,7 @@ func parseFGProgram(code []byte) ast.Program {
 	return astBuilder.BuildAST()
 }
 
-func parseAndReduceOneStep(program []byte) (ast.Value, error) {
+func parseAndReduceOneStep(program []byte) (ast.Program, error) {
 	p := parseFGProgram(program)
-	return ReduceOneStep(p)
+	return p.Reduce()
 }

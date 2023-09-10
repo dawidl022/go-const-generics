@@ -133,7 +133,7 @@ func (a *AntlrASTBuilder) VisitMethodParams(ctx *parser.MethodParamsContext) int
 
 func (a *AntlrASTBuilder) VisitArrayLiteral(ctx *parser.ArrayLiteralContext) interface{} {
 	arrayLit := ast.ArrayTypeLiteral{}
-	arrayLit.Length = a.Visit(ctx.IntegerLiteral()).(ast.IntegerLiteral).Value
+	arrayLit.Length = a.Visit(ctx.IntegerLiteral()).(ast.IntegerLiteral).IntValue
 	arrayLit.ElementTypeName = a.Visit(ctx.TypeName()).(string)
 	return arrayLit
 }
@@ -147,7 +147,7 @@ func (a *AntlrASTBuilder) VisitDecimalLiteral(ctx *parser.DecimalLiteralContext)
 	if err != nil {
 		panic(err)
 	}
-	return ast.IntegerLiteral{Value: int(val)}
+	return ast.IntegerLiteral{IntValue: int(val)}
 }
 
 func (a *AntlrASTBuilder) VisitMethodReceiver(ctx *parser.MethodReceiverContext) interface{} {

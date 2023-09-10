@@ -11,20 +11,20 @@ import (
 var indexBasicGo []byte
 
 func TestReduceIndex_givenBasicValidExpression_returnsValueAtIndex(t *testing.T) {
-	val, err := parseAndReduceOneStep(indexBasicGo)
+	p, err := parseAndReduceOneStep(indexBasicGo)
 
 	require.NoError(t, err)
-	require.Equal(t, "1", val.String())
+	require.Equal(t, "1", p.Expression.Value().String())
 }
 
 //go:embed testdata/index/multiple_indices/multiple_indices.go
 var indexMultipleIndicesGo []byte
 
 func TestReduceIndex_givenBasicValidExpressionWithMultipleIndices_returnsValueAtIndex(t *testing.T) {
-	val, err := parseAndReduceOneStep(indexMultipleIndicesGo)
+	p, err := parseAndReduceOneStep(indexMultipleIndicesGo)
 
 	require.NoError(t, err)
-	require.Equal(t, "2", val.String())
+	require.Equal(t, "2", p.Expression.Value().String())
 }
 
 //go:embed testdata/index/incomplete_literal/incomplete_literal.go
@@ -62,18 +62,18 @@ func TestReduceIndex_givenIndexOnStruct_returnsError(t *testing.T) {
 var indexArrayValueGo []byte
 
 func TestReduceIndex_givenValidExpressionWithArrayElement_returnsArrayValue(t *testing.T) {
-	val, err := parseAndReduceOneStep(indexArrayValueGo)
+	p, err := parseAndReduceOneStep(indexArrayValueGo)
 
 	require.NoError(t, err)
-	require.Equal(t, "Arr{3, 4}", val.String())
+	require.Equal(t, "Arr{3, 4}", p.Expression.Value().String())
 }
 
 //go:embed testdata/index/struct_value/struct_value.go
 var indexStructValueGo []byte
 
 func TestReduceIndex_givenValidExpressionWithStructElement_returnsStructValue(t *testing.T) {
-	val, err := parseAndReduceOneStep(indexStructValueGo)
+	p, err := parseAndReduceOneStep(indexStructValueGo)
 
 	require.NoError(t, err)
-	require.Equal(t, "Structure{3, 4}", val.String())
+	require.Equal(t, "Structure{3, 4}", p.Expression.Value().String())
 }

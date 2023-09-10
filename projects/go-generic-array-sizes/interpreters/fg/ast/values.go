@@ -11,7 +11,7 @@ type Value interface {
 }
 
 func (i IntegerLiteral) String() string {
-	return strconv.Itoa(i.Value)
+	return strconv.Itoa(i.IntValue)
 }
 
 func (i IntegerLiteral) val() {

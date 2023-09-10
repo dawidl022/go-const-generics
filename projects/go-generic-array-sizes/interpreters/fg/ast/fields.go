@@ -1,35 +1,38 @@
-package reduction
+package ast
 
 import (
 	"fmt"
-
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
 )
 
-func reduceField(declarations []ast.Declaration, s ast.Select) (ast.Value, error) {
-	structTypeName := s.Expression.(ast.ValueLiteral).TypeName
+func (s Select) Reduce(declarations []Declaration) (Expression, error) {
+	structTypeName := s.Expression.Value().(ValueLiteral).TypeName
 	structFields, err := fields(declarations, structTypeName)
 	if err != nil {
 		return nil, err
 	}
 	for i, field := range structFields {
 		if field.Name == s.FieldName {
-			values := s.Expression.(ast.ValueLiteral).Values
+			values := s.Expression.Value().(ValueLiteral).Values
 			if len(values) <= i {
 				return nil, fmt.Errorf("struct literal missing value at index %d", i)
 			}
-			return values[i].(ast.Value), nil
+			return values[i], nil
 		}
 	}
 	return nil, fmt.Errorf("no field named %q found on struct of type %q", s.FieldName, structTypeName)
 }
 
-func fields(declarations []ast.Declaration, structTypeName string) ([]ast.Field, error) {
+func (s Select) Value() Value {
+	//TODO implement me
+	panic("implement me")
+}
+
+func fields(declarations []Declaration, structTypeName string) ([]Field, error) {
 	for _, decl := range declarations {
-		typeDecl, isTypeDecl := decl.(ast.TypeDeclaration)
+		typeDecl, isTypeDecl := decl.(TypeDeclaration)
 
 		if isTypeDecl {
-			structTypeLit, isStructTypeLit := typeDecl.TypeLiteral.(ast.StructTypeLiteral)
+			structTypeLit, isStructTypeLit := typeDecl.TypeLiteral.(StructTypeLiteral)
 			if isStructTypeLit && typeDecl.TypeName == structTypeName {
 				return structTypeLit.Fields, nil
 			}

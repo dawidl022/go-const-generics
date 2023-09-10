@@ -5,48 +5,50 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
 )
 
 //go:embed testdata/field/basic/basic.go
 var fieldBasicGo []byte
 
 func TestReduceField_givenBasicValidExpression_returnsValueOfField(t *testing.T) {
-	p := parseFGProgram(fieldBasicGo)
-
-	val, err := ReduceOneStep(p)
+	p, err := parseAndReduceOneStep(fieldBasicGo)
 
 	require.NoError(t, err)
-	require.Equal(t, "1", val.String())
+	require.Equal(t, "1", p.Expression.Value().String())
+	require.Equal(t, ast.IntegerLiteral{IntValue: 1}, p.Expression.Value())
 }
 
 //go:embed testdata/field/multiple_fields/multiple_fields.go
 var fieldMultipleFieldsGo []byte
 
 func TestReduceField_givenValidExpressionWithMultipleFields_returnsValueOfCorrectField(t *testing.T) {
-	val, err := parseAndReduceOneStep(fieldMultipleFieldsGo)
+	p, err := parseAndReduceOneStep(fieldMultipleFieldsGo)
 
 	require.NoError(t, err)
-	require.Equal(t, "2", val.String())
+	// TODO compare against actual ast struct, rather than the string
+	require.Equal(t, "2", p.Expression.Value().String())
 }
 
 //go:embed testdata/field/array_value/array_value.go
 var fieldArrayValueGo []byte
 
 func TestReduceField_givenValidExpressionWithArrayField_returnsArrayValue(t *testing.T) {
-	val, err := parseAndReduceOneStep(fieldArrayValueGo)
+	p, err := parseAndReduceOneStep(fieldArrayValueGo)
 
 	require.NoError(t, err)
-	require.Equal(t, "Arr{1, 2}", val.String())
+	require.Equal(t, "Arr{1, 2}", p.Expression.Value().String())
 }
 
 //go:embed testdata/field/struct_value/struct_value.go
 var fieldStructValueGo []byte
 
 func TestReduceField_givenValidExpressionWithStructField_returnsStructValue(t *testing.T) {
-	val, err := parseAndReduceOneStep(fieldStructValueGo)
+	p, err := parseAndReduceOneStep(fieldStructValueGo)
 
 	require.NoError(t, err)
-	require.Equal(t, "Structure{1, 2}", val.String())
+	require.Equal(t, "Structure{1, 2}", p.Expression.Value().String())
 }
 
 //go:embed testdata/field/incomplete_literal/incomplete_literal.go

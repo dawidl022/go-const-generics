@@ -15,7 +15,7 @@ import (
 //go:embed testdata/hello.go
 var helloGo []byte
 
-func TestGrammarRecognisesHelloGoProgram(t *testing.T) {
+func TestAntlrAstBuilder_givenHelloGoProgram_buildsAst(t *testing.T) {
 	input := antlr.NewIoStream(bytes.NewBuffer(helloGo))
 	lexer := parser.NewFGLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
@@ -87,7 +87,7 @@ func TestGrammarRecognisesHelloGoProgram(t *testing.T) {
 				},
 				ReturnExpression: ast.ArrayIndex{
 					Receiver: ast.Variable{Id: "this"},
-					Index:    ast.IntegerLiteral{Value: 0},
+					Index:    ast.IntegerLiteral{IntValue: 0},
 				},
 			},
 			ast.MethodDeclaration{
@@ -145,7 +145,7 @@ func TestGrammarRecognisesHelloGoProgram(t *testing.T) {
 						ReturnTypeName: "int",
 					},
 				},
-				ReturnExpression: ast.IntegerLiteral{Value: 98765432101},
+				ReturnExpression: ast.IntegerLiteral{IntValue: 98765432101},
 			},
 			ast.ArraySetMethodDeclaration{
 				MethodReceiver: ast.MethodParameter{
@@ -173,14 +173,14 @@ func TestGrammarRecognisesHelloGoProgram(t *testing.T) {
 				Expression: ast.ValueLiteral{
 					TypeName: "AnyArray2",
 					Values: []ast.Expression{
-						ast.IntegerLiteral{Value: 1},
-						ast.IntegerLiteral{Value: 2},
+						ast.IntegerLiteral{IntValue: 1},
+						ast.IntegerLiteral{IntValue: 2},
 					},
 				},
 				MethodName: "Set",
 				Arguments: []ast.Expression{
-					ast.IntegerLiteral{Value: 0},
-					ast.IntegerLiteral{Value: 3},
+					ast.IntegerLiteral{IntValue: 0},
+					ast.IntegerLiteral{IntValue: 3},
 				},
 			},
 			MethodName: "First",
