@@ -49,6 +49,13 @@ func TestReduce_givenIndexOfNonValueIndex_reducesToIndexOfArrayLiteral(t *testin
 	assertEqualAfterSingleReduction(t, chainsNonValueIndexGo, "Arr{1}[0]")
 }
 
+//go:embed testdata/chains/index_expression/index_expression.go
+var chainsIndexExpressionGo []byte
+
+func TestReduce_givenNonValueIndexArgument_reducesIndexArgument(t *testing.T) {
+	assertEqualAfterSingleReduction(t, chainsIndexExpressionGo, "Arr{1, 2}[1]")
+}
+
 func assertEqualAfterSingleReduction(t *testing.T, program []byte, expected string) {
 	p, err := parseAndReduceOneStep(program)
 

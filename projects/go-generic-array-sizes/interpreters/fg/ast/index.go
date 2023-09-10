@@ -1,6 +1,8 @@
 package ast
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func (a ArrayIndex) Reduce(declarations []Declaration) (Expression, error) {
 	receiver, isReceiverValue := a.Receiver.(ValueLiteral)
@@ -8,8 +10,18 @@ func (a ArrayIndex) Reduce(declarations []Declaration) (Expression, error) {
 		reducedReceiver, err := a.Receiver.Reduce(declarations)
 		return ArrayIndex{Index: a.Index, Receiver: reducedReceiver}, err
 	}
+	argument := a.Index.Value()
+	if argument == nil {
+		reducedIndex, err := a.Index.Reduce(declarations)
+		return ArrayIndex{Index: reducedIndex, Receiver: a.Receiver}, err
+	}
+	intArgument, isIntArgument := argument.(IntegerLiteral)
+	if !isIntArgument {
+		return nil, fmt.Errorf("non integer value %q used as index argument", argument)
+	}
+
 	arrTypeName := receiver.TypeName
-	i := a.Index.Value().(IntegerLiteral).IntValue
+	i := intArgument.IntValue
 
 	withinBounds, err := inIndexBounds(declarations, arrTypeName, i)
 	if err != nil {

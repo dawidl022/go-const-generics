@@ -77,3 +77,13 @@ func TestReduceIndex_givenValidExpressionWithStructElement_returnsStructValue(t 
 	require.NoError(t, err)
 	require.Equal(t, "Structure{3, 4}", p.Expression.Value().String())
 }
+
+//go:embed testdata/index/non_integer_index/non_integer_index.go
+var indexNonIntegerIndexGo []byte
+
+func TestReduceIndex_givenNonIntegerIndexArgument_returnsError(t *testing.T) {
+	_, err := parseAndReduceOneStep(indexNonIntegerIndexGo)
+
+	require.Error(t, err)
+	require.Equal(t, `non integer value "Arr{1, 2}" used as index argument`, err.Error())
+}
