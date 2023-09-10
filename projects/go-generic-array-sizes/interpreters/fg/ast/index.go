@@ -8,13 +8,6 @@ func (a ArrayIndex) Reduce(declarations []Declaration) (Expression, error) {
 		reducedReceiver, err := a.Receiver.Reduce(declarations)
 		return ArrayIndex{Index: a.Index, Receiver: reducedReceiver}, err
 	}
-	// TODO write test where this is necessary
-	//rec := a.Receiver.Value()
-	//if rec == nil {
-	//	reducedReceiver, err := a.Receiver.Reduce(declarations)
-	//	return ArrayIndex{Index: a.Index, Receiver: reducedReceiver}, err
-	//}
-	//receiver := rec.(ValueLiteral)
 	arrTypeName := receiver.TypeName
 	i := a.Index.Value().(IntegerLiteral).IntValue
 

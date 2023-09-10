@@ -24,7 +24,7 @@ func (v ValueLiteral) String() string {
 		if i > 0 {
 			str += ", "
 		}
-		str += val.(Value).String()
+		str += val.String()
 	}
 
 	str += "}"

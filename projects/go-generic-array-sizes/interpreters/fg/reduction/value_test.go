@@ -68,3 +68,31 @@ func assertEqualValueAndFailsToReduce(t *testing.T, program []byte, expectedValu
 	require.Panics(t, func() { p.Reduce() })
 	require.Equal(t, expectedValue, p.Expression.Value().String())
 }
+
+//go:embed testdata/value/non_value_field/non_value_field.go
+var valueNonValueFieldGo []byte
+
+func TestReduce_givenStructOfFieldSelect_reducesToStructLiteral(t *testing.T) {
+	assertEqualAfterSingleReduction(t, valueNonValueFieldGo, "Foo{1}")
+}
+
+//go:embed testdata/value/non_value_index/non_value_index.go
+var valueNonValueIndexGo []byte
+
+func TestReduce_givenArrayOfArrayIndex_reducesToArrayLiteral(t *testing.T) {
+	assertEqualAfterSingleReduction(t, valueNonValueIndexGo, "Arr{1, 2}")
+}
+
+//go:embed testdata/value/multiple_non_value_fields/multiple_non_value_fields.go
+var valueMultipleNonValueFields []byte
+
+func TestReduce_givenStructOfMultipleFieldSelects_reducesOnlyFirstFieldSelect(t *testing.T) {
+	assertEqualAfterSingleReduction(t, valueMultipleNonValueFields, "Foo{1, Foo{1, 2}.y}")
+}
+
+//go:embed testdata/value/multiple_non_values_indices/multiple_non_value_indices.go
+var valueMultipleNonValueIndices []byte
+
+func TestReduce_givenArrayOfMultipleArrayIndices_reducesOnlyFirstArrayIndex(t *testing.T) {
+	assertEqualAfterSingleReduction(t, valueMultipleNonValueIndices, "Arr{1, Arr{1, 2}[1]}")
+}

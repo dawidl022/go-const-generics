@@ -35,6 +35,20 @@ func TestReduce_givenFieldOfField_reducesInnerField(t *testing.T) {
 	assertEqualAfterSingleReduction(t, chainsFieldOfFieldGo, "Foo{1}.y")
 }
 
+//go:embed testdata/chains/non_value_field/non_value_field.go
+var chainsNonValueFieldGo []byte
+
+func TestReduce_givenFieldOfNonValueField_reducesToFieldOfStructLiteral(t *testing.T) {
+	assertEqualAfterSingleReduction(t, chainsNonValueFieldGo, "Foo{1}.x")
+}
+
+//go:embed testdata/chains/non_value_index/non_value_index.go
+var chainsNonValueIndexGo []byte
+
+func TestReduce_givenIndexOfNonValueIndex_reducesToIndexOfArrayLiteral(t *testing.T) {
+	assertEqualAfterSingleReduction(t, chainsNonValueIndexGo, "Arr{1}[0]")
+}
+
 func assertEqualAfterSingleReduction(t *testing.T, program []byte, expected string) {
 	p, err := parseAndReduceOneStep(program)
 

@@ -55,6 +55,16 @@ func (m MethodCall) String() string {
 }
 
 func (v ValueLiteral) Reduce(declarations []Declaration) (Expression, error) {
+	expressions := make([]Expression, len(v.Values))
+	copy(expressions, v.Values)
+
+	for i, expr := range v.Values {
+		if expr.Value() == nil {
+			newExpr, err := expr.Reduce(declarations)
+			expressions[i] = newExpr
+			return ValueLiteral{TypeName: v.TypeName, Values: expressions}, err
+		}
+	}
 	panic("terminal value literal cannot be reduced")
 }
 

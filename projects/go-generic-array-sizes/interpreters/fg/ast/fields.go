@@ -5,7 +5,6 @@ import (
 )
 
 func (s Select) Reduce(declarations []Declaration) (Expression, error) {
-	// TODO write test where this is insufficient
 	structure, isStructValue := s.Expression.Value().(ValueLiteral)
 	if !isStructValue {
 		reducedStruct, err := s.Expression.Reduce(declarations)
