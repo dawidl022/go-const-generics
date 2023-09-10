@@ -21,6 +21,20 @@ func TestReduce_givenFieldOfIndex_reducesIndex(t *testing.T) {
 	assertEqualAfterSingleReduction(t, chainsFieldOfIndexGo, "Structure{1, 2}.y")
 }
 
+//go:embed testdata/chains/index_of_index/index_of_index.go
+var chainsIndexOfIndexGo []byte
+
+func TestReduce_givenIndexOfIndex_reducesInnerIndex(t *testing.T) {
+	assertEqualAfterSingleReduction(t, chainsIndexOfIndexGo, "Arr{3, 4}[0]")
+}
+
+//go:embed testdata/chains/field_of_field/field_of_field.go
+var chainsFieldOfFieldGo []byte
+
+func TestReduce_givenFieldOfField_reducesInnerField(t *testing.T) {
+	assertEqualAfterSingleReduction(t, chainsFieldOfFieldGo, "Foo{1}.y")
+}
+
 func assertEqualAfterSingleReduction(t *testing.T, program []byte, expected string) {
 	p, err := parseAndReduceOneStep(program)
 

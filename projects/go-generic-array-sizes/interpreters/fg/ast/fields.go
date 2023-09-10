@@ -30,8 +30,7 @@ func (s Select) Reduce(declarations []Declaration) (Expression, error) {
 }
 
 func (s Select) Value() Value {
-	//TODO implement me
-	panic("implement me")
+	return nil
 }
 
 func fields(declarations []Declaration, structTypeName string) ([]Field, error) {

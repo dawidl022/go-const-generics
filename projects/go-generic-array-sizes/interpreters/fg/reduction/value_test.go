@@ -23,7 +23,7 @@ func TestValue_givenInt_returnsValueAndFailsToReduce(t *testing.T) {
 var valueArrayGo []byte
 
 func TestValue_givenArrayLiteral_returnsValueAndFailsToReduce(t *testing.T) {
-	assertEqualsValueAndFailsToReduce(t, valueArrayGo, "Arr{1, 2}")
+	assertEqualValueAndFailsToReduce(t, valueArrayGo, "Arr{1, 2}")
 
 }
 
@@ -31,38 +31,38 @@ func TestValue_givenArrayLiteral_returnsValueAndFailsToReduce(t *testing.T) {
 var valueMatrixGo []byte
 
 func TestValue_givenNestedArrLiteral_returnsValueAndFailsToReduce(t *testing.T) {
-	assertEqualsValueAndFailsToReduce(t, valueMatrixGo, "Matrix{Arr{1, 2}, Arr{3, 4}}")
+	assertEqualValueAndFailsToReduce(t, valueMatrixGo, "Matrix{Arr{1, 2}, Arr{3, 4}}")
 }
 
 //go:embed testdata/value/struct/struct.go
 var valueStructGo []byte
 
 func TestValue_givenStructLiteral_returnsValueAndFailsToReduce(t *testing.T) {
-	assertEqualsValueAndFailsToReduce(t, valueStructGo, "Foo{1, 2}")
+	assertEqualValueAndFailsToReduce(t, valueStructGo, "Foo{1, 2}")
 }
 
 //go:embed testdata/value/nested/nested.go
 var valueNestedGo []byte
 
 func TestValue_givenNestedStructLiteral_returnsValueAndFailsToReduce(t *testing.T) {
-	assertEqualsValueAndFailsToReduce(t, valueNestedGo, "Bar{Foo{1, 2}, Foo{3, 4}}")
+	assertEqualValueAndFailsToReduce(t, valueNestedGo, "Bar{Foo{1, 2}, Foo{3, 4}}")
 }
 
 //go:embed testdata/value/array_of_structs/array_of_structs.go
 var valueArrayOfStructsGo []byte
 
 func TestValue_givenArrayOfStructsLiteral_returnsValueAndFailsToReduce(t *testing.T) {
-	assertEqualsValueAndFailsToReduce(t, valueArrayOfStructsGo, "Arr{Foo{1, 2}, Foo{3, 4}}")
+	assertEqualValueAndFailsToReduce(t, valueArrayOfStructsGo, "Arr{Foo{1, 2}, Foo{3, 4}}")
 }
 
 //go:embed testdata/value/struct_of_arrays/struct_of_arrays.go
 var valueStructOfArraysGo []byte
 
 func TestValue_givenStructOfArrayLiterals_returnsValueAndFailsTo_Reduce(t *testing.T) {
-	assertEqualsValueAndFailsToReduce(t, valueStructOfArraysGo, "Foo{Arr{1, 2}, Arr{3, 4}}")
+	assertEqualValueAndFailsToReduce(t, valueStructOfArraysGo, "Foo{Arr{1, 2}, Arr{3, 4}}")
 }
 
-func assertEqualsValueAndFailsToReduce(t *testing.T, program []byte, expectedValue string) {
+func assertEqualValueAndFailsToReduce(t *testing.T, program []byte, expectedValue string) {
 	p := parseFGProgram(program)
 
 	require.Panics(t, func() { p.Reduce() })
