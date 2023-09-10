@@ -5,7 +5,14 @@ import (
 )
 
 func (s Select) Reduce(declarations []Declaration) (Expression, error) {
-	structTypeName := s.Expression.Value().(ValueLiteral).TypeName
+	// TODO write test where this is insufficient
+	structure, isStructValue := s.Expression.Value().(ValueLiteral)
+	if !isStructValue {
+		reducedStruct, err := s.Expression.Reduce(declarations)
+		return Select{FieldName: s.FieldName, Expression: reducedStruct}, err
+	}
+
+	structTypeName := structure.TypeName
 	structFields, err := fields(declarations, structTypeName)
 	if err != nil {
 		return nil, err

@@ -1,5 +1,7 @@
 package ast
 
+import "fmt"
+
 type Program struct {
 	Declarations []Declaration
 	Expression   Expression
@@ -93,7 +95,15 @@ type Select struct {
 	FieldName  string
 }
 
+func (s Select) String() string {
+	return fmt.Sprintf("%s.%s", s.Expression, s.FieldName)
+}
+
 type ArrayIndex struct {
 	Receiver Expression
 	Index    Expression
+}
+
+func (a ArrayIndex) String() string {
+	return fmt.Sprintf("%s[%s]", a.Receiver, a.Index)
 }

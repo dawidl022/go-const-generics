@@ -1,8 +1,11 @@
 package ast
 
+import "fmt"
+
 type Expression interface {
 	Reduce(declarations []Declaration) (Expression, error)
 	Value() Value
+	fmt.Stringer
 }
 
 func (p Program) Reduce() (Program, error) {
@@ -31,12 +34,22 @@ func (v Variable) Value() Value {
 	panic("implement me")
 }
 
+func (v Variable) String() string {
+	// TODO implement me
+	panic("implement me")
+}
+
 func (m MethodCall) Reduce(declarations []Declaration) (Expression, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
 func (m MethodCall) Value() Value {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m MethodCall) String() string {
 	//TODO implement me
 	panic("implement me")
 }

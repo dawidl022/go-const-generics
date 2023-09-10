@@ -1,4 +1,4 @@
-package testdata
+package main
 
 type Arr [2]int
 

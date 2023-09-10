@@ -3,11 +3,18 @@ package ast
 import "fmt"
 
 func (a ArrayIndex) Reduce(declarations []Declaration) (Expression, error) {
-	//isValue, value := a.Receiver.(ValueLiteral)
-	//if !isValue {
-	//	return ast.ArrayIndex{Index: idx.Index, Receiver: ReduceOneStep(idx.Receiver)}
+	receiver, isReceiverValue := a.Receiver.(ValueLiteral)
+	if !isReceiverValue {
+		reducedReceiver, err := a.Receiver.Reduce(declarations)
+		return ArrayIndex{Index: a.Index, Receiver: reducedReceiver}, err
+	}
+	// TODO write test where this is necessary
+	//rec := a.Receiver.Value()
+	//if rec == nil {
+	//	reducedReceiver, err := a.Receiver.Reduce(declarations)
+	//	return ArrayIndex{Index: a.Index, Receiver: reducedReceiver}, err
 	//}
-	receiver := a.Receiver.Value().(ValueLiteral)
+	//receiver := rec.(ValueLiteral)
 	arrTypeName := receiver.TypeName
 	i := a.Index.Value().(IntegerLiteral).IntValue
 
