@@ -3,6 +3,14 @@ package ast
 import "fmt"
 
 func (m MethodCall) Reduce(declarations []Declaration) (Expression, error) {
+	if m.Receiver.Value() == nil {
+		reducedReceiver, err := m.Receiver.Reduce(declarations)
+		return MethodCall{
+			Receiver:   reducedReceiver,
+			MethodName: m.MethodName,
+			Arguments:  m.Arguments,
+		}, err
+	}
 	receiver, isValueLitReceiver := m.Receiver.(ValueLiteral)
 	if !isValueLitReceiver {
 		return nil, fmt.Errorf("cannot call method %q on primitive value %s", m.MethodName, m.Receiver)
@@ -18,6 +26,21 @@ func (m MethodCall) Reduce(declarations []Declaration) (Expression, error) {
 			`expected %d argument(s) in call to "%s.%s", but got %d`,
 			len(parameterNames[1:]), receiver.TypeName, m.MethodName, len(m.Arguments),
 		)
+	}
+
+	reducedArgs := make([]Expression, len(m.Arguments))
+	copy(reducedArgs, m.Arguments)
+	for i, arg := range m.Arguments {
+		if arg.Value() == nil {
+			reducedArg, err := arg.Reduce(declarations)
+			reducedArgs[i] = reducedArg
+
+			return MethodCall{
+				Receiver:   m.Receiver,
+				MethodName: m.MethodName,
+				Arguments:  reducedArgs,
+			}, err
+		}
 	}
 
 	for i, param := range parameterNames[1:] {

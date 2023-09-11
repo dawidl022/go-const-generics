@@ -2,8 +2,10 @@ package reduction
 
 import (
 	"bytes"
+	"testing"
 
 	"github.com/antlr4-go/antlr/v4"
+	"github.com/stretchr/testify/require"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
@@ -27,4 +29,11 @@ func parseFGProgram(code []byte) ast.Program {
 func parseAndReduceOneStep(program []byte) (ast.Program, error) {
 	p := parseFGProgram(program)
 	return p.Reduce()
+}
+
+func assertEqualAfterSingleReduction(t *testing.T, program []byte, expected string) {
+	p, err := parseAndReduceOneStep(program)
+
+	require.NoError(t, err)
+	require.Equal(t, expected, p.Expression.String())
 }
