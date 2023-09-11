@@ -96,3 +96,15 @@ var valueMultipleNonValueIndices []byte
 func TestReduce_givenArrayOfMultipleArrayIndices_reducesOnlyFirstArrayIndex(t *testing.T) {
 	assertEqualAfterSingleReduction(t, valueMultipleNonValueIndices, "Arr{1, Arr{1, 2}[1]}")
 }
+
+//go:embed testdata/value/unbound_variable/unbound_variable.go
+var valueUnboundVariable []byte
+
+func TestReduceCall_givenUnboundIndexInMain_failsToReduceOrYieldValue(t *testing.T) {
+	p := parseFGProgram(valueUnboundVariable)
+	require.Nil(t, p.Expression.Value())
+
+	_, err := p.Reduce()
+	require.Error(t, err)
+	require.Equal(t, `unbound variable "x"`, err.Error())
+}

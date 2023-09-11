@@ -5,10 +5,10 @@ import (
 )
 
 func (s Select) Reduce(declarations []Declaration) (Expression, error) {
-	structure, isStructValue := s.Expression.Value().(ValueLiteral)
+	structure, isStructValue := s.Receiver.Value().(ValueLiteral)
 	if !isStructValue {
-		reducedStruct, err := s.Expression.Reduce(declarations)
-		return Select{FieldName: s.FieldName, Expression: reducedStruct}, err
+		reducedStruct, err := s.Receiver.Reduce(declarations)
+		return Select{FieldName: s.FieldName, Receiver: reducedStruct}, err
 	}
 
 	structTypeName := structure.TypeName
@@ -18,7 +18,7 @@ func (s Select) Reduce(declarations []Declaration) (Expression, error) {
 	}
 	for i, field := range structFields {
 		if field.Name == s.FieldName {
-			values := s.Expression.Value().(ValueLiteral).Values
+			values := s.Receiver.Value().(ValueLiteral).Values
 			if len(values) <= i {
 				return nil, fmt.Errorf("struct literal missing value at index %d", i)
 			}

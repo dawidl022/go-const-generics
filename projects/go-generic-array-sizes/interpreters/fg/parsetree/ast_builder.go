@@ -175,7 +175,7 @@ func (a *AntlrASTBuilder) VisitVar(ctx *parser.VarContext) interface{} {
 func (a *AntlrASTBuilder) VisitFieldSelect(ctx *parser.FieldSelectContext) interface{} {
 	sel := ast.Select{}
 	sel.FieldName = ctx.FieldName().GetText()
-	sel.Expression = a.Visit(ctx.Expression()).(ast.Expression)
+	sel.Receiver = a.Visit(ctx.Expression()).(ast.Expression)
 	return sel
 }
 

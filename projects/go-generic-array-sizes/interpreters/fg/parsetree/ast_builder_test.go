@@ -130,8 +130,8 @@ func TestAntlrAstBuilder_givenHelloGoProgram_buildsAst(t *testing.T) {
 					},
 				},
 				ReturnExpression: ast.Select{
-					Expression: ast.Variable{Id: "foo"},
-					FieldName:  "y",
+					Receiver:  ast.Variable{Id: "foo"},
+					FieldName: "y",
 				},
 			},
 			ast.MethodDeclaration{

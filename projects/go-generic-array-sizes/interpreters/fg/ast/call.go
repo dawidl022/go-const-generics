@@ -11,26 +11,23 @@ func (m MethodCall) Reduce(declarations []Declaration) (Expression, error) {
 	if err != nil {
 		return nil, err
 	}
-	allArguments := []Expression{m.Receiver}
-	allArguments = append(allArguments, m.Arguments...)
-	res, err := bind(methodBody, parameterNames, allArguments)
+	arguments := map[string]Expression{parameterNames[0]: m.Receiver}
+
+	if len(m.Arguments) != len(parameterNames[1:]) {
+		return nil, fmt.Errorf(
+			`expected %d argument(s) in call to "%s.%s", but got %d`,
+			len(parameterNames[1:]), receiver.TypeName, m.MethodName, len(m.Arguments),
+		)
+	}
+
+	for i, param := range parameterNames[1:] {
+		arguments[param] = m.Arguments[i]
+	}
+	res, err := methodBody.bind(arguments)
 	if err != nil {
 		return nil, fmt.Errorf(`cannot call method "%s.%s": %w`, receiver.TypeName, m.MethodName, err)
 	}
 	return res, nil
-}
-
-func bind(expr Expression, variableNames []string, variables []Expression) (Expression, error) {
-	variable, isVariable := expr.(Variable)
-	if isVariable {
-		for i, varName := range variableNames {
-			if variable.Id == varName {
-				return variables[i], nil
-			}
-		}
-		return nil, fmt.Errorf("unbound variable %q", variable.Id)
-	}
-	return expr, nil
 }
 
 func body(declarations []Declaration, typeName, methodName string) ([]string, Expression, error) {
@@ -56,6 +53,5 @@ func matchesMethod(methodDeclaration MethodDeclaration, typeName, methodName str
 }
 
 func (m MethodCall) Value() Value {
-	//TODO implement me
-	panic("implement me")
+	return nil
 }

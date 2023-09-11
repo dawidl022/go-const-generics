@@ -5,6 +5,7 @@ import "fmt"
 type Expression interface {
 	Reduce(declarations []Declaration) (Expression, error)
 	Value() Value
+	bind(variables map[string]Expression) (Expression, error)
 	fmt.Stringer
 }
 
@@ -25,13 +26,11 @@ func (i IntegerLiteral) Value() Value {
 }
 
 func (v Variable) Reduce(declarations []Declaration) (Expression, error) {
-	//TODO implement me
-	panic("implement me")
+	return nil, fmt.Errorf("unbound variable %q", v)
 }
 
 func (v Variable) Value() Value {
-	//TODO implement me
-	panic("implement me")
+	return nil
 }
 
 func (v Variable) String() string {
@@ -39,8 +38,15 @@ func (v Variable) String() string {
 }
 
 func (m MethodCall) String() string {
-	//TODO implement me
-	panic("implement me")
+	s := fmt.Sprintf("%s.%s(", m.Receiver, m.MethodName)
+	for i, arg := range m.Arguments {
+		s += arg.String()
+		if i < len(m.Arguments)-1 {
+			s += ", "
+		}
+	}
+	s += ")"
+	return s
 }
 
 func (v ValueLiteral) Reduce(declarations []Declaration) (Expression, error) {

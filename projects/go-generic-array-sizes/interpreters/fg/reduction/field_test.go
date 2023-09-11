@@ -27,7 +27,6 @@ func TestReduceField_givenValidExpressionWithMultipleFields_returnsValueOfCorrec
 	p, err := parseAndReduceOneStep(fieldMultipleFieldsGo)
 
 	require.NoError(t, err)
-	// TODO compare against actual ast struct, rather than the string
 	require.Equal(t, "2", p.Expression.Value().String())
 }
 
