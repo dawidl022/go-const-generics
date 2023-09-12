@@ -64,7 +64,7 @@ func TestReduceToValue_givenInvalidProgram_returnsError(t *testing.T) {
 	_, err := NewProgramReducer([]Observer{}).ReduceToValue(p)
 
 	require.Error(t, err)
-	require.Equal(t, `no field named "y" found on struct of type "Foo"`, err.Error())
+	require.Equal(t, `program stuck: no field named "y" found on struct of type "Foo"`, err.Error())
 }
 
 func TestReduceToValue_givenInfiniteLoop_terminatesReductionWithError(t *testing.T) {
@@ -74,7 +74,7 @@ func TestReduceToValue_givenInfiniteLoop_terminatesReductionWithError(t *testing
 	_, err := NewProgramReducer([]Observer{observer}).ReduceToValue(p)
 
 	require.Error(t, err)
-	require.Equal(t, "infinite loop detected", err.Error())
+	require.Equal(t, `infinite loop detected at term: "Foo{}.recurse()"`, err.Error())
 	require.Equal(t, []string{"Foo{}.recurse()"}, observer.steps)
 }
 
