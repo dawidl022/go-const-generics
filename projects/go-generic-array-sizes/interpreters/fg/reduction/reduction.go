@@ -1,6 +1,8 @@
 package reduction
 
 import (
+	"errors"
+
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
 )
 
@@ -17,7 +19,14 @@ type Observer interface {
 }
 
 func (p ProgramReducer) ReduceToValue(program ast.Program) (ast.Value, error) {
+	seenTerms := make(map[string]struct{})
+
 	for program.Expression.Value() == nil {
+		if _, alreadySeen := seenTerms[program.Expression.String()]; alreadySeen {
+			return nil, errors.New("infinite loop detected")
+		}
+		seenTerms[program.Expression.String()] = struct{}{}
+
 		var err error
 		program, err = program.Reduce()
 

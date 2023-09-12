@@ -3,7 +3,7 @@ package main
 type Arr [2]int
 
 func (a Arr) unboundIndex() int {
-	a[i]
+	return a[i]
 }
 
 func main() {

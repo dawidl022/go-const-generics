@@ -1,4 +1,4 @@
-package acceptance
+package main
 
 type Foo struct {
 	x int

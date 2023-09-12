@@ -32,14 +32,50 @@ func TestReduceToValue_givenValidProgram_notifiesObserversOfAllReductions(t *tes
 	_, err := NewProgramReducer([]Observer{observer}).ReduceToValue(p)
 
 	require.NoError(t, err)
-	require.Equal(t, []string{
+	require.Equal(t, expectedAcceptanceProgramReductionSteps(), observer.steps)
+}
+
+func expectedAcceptanceProgramReductionSteps() []string {
+	return []string{
 		"Arr{4, 6}[Foo{3, Arr{1, 2}}.getY().first()]",
 		"Arr{4, 6}[Foo{3, Arr{1, 2}}.y.first()]",
 		"Arr{4, 6}[Arr{1, 2}.first()]",
 		"Arr{4, 6}[Arr{1, 2}[0]]",
 		"Arr{4, 6}[1]",
 		"6",
-	}, observer.steps)
+	}
+}
+
+func TestReduceToValue_givenValidProgram_doesNotMutateExpressionsGivenToObservers(t *testing.T) {
+	p := parseFGProgram(acceptanceProgramGo)
+
+	observer1 := &savingObserver{}
+	observer2 := &savingObserver{}
+	_, err := NewProgramReducer([]Observer{observer1, observer2}).ReduceToValue(p)
+
+	require.NoError(t, err)
+	require.Equal(t, expectedAcceptanceProgramReductionSteps(), observer1.stringifySteps())
+	require.Equal(t, expectedAcceptanceProgramReductionSteps(), observer2.stringifySteps())
+}
+
+func TestReduceToValue_givenInvalidProgram_returnsError(t *testing.T) {
+	p := parseFGProgram(fieldInvalidFieldGo)
+
+	_, err := NewProgramReducer([]Observer{}).ReduceToValue(p)
+
+	require.Error(t, err)
+	require.Equal(t, `no field named "y" found on struct of type "Foo"`, err.Error())
+}
+
+func TestReduceToValue_givenInfiniteLoop_terminatesReductionWithError(t *testing.T) {
+	p := parseFGProgram(callRecursiveGo)
+
+	observer := &stringObserver{}
+	_, err := NewProgramReducer([]Observer{observer}).ReduceToValue(p)
+
+	require.Error(t, err)
+	require.Equal(t, "infinite loop detected", err.Error())
+	require.Equal(t, []string{"Foo{}.recurse()"}, observer.steps)
 }
 
 type stringObserver struct {
@@ -50,18 +86,42 @@ func (s *stringObserver) Notify(expression ast.Expression) {
 	s.steps = append(s.steps, expression.String())
 }
 
+type savingObserver struct {
+	steps []ast.Expression
+}
+
+func (s *savingObserver) Notify(expression ast.Expression) {
+	s.steps = append(s.steps, expression)
+}
+
+func (s *savingObserver) stringifySteps() interface{} {
+	res := make([]string, 0, len(s.steps))
+	for _, step := range s.steps {
+		res = append(res, step.String())
+	}
+	return res
+}
+
 func parseFGProgram(code []byte) ast.Program {
-	// TODO handle parse errors
 	input := antlr.NewIoStream(bytes.NewBuffer(code))
 	lexer := parser.NewFGLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 
 	p := parser.NewFGParser(stream)
+	p.AddErrorListener(failingErrorListener{})
 	p.BuildParseTrees = true
 
 	tree := p.Program()
 	astBuilder := parsetree.NewAntlrASTBuilder(tree)
 	return astBuilder.BuildAST()
+}
+
+type failingErrorListener struct {
+	*antlr.DefaultErrorListener
+}
+
+func (f failingErrorListener) SyntaxError(_ antlr.Recognizer, _ interface{}, _, _ int, msg string, _ antlr.RecognitionException) {
+	panic(msg)
 }
 
 func parseAndReduceOneStep(program []byte) (ast.Program, error) {
