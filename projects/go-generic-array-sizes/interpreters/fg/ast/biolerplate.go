@@ -35,3 +35,19 @@ func (s Select) expressionNode() {
 
 func (a ArrayIndex) expressionNode() {
 }
+
+func (m MethodDeclaration) GetMethodReceiver() MethodParameter {
+	return m.MethodReceiver
+}
+
+func (m MethodDeclaration) GetMethodName() string {
+	return m.MethodSpecification.MethodName
+}
+
+func (a ArraySetMethodDeclaration) GetMethodReceiver() MethodParameter {
+	return a.MethodReceiver
+}
+
+func (a ArraySetMethodDeclaration) GetMethodName() string {
+	return a.MethodName
+}

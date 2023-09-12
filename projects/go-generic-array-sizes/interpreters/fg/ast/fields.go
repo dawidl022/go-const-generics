@@ -28,10 +28,6 @@ func (s Select) Reduce(declarations []Declaration) (Expression, error) {
 	return nil, fmt.Errorf("no field named %q found on struct of type %q", s.FieldName, structTypeName)
 }
 
-func (s Select) Value() Value {
-	return nil
-}
-
 func fields(declarations []Declaration, structTypeName string) ([]Field, error) {
 	for _, decl := range declarations {
 		typeDecl, isTypeDecl := decl.(TypeDeclaration)
@@ -44,4 +40,8 @@ func fields(declarations []Declaration, structTypeName string) ([]Field, error) 
 		}
 	}
 	return nil, fmt.Errorf("no struct type named %q found in declarations", structTypeName)
+}
+
+func (s Select) Value() Value {
+	return nil
 }

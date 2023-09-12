@@ -2,7 +2,6 @@ package ast
 
 import (
 	"fmt"
-	"strconv"
 )
 
 type Value interface {
@@ -10,25 +9,33 @@ type Value interface {
 	val()
 }
 
-func (i IntegerLiteral) String() string {
-	return strconv.Itoa(i.IntValue)
+func (i IntegerLiteral) Reduce(declarations []Declaration) (Expression, error) {
+	panic("terminal integer literal cannot be reduced")
+}
+
+func (i IntegerLiteral) Value() Value {
+	return i
 }
 
 func (i IntegerLiteral) val() {
 }
 
-func (v ValueLiteral) String() string {
-	str := v.TypeName + "{"
+func (v ValueLiteral) Reduce(declarations []Declaration) (Expression, error) {
+	expressions := make([]Expression, len(v.Values))
+	copy(expressions, v.Values)
 
-	for i, val := range v.Values {
-		if i > 0 {
-			str += ", "
+	for i, expr := range v.Values {
+		if expr.Value() == nil {
+			newExpr, err := expr.Reduce(declarations)
+			expressions[i] = newExpr
+			return ValueLiteral{TypeName: v.TypeName, Values: expressions}, err
 		}
-		str += val.String()
 	}
+	panic("terminal value literal cannot be reduced")
+}
 
-	str += "}"
-	return str
+func (v ValueLiteral) Value() Value {
+	return v
 }
 
 func (v ValueLiteral) val() {
