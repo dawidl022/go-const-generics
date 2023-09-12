@@ -59,6 +59,14 @@ type MethodDeclaration struct {
 	ReturnExpression    Expression
 }
 
+func (m MethodDeclaration) GetMethodReceiver() MethodParameter {
+	return m.MethodReceiver
+}
+
+func (m MethodDeclaration) GetMethodName() string {
+	return m.MethodSpecification.MethodName
+}
+
 type ArraySetMethodDeclaration struct {
 	MethodReceiver        MethodParameter
 	MethodName            string
@@ -69,6 +77,14 @@ type ArraySetMethodDeclaration struct {
 	IndexVariable         string
 	NewValueVariable      string
 	ReturnVariable        string
+}
+
+func (a ArraySetMethodDeclaration) GetMethodReceiver() MethodParameter {
+	return a.MethodReceiver
+}
+
+func (a ArraySetMethodDeclaration) GetMethodName() string {
+	return a.MethodName
 }
 
 type IntegerLiteral struct {
