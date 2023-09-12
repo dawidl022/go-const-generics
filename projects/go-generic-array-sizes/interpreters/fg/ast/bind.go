@@ -46,8 +46,8 @@ func (v ValueLiteral) bind(variables map[string]Expression) (Expression, error) 
 }
 
 func (s Select) bind(variables map[string]Expression) (Expression, error) {
-	boundExpression, err := s.Receiver.bind(variables)
-	return Select{FieldName: s.FieldName, Receiver: boundExpression}, err
+	boundReceiver, err := s.Receiver.bind(variables)
+	return Select{FieldName: s.FieldName, Receiver: boundReceiver}, err
 }
 
 func (a ArrayIndex) bind(variables map[string]Expression) (Expression, error) {
