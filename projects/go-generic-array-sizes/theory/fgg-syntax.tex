@@ -31,7 +31,8 @@
                 Declaration              & $D$ ::=                                                      \\
                 \quad Type declaration   & \quad $\type~t\black{[\ov{\Phi}]}~T$                         \\
                 \quad Method declaration & \quad $\func~(x~t_V\black{[\ov{\alpha}]})~mM~\br{\return~e}$ \\
-                                         & \quad $\mid \func~(x~t_A\black{[\ov{\alpha}]})
+                \quad Array set method   &                                                              \\
+                \quad declaration        & \quad $\func~(x~t_A\black{[\ov{\alpha}]})
                     ~m(x_1~\kw{int},~x_2~\black{\tau}) ~t_A\black{[\ov{\alpha}]}~
                 \br{ x[x_1] = x_2;~\return~x }$                                                         \\
                 Program                  & $P$ ::= $\package~\main;~\ov{D}~\func~\main()~\br{\un=e}$
