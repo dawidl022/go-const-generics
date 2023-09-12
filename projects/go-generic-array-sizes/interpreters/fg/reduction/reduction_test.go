@@ -2,6 +2,7 @@ package reduction
 
 import (
 	"bytes"
+	_ "embed"
 	"testing"
 
 	"github.com/antlr4-go/antlr/v4"
@@ -11,6 +12,18 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parsetree"
 )
+
+//go:embed testdata/acceptance/program.go
+var acceptanceProgramGo []byte
+
+func TestReduceToValue_givenValidProgram_completelyReducesProgram(t *testing.T) {
+	p := parseFGProgram(acceptanceProgramGo)
+
+	val, err := ReduceToValue(p)
+
+	require.NoError(t, err)
+	require.Equal(t, "6", val.String())
+}
 
 func parseFGProgram(code []byte) ast.Program {
 	// TODO handle parse errors
