@@ -19,10 +19,35 @@ var acceptanceProgramGo []byte
 func TestReduceToValue_givenValidProgram_completelyReducesProgram(t *testing.T) {
 	p := parseFGProgram(acceptanceProgramGo)
 
-	val, err := ReduceToValue(p)
+	val, err := NewProgramReducer([]Observer{}).ReduceToValue(p)
 
 	require.NoError(t, err)
 	require.Equal(t, "6", val.String())
+}
+
+func TestReduceToValue_givenValidProgram_notifiesObserversOfAllReductions(t *testing.T) {
+	p := parseFGProgram(acceptanceProgramGo)
+
+	observer := &stringObserver{}
+	_, err := NewProgramReducer([]Observer{observer}).ReduceToValue(p)
+
+	require.NoError(t, err)
+	require.Equal(t, []string{
+		"Arr{4, 6}[Foo{3, Arr{1, 2}}.getY().first()]",
+		"Arr{4, 6}[Foo{3, Arr{1, 2}}.y.first()]",
+		"Arr{4, 6}[Arr{1, 2}.first()]",
+		"Arr{4, 6}[Arr{1, 2}[0]]",
+		"Arr{4, 6}[1]",
+		"6",
+	}, observer.steps)
+}
+
+type stringObserver struct {
+	steps []string
+}
+
+func (s *stringObserver) Notify(expression ast.Expression) {
+	s.steps = append(s.steps, expression.String())
 }
 
 func parseFGProgram(code []byte) ast.Program {
