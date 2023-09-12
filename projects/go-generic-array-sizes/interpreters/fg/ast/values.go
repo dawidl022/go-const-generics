@@ -26,8 +26,8 @@ func (v ValueLiteral) Reduce(declarations []Declaration) (Expression, error) {
 
 	for i, expr := range v.Values {
 		if expr.Value() == nil {
-			newExpr, err := expr.Reduce(declarations)
-			expressions[i] = newExpr
+			reducedExpr, err := expr.Reduce(declarations)
+			expressions[i] = reducedExpr
 			return ValueLiteral{TypeName: v.TypeName, Values: expressions}, err
 		}
 	}

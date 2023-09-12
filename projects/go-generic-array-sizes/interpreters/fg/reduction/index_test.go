@@ -48,7 +48,7 @@ func TestReduceIndex_givenArrayIndexOutOfBounds_returnsError(t *testing.T) {
 	require.Equal(t, `index 1 out of bounds for array of type "Arr"`, err.Error())
 }
 
-//go:embed testdata/index/non_array/non_array.go
+//go:embed testdata/index/struct_receiver/struct_receiver.go
 var indexNonArrayGo []byte
 
 func TestReduceIndex_givenIndexOnStruct_returnsError(t *testing.T) {
@@ -86,4 +86,14 @@ func TestReduceIndex_givenNonIntegerIndexArgument_returnsError(t *testing.T) {
 
 	require.Error(t, err)
 	require.Equal(t, `non integer value "Arr{1, 2}" used as index argument`, err.Error())
+}
+
+//go:embed testdata/index/integer_receiver/integer_receiver.go
+var indexIntegerReceiverGo []byte
+
+func TestReduceIndex_givenIntegerLiteralReceiver_returnsError(t *testing.T) {
+	_, err := parseAndReduceOneStep(indexIntegerReceiverGo)
+
+	require.Error(t, err)
+	require.Equal(t, `cannot access index on primitive value 1`, err.Error())
 }

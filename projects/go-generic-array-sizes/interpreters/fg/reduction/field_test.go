@@ -70,7 +70,7 @@ func TestReduceField_givenUndeclaredField_returnsError(t *testing.T) {
 	require.Equal(t, `no field named "y" found on struct of type "Foo"`, err.Error())
 }
 
-//go:embed testdata/field/non_struct/non_struct.go
+//go:embed testdata/field/array_receiver/array_receiver.go
 var fieldNonStructGo []byte
 
 func TestReduceField_givenFieldAccessOnArray_returnsError(t *testing.T) {
@@ -78,4 +78,14 @@ func TestReduceField_givenFieldAccessOnArray_returnsError(t *testing.T) {
 
 	require.Error(t, err)
 	require.Equal(t, `no struct type named "Foo" found in declarations`, err.Error())
+}
+
+//go:embed testdata/field/integer_receiver/integer_receiver.go
+var fieldIntegerReceiverGo []byte
+
+func TestReduceField_givenIntegerLiteralReceiver_returnsError(t *testing.T) {
+	_, err := parseAndReduceOneStep(fieldIntegerReceiverGo)
+
+	require.Error(t, err)
+	require.Equal(t, `cannot access field "base" on primitive value 1`, err.Error())
 }
