@@ -69,7 +69,11 @@ type debugObserver struct {
 	stepNumber int
 }
 
-func (d *debugObserver) Notify(expression ast.Expression) {
+func (d *debugObserver) Notify(expression ast.Expression) error {
 	d.stepNumber++
-	fmt.Fprintf(d.writer, "reduction step %d: %s\n", d.stepNumber, expression)
+	_, err := fmt.Fprintf(d.writer, "reduction step %d: %s\n", d.stepNumber, expression)
+	if err != nil {
+		return fmt.Errorf("failed to write to debug output: %w", err)
+	}
+	return nil
 }

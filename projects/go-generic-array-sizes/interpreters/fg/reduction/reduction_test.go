@@ -82,16 +82,18 @@ type stringObserver struct {
 	steps []string
 }
 
-func (s *stringObserver) Notify(expression ast.Expression) {
+func (s *stringObserver) Notify(expression ast.Expression) error {
 	s.steps = append(s.steps, expression.String())
+	return nil
 }
 
 type savingObserver struct {
 	steps []ast.Expression
 }
 
-func (s *savingObserver) Notify(expression ast.Expression) {
+func (s *savingObserver) Notify(expression ast.Expression) error {
 	s.steps = append(s.steps, expression)
+	return nil
 }
 
 func (s *savingObserver) stringifySteps() interface{} {

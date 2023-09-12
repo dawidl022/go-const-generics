@@ -15,7 +15,7 @@ func NewProgramReducer(observers []Observer) *ProgramReducer {
 }
 
 type Observer interface {
-	Notify(expression ast.Expression)
+	Notify(expression ast.Expression) error
 }
 
 func (p ProgramReducer) ReduceToValue(program ast.Program) (ast.Value, error) {
@@ -33,15 +33,22 @@ func (p ProgramReducer) ReduceToValue(program ast.Program) (ast.Value, error) {
 		if err != nil {
 			return nil, newStuckProgramErr(err)
 		}
-		p.notifyObservers(program.Expression)
+		err = p.notifyObservers(program.Expression)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return program.Expression.Value(), nil
 }
 
-func (p ProgramReducer) notifyObservers(expression ast.Expression) {
+func (p ProgramReducer) notifyObservers(expression ast.Expression) error {
 	for _, o := range p.observers {
-		o.Notify(expression)
+		err := o.Notify(expression)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 type StuckProgramErr struct {
