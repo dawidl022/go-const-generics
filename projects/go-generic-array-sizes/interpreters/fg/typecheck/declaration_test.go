@@ -56,9 +56,17 @@ func TestTypeCheck_givenDeclarationWithDuplicateFieldNames_returnsError(t *testi
 }
 
 //go:embed testdata/declaration/invalid_field_type/invalid_field_type.go
-var declarationInvalidFieldType []byte
+var declarationInvalidFieldTypeGo []byte
 
 func TestTypeCheck_givenDeclarationWithInvalidStructFieldType_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, declarationInvalidFieldType,
+	assertFailsTypeCheckWithError(t, declarationInvalidFieldTypeGo,
 		`ill-typed declaration: type "Foo": field "x" type name not declared: "Bar"`)
+}
+
+//go:embed testdata/declaration/duplicate_interface_method_names/duplicate_interface_method_names.go
+var declarationDuplicateInterfaceMethodNamesGo []byte
+
+func TestTypeCheck_givenInterfaceDeclarationWithDuplicateMethodNames_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationDuplicateInterfaceMethodNamesGo,
+		`ill-typed declaration: type "xGetter": method name redeclared "getX"`)
 }

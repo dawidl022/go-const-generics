@@ -77,10 +77,24 @@ func checkDistinctFiledNames(s ast.StructTypeLiteral) error {
 }
 
 func (t typeCheckingVisitor) VisitInterfaceLiteral(i ast.InterfaceTypeLiteral) error {
+	if err := checkUniqueMethodNames(i); err != nil {
+		return err
+	}
 	for _, spec := range i.MethodSpecifications {
 		if err := t.TypeCheck(spec); err != nil {
 			return fmt.Errorf("method specification %q: %w", spec.MethodName, err)
 		}
+	}
+	return nil
+}
+
+func checkUniqueMethodNames(i ast.InterfaceTypeLiteral) error {
+	methodNames := []name{}
+	for _, spec := range i.MethodSpecifications {
+		methodNames = append(methodNames, name(spec.MethodName))
+	}
+	if err := distinct(methodNames); err != nil {
+		return fmt.Errorf("method name %w", err)
 	}
 	return nil
 }
