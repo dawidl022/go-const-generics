@@ -5,5 +5,8 @@ import (
 )
 
 func TypeCheck(p ast.Program) error {
-	return checkDistinctTypeDeclarations(p)
+	if err := checkDistinctTypeDeclarations(p); err != nil {
+		return err
+	}
+	return checkDistinctMethodDeclarations(p)
 }

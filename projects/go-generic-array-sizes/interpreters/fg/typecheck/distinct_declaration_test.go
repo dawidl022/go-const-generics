@@ -39,3 +39,11 @@ func TestTypeCheck_givenInterfaceTypeRedeclared_returnsError(t *testing.T) {
 	assertFailsTypeCheckWithError(t, distinctDeclarationInterfaceTypeRedeclaredGo,
 		`non distinct type declarations: redeclared "Speaker"`)
 }
+
+//go:embed testdata/distinct_declaration/method_redeclared/method_redeclared.go
+var distinctDeclarationMethodRedeclaredGo []byte
+
+func TestTypeCheck_givenMethodRedeclared_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, distinctDeclarationMethodRedeclaredGo,
+		`non distinct method declarations: redeclared "Arr.first"`)
+}
