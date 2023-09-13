@@ -6,4 +6,6 @@ type Visitor interface {
 	VisitArrayTypeLiteral(a ArrayTypeLiteral) error
 	VisitStructTypeLiteral(s StructTypeLiteral) error
 	VisitTypeName(t TypeName) error
+	VisitMethodSpecification(m MethodSpecification) error
+	VisitInterfaceLiteral(i InterfaceTypeLiteral) error
 }

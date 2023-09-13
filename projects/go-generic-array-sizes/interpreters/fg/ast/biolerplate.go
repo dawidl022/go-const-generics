@@ -69,8 +69,7 @@ func (t TypeName) Accept(visitor Visitor) error {
 }
 
 func (i InterfaceTypeLiteral) Accept(visitor Visitor) error {
-	//TODO implement me
-	panic("implement me")
+	return visitor.VisitInterfaceLiteral(i)
 }
 
 func (a ArrayTypeLiteral) Accept(visitor Visitor) error {
@@ -80,6 +79,10 @@ func (a ArrayTypeLiteral) Accept(visitor Visitor) error {
 func (m MethodDeclaration) Accept(visitor Visitor) error {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (m MethodSpecification) Accept(visitor Visitor) error {
+	return visitor.VisitMethodSpecification(m)
 }
 
 func (a ArraySetMethodDeclaration) Accept(visitor Visitor) error {
