@@ -46,3 +46,19 @@ func TestTypeCheck_givenDeclarationWithDuplicateParameterNames_returnsError(t *t
 	assertFailsTypeCheckWithError(t, declarationDuplicateSpecificationParamNamesGo,
 		`ill-typed declaration: type "Foo": method specification "something": argument name redeclared "x"`)
 }
+
+//go:embed testdata/declaration/duplicate_field_names/duplicate_field_names.go
+var declarationDuplicateStructFieldNamesGo []byte
+
+func TestTypeCheck_givenDeclarationWithDuplicateFieldNames_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationDuplicateStructFieldNamesGo,
+		`ill-typed declaration: type "Foo": field name redeclared "x"`)
+}
+
+//go:embed testdata/declaration/invalid_field_type/invalid_field_type.go
+var declarationInvalidFieldType []byte
+
+func TestTypeCheck_givenDeclarationWithInvalidStructFieldType_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationInvalidFieldType,
+		`ill-typed declaration: type "Foo": field "x" type name not declared: "Bar"`)
+}

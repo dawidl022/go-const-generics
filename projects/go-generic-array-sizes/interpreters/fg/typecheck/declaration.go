@@ -54,15 +54,25 @@ func (t typeCheckingVisitor) VisitArrayTypeLiteral(a ast.ArrayTypeLiteral) error
 }
 
 func (t typeCheckingVisitor) VisitStructTypeLiteral(s ast.StructTypeLiteral) error {
-	//if err := distinct(s.Fields); err != nil {
-	//	// TODO test with different types, as distinct may fail this
-	//	panic("untested branch")
-	//}
-	//for _, f := range s.Fields {
-	//	if err := t.TypeCheck(f.TypeName); err != nil {
-	//		panic("untested branch")
-	//	}
-	//}
+	if err := checkDistinctFiledNames(s); err != nil {
+		return err
+	}
+	for _, field := range s.Fields {
+		if err := t.TypeCheck(field.TypeName); err != nil {
+			return fmt.Errorf("field %q %w", field.Name, err)
+		}
+	}
+	return nil
+}
+
+func checkDistinctFiledNames(s ast.StructTypeLiteral) error {
+	fieldNames := []name{}
+	for _, field := range s.Fields {
+		fieldNames = append(fieldNames, name(field.Name))
+	}
+	if err := distinct(fieldNames); err != nil {
+		return fmt.Errorf("field name %w", err)
+	}
 	return nil
 }
 
