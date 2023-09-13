@@ -28,7 +28,7 @@ func (m MethodCall) String() string {
 }
 
 func (v ValueLiteral) String() string {
-	str := v.TypeName + "{"
+	str := v.TypeName.String() + "{"
 
 	for i, val := range v.Values {
 		if i > 0 {
@@ -47,4 +47,12 @@ func (s Select) String() string {
 
 func (a ArrayIndex) String() string {
 	return fmt.Sprintf("%s[%s]", a.Receiver, a.Index)
+}
+
+func (f Field) String() string {
+	return f.Name
+}
+
+func (t TypeName) String() string {
+	return string(t)
 }

@@ -49,7 +49,7 @@ func (m MethodCall) withReducedArg(declarations []Declaration, i int) (MethodCal
 	}, err
 }
 
-func isArraySetMethod(declarations []Declaration, typeName, methodName string) bool {
+func isArraySetMethod(declarations []Declaration, typeName TypeName, methodName string) bool {
 	for _, decl := range declarations {
 		methodDecl, isArraySetMethodDecl := decl.(ArraySetMethodDeclaration)
 		if isArraySetMethodDecl && matchesMethod(methodDecl, typeName, methodName) {
@@ -127,7 +127,7 @@ func (m MethodCall) reduceCall(declarations []Declaration, receiver ValueLiteral
 	return res, nil
 }
 
-func body(declarations []Declaration, typeName, methodName string) ([]string, Expression, error) {
+func body(declarations []Declaration, typeName TypeName, methodName string) ([]string, Expression, error) {
 	for _, decl := range declarations {
 		methodDecl, isMethodDecl := decl.(MethodDeclaration)
 		if isMethodDecl && matchesMethod(methodDecl, typeName, methodName) {
@@ -157,7 +157,7 @@ type CallableDeclaration interface {
 	GetMethodName() string
 }
 
-func matchesMethod(methodDeclaration CallableDeclaration, typeName, methodName string) bool {
+func matchesMethod(methodDeclaration CallableDeclaration, typeName TypeName, methodName string) bool {
 	return methodDeclaration.GetMethodReceiver().TypeName == typeName &&
 		methodDeclaration.GetMethodName() == methodName
 }

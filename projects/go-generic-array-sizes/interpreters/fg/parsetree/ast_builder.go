@@ -51,7 +51,7 @@ func (a *AntlrASTBuilder) VisitDeclaration(ctx *parser.DeclarationContext) inter
 
 func (a *AntlrASTBuilder) VisitTypeDeclaration(ctx *parser.TypeDeclarationContext) interface{} {
 	return ast.TypeDeclaration{
-		TypeName:    a.Visit(ctx.TypeName()).(string),
+		TypeName:    a.Visit(ctx.TypeName()).(ast.TypeName),
 		TypeLiteral: a.Visit(ctx.TypeLiteral()).(ast.TypeLiteral),
 	}
 }
@@ -70,7 +70,7 @@ func (a *AntlrASTBuilder) VisitArraySetMethodDeclaration(ctx *parser.ArraySetMet
 		MethodName:            a.Visit(ctx.MethodName()).(string),
 		IndexParameter:        a.Visit(ctx.MethodParameter(0)).(ast.MethodParameter),
 		ValueParameter:        a.Visit(ctx.MethodParameter(1)).(ast.MethodParameter),
-		ReturnType:            a.Visit(ctx.TypeName()).(string),
+		ReturnType:            a.Visit(ctx.TypeName()).(ast.TypeName),
 		IndexReceiverVariable: a.Visit(ctx.Variable(0)).(ast.Variable).Id,
 		IndexVariable:         a.Visit(ctx.Variable(1)).(ast.Variable).Id,
 		NewValueVariable:      a.Visit(ctx.Variable(2)).(ast.Variable).Id,
@@ -95,7 +95,7 @@ func (a *AntlrASTBuilder) VisitStructLiteral(ctx *parser.StructLiteralContext) i
 func (a *AntlrASTBuilder) VisitField(ctx *parser.FieldContext) interface{} {
 	return ast.Field{
 		Name:     a.Visit(ctx.FieldName()).(string),
-		TypeName: a.Visit(ctx.TypeName()).(string),
+		TypeName: a.Visit(ctx.TypeName()).(ast.TypeName),
 	}
 }
 
@@ -119,7 +119,7 @@ func (a *AntlrASTBuilder) VisitMethodSpecification(ctx *parser.MethodSpecificati
 func (a *AntlrASTBuilder) VisitMethodSignature(ctx *parser.MethodSignatureContext) interface{} {
 	signature := ast.MethodSignature{}
 	signature.MethodParameters = a.Visit(ctx.MethodParams()).([]ast.MethodParameter)
-	signature.ReturnTypeName = a.Visit(ctx.TypeName()).(string)
+	signature.ReturnTypeName = a.Visit(ctx.TypeName()).(ast.TypeName)
 	return signature
 }
 
@@ -134,7 +134,7 @@ func (a *AntlrASTBuilder) VisitMethodParams(ctx *parser.MethodParamsContext) int
 func (a *AntlrASTBuilder) VisitArrayLiteral(ctx *parser.ArrayLiteralContext) interface{} {
 	arrayLit := ast.ArrayTypeLiteral{}
 	arrayLit.Length = a.Visit(ctx.IntegerLiteral()).(ast.IntegerLiteral).IntValue
-	arrayLit.ElementTypeName = a.Visit(ctx.TypeName()).(string)
+	arrayLit.ElementTypeName = a.Visit(ctx.TypeName()).(ast.TypeName)
 	return arrayLit
 }
 
@@ -157,13 +157,13 @@ func (a *AntlrASTBuilder) VisitMethodReceiver(ctx *parser.MethodReceiverContext)
 func (a *AntlrASTBuilder) VisitMethodParameter(ctx *parser.MethodParameterContext) interface{} {
 	receiver := ast.MethodParameter{}
 	receiver.ParameterName = a.Visit(ctx.Variable()).(ast.Variable).Id
-	receiver.TypeName = a.Visit(ctx.TypeName()).(string)
+	receiver.TypeName = a.Visit(ctx.TypeName()).(ast.TypeName)
 	return receiver
 }
 
 func (a *AntlrASTBuilder) VisitValueLiteral(ctx *parser.ValueLiteralContext) interface{} {
 	valLiteral := ast.ValueLiteral{}
-	valLiteral.TypeName = a.Visit(ctx.TypeName()).(string)
+	valLiteral.TypeName = a.Visit(ctx.TypeName()).(ast.TypeName)
 	valLiteral.Values = a.Visit(ctx.ExpressionList()).([]ast.Expression)
 	return valLiteral
 }
@@ -213,7 +213,7 @@ func (a *AntlrASTBuilder) VisitVariable(ctx *parser.VariableContext) interface{}
 }
 
 func (a *AntlrASTBuilder) VisitTypeName(ctx *parser.TypeNameContext) interface{} {
-	return ctx.ID().GetText()
+	return ast.TypeName(ctx.ID().GetText())
 }
 
 func (a *AntlrASTBuilder) VisitMethodName(ctx *parser.MethodNameContext) interface{} {

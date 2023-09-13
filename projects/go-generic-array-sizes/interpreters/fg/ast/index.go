@@ -50,7 +50,7 @@ func (a ArrayIndex) reduceToIndex(declarations []Declaration, receiver ValueLite
 	return receiver.Values[index], nil
 }
 
-func inIndexBounds(declarations []Declaration, arrayTypeName string, n int) (bool, error) {
+func inIndexBounds(declarations []Declaration, arrayTypeName TypeName, n int) (bool, error) {
 	if n < 0 {
 		return false, nil
 	}

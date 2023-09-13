@@ -25,7 +25,7 @@ func (s Select) withReducedReceiver(declarations []Declaration) (Expression, err
 	return Select{FieldName: s.FieldName, Receiver: reducedReceiver}, err
 }
 
-func fields(declarations []Declaration, structTypeName string) ([]Field, error) {
+func fields(declarations []Declaration, structTypeName TypeName) ([]Field, error) {
 	for _, decl := range declarations {
 		typeDecl, isTypeDecl := decl.(TypeDeclaration)
 

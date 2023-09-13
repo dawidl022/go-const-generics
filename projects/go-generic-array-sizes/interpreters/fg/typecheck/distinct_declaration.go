@@ -27,11 +27,11 @@ func checkDistinctMethodDeclarations(p ast.Program) error {
 	return nil
 }
 
-func typeDeclarationNames(decl []ast.Declaration) []typeDeclarationName {
-	res := []typeDeclarationName{}
+func typeDeclarationNames(decl []ast.Declaration) []ast.TypeName {
+	res := []ast.TypeName{}
 	for _, d := range decl {
 		if typeDecl, isTypeDecl := d.(ast.TypeDeclaration); isTypeDecl {
-			res = append(res, typeDeclarationName(typeDecl.TypeName))
+			res = append(res, typeDecl.TypeName)
 		}
 	}
 	return res
@@ -67,14 +67,8 @@ func distinct[T comparableStringer](names []T) error {
 	return nil
 }
 
-type typeDeclarationName string
-
-func (t typeDeclarationName) String() string {
-	return string(t)
-}
-
 type methodDeclarationName struct {
-	typeName   string
+	typeName   ast.TypeName
 	methodName string
 }
 

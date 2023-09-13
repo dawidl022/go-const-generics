@@ -1,20 +1,26 @@
 package ast
 
+type Visitable interface {
+	Accept(visitor Visitor) error
+}
+
 type Program struct {
 	Declarations []Declaration
 	Expression   Expression
 }
 
 type Declaration interface {
+	Visitable
 	declarationNode()
 }
 
 type TypeDeclaration struct {
-	TypeName    string
+	TypeName    TypeName
 	TypeLiteral TypeLiteral
 }
 
 type TypeLiteral interface {
+	Visitable
 	typeLiteralNode()
 }
 
@@ -24,8 +30,10 @@ type StructTypeLiteral struct {
 
 type Field struct {
 	Name     string
-	TypeName string
+	TypeName TypeName
 }
+
+type TypeName string
 
 type InterfaceTypeLiteral struct {
 	MethodSpecifications []MethodSpecification
@@ -38,18 +46,19 @@ type MethodSpecification struct {
 
 type MethodSignature struct {
 	MethodParameters []MethodParameter
-	ReturnTypeName   string
+	ReturnTypeName   TypeName
 }
 
 type MethodParameter struct {
 	ParameterName string
-	TypeName      string
+	TypeName      TypeName
 }
 
 type ArrayTypeLiteral struct {
 	Length          int
-	ElementTypeName string
+	ElementTypeName TypeName
 }
+
 
 type MethodDeclaration struct {
 	MethodReceiver      MethodParameter
@@ -62,7 +71,7 @@ type ArraySetMethodDeclaration struct {
 	MethodName            string
 	IndexParameter        MethodParameter
 	ValueParameter        MethodParameter
-	ReturnType            string
+	ReturnType            TypeName
 	IndexReceiverVariable string
 	IndexVariable         string
 	NewValueVariable      string
@@ -84,7 +93,7 @@ type MethodCall struct {
 }
 
 type ValueLiteral struct {
-	TypeName string
+	TypeName TypeName
 	Values   []Expression
 }
 

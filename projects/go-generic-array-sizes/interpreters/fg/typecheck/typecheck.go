@@ -8,5 +8,8 @@ func TypeCheck(p ast.Program) error {
 	if err := checkDistinctTypeDeclarations(p); err != nil {
 		return err
 	}
-	return checkDistinctMethodDeclarations(p)
+	if err := checkDistinctMethodDeclarations(p); err != nil {
+		return err
+	}
+	return newTypeCheckingVisitor(p.Declarations).TypeCheck(p)
 }

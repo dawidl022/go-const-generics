@@ -51,3 +51,38 @@ func (a ArraySetMethodDeclaration) GetMethodReceiver() MethodParameter {
 func (a ArraySetMethodDeclaration) GetMethodName() string {
 	return a.MethodName
 }
+
+func (p Program) Accept(visitor Visitor) error {
+	return visitor.VisitProgram(p)
+}
+
+func (t TypeDeclaration) Accept(visitor Visitor) error {
+	return visitor.VisitTypeDeclaration(t)
+}
+
+func (s StructTypeLiteral) Accept(visitor Visitor) error {
+	return visitor.VisitStructTypeLiteral(s)
+}
+
+func (t TypeName) Accept(visitor Visitor) error {
+	return visitor.VisitTypeName(t)
+}
+
+func (i InterfaceTypeLiteral) Accept(visitor Visitor) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a ArrayTypeLiteral) Accept(visitor Visitor) error {
+	return visitor.VisitArrayTypeLiteral(a)
+}
+
+func (m MethodDeclaration) Accept(visitor Visitor) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a ArraySetMethodDeclaration) Accept(visitor Visitor) error {
+	//TODO implement me
+	panic("implement me")
+}
