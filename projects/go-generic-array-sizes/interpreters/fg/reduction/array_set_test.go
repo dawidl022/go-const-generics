@@ -81,3 +81,13 @@ var arraySetExpressionReceiverGo []byte
 func TestReduceArraySet_withNonValueReceiver_reducesReceiver(t *testing.T) {
 	assertEqualAfterSingleReduction(t, arraySetExpressionReceiverGo, "Arr{1, 2}.Set(Arr{1, 2}[0], 3)")
 }
+
+//go:embed testdata/array_set/struct_receiver/struct_receiver.go
+var arraySetStructReceiverGo []byte
+
+func TestReduceArraySet_withStructReceiver_returnsError(t *testing.T) {
+	_, err := parseAndReduceOneStep(arraySetStructReceiverGo)
+
+	require.Error(t, err)
+	require.Equal(t, `no array type named "Foo" found in declarations`, err.Error())
+}
