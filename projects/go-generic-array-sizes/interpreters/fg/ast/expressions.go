@@ -3,6 +3,7 @@ package ast
 import "fmt"
 
 type Expression interface {
+	TypeVisitable
 	Reduce(declarations []Declaration) (Expression, error)
 	Value() Value
 	bind(variables map[string]Expression) (Expression, error)

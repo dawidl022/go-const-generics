@@ -77,8 +77,7 @@ func (a ArrayTypeLiteral) Accept(visitor Visitor) error {
 }
 
 func (m MethodDeclaration) Accept(visitor Visitor) error {
-	//TODO implement me
-	panic("implement me")
+	return visitor.VisitMethodDeclaration(m)
 }
 
 func (m MethodSpecification) Accept(visitor Visitor) error {
@@ -86,6 +85,35 @@ func (m MethodSpecification) Accept(visitor Visitor) error {
 }
 
 func (a ArraySetMethodDeclaration) Accept(visitor Visitor) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (v Variable) Accept(visitor TypeVisitor) (TypeName, error) {
+	return visitor.VisitVariable(v)
+}
+
+func (i IntegerLiteral) Accept(visitor TypeVisitor) (TypeName, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m MethodCall) Accept(visitor TypeVisitor) (TypeName, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (v ValueLiteral) Accept(visitor TypeVisitor) (TypeName, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s Select) Accept(visitor TypeVisitor) (TypeName, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a ArrayIndex) Accept(visitor TypeVisitor) (TypeName, error) {
 	//TODO implement me
 	panic("implement me")
 }

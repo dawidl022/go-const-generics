@@ -1,9 +1,5 @@
 package ast
 
-type Visitable interface {
-	Accept(visitor Visitor) error
-}
-
 type Program struct {
 	Declarations []Declaration
 	Expression   Expression
@@ -58,7 +54,6 @@ type ArrayTypeLiteral struct {
 	Length          int
 	ElementTypeName TypeName
 }
-
 
 type MethodDeclaration struct {
 	MethodReceiver      MethodParameter

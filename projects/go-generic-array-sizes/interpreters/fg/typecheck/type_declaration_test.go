@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-//go:embed testdata/declaration/invalid_array_type/invalid_array_type.go
+//go:embed testdata/type_declaration/invalid_array_type/invalid_array_type.go
 var declarationInvalidArrayTypeGo []byte
 
 func TestTypeCheck_givenDeclarationWithInvalidArrayType_returnsError(t *testing.T) {
@@ -15,7 +15,7 @@ func TestTypeCheck_givenDeclarationWithInvalidArrayType_returnsError(t *testing.
 		`ill-typed declaration: type "Arr": element type name not declared: "Bar"`)
 }
 
-//go:embed testdata/declaration/zero_size_array/zero_size_array.go
+//go:embed testdata/type_declaration/zero_size_array/zero_size_array.go
 var declarationZeroSizeArrayGo []byte
 
 func TestTypeCheck_givenDeclarationWithZeroSizeArray_returnsNoError(t *testing.T) {
@@ -23,7 +23,7 @@ func TestTypeCheck_givenDeclarationWithZeroSizeArray_returnsNoError(t *testing.T
 	require.NoError(t, err)
 }
 
-//go:embed testdata/declaration/invalid_specification_return_type/invalid_specification_return_type.go
+//go:embed testdata/type_declaration/invalid_specification_return_type/invalid_specification_return_type.go
 var declarationInvalidSpecificationReturnTypeGo []byte
 
 func TestTypeCheck_givenDeclarationWithInvalidSpecificationReturnType_returnsError(t *testing.T) {
@@ -31,7 +31,7 @@ func TestTypeCheck_givenDeclarationWithInvalidSpecificationReturnType_returnsErr
 		`ill-typed declaration: type "Foo": method specification "something": return type name not declared: "thing"`)
 }
 
-//go:embed testdata/declaration/invalid_specification_param_type/invalid_argument_param_type.go
+//go:embed testdata/type_declaration/invalid_specification_param_type/invalid_argument_param_type.go
 var declarationInvalidSpecificationParamReturnTypeGo []byte
 
 func TestTypeCheck_givenDeclarationWithInvalidSpecificationParameterType_returnsError(t *testing.T) {
@@ -39,7 +39,7 @@ func TestTypeCheck_givenDeclarationWithInvalidSpecificationParameterType_returns
 		`ill-typed declaration: type "Foo": method specification "something": argument "y" type name not declared: "thing"`)
 }
 
-//go:embed testdata/declaration/duplicate_specification_param_names/duplicate_specification_param_names.go
+//go:embed testdata/type_declaration/duplicate_specification_param_names/duplicate_specification_param_names.go
 var declarationDuplicateSpecificationParamNamesGo []byte
 
 func TestTypeCheck_givenDeclarationWithDuplicateParameterNames_returnsError(t *testing.T) {
@@ -47,7 +47,7 @@ func TestTypeCheck_givenDeclarationWithDuplicateParameterNames_returnsError(t *t
 		`ill-typed declaration: type "Foo": method specification "something": argument name redeclared "x"`)
 }
 
-//go:embed testdata/declaration/duplicate_field_names/duplicate_field_names.go
+//go:embed testdata/type_declaration/duplicate_field_names/duplicate_field_names.go
 var declarationDuplicateStructFieldNamesGo []byte
 
 func TestTypeCheck_givenDeclarationWithDuplicateFieldNames_returnsError(t *testing.T) {
@@ -55,7 +55,7 @@ func TestTypeCheck_givenDeclarationWithDuplicateFieldNames_returnsError(t *testi
 		`ill-typed declaration: type "Foo": field name redeclared "x"`)
 }
 
-//go:embed testdata/declaration/invalid_field_type/invalid_field_type.go
+//go:embed testdata/type_declaration/invalid_field_type/invalid_field_type.go
 var declarationInvalidFieldTypeGo []byte
 
 func TestTypeCheck_givenDeclarationWithInvalidStructFieldType_returnsError(t *testing.T) {
@@ -63,7 +63,7 @@ func TestTypeCheck_givenDeclarationWithInvalidStructFieldType_returnsError(t *te
 		`ill-typed declaration: type "Foo": field "x" type name not declared: "Bar"`)
 }
 
-//go:embed testdata/declaration/duplicate_interface_method_names/duplicate_interface_method_names.go
+//go:embed testdata/type_declaration/duplicate_interface_method_names/duplicate_interface_method_names.go
 var declarationDuplicateInterfaceMethodNamesGo []byte
 
 func TestTypeCheck_givenInterfaceDeclarationWithDuplicateMethodNames_returnsError(t *testing.T) {
