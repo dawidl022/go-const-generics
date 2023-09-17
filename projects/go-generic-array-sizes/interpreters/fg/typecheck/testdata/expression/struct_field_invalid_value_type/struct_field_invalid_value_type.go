@@ -4,12 +4,10 @@ type any interface {
 }
 
 type Foo struct {
-	x Bar
-}
-
-type Bar struct {
+	x int
+	y any
 }
 
 func main() {
-	_ = Foo{1}
+	_ = Foo{1, Bar{}}
 }

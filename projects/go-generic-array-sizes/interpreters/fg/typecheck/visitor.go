@@ -25,5 +25,8 @@ func (t typeCheckingVisitor) VisitProgram(p ast.Program) error {
 		}
 	}
 	_, err := t.typeOf(nil, p.Expression)
-	return err
+	if err != nil {
+		return fmt.Errorf("ill-typed main expression: %w", err)
+	}
+	return nil
 }

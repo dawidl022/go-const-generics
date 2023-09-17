@@ -7,6 +7,15 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
 )
 
+func (t typeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDeclaration {
+	for _, decl := range t.declarations {
+		if typeDecl, isTypeDecl := decl.(ast.TypeDeclaration); isTypeDecl && typeDecl.TypeName == typeName {
+			return typeDecl
+		}
+	}
+	panic("could not find declaration for typename")
+}
+
 func (t typeCheckingVisitor) VisitTypeName(typeName ast.TypeName) error {
 	if slices.Contains(typeDeclarationNames(t.declarations), typeName) || typeName == "int" {
 		return nil
