@@ -89,31 +89,43 @@ func (a ArraySetMethodDeclaration) Accept(visitor Visitor) error {
 	panic("implement me")
 }
 
-func (v Variable) Accept(visitor TypeVisitor) (TypeName, error) {
+func (v Variable) Accept(visitor TypeVisitor) (Type, error) {
 	return visitor.VisitVariable(v)
 }
 
-func (i IntegerLiteral) Accept(visitor TypeVisitor) (TypeName, error) {
+func (i IntegerLiteral) Accept(visitor TypeVisitor) (Type, error) {
+	return i, nil
+}
+
+func (m MethodCall) Accept(visitor TypeVisitor) (Type, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (m MethodCall) Accept(visitor TypeVisitor) (TypeName, error) {
+func (v ValueLiteral) Accept(visitor TypeVisitor) (Type, error) {
+	return visitor.VisitValueLiteral(v)
+}
+
+func (s Select) Accept(visitor TypeVisitor) (Type, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (v ValueLiteral) Accept(visitor TypeVisitor) (TypeName, error) {
+func (a ArrayIndex) Accept(visitor TypeVisitor) (Type, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s Select) Accept(visitor TypeVisitor) (TypeName, error) {
-	//TODO implement me
-	panic("implement me")
+func (t TypeName) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
+	return visitor.VisitTypeName(t)
 }
 
-func (a ArrayIndex) Accept(visitor TypeVisitor) (TypeName, error) {
-	//TODO implement me
-	panic("implement me")
+func (i IntegerLiteral) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
+	return visitor.VisitIntegerLiteral(i)
+}
+
+func (t TypeName) typeNode() {
+}
+
+func (i IntegerLiteral) typeNode() {
 }

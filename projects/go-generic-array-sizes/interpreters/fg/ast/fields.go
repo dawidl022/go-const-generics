@@ -13,7 +13,7 @@ func (s Select) Reduce(declarations []Declaration) (Expression, error) {
 		return nil, fmt.Errorf("cannot access field %q on primitive value %s", s.FieldName, s.Receiver)
 	}
 
-	structFields, err := fields(declarations, receiver.TypeName)
+	structFields, err := Fields(declarations, receiver.TypeName)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +25,7 @@ func (s Select) withReducedReceiver(declarations []Declaration) (Expression, err
 	return Select{FieldName: s.FieldName, Receiver: reducedReceiver}, err
 }
 
-func fields(declarations []Declaration, structTypeName TypeName) ([]Field, error) {
+func Fields(declarations []Declaration, structTypeName TypeName) ([]Field, error) {
 	for _, decl := range declarations {
 		typeDecl, isTypeDecl := decl.(TypeDeclaration)
 

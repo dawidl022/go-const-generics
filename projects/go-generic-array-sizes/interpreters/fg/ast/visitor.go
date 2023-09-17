@@ -16,9 +16,19 @@ type Visitor interface {
 }
 
 type TypeVisitable interface {
-	Accept(visitor TypeVisitor) (TypeName, error)
+	Accept(visitor TypeVisitor) (Type, error)
 }
 
 type TypeVisitor interface {
-	VisitVariable(v Variable) (TypeName, error)
+	VisitVariable(v Variable) (Type, error)
+	VisitValueLiteral(v ValueLiteral) (Type, error)
+}
+
+type MethodVisitable interface {
+	AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification
+}
+
+type MethodVisitor interface {
+	VisitTypeName(t TypeName) []MethodSpecification
+	VisitIntegerLiteral(i IntegerLiteral) []MethodSpecification
 }

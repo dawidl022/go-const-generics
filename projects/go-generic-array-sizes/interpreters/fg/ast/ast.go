@@ -1,5 +1,9 @@
 package ast
 
+import (
+	"fmt"
+)
+
 type Program struct {
 	Declarations []Declaration
 	Expression   Expression
@@ -27,6 +31,12 @@ type StructTypeLiteral struct {
 type Field struct {
 	Name     string
 	TypeName TypeName
+}
+
+type Type interface {
+	MethodVisitable
+	typeNode()
+	fmt.Stringer
 }
 
 type TypeName string

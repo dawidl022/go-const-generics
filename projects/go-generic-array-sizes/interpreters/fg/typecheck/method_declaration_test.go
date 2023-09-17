@@ -79,7 +79,8 @@ func TestTypeCheck_givenInvalidMethodExpressionInterfaceSubtypeWithMultipleMetho
 //go:embed testdata/method_declaration/invalid_expression_interface_subtype_different_param_names/invalid_expression_interface_subtype_different_param_names.go
 var declarationInvalidExpressionInterfaceSubtypeDifferentParamNamesGo []byte
 
-func TestTypeCheck_givenInvalidMethodExpressionInterfaceSubtypeWithDifferentParamNames_returnsError(t *testing.T) {
+// this is valid go, but for simplicity is not allowed in FG
+func TestTypeCheck_givenMethodExpressionInterfaceSubtypeWithDifferentParamNames_returnsError(t *testing.T) {
 	assertFailsTypeCheckWithError(t, declarationInvalidExpressionInterfaceSubtypeDifferentParamNamesGo,
 		`ill-typed declaration: method "Foo.GetIntGetter": `+
 			`return expression of type "Foo" is not a subtype of "IntGetter": `+

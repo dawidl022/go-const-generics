@@ -6,31 +6,35 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
 )
 
-func (t typeCheckingVisitor) typeOf(variableEnv map[string]ast.TypeName, expression ast.Expression) (ast.TypeName, error) {
-	return newTypeVisitor(variableEnv).typeOf(expression)
+func (t typeCheckingVisitor) typeOf(variableEnv map[string]ast.TypeName, expression ast.Expression) (ast.Type, error) {
+	return t.newTypeVisitor(variableEnv).typeOf(expression)
 }
 
 type typeVisitor struct {
+	typeCheckingVisitor
 	variableEnv map[string]ast.TypeName
 }
 
-func newTypeVisitor(variableEnv map[string]ast.TypeName) typeVisitor {
-	return typeVisitor{variableEnv: variableEnv}
+func (t typeCheckingVisitor) newTypeVisitor(variableEnv map[string]ast.TypeName) typeVisitor {
+	return typeVisitor{typeCheckingVisitor: t, variableEnv: variableEnv}
 }
 
-func (t typeVisitor) typeOf(expression ast.Expression) (ast.TypeName, error) {
+func (t typeVisitor) typeOf(expression ast.Expression) (ast.Type, error) {
 	return expression.Accept(t)
 }
 
-func (t typeVisitor) VisitVariable(v ast.Variable) (ast.TypeName, error) {
+func (t typeVisitor) VisitVariable(v ast.Variable) (ast.Type, error) {
 	if varType, isVarInEnv := t.variableEnv[v.Id]; isVarInEnv {
 		return varType, nil
 	}
 	panic("untested branch")
 }
 
-func (t typeCheckingVisitor) checkIsSubtypeOf(subtype ast.TypeName, supertype ast.TypeName) error {
+func (t typeCheckingVisitor) checkIsSubtypeOf(subtype ast.Type, supertype ast.TypeName) error {
 	if subtype == supertype {
+		return nil
+	}
+	if _, isIntLiteral := subtype.(ast.IntegerLiteral); isIntLiteral && supertype == "int" {
 		return nil
 	}
 	// TODO integer literal is subtype of int
@@ -43,7 +47,7 @@ func (t typeCheckingVisitor) checkIsSubtypeOf(subtype ast.TypeName, supertype as
 		if !isInterfaceDecl {
 			continue
 		}
-		fmt.Println(subtype)
+		// TODO check against right supertype name, can probably remove loop and do check inside methods call
 		missingMethods := methodDifference(t.methods(supertype), t.methods(subtype))
 		if len(missingMethods) > 0 {
 			return fmt.Errorf("type %q is not a subtype of %q: missing methods: %s", subtype, supertype, missingMethods) // TODO include methods that are missing in error message
@@ -95,20 +99,38 @@ func (m MethodSet) String() string {
 	return s
 }
 
-func (t typeCheckingVisitor) methods(typeName ast.TypeName) MethodSet {
-	// TODO extract int into constant "intTypeName"
+func (t typeCheckingVisitor) methods(astType ast.Type) MethodSet {
+	return t.newMethodVisitor().methodsOf(astType)
+}
 
-	typeDecl := t.typeDeclarationOf(typeName)
+func (t typeCheckingVisitor) newMethodVisitor() methodVisitor {
+	return methodVisitor{typeCheckingVisitor: t}
+}
+
+type methodVisitor struct {
+	typeCheckingVisitor
+}
+
+func (v methodVisitor) VisitTypeName(typeName ast.TypeName) []ast.MethodSpecification {
+	typeDecl := v.typeDeclarationOf(typeName)
 	switch typeDecl.TypeLiteral.(type) {
 	case ast.StructTypeLiteral:
-		return t.valueTypeMethods(typeName)
+		return v.valueTypeMethods(typeName)
 	case ast.ArrayTypeLiteral:
-		return t.valueTypeMethods(typeName)
+		return v.valueTypeMethods(typeName)
 	case ast.InterfaceTypeLiteral:
 		return typeDecl.TypeLiteral.(ast.InterfaceTypeLiteral).MethodSpecifications
 	default:
 		panic("unhandled type literal type")
 	}
+}
+
+func (v methodVisitor) VisitIntegerLiteral(i ast.IntegerLiteral) []ast.MethodSpecification {
+	return nil
+}
+
+func (v methodVisitor) methodsOf(astType ast.Type) MethodSet {
+	return MethodSet(astType.AcceptMethodVisitor(v))
 }
 
 func (t typeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDeclaration {
@@ -135,4 +157,65 @@ func (t typeCheckingVisitor) valueTypeMethods(typeName ast.TypeName) []ast.Metho
 		}
 	}
 	return res
+}
+
+func (t typeVisitor) VisitValueLiteral(v ast.ValueLiteral) (ast.Type, error) {
+	if t.isStructTypeName(v.TypeName) {
+		return v.TypeName, t.typeCheckStructLiteral(v)
+	}
+	if t.isArrayTypeName(v.TypeName) {
+		return v.TypeName, t.typeCheckArrayLiteral(v)
+	}
+	return nil, fmt.Errorf("undeclared value literal type name: %s", v.TypeName)
+}
+
+func (t typeVisitor) isStructTypeName(typeName ast.TypeName) bool {
+	for _, decl := range t.declarations {
+		typeDecl, isTypeDecl := decl.(ast.TypeDeclaration)
+		if !isTypeDecl {
+			continue
+		}
+		_, isStructTypeLit := typeDecl.TypeLiteral.(ast.StructTypeLiteral)
+		if isStructTypeLit && typeDecl.TypeName == typeName {
+			return true
+		}
+	}
+	return false
+}
+
+func (t typeVisitor) typeCheckStructLiteral(v ast.ValueLiteral) error {
+	fields, err := ast.Fields(t.declarations, v.TypeName)
+	if err != nil {
+		panic("type checker should not call fields on non-struct type literal")
+	}
+	for i, f := range fields {
+		// TODO check less values than fields
+		fieldType, err := t.typeOf(v.Values[i])
+		if err != nil {
+			panic("untested branch")
+		}
+		err = t.checkIsSubtypeOf(fieldType, f.TypeName)
+		if err != nil {
+			return fmt.Errorf("cannot use %q as field %q of struct %q: %w", v.Values[i], f.Name, v.TypeName, err)
+		}
+	}
+	return nil
+}
+
+func (t typeVisitor) isArrayTypeName(typeName ast.TypeName) bool {
+	for _, decl := range t.declarations {
+		typeDecl, isTypeDecl := decl.(ast.TypeDeclaration)
+		if !isTypeDecl {
+			continue
+		}
+		_, isArrayTypeLit := typeDecl.TypeLiteral.(ast.ArrayTypeLiteral)
+		if isArrayTypeLit && typeDecl.TypeName == typeName {
+			return true
+		}
+	}
+	return false
+}
+
+func (t typeVisitor) typeCheckArrayLiteral(v ast.ValueLiteral) error {
+	return nil
 }

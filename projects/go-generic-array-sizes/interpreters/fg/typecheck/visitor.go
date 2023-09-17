@@ -24,5 +24,6 @@ func (t typeCheckingVisitor) VisitProgram(p ast.Program) error {
 			return fmt.Errorf("ill-typed declaration: %w", err)
 		}
 	}
-	return nil
+	_, err := t.typeOf(nil, p.Expression)
+	return err
 }
