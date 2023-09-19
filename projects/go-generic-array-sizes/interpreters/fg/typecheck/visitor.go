@@ -30,3 +30,20 @@ func (t typeCheckingVisitor) VisitProgram(p ast.Program) error {
 	}
 	return nil
 }
+
+func (t typeCheckingVisitor) typeOf(variableEnv map[string]ast.TypeName, expression ast.Expression) (ast.Type, error) {
+	return t.newTypeVisitor(variableEnv).typeOf(expression)
+}
+
+type typeVisitor struct {
+	typeCheckingVisitor
+	variableEnv map[string]ast.TypeName
+}
+
+func (t typeCheckingVisitor) newTypeVisitor(variableEnv map[string]ast.TypeName) typeVisitor {
+	return typeVisitor{typeCheckingVisitor: t, variableEnv: variableEnv}
+}
+
+func (t typeVisitor) typeOf(expression ast.Expression) (ast.Type, error) {
+	return expression.Accept(t)
+}
