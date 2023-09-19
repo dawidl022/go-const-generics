@@ -22,6 +22,7 @@ type TypeVisitable interface {
 type TypeVisitor interface {
 	VisitVariable(v Variable) (Type, error)
 	VisitValueLiteral(v ValueLiteral) (Type, error)
+	VisitField(s Select) (Type, error)
 }
 
 type MethodVisitable interface {

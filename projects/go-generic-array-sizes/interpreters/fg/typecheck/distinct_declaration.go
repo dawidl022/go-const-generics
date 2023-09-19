@@ -8,7 +8,7 @@ import (
 
 func checkDistinctTypeDeclarations(p ast.Program) error {
 	typeDecl := typeDeclarationNames(p.Declarations)
-	typeDecl = append(typeDecl, "int")
+	typeDecl = append(typeDecl, intTypeName)
 
 	err := distinct(typeDecl)
 	if err != nil {

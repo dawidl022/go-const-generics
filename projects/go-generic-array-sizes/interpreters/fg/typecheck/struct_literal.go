@@ -27,8 +27,3 @@ func (t typeVisitor) typeCheckStructLiteral(v ast.ValueLiteral) error {
 	}
 	return nil
 }
-
-func (t typeVisitor) typeCheckArrayLiteral(v ast.ValueLiteral) error {
-	// TODO
-	return nil
-}

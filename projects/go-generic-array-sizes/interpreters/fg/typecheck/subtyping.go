@@ -10,7 +10,7 @@ func (t typeCheckingVisitor) checkIsSubtypeOf(subtype ast.Type, supertype ast.Ty
 	if subtype == supertype {
 		return nil
 	}
-	if _, isIntLiteral := subtype.(ast.IntegerLiteral); isIntLiteral && supertype == "int" {
+	if _, isIntLiteral := subtype.(ast.IntegerLiteral); isIntLiteral && supertype == intTypeName {
 		return nil
 	}
 	if !t.isInterfaceTypeName(supertype) {

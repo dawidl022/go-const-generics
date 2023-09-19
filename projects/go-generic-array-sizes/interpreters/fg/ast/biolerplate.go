@@ -107,8 +107,7 @@ func (v ValueLiteral) Accept(visitor TypeVisitor) (Type, error) {
 }
 
 func (s Select) Accept(visitor TypeVisitor) (Type, error) {
-	//TODO implement me
-	panic("implement me")
+	return visitor.VisitField(s)
 }
 
 func (a ArrayIndex) Accept(visitor TypeVisitor) (Type, error) {

@@ -25,6 +25,9 @@ func (v methodVisitor) methodsOf(astType ast.Type) MethodSet {
 }
 
 func (v methodVisitor) VisitTypeName(typeName ast.TypeName) []ast.MethodSpecification {
+	if typeName == intTypeName {
+		return nil
+	}
 	typeDecl := v.typeDeclarationOf(typeName)
 	switch typeDecl.TypeLiteral.(type) {
 	case ast.StructTypeLiteral:

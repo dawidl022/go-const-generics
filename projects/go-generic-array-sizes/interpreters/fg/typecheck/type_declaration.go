@@ -13,11 +13,11 @@ func (t typeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDe
 			return typeDecl
 		}
 	}
-	panic("could not find declaration for typename")
+	panic(fmt.Sprintf("could not find declaration for typename %q", typeName))
 }
 
 func (t typeCheckingVisitor) VisitTypeName(typeName ast.TypeName) error {
-	if slices.Contains(typeDeclarationNames(t.declarations), typeName) || typeName == "int" {
+	if slices.Contains(typeDeclarationNames(t.declarations), typeName) || typeName == intTypeName {
 		return nil
 	}
 	return fmt.Errorf("type name not declared: %q", typeName)
