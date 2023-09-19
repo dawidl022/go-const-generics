@@ -102,3 +102,19 @@ func TestTypeCheck_givenValidMethodDeclarationWithBasicReturnExpressionType_retu
 	err := parseAndTypeCheck(declarationBasicGo)
 	require.NoError(t, err)
 }
+
+//go:embed testdata/method_declaration/unbound_variable/unbound_variable.go
+var methodDeclarationUnboundVariableGo []byte
+
+func TestTypeCheck_givenMethodDeclarationWithUnboundVariable_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, methodDeclarationUnboundVariableGo,
+		`ill-typed declaration: method "Foo.unbound": unbound variable: "x"`)
+}
+
+//go:embed testdata/method_declaration/array_receiver/array_receiver.go
+var methodDeclarationArrayReceiverGo []byte
+
+func TestTypeCheck_givenMethodDeclarationWithArrayReceiver_returnsNoError(t *testing.T) {
+	err := parseAndTypeCheck(methodDeclarationArrayReceiverGo)
+	require.NoError(t, err)
+}

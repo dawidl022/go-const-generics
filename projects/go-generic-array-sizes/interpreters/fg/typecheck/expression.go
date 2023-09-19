@@ -45,8 +45,11 @@ func (t typeVisitor) typeCheckStructLiteral(v ast.ValueLiteral) error {
 	if err != nil {
 		panic("type checker should not call fields on non-struct type literal")
 	}
+	if len(v.Values) != len(fields) {
+		return fmt.Errorf("struct literal of type %q requires %d values, but got %d",
+			v.TypeName, len(fields), len(v.Values))
+	}
 	for i, f := range fields {
-		// TODO check less values than fields
 		fieldType, err := t.typeOf(v.Values[i])
 		if err != nil {
 			return err

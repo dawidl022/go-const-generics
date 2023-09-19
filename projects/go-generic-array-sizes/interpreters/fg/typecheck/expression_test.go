@@ -66,3 +66,29 @@ func TestTypeCheck_givenStructWithInvalidValueLiteralAsField_returnsError(t *tes
 	assertFailsTypeCheckWithError(t, expressionStructFieldInvalidValueTypeGo,
 		`ill-typed main expression: undeclared value literal type name: "Bar"`)
 }
+
+//go:embed testdata/expression/struct_int_field_struct_literal/struct_int_field_struct_literal.go
+var expressionStructIntFieldStructLiteralGo []byte
+
+func TestTypeCheck_givenStructLiteralWithStructUsedInPlaceOfIntField_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, expressionStructIntFieldStructLiteralGo,
+		`ill-typed main expression: `+
+			`cannot use "Bar{}" as field "x" of struct "Foo": `+
+			`type "Bar" is not a subtype of "int"`)
+}
+
+//go:embed testdata/expression/struct_insufficient_values/struct_insufficient_values.go
+var expressionStructInsufficientValuesGo []byte
+
+func TestTypeCheck_givenStructLiteralInstantiatedWithLessValuesThanRequired_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, expressionStructInsufficientValuesGo,
+		`ill-typed main expression: struct literal of type "Foo" requires 2 values, but got 1`)
+}
+
+//go:embed testdata/expression/struct_extraneous_values/struct_extraneous_values.go
+var expressionStructExtraneousValuesGo []byte
+
+func TestTypeCheck_givenStructLiteralIntantiatedWithMoreValuesThanRequired_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, expressionStructExtraneousValuesGo,
+		`ill-typed main expression: struct literal of type "Foo" requires 2 values, but got 3`)
+}
