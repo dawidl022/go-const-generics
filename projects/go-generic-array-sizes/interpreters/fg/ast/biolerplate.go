@@ -94,7 +94,7 @@ func (v Variable) Accept(visitor TypeVisitor) (Type, error) {
 }
 
 func (i IntegerLiteral) Accept(visitor TypeVisitor) (Type, error) {
-	return i, nil
+	return visitor.VisitIntLiteral(i)
 }
 
 func (m MethodCall) Accept(visitor TypeVisitor) (Type, error) {
