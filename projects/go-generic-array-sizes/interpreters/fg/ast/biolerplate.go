@@ -98,8 +98,7 @@ func (i IntegerLiteral) Accept(visitor TypeVisitor) (Type, error) {
 }
 
 func (m MethodCall) Accept(visitor TypeVisitor) (Type, error) {
-	//TODO implement me
-	panic("implement me")
+	return visitor.VisitMethodCall(m)
 }
 
 func (v ValueLiteral) Accept(visitor TypeVisitor) (Type, error) {

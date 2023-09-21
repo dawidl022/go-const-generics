@@ -8,6 +8,15 @@ import (
 
 type MethodSet []ast.MethodSpecification
 
+func (m MethodSet) get(methodName string) *ast.MethodSpecification {
+	for _, method := range m {
+		if method.MethodName == methodName {
+			return &method
+		}
+	}
+	return nil
+}
+
 func (t typeCheckingVisitor) methods(astType ast.Type) MethodSet {
 	return t.newMethodVisitor().methodsOf(astType)
 }
