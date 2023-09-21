@@ -110,8 +110,7 @@ func (s Select) Accept(visitor TypeVisitor) (Type, error) {
 }
 
 func (a ArrayIndex) Accept(visitor TypeVisitor) (Type, error) {
-	//TODO implement me
-	panic("implement me")
+	return visitor.VisitArrayIndex(a)
 }
 
 func (t TypeName) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
