@@ -85,8 +85,7 @@ func (m MethodSpecification) Accept(visitor Visitor) error {
 }
 
 func (a ArraySetMethodDeclaration) Accept(visitor Visitor) error {
-	//TODO implement me
-	panic("implement me")
+	return visitor.VisitArraySetMethodDeclaration(a)
 }
 
 func (v Variable) Accept(visitor TypeVisitor) (Type, error) {

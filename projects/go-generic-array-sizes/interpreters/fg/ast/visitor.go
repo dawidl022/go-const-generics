@@ -13,6 +13,7 @@ type Visitor interface {
 	VisitMethodSpecification(m MethodSpecification) error
 	VisitInterfaceLiteral(i InterfaceTypeLiteral) error
 	VisitMethodDeclaration(m MethodDeclaration) error
+	VisitArraySetMethodDeclaration(a ArraySetMethodDeclaration) error
 }
 
 type TypeVisitable interface {
