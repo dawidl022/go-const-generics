@@ -83,6 +83,16 @@ type ArraySetMethodDeclaration struct {
 	ReturnVariable        string
 }
 
+func (a ArraySetMethodDeclaration) MethodSpecification() MethodSpecification {
+	return MethodSpecification{
+		MethodName: a.MethodName,
+		MethodSignature: MethodSignature{
+			MethodParameters: []MethodParameter{a.IndexParameter, a.ValueParameter},
+			ReturnTypeName:   a.ReturnType,
+		},
+	}
+}
+
 type IntegerLiteral struct {
 	IntValue int
 }

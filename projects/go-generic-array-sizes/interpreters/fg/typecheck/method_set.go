@@ -59,10 +59,9 @@ func (v methodVisitor) valueTypeMethods(typeName ast.TypeName) []ast.MethodSpeci
 			res = append(res, methodDecl.MethodSpecification)
 			continue
 		}
-		_, isArraySetMethodDecl := decl.(ast.ArraySetMethodDeclaration)
+		arraySetMethodDecl, isArraySetMethodDecl := decl.(ast.ArraySetMethodDeclaration)
 		if isArraySetMethodDecl {
-			// TODO
-			panic("untested path")
+			res = append(res, arraySetMethodDecl.MethodSpecification())
 		}
 	}
 	return res

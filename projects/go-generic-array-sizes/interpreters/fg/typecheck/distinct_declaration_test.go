@@ -3,16 +3,17 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/distinct_declaration/valid/valid.go
 var distinctDeclarationValidGo []byte
 
-// TODO
-//func TestTypeCheck_givenDistinctDeclarations_returnsNoError(t *testing.T) {
-//	err := parseAndTypeCheck(distinctDeclarationValidGo)
-//	require.NoError(t, err)
-//}
+func TestTypeCheck_givenDistinctDeclarations_returnsNoError(t *testing.T) {
+	err := parseAndTypeCheck(distinctDeclarationValidGo)
+	require.NoError(t, err)
+}
 
 //go:embed testdata/distinct_declaration/int_shadow/int_shadow.go
 var distinctDeclarationIntShadowGo []byte

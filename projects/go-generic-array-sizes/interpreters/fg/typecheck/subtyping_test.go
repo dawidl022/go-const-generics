@@ -3,9 +3,9 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
-)
 
-// TODO double check terminology (covariant vs contravariant)
+	"github.com/stretchr/testify/require"
+)
 
 //go:embed testdata/subtyping/covariant_method_return_type/covariant_method_return_type.go
 var subtypingCovariantMethodReturnTypeGo []byte
@@ -43,13 +43,21 @@ func TestTypeCheck_givenStructWithIncompatibleMethodParameterTypeUsedAsStructFie
 
 }
 
-//go:embed testdata/subtyping/covariant_method_parameter/covariant_method_parameter.go
-var subtypingCovariantMethodParameterGo []byte
+//go:embed testdata/subtyping/contravariant_method_parameter/contravariant_method_parameter.go
+var subtypingContravariantMethodParameterGo []byte
 
-func TestTypeCheck_givenStructWithCovariantMethodParameterTypeUsedAsStructField_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, subtypingCovariantMethodParameterGo,
+func TestTypeCheck_givenStructWithContravariantMethodParameterTypeUsedAsStructField_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, subtypingContravariantMethodParameterGo,
 		`ill-typed main expression: `+
 			`cannot use "Foo{}" as field "getter" of struct "Bar": `+
 			`type "Foo" is not a subtype of "anyGetter": `+
 			`missing methods: "getAny(x int) any"`)
+}
+
+//go:embed testdata/subtyping/array_set_in_methods/array_set_in_methods.go
+var subtypingArraySetInMethodsGo []byte
+
+func TestTypeCheck_givenTypeImplementsInterfaceViaArraySetMethod_returnsNoError(t *testing.T) {
+	err := parseAndTypeCheck(subtypingArraySetInMethodsGo)
+	require.NoError(t, err)
 }

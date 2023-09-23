@@ -16,11 +16,10 @@ import (
 //go:embed testdata/acceptance/program.go
 var acceptanceProgramGo []byte
 
-// TODO
-//func TestTypeCheck_givenWellTypedProgram_returnsNoError(t *testing.T) {
-//	err := parseAndTypeCheck(acceptanceProgramGo)
-//	require.NoError(t, err)
-//}
+func TestTypeCheck_givenWellTypedProgram_returnsNoError(t *testing.T) {
+	err := parseAndTypeCheck(acceptanceProgramGo)
+	require.NoError(t, err)
+}
 
 // TODO eliminate duplication of reduction_test.go
 func parseFGProgram(code []byte) ast.Program {
