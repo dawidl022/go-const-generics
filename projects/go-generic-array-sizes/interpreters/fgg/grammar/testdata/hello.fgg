@@ -1,0 +1,40 @@
+package main
+
+type any interface {
+}
+
+type Array[N const, T any] [N]T
+
+type Foo[N const, T any] struct {
+	x Arr[N, T]
+	y T
+}
+
+type Fooer[N const, T any] interface {
+	foo(x Arr[N, T]) T
+}
+
+func (this Array[N, T]) First() T {
+	return this[0]
+}
+
+func (_1 Array[N, T]) Nth(_n int) T {
+	return _1[_n]
+}
+
+func (this Array[N, T]) foo(foo Foo[2, int]) Arr[2, int] {
+	return foo.x
+}
+
+func (this Array[N, T]) Length() int {
+	return 98_765_432_101
+}
+
+func (this Array[N, T]) Set(i int, x T) Array[N, T] {
+	this[i] = x;
+	return this
+}
+
+func main() {
+	_ = Array[2, int]{1, 2}.Set(0, 3).First()
+}
