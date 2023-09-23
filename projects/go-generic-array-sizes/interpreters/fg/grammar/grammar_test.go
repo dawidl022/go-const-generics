@@ -8,20 +8,46 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
+	fggParser "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
 )
 
 //go:embed testdata/hello.go
 var helloGo []byte
 
 func TestGrammarRecognisesHelloGoProgram(t *testing.T) {
-	input := antlr.NewIoStream(bytes.NewBuffer(helloGo))
-	lexer := parser.NewFGLexer(input)
-	stream := antlr.NewCommonTokenStream(lexer, 0)
+	tests := []struct {
+		name      string
+		newLexer  func(input antlr.CharStream) antlr.Lexer
+		newParser func(input antlr.TokenStream) antlr.Parser
+		program   func(parser antlr.Parser)
+	}{
+		{
+			name:      "FG",
+			newLexer:  func(i antlr.CharStream) antlr.Lexer { return parser.NewFGLexer(i) },
+			newParser: func(i antlr.TokenStream) antlr.Parser { return parser.NewFGParser(i) },
+			program:   func(p antlr.Parser) { p.(*parser.FGParser).Program() },
+		},
+		{
+			name:      "FGG",
+			newLexer:  func(i antlr.CharStream) antlr.Lexer { return fggParser.NewFGGLexer(i) },
+			newParser: func(i antlr.TokenStream) antlr.Parser { return fggParser.NewFGGParser(i) },
+			program:   func(p antlr.Parser) { p.(*fggParser.FGGParser).Program() },
+		},
+	}
 
-	p := parser.NewFGParser(stream)
-	p.AddErrorListener(failingErrorListener{t: t})
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
 
-	p.Program()
+			input := antlr.NewIoStream(bytes.NewBuffer(helloGo))
+			lexer := test.newLexer(input)
+			stream := antlr.NewCommonTokenStream(lexer, 0)
+
+			p := test.newParser(stream)
+			p.AddErrorListener(failingErrorListener{t: t})
+
+			test.program(p)
+		})
+	}
 }
 
 type failingErrorListener struct {
