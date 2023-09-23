@@ -10,6 +10,7 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parsetree"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/reduction"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/typecheck"
 )
 
 func Interpret(program io.Reader, debugOutput io.Writer) (string, error) {
@@ -18,8 +19,15 @@ func Interpret(program io.Reader, debugOutput io.Writer) (string, error) {
 		return "", fmt.Errorf("failed to parse program: %w", err)
 	}
 
-	observer := &debugObserver{writer: debugOutput}
-	reducer := reduction.NewProgramReducer([]reduction.Observer{observer})
+	err = typecheck.TypeCheck(p)
+	if err != nil {
+		return "", fmt.Errorf("type error: %w", err)
+	}
+
+	debugObserver := &debugObserver{writer: debugOutput}
+	typeObserver := &typeCheckingObserver{declarations: p.Declarations, writer: debugOutput}
+
+	reducer := reduction.NewProgramReducer([]reduction.Observer{debugObserver, typeObserver})
 
 	val, err := reducer.ReduceToValue(p)
 	if err != nil {
@@ -72,6 +80,26 @@ type debugObserver struct {
 func (d *debugObserver) Notify(expression ast.Expression) error {
 	d.stepNumber++
 	_, err := fmt.Fprintf(d.writer, "reduction step %d: %s\n", d.stepNumber, expression)
+	if err != nil {
+		return fmt.Errorf("failed to write to debug output: %w", err)
+	}
+	return nil
+}
+
+type typeCheckingObserver struct {
+	writer       io.Writer
+	declarations []ast.Declaration
+}
+
+func (t *typeCheckingObserver) Notify(expression ast.Expression) error {
+	err := typecheck.TypeCheck(ast.Program{
+		Declarations: t.declarations,
+		Expression:   expression,
+	})
+	if err != nil {
+		return fmt.Errorf("type error: %s\n", err)
+	}
+	_, err = fmt.Fprint(t.writer, "program well typed\n\n")
 	if err != nil {
 		return fmt.Errorf("failed to write to debug output: %w", err)
 	}
