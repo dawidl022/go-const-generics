@@ -11,9 +11,9 @@ declaration:
 	| arraySetMethodDeclaration;
 
 typeDeclaration:
-	'type' typeName typeParameterContraints? typeLiteral;
+	'type' typeName typeParameterConstraints? typeLiteral;
 
-typeParameterContraints:
+typeParameterConstraints:
 	'[' typeParameterConstraint (',' typeParameterConstraint)* ']';
 
 methodDeclaration:
@@ -38,8 +38,7 @@ methodParams: methodParameter? (',' methodParameter)*;
 methodParameter: variable type;
 
 type:
-	typeParameter				# typeParam
-	| typeName typeArguments?	# namedType
+	typeName typeArguments?	# namedType
 	| integerLiteral			# intType;
 
 typeParameters: '[' typeParameter (',' typeParameter)* ']';

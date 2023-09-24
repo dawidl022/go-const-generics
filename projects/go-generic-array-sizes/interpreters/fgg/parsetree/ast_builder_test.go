@@ -8,19 +8,19 @@ import (
 	"github.com/antlr4-go/antlr/v4"
 	"github.com/stretchr/testify/require"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
 )
 
 //go:embed testdata/fg/hello.go
-var helloGo []byte
+var helloFg []byte
 
-func TestAntlrAstBuilder_givenHelloGoProgram_buildsAst(t *testing.T) {
-	input := antlr.NewIoStream(bytes.NewBuffer(helloGo))
-	lexer := parser.NewFGLexer(input)
+func TestAntlrAstBuilder_givenHelloFgProgram_buildsAst(t *testing.T) {
+	input := antlr.NewIoStream(bytes.NewBuffer(helloFg))
+	lexer := parser.NewFGGLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 
-	p := parser.NewFGParser(stream)
+	p := parser.NewFGGParser(stream)
 	p.BuildParseTrees = true
 
 	tree := p.Program()
@@ -36,7 +36,7 @@ func TestAntlrAstBuilder_givenHelloGoProgram_buildsAst(t *testing.T) {
 			ast.TypeDeclaration{
 				TypeName: "AnyArray2",
 				TypeLiteral: ast.ArrayTypeLiteral{
-					Length:      ast.IntegerLiteral{IntValue: 3},
+					Length:      ast.IntegerLiteral{IntValue: 2},
 					ElementType: ast.NamedType{TypeName: "any"},
 				},
 			},

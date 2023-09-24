@@ -16,6 +16,7 @@ type TypeDeclaration struct {
 }
 
 type Type interface {
+	Bound
 	typeNode()
 }
 
@@ -29,6 +30,8 @@ type TypeParameter string
 type Bound interface {
 	boundNode()
 }
+
+type ConstType struct{}
 
 type TypeLiteral interface {
 	typeLiteralNode()

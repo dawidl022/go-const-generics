@@ -6,6 +6,9 @@ func (t TypeDeclaration) declarationNode() {
 func (t TypeParameter) typeNode() {
 }
 
+func (t TypeParameter) boundNode() {
+}
+
 func (s StructTypeLiteral) typeLiteralNode() {
 }
 
@@ -24,7 +27,16 @@ func (a ArraySetMethodDeclaration) declarationNode() {
 func (n NamedType) typeNode() {
 }
 
+func (n NamedType) boundNode() {
+}
+
 func (i IntegerLiteral) typeNode() {
+}
+
+func (i IntegerLiteral) boundNode() {
+}
+
+func (c ConstType) boundNode() {
 }
 
 func (i IntegerLiteral) expressionNode() {
