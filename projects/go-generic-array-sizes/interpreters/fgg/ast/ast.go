@@ -1,5 +1,7 @@
 package ast
 
+import "fmt"
+
 type Program struct {
 	Declarations []Declaration
 	Expression   Expression
@@ -18,6 +20,7 @@ type TypeDeclaration struct {
 type Type interface {
 	Bound
 	typeNode()
+	fmt.Stringer
 }
 
 type TypeParameterConstraint struct {
@@ -103,6 +106,7 @@ type NamedType struct {
 
 type Expression interface {
 	expressionNode()
+	fmt.Stringer
 }
 
 type IntegerLiteral struct {

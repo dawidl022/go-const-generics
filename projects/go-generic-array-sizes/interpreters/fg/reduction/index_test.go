@@ -11,7 +11,7 @@ import (
 var indexBasicGo []byte
 
 func TestReduceIndex_givenBasicValidExpression_returnsValueAtIndex(t *testing.T) {
-	p, err := parseAndReduceOneStep(indexBasicGo)
+	p, err := parseFGAndReduceOneStep(indexBasicGo)
 
 	require.NoError(t, err)
 	require.Equal(t, "1", p.Expression.Value().String())
@@ -21,7 +21,7 @@ func TestReduceIndex_givenBasicValidExpression_returnsValueAtIndex(t *testing.T)
 var indexMultipleIndicesGo []byte
 
 func TestReduceIndex_givenBasicValidExpressionWithMultipleIndices_returnsValueAtIndex(t *testing.T) {
-	p, err := parseAndReduceOneStep(indexMultipleIndicesGo)
+	p, err := parseFGAndReduceOneStep(indexMultipleIndicesGo)
 
 	require.NoError(t, err)
 	require.Equal(t, "2", p.Expression.Value().String())
@@ -32,7 +32,7 @@ var indexIncompleteLiteralGo []byte
 
 // note that an incomplete array literal is valid Go - but FG does not allow it
 func TestReduceIndex_givenArrayLiteralWithLessElementsThanDeclared_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(indexIncompleteLiteralGo)
+	_, err := parseFGAndReduceOneStep(indexIncompleteLiteralGo)
 
 	require.Error(t, err)
 	require.Equal(t, "array literal missing value at index 2", err.Error())
@@ -42,7 +42,7 @@ func TestReduceIndex_givenArrayLiteralWithLessElementsThanDeclared_returnsError(
 var indexOutOfBoundsGo []byte
 
 func TestReduceIndex_givenArrayIndexOutOfBounds_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(indexOutOfBoundsGo)
+	_, err := parseFGAndReduceOneStep(indexOutOfBoundsGo)
 
 	require.Error(t, err)
 	require.Equal(t, `index 1 out of bounds for array of type "Arr"`, err.Error())
@@ -52,7 +52,7 @@ func TestReduceIndex_givenArrayIndexOutOfBounds_returnsError(t *testing.T) {
 var indexNonArrayGo []byte
 
 func TestReduceIndex_givenIndexOnStruct_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(indexNonArrayGo)
+	_, err := parseFGAndReduceOneStep(indexNonArrayGo)
 
 	require.Error(t, err)
 	require.Equal(t, `no array type named "Foo" found in declarations`, err.Error())
@@ -62,7 +62,7 @@ func TestReduceIndex_givenIndexOnStruct_returnsError(t *testing.T) {
 var indexArrayValueGo []byte
 
 func TestReduceIndex_givenValidExpressionWithArrayElement_returnsArrayValue(t *testing.T) {
-	p, err := parseAndReduceOneStep(indexArrayValueGo)
+	p, err := parseFGAndReduceOneStep(indexArrayValueGo)
 
 	require.NoError(t, err)
 	require.Equal(t, "Arr{3, 4}", p.Expression.Value().String())
@@ -72,7 +72,7 @@ func TestReduceIndex_givenValidExpressionWithArrayElement_returnsArrayValue(t *t
 var indexStructValueGo []byte
 
 func TestReduceIndex_givenValidExpressionWithStructElement_returnsStructValue(t *testing.T) {
-	p, err := parseAndReduceOneStep(indexStructValueGo)
+	p, err := parseFGAndReduceOneStep(indexStructValueGo)
 
 	require.NoError(t, err)
 	require.Equal(t, "Structure{3, 4}", p.Expression.Value().String())
@@ -82,7 +82,7 @@ func TestReduceIndex_givenValidExpressionWithStructElement_returnsStructValue(t 
 var indexNonIntegerIndexGo []byte
 
 func TestReduceIndex_givenNonIntegerIndexArgument_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(indexNonIntegerIndexGo)
+	_, err := parseFGAndReduceOneStep(indexNonIntegerIndexGo)
 
 	require.Error(t, err)
 	require.Equal(t, `non integer value "Arr{1, 2}" used as index argument`, err.Error())
@@ -92,7 +92,7 @@ func TestReduceIndex_givenNonIntegerIndexArgument_returnsError(t *testing.T) {
 var indexIntegerReceiverGo []byte
 
 func TestReduceIndex_givenIntegerLiteralReceiver_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(indexIntegerReceiverGo)
+	_, err := parseFGAndReduceOneStep(indexIntegerReceiverGo)
 
 	require.Error(t, err)
 	require.Equal(t, `cannot access index on primitive value 1`, err.Error())

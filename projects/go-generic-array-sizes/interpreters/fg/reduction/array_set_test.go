@@ -18,7 +18,7 @@ func TestReduceArraySet_reducesToArrayLiteral(t *testing.T) {
 var arraySetOutOfBoundsGo []byte
 
 func TestReduceArraySet_withIndexOutOfBounds_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(arraySetOutOfBoundsGo)
+	_, err := parseFGAndReduceOneStep(arraySetOutOfBoundsGo)
 
 	require.Error(t, err)
 	require.Equal(t, `array set index 2 out of bounds for array of type "Arr"`, err.Error())
@@ -28,7 +28,7 @@ func TestReduceArraySet_withIndexOutOfBounds_returnsError(t *testing.T) {
 var arraySetNonIntegerIndexGo []byte
 
 func TestReduceArraySet_withNonIntegerValue_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(arraySetNonIntegerIndexGo)
+	_, err := parseFGAndReduceOneStep(arraySetNonIntegerIndexGo)
 
 	require.Error(t, err)
 	require.Equal(t, `non-integer index "Arr{1, 2}" in array set method call: Arr.Set`, err.Error())
@@ -38,7 +38,7 @@ func TestReduceArraySet_withNonIntegerValue_returnsError(t *testing.T) {
 var arraySetInsufficientArgumentsGo []byte
 
 func TestReduceArraySet_withLessArgumentsThanNecessary_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(arraySetInsufficientArgumentsGo)
+	_, err := parseFGAndReduceOneStep(arraySetInsufficientArgumentsGo)
 
 	require.Error(t, err)
 	require.Equal(t, `expected 2 arguments in call to "Arr.Set", but got 0`, err.Error())
@@ -48,7 +48,7 @@ func TestReduceArraySet_withLessArgumentsThanNecessary_returnsError(t *testing.T
 var arraySetExtraneousArgumentsGo []byte
 
 func TestReduceArraySet_withMoreArgumentsThanNecessary_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(arraySetExtraneousArgumentsGo)
+	_, err := parseFGAndReduceOneStep(arraySetExtraneousArgumentsGo)
 
 	require.Error(t, err)
 	require.Equal(t, `expected 2 arguments in call to "Arr.Set", but got 3`, err.Error())
@@ -86,7 +86,7 @@ func TestReduceArraySet_withNonValueReceiver_reducesReceiver(t *testing.T) {
 var arraySetStructReceiverGo []byte
 
 func TestReduceArraySet_withStructReceiver_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(arraySetStructReceiverGo)
+	_, err := parseFGAndReduceOneStep(arraySetStructReceiverGo)
 
 	require.Error(t, err)
 	require.Equal(t, `no array type named "Foo" found in declarations`, err.Error())

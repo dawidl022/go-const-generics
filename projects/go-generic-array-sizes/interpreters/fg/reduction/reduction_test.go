@@ -3,6 +3,11 @@ package reduction
 import (
 	"bytes"
 	_ "embed"
+	"fmt"
+	fggAst "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	fggParser "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
+	fggParsetree "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/reduction"
 	"testing"
 
 	"github.com/antlr4-go/antlr/v4"
@@ -104,18 +109,69 @@ func (s *savingObserver) stringifySteps() interface{} {
 	return res
 }
 
-func parseFGProgram(code []byte) ast.Program {
+type parseActionable[T any] interface {
+	newLexer(input antlr.CharStream) antlr.Lexer
+	newParser(input antlr.TokenStream) antlr.Parser
+	program(parser antlr.Parser) antlr.ParseTree
+	newAstBuilder(tree antlr.ParseTree) parsetree.ASTBuilder[T]
+}
+
+func parseProgram[T any](code []byte, actions parseActionable[T]) T {
 	input := antlr.NewIoStream(bytes.NewBuffer(code))
-	lexer := parser.NewFGLexer(input)
+	lexer := actions.newLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 
-	p := parser.NewFGParser(stream)
+	p := actions.newParser(stream)
 	p.AddErrorListener(failingErrorListener{})
-	p.BuildParseTrees = true
 
-	tree := p.Program()
-	astBuilder := parsetree.NewAntlrASTBuilder(tree)
+	tree := actions.program(p)
+	astBuilder := actions.newAstBuilder(tree)
 	return astBuilder.BuildAST()
+}
+
+func parseFGProgram(code []byte) ast.Program {
+	return parseProgram[ast.Program](code, parseFGActions{})
+}
+
+type parseFGActions struct{}
+
+func (parseFGActions) newLexer(input antlr.CharStream) antlr.Lexer {
+	return parser.NewFGLexer(input)
+}
+
+func (parseFGActions) newParser(input antlr.TokenStream) antlr.Parser {
+	return parser.NewFGParser(input)
+}
+
+func (parseFGActions) program(p antlr.Parser) antlr.ParseTree {
+	return p.(*parser.FGParser).Program()
+}
+
+func (parseFGActions) newAstBuilder(tree antlr.ParseTree) parsetree.ASTBuilder[ast.Program] {
+	return parsetree.NewAntlrASTBuilder(tree)
+}
+
+func parseFGGProgram(code []byte) fggAst.Program {
+	return parseProgram[fggAst.Program](code, parseFGGActions{})
+}
+
+type parseFGGActions struct {
+}
+
+func (parseFGGActions) newLexer(input antlr.CharStream) antlr.Lexer {
+	return fggParser.NewFGGLexer(input)
+}
+
+func (parseFGGActions) newParser(input antlr.TokenStream) antlr.Parser {
+	return fggParser.NewFGGParser(input)
+}
+
+func (parseFGGActions) program(p antlr.Parser) antlr.ParseTree {
+	return p.(*fggParser.FGGParser).Program()
+}
+
+func (parseFGGActions) newAstBuilder(tree antlr.ParseTree) parsetree.ASTBuilder[fggAst.Program] {
+	return fggParsetree.NewAntlrASTBuilder(tree)
 }
 
 type failingErrorListener struct {
@@ -126,14 +182,44 @@ func (f failingErrorListener) SyntaxError(_ antlr.Recognizer, _ interface{}, _, 
 	panic(msg)
 }
 
-func parseAndReduceOneStep(program []byte) (ast.Program, error) {
+func parseFGAndReduceOneStep(program []byte) (ast.Program, error) {
 	p := parseFGProgram(program)
 	return p.Reduce()
 }
 
-func assertEqualAfterSingleReduction(t *testing.T, program []byte, expected string) {
-	p, err := parseAndReduceOneStep(program)
+func parseFGGAndReduceOneStep(program []byte) (fggAst.Program, error) {
+	p := parseFGGProgram(program)
+	return reduction.NewProgramReducer().Reduce(p)
+}
 
-	require.NoError(t, err)
-	require.Equal(t, expected, p.Expression.String())
+func assertEqualAfterSingleReduction(t *testing.T, program []byte, expected string) {
+	tests := []struct {
+		name           string
+		parseAndReduce func(program []byte) (fmt.Stringer, error)
+	}{
+		{
+			name: "FG",
+			parseAndReduce: func(program []byte) (fmt.Stringer, error) {
+				p, err := parseFGAndReduceOneStep(program)
+				return p.Expression, err
+			},
+		},
+		{
+			name: "FGG",
+			parseAndReduce: func(program []byte) (fmt.Stringer, error) {
+				p, err := parseFGGAndReduceOneStep(program)
+				return p.Expression, err
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			expr, err := test.parseAndReduce(program)
+
+			require.NoError(t, err)
+			require.Equal(t, expected, expr.String())
+		})
+	}
+
 }

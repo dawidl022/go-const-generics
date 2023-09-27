@@ -13,7 +13,7 @@ import (
 var fieldBasicGo []byte
 
 func TestReduceField_givenBasicValidExpression_returnsValueOfField(t *testing.T) {
-	p, err := parseAndReduceOneStep(fieldBasicGo)
+	p, err := parseFGAndReduceOneStep(fieldBasicGo)
 
 	require.NoError(t, err)
 	require.Equal(t, "1", p.Expression.Value().String())
@@ -24,7 +24,7 @@ func TestReduceField_givenBasicValidExpression_returnsValueOfField(t *testing.T)
 var fieldMultipleFieldsGo []byte
 
 func TestReduceField_givenValidExpressionWithMultipleFields_returnsValueOfCorrectField(t *testing.T) {
-	p, err := parseAndReduceOneStep(fieldMultipleFieldsGo)
+	p, err := parseFGAndReduceOneStep(fieldMultipleFieldsGo)
 
 	require.NoError(t, err)
 	require.Equal(t, "2", p.Expression.Value().String())
@@ -34,7 +34,7 @@ func TestReduceField_givenValidExpressionWithMultipleFields_returnsValueOfCorrec
 var fieldArrayValueGo []byte
 
 func TestReduceField_givenValidExpressionWithArrayField_returnsArrayValue(t *testing.T) {
-	p, err := parseAndReduceOneStep(fieldArrayValueGo)
+	p, err := parseFGAndReduceOneStep(fieldArrayValueGo)
 
 	require.NoError(t, err)
 	require.Equal(t, "Arr{1, 2}", p.Expression.Value().String())
@@ -44,7 +44,7 @@ func TestReduceField_givenValidExpressionWithArrayField_returnsArrayValue(t *tes
 var fieldStructValueGo []byte
 
 func TestReduceField_givenValidExpressionWithStructField_returnsStructValue(t *testing.T) {
-	p, err := parseAndReduceOneStep(fieldStructValueGo)
+	p, err := parseFGAndReduceOneStep(fieldStructValueGo)
 
 	require.NoError(t, err)
 	require.Equal(t, "Structure{1, 2}", p.Expression.Value().String())
@@ -54,7 +54,7 @@ func TestReduceField_givenValidExpressionWithStructField_returnsStructValue(t *t
 var fieldZeroValuesGo []byte
 
 func TestReduceField_givenStructLiteralWithLessFieldsThanDeclared_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(fieldZeroValuesGo)
+	_, err := parseFGAndReduceOneStep(fieldZeroValuesGo)
 
 	require.Error(t, err)
 	require.Equal(t, "struct literal missing value at index 1", err.Error())
@@ -64,7 +64,7 @@ func TestReduceField_givenStructLiteralWithLessFieldsThanDeclared_returnsError(t
 var fieldInvalidFieldGo []byte
 
 func TestReduceField_givenUndeclaredField_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(fieldInvalidFieldGo)
+	_, err := parseFGAndReduceOneStep(fieldInvalidFieldGo)
 
 	require.Error(t, err)
 	require.Equal(t, `no field named "y" found on struct of type "Foo"`, err.Error())
@@ -74,7 +74,7 @@ func TestReduceField_givenUndeclaredField_returnsError(t *testing.T) {
 var fieldNonStructGo []byte
 
 func TestReduceField_givenFieldAccessOnArray_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(fieldNonStructGo)
+	_, err := parseFGAndReduceOneStep(fieldNonStructGo)
 
 	require.Error(t, err)
 	require.Equal(t, `no struct type named "Foo" found in declarations`, err.Error())
@@ -84,7 +84,7 @@ func TestReduceField_givenFieldAccessOnArray_returnsError(t *testing.T) {
 var fieldIntegerReceiverGo []byte
 
 func TestReduceField_givenIntegerLiteralReceiver_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(fieldIntegerReceiverGo)
+	_, err := parseFGAndReduceOneStep(fieldIntegerReceiverGo)
 
 	require.Error(t, err)
 	require.Equal(t, `cannot access field "base" on primitive value 1`, err.Error())

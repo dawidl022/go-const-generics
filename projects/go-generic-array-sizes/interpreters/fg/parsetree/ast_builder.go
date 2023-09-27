@@ -9,8 +9,8 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
 )
 
-type ASTBuilder interface {
-	BuildAST() ast.Program
+type ASTBuilder[T any] interface {
+	BuildAST() T
 }
 
 type AntlrASTBuilder struct {

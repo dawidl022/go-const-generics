@@ -23,7 +23,7 @@ func TestMethodCall_isNotAValue(t *testing.T) {
 var callUndeclaredMethodGo []byte
 
 func TestReduceCall_givenUndeclaredMethodCall_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(callUndeclaredMethodGo)
+	_, err := parseFGAndReduceOneStep(callUndeclaredMethodGo)
 
 	require.Error(t, err)
 	require.Equal(t, `undeclared method "magic" on type "Foo"`, err.Error())
@@ -33,7 +33,7 @@ func TestReduceCall_givenUndeclaredMethodCall_returnsError(t *testing.T) {
 var callIntegerMethodGo []byte
 
 func TestReduceCall_givenIntegerMethodCall_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(callIntegerMethodGo)
+	_, err := parseFGAndReduceOneStep(callIntegerMethodGo)
 
 	require.Error(t, err)
 	require.Equal(t, `cannot call method "magic" on primitive value 1`, err.Error())
@@ -50,7 +50,7 @@ func TestReduceCall_givenIdentityMethod_reducesToArgument(t *testing.T) {
 var callUnboundVariableGo []byte
 
 func TestReduceCall_givenUnboundVariable_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(callUnboundVariableGo)
+	_, err := parseFGAndReduceOneStep(callUnboundVariableGo)
 
 	require.Error(t, err)
 	require.Equal(t, `cannot call method "Foo.unbound": unbound variable "x"`, err.Error())
@@ -95,7 +95,7 @@ func TestReduceCall_givenRecursiveCallWithArguments_reducesSingleStepOfRecursion
 var callUnboundMethodReceiverGo []byte
 
 func TestReduceCall_givenUnboundMethodReceiver_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(callUnboundMethodReceiverGo)
+	_, err := parseFGAndReduceOneStep(callUnboundMethodReceiverGo)
 
 	require.Error(t, err)
 	require.Equal(t, `cannot call method "Foo.unbound": unbound variable "x"`, err.Error())
@@ -105,7 +105,7 @@ func TestReduceCall_givenUnboundMethodReceiver_returnsError(t *testing.T) {
 var callUnboundMethodArgumentGo []byte
 
 func TestReduceCall_givenUnboundMethodArguments_returnsErrorWithFirstEncounteredUnboundVariable(t *testing.T) {
-	_, err := parseAndReduceOneStep(callUnboundMethodArgumentGo)
+	_, err := parseFGAndReduceOneStep(callUnboundMethodArgumentGo)
 
 	require.Error(t, err)
 	require.Equal(t, `cannot call method "Foo.unbound": unbound variable "y"`, err.Error())
@@ -115,7 +115,7 @@ func TestReduceCall_givenUnboundMethodArguments_returnsErrorWithFirstEncountered
 var callInsufficientArgumentsGo []byte
 
 func TestReduceCall_givenLessArgumentsThanRequired_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(callInsufficientArgumentsGo)
+	_, err := parseFGAndReduceOneStep(callInsufficientArgumentsGo)
 
 	require.Error(t, err)
 	require.Equal(t, `expected 2 argument(s) in call to "Foo.firstArg", but got 1`, err.Error())
@@ -125,7 +125,7 @@ func TestReduceCall_givenLessArgumentsThanRequired_returnsError(t *testing.T) {
 var callExtraneousArgumentsGo []byte
 
 func TestReduceCall_givenMoreArgumentsThanRequired_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(callExtraneousArgumentsGo)
+	_, err := parseFGAndReduceOneStep(callExtraneousArgumentsGo)
 
 	require.Error(t, err)
 	require.Equal(t, `expected 0 argument(s) in call to "Foo.answer", but got 2`, err.Error())
@@ -149,7 +149,7 @@ func TestReduceCall_givenMethodWithParameterisedArrayLiteral_reducesToLiteralWit
 var callUnboundValueLiteralVariable []byte
 
 func TestReduceCall_givenMethodWithUnboundValueLiteralVariables_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(callUnboundValueLiteralVariable)
+	_, err := parseFGAndReduceOneStep(callUnboundValueLiteralVariable)
 
 	require.Error(t, err)
 	require.Equal(t, `cannot call method "Foo.unbound": unbound variable "x"`, err.Error())
@@ -180,7 +180,7 @@ func TestReduceCall_givenMethodWithVariableArrayIndexReceiverAndIndex_reducesToA
 var callUnboundIndexReceiverGo []byte
 
 func TestReduceCall_givenMethodWithUnboundArrayIndexReceiver_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(callUnboundIndexReceiverGo)
+	_, err := parseFGAndReduceOneStep(callUnboundIndexReceiverGo)
 
 	require.Error(t, err)
 	require.Equal(t, `cannot call method "Arr.unboundIndex": unbound variable "b"`, err.Error())
@@ -190,7 +190,7 @@ func TestReduceCall_givenMethodWithUnboundArrayIndexReceiver_returnsError(t *tes
 var callUnboundIndexIndexGo []byte
 
 func TestReduceCall_givenMethodWithUnboundArrayIndexIndex_returnsError(t *testing.T) {
-	_, err := parseAndReduceOneStep(callUnboundIndexIndexGo)
+	_, err := parseFGAndReduceOneStep(callUnboundIndexIndexGo)
 
 	require.Error(t, err)
 	require.Equal(t, `cannot call method "Arr.unboundIndex": unbound variable "i"`, err.Error())
