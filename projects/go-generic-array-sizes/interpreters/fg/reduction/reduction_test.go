@@ -4,10 +4,6 @@ import (
 	"bytes"
 	_ "embed"
 	"fmt"
-	fggAst "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
-	fggParser "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
-	fggParsetree "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/reduction"
 	"testing"
 
 	"github.com/antlr4-go/antlr/v4"
@@ -16,6 +12,10 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parsetree"
+	fggAst "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	fggParser "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
+	fggParsetree "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
+	fggReduction "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/reduction"
 )
 
 //go:embed testdata/acceptance/program.go
@@ -189,7 +189,7 @@ func parseFGAndReduceOneStep(program []byte) (ast.Program, error) {
 
 func parseFGGAndReduceOneStep(program []byte) (fggAst.Program, error) {
 	p := parseFGGProgram(program)
-	return reduction.NewProgramReducer().Reduce(p)
+	return fggReduction.NewProgramReducer().Reduce(p)
 }
 
 func assertEqualAfterSingleReduction(t *testing.T, program []byte, expected string) {
