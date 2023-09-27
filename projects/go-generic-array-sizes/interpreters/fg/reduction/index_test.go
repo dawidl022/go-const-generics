@@ -3,28 +3,20 @@ package reduction
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/index/basic/basic.go
 var indexBasicGo []byte
 
 func TestReduceIndex_givenBasicValidExpression_returnsValueAtIndex(t *testing.T) {
-	p, err := parseFGAndReduceOneStep(indexBasicGo)
-
-	require.NoError(t, err)
-	require.Equal(t, "1", p.Expression.Value().String())
+	assertEqualAfterSingleReduction(t, indexBasicGo, "1")
 }
 
 //go:embed testdata/index/multiple_indices/multiple_indices.go
 var indexMultipleIndicesGo []byte
 
 func TestReduceIndex_givenBasicValidExpressionWithMultipleIndices_returnsValueAtIndex(t *testing.T) {
-	p, err := parseFGAndReduceOneStep(indexMultipleIndicesGo)
-
-	require.NoError(t, err)
-	require.Equal(t, "2", p.Expression.Value().String())
+	assertEqualAfterSingleReduction(t, indexMultipleIndicesGo, "2")
 }
 
 //go:embed testdata/index/incomplete_literal/incomplete_literal.go
@@ -32,68 +24,52 @@ var indexIncompleteLiteralGo []byte
 
 // note that an incomplete array literal is valid Go - but FG does not allow it
 func TestReduceIndex_givenArrayLiteralWithLessElementsThanDeclared_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(indexIncompleteLiteralGo)
-
-	require.Error(t, err)
-	require.Equal(t, "array literal missing value at index 2", err.Error())
+	assertErrorAfterSingleReduction(t, indexIncompleteLiteralGo,
+		"array literal missing value at index 2")
 }
 
 //go:embed testdata/index/out_of_bounds/out_of_bounds.go
 var indexOutOfBoundsGo []byte
 
 func TestReduceIndex_givenArrayIndexOutOfBounds_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(indexOutOfBoundsGo)
-
-	require.Error(t, err)
-	require.Equal(t, `index 1 out of bounds for array of type "Arr"`, err.Error())
+	assertErrorAfterSingleReduction(t, indexOutOfBoundsGo,
+		`index 1 out of bounds for array of type "Arr"`)
 }
 
 //go:embed testdata/index/struct_receiver/struct_receiver.go
 var indexNonArrayGo []byte
 
 func TestReduceIndex_givenIndexOnStruct_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(indexNonArrayGo)
-
-	require.Error(t, err)
-	require.Equal(t, `no array type named "Foo" found in declarations`, err.Error())
+	assertErrorAfterSingleReduction(t, indexNonArrayGo,
+		`no array type named "Foo" found in declarations`)
 }
 
 //go:embed testdata/index/array_value/array_value.go
 var indexArrayValueGo []byte
 
 func TestReduceIndex_givenValidExpressionWithArrayElement_returnsArrayValue(t *testing.T) {
-	p, err := parseFGAndReduceOneStep(indexArrayValueGo)
-
-	require.NoError(t, err)
-	require.Equal(t, "Arr{3, 4}", p.Expression.Value().String())
+	assertEqualAfterSingleReduction(t, indexArrayValueGo, "Arr{3, 4}")
 }
 
 //go:embed testdata/index/struct_value/struct_value.go
 var indexStructValueGo []byte
 
 func TestReduceIndex_givenValidExpressionWithStructElement_returnsStructValue(t *testing.T) {
-	p, err := parseFGAndReduceOneStep(indexStructValueGo)
-
-	require.NoError(t, err)
-	require.Equal(t, "Structure{3, 4}", p.Expression.Value().String())
+	assertEqualAfterSingleReduction(t, indexStructValueGo, "Structure{3, 4}")
 }
 
 //go:embed testdata/index/non_integer_index/non_integer_index.go
 var indexNonIntegerIndexGo []byte
 
 func TestReduceIndex_givenNonIntegerIndexArgument_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(indexNonIntegerIndexGo)
-
-	require.Error(t, err)
-	require.Equal(t, `non integer value "Arr{1, 2}" used as index argument`, err.Error())
+	assertErrorAfterSingleReduction(t, indexNonIntegerIndexGo,
+		`non integer value "Arr{1, 2}" used as index argument`)
 }
 
 //go:embed testdata/index/integer_receiver/integer_receiver.go
 var indexIntegerReceiverGo []byte
 
 func TestReduceIndex_givenIntegerLiteralReceiver_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(indexIntegerReceiverGo)
-
-	require.Error(t, err)
-	require.Equal(t, `cannot access index on primitive value 1`, err.Error())
+	assertErrorAfterSingleReduction(t, indexIntegerReceiverGo,
+		`cannot access index on primitive value 1`)
 }

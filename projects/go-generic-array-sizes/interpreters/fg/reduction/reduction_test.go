@@ -3,7 +3,6 @@ package reduction
 import (
 	"bytes"
 	_ "embed"
-	"fmt"
 	"testing"
 
 	"github.com/antlr4-go/antlr/v4"
@@ -193,27 +192,7 @@ func parseFGGAndReduceOneStep(program []byte) (fggAst.Program, error) {
 }
 
 func assertEqualAfterSingleReduction(t *testing.T, program []byte, expected string) {
-	tests := []struct {
-		name           string
-		parseAndReduce func(program []byte) (fmt.Stringer, error)
-	}{
-		{
-			name: "FG",
-			parseAndReduce: func(program []byte) (fmt.Stringer, error) {
-				p, err := parseFGAndReduceOneStep(program)
-				return p.Expression, err
-			},
-		},
-		{
-			name: "FGG",
-			parseAndReduce: func(program []byte) (fmt.Stringer, error) {
-				p, err := parseFGGAndReduceOneStep(program)
-				return p.Expression, err
-			},
-		},
-	}
-
-	for _, test := range tests {
+	for _, test := range reductionTests() {
 		t.Run(test.name, func(t *testing.T) {
 			expr, err := test.parseAndReduce(program)
 
@@ -221,5 +200,23 @@ func assertEqualAfterSingleReduction(t *testing.T, program []byte, expected stri
 			require.Equal(t, expected, expr.String())
 		})
 	}
+}
 
+func assertErrorAfterSingleReduction(t *testing.T, program []byte, expectedErrMsg string) {
+	for _, test := range reductionTests() {
+		t.Run(test.name, func(t *testing.T) {
+			_, err := test.parseAndReduce(program)
+
+			require.EqualError(t, err, expectedErrMsg)
+		})
+	}
+}
+
+func assertEqualValueAndFailsToReduce(t *testing.T, program []byte, expectedValue string) {
+	for _, test := range valueTests() {
+		t.Run(test.name, func(t *testing.T) {
+			require.Panics(t, func() { test.parseAndReduce(program) })
+			require.Equal(t, expectedValue, test.parseAndValue(program).String())
+		})
+	}
 }

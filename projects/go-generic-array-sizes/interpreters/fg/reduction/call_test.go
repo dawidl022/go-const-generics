@@ -23,20 +23,16 @@ func TestMethodCall_isNotAValue(t *testing.T) {
 var callUndeclaredMethodGo []byte
 
 func TestReduceCall_givenUndeclaredMethodCall_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(callUndeclaredMethodGo)
-
-	require.Error(t, err)
-	require.Equal(t, `undeclared method "magic" on type "Foo"`, err.Error())
+	assertErrorAfterSingleReduction(t, callUndeclaredMethodGo,
+		`undeclared method "magic" on type "Foo"`)
 }
 
 //go:embed testdata/call/integer_method/integer_method.go
 var callIntegerMethodGo []byte
 
 func TestReduceCall_givenIntegerMethodCall_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(callIntegerMethodGo)
-
-	require.Error(t, err)
-	require.Equal(t, `cannot call method "magic" on primitive value 1`, err.Error())
+	assertErrorAfterSingleReduction(t, callIntegerMethodGo,
+		`cannot call method "magic" on primitive value 1`)
 }
 
 //go:embed testdata/call/identity/identity.go
@@ -50,10 +46,8 @@ func TestReduceCall_givenIdentityMethod_reducesToArgument(t *testing.T) {
 var callUnboundVariableGo []byte
 
 func TestReduceCall_givenUnboundVariable_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(callUnboundVariableGo)
-
-	require.Error(t, err)
-	require.Equal(t, `cannot call method "Foo.unbound": unbound variable "x"`, err.Error())
+	assertErrorAfterSingleReduction(t, callUnboundVariableGo,
+		`cannot call method "Foo.unbound": unbound variable "x"`)
 }
 
 //go:embed testdata/call/receiver_identity/receiver_identity.go
@@ -95,40 +89,32 @@ func TestReduceCall_givenRecursiveCallWithArguments_reducesSingleStepOfRecursion
 var callUnboundMethodReceiverGo []byte
 
 func TestReduceCall_givenUnboundMethodReceiver_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(callUnboundMethodReceiverGo)
-
-	require.Error(t, err)
-	require.Equal(t, `cannot call method "Foo.unbound": unbound variable "x"`, err.Error())
+	assertErrorAfterSingleReduction(t, callUnboundMethodReceiverGo,
+		`cannot call method "Foo.unbound": unbound variable "x"`)
 }
 
 //go:embed testdata/call/unbound_method_argument/unbound_method_argument.go
 var callUnboundMethodArgumentGo []byte
 
 func TestReduceCall_givenUnboundMethodArguments_returnsErrorWithFirstEncounteredUnboundVariable(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(callUnboundMethodArgumentGo)
-
-	require.Error(t, err)
-	require.Equal(t, `cannot call method "Foo.unbound": unbound variable "y"`, err.Error())
+	assertErrorAfterSingleReduction(t, callUnboundMethodArgumentGo,
+		`cannot call method "Foo.unbound": unbound variable "y"`)
 }
 
 //go:embed testdata/call/insufficient_arguments/insufficient_arguments.go
 var callInsufficientArgumentsGo []byte
 
 func TestReduceCall_givenLessArgumentsThanRequired_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(callInsufficientArgumentsGo)
-
-	require.Error(t, err)
-	require.Equal(t, `expected 2 argument(s) in call to "Foo.firstArg", but got 1`, err.Error())
+	assertErrorAfterSingleReduction(t, callInsufficientArgumentsGo,
+		`expected 2 argument(s) in call to "Foo.firstArg", but got 1`)
 }
 
 //go:embed testdata/call/extraneous_arguments/extraneous_arguments.go
 var callExtraneousArgumentsGo []byte
 
 func TestReduceCall_givenMoreArgumentsThanRequired_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(callExtraneousArgumentsGo)
-
-	require.Error(t, err)
-	require.Equal(t, `expected 0 argument(s) in call to "Foo.answer", but got 2`, err.Error())
+	assertErrorAfterSingleReduction(t, callExtraneousArgumentsGo,
+		`expected 0 argument(s) in call to "Foo.answer", but got 2`)
 }
 
 //go:embed testdata/call/struct_literal_variables/struct_literal_variables.go
@@ -149,10 +135,8 @@ func TestReduceCall_givenMethodWithParameterisedArrayLiteral_reducesToLiteralWit
 var callUnboundValueLiteralVariable []byte
 
 func TestReduceCall_givenMethodWithUnboundValueLiteralVariables_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(callUnboundValueLiteralVariable)
-
-	require.Error(t, err)
-	require.Equal(t, `cannot call method "Foo.unbound": unbound variable "x"`, err.Error())
+	assertErrorAfterSingleReduction(t, callUnboundValueLiteralVariable,
+		`cannot call method "Foo.unbound": unbound variable "x"`)
 }
 
 //go:embed testdata/call/index_receiver_variable/index_receiver_variable.go
@@ -180,18 +164,14 @@ func TestReduceCall_givenMethodWithVariableArrayIndexReceiverAndIndex_reducesToA
 var callUnboundIndexReceiverGo []byte
 
 func TestReduceCall_givenMethodWithUnboundArrayIndexReceiver_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(callUnboundIndexReceiverGo)
-
-	require.Error(t, err)
-	require.Equal(t, `cannot call method "Arr.unboundIndex": unbound variable "b"`, err.Error())
+	assertErrorAfterSingleReduction(t, callUnboundIndexReceiverGo,
+		`cannot call method "Arr.unboundIndex": unbound variable "b"`)
 }
 
 //go:embed testdata/call/unbound_index_index/unbound_index_index.go
 var callUnboundIndexIndexGo []byte
 
 func TestReduceCall_givenMethodWithUnboundArrayIndexIndex_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(callUnboundIndexIndexGo)
-
-	require.Error(t, err)
-	require.Equal(t, `cannot call method "Arr.unboundIndex": unbound variable "i"`, err.Error())
+	assertErrorAfterSingleReduction(t, callUnboundIndexIndexGo,
+		`cannot call method "Arr.unboundIndex": unbound variable "i"`)
 }

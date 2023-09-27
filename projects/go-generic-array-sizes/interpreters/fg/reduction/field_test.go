@@ -24,68 +24,51 @@ func TestReduceField_givenBasicValidExpression_returnsValueOfField(t *testing.T)
 var fieldMultipleFieldsGo []byte
 
 func TestReduceField_givenValidExpressionWithMultipleFields_returnsValueOfCorrectField(t *testing.T) {
-	p, err := parseFGAndReduceOneStep(fieldMultipleFieldsGo)
-
-	require.NoError(t, err)
-	require.Equal(t, "2", p.Expression.Value().String())
+	assertEqualAfterSingleReduction(t, fieldMultipleFieldsGo, "2")
 }
 
 //go:embed testdata/field/array_value/array_value.go
 var fieldArrayValueGo []byte
 
 func TestReduceField_givenValidExpressionWithArrayField_returnsArrayValue(t *testing.T) {
-	p, err := parseFGAndReduceOneStep(fieldArrayValueGo)
-
-	require.NoError(t, err)
-	require.Equal(t, "Arr{1, 2}", p.Expression.Value().String())
+	assertEqualAfterSingleReduction(t, fieldArrayValueGo, "Arr{1, 2}")
 }
 
 //go:embed testdata/field/struct_value/struct_value.go
 var fieldStructValueGo []byte
 
 func TestReduceField_givenValidExpressionWithStructField_returnsStructValue(t *testing.T) {
-	p, err := parseFGAndReduceOneStep(fieldStructValueGo)
-
-	require.NoError(t, err)
-	require.Equal(t, "Structure{1, 2}", p.Expression.Value().String())
+	assertEqualAfterSingleReduction(t, fieldStructValueGo, "Structure{1, 2}")
 }
 
 //go:embed testdata/field/incomplete_literal/incomplete_literal.go
 var fieldZeroValuesGo []byte
 
 func TestReduceField_givenStructLiteralWithLessFieldsThanDeclared_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(fieldZeroValuesGo)
-
-	require.Error(t, err)
-	require.Equal(t, "struct literal missing value at index 1", err.Error())
+	assertErrorAfterSingleReduction(t, fieldZeroValuesGo,
+		"struct literal missing value at index 1")
 }
 
 //go:embed testdata/field/invalid_field/invalid_field.go
 var fieldInvalidFieldGo []byte
 
 func TestReduceField_givenUndeclaredField_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(fieldInvalidFieldGo)
-
-	require.Error(t, err)
-	require.Equal(t, `no field named "y" found on struct of type "Foo"`, err.Error())
+	assertErrorAfterSingleReduction(t, fieldInvalidFieldGo,
+		`no field named "y" found on struct of type "Foo"`)
 }
 
 //go:embed testdata/field/array_receiver/array_receiver.go
 var fieldNonStructGo []byte
 
 func TestReduceField_givenFieldAccessOnArray_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(fieldNonStructGo)
-
-	require.Error(t, err)
-	require.Equal(t, `no struct type named "Foo" found in declarations`, err.Error())
+	assertErrorAfterSingleReduction(t, fieldNonStructGo,
+		`no struct type named "Foo" found in declarations`)
 }
 
 //go:embed testdata/field/integer_receiver/integer_receiver.go
 var fieldIntegerReceiverGo []byte
 
 func TestReduceField_givenIntegerLiteralReceiver_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(fieldIntegerReceiverGo)
-
-	require.Error(t, err)
-	require.Equal(t, `cannot access field "base" on primitive value 1`, err.Error())
+	assertErrorAfterSingleReduction(t, fieldIntegerReceiverGo,
+		`cannot access field "base" on primitive value 1`)
 }

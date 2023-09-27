@@ -5,18 +5,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
 )
 
 //go:embed testdata/value/int/int.go
 var valueIntGo []byte
 
 func TestValue_givenInt_returnsValueAndFailsToReduce(t *testing.T) {
-	p := parseFGProgram(valueIntGo)
-
-	require.Panics(t, func() { p.Reduce() })
-	require.Equal(t, ast.IntegerLiteral{IntValue: 1}, p.Expression.Value())
+	assertEqualValueAndFailsToReduce(t, valueIntGo, "1")
 }
 
 //go:embed testdata/value/array/array.go
@@ -62,13 +57,6 @@ func TestValue_givenStructOfArrayLiterals_returnsValueAndFailsTo_Reduce(t *testi
 	assertEqualValueAndFailsToReduce(t, valueStructOfArraysGo, "Foo{Arr{1, 2}, Arr{3, 4}}")
 }
 
-func assertEqualValueAndFailsToReduce(t *testing.T, program []byte, expectedValue string) {
-	p := parseFGProgram(program)
-
-	require.Panics(t, func() { p.Reduce() })
-	require.Equal(t, expectedValue, p.Expression.Value().String())
-}
-
 //go:embed testdata/value/non_value_field/non_value_field.go
 var valueNonValueFieldGo []byte
 
@@ -104,7 +92,6 @@ func TestReduceCall_givenUnboundIndexInMain_failsToReduceOrYieldValue(t *testing
 	p := parseFGProgram(valueUnboundVariable)
 	require.Nil(t, p.Expression.Value())
 
-	_, err := p.Reduce()
-	require.Error(t, err)
-	require.Equal(t, `unbound variable "x"`, err.Error())
+	assertErrorAfterSingleReduction(t, valueUnboundVariable,
+		`unbound variable "x"`)
 }

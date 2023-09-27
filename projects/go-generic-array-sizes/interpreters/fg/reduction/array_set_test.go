@@ -3,8 +3,6 @@ package reduction
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/array_set/basic/basic.go
@@ -18,40 +16,32 @@ func TestReduceArraySet_reducesToArrayLiteral(t *testing.T) {
 var arraySetOutOfBoundsGo []byte
 
 func TestReduceArraySet_withIndexOutOfBounds_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(arraySetOutOfBoundsGo)
-
-	require.Error(t, err)
-	require.Equal(t, `array set index 2 out of bounds for array of type "Arr"`, err.Error())
+	assertErrorAfterSingleReduction(t, arraySetOutOfBoundsGo,
+		`array set index 2 out of bounds for array of type "Arr"`)
 }
 
 //go:embed testdata/array_set/non_integer_index/non_integer_index.go
 var arraySetNonIntegerIndexGo []byte
 
 func TestReduceArraySet_withNonIntegerValue_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(arraySetNonIntegerIndexGo)
-
-	require.Error(t, err)
-	require.Equal(t, `non-integer index "Arr{1, 2}" in array set method call: Arr.Set`, err.Error())
+	assertErrorAfterSingleReduction(t, arraySetNonIntegerIndexGo,
+		`non-integer index "Arr{1, 2}" in array set method call: Arr.Set`)
 }
 
 //go:embed testdata/array_set/insufficient_arguments/insufficient_arguments.go
 var arraySetInsufficientArgumentsGo []byte
 
 func TestReduceArraySet_withLessArgumentsThanNecessary_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(arraySetInsufficientArgumentsGo)
-
-	require.Error(t, err)
-	require.Equal(t, `expected 2 arguments in call to "Arr.Set", but got 0`, err.Error())
+	assertErrorAfterSingleReduction(t, arraySetInsufficientArgumentsGo,
+		`expected 2 arguments in call to "Arr.Set", but got 0`)
 }
 
 //go:embed testdata/array_set/extraneous_arguments/extraneous_arguments.go
 var arraySetExtraneousArgumentsGo []byte
 
 func TestReduceArraySet_withMoreArgumentsThanNecessary_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(arraySetExtraneousArgumentsGo)
-
-	require.Error(t, err)
-	require.Equal(t, `expected 2 arguments in call to "Arr.Set", but got 3`, err.Error())
+	assertErrorAfterSingleReduction(t, arraySetExtraneousArgumentsGo,
+		`expected 2 arguments in call to "Arr.Set", but got 3`)
 }
 
 //go:embed testdata/array_set/expression_index/expression_index.go
@@ -86,8 +76,6 @@ func TestReduceArraySet_withNonValueReceiver_reducesReceiver(t *testing.T) {
 var arraySetStructReceiverGo []byte
 
 func TestReduceArraySet_withStructReceiver_returnsError(t *testing.T) {
-	_, err := parseFGAndReduceOneStep(arraySetStructReceiverGo)
-
-	require.Error(t, err)
-	require.Equal(t, `no array type named "Foo" found in declarations`, err.Error())
+	assertErrorAfterSingleReduction(t, arraySetStructReceiverGo,
+		`no array type named "Foo" found in declarations`)
 }
