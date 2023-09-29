@@ -29,6 +29,7 @@ func (c testConf) enabledFGG() bool {
 type reductionTestCase struct {
 	name           string
 	parseAndReduce func(program []byte) (fmt.Stringer, error)
+	isValue        func(program []byte) bool
 }
 
 func reductionTests() []reductionTestCase {
@@ -42,6 +43,9 @@ func reductionTests() []reductionTestCase {
 				p, err := parseFGAndReduceOneStep(program)
 				return p.Expression, err
 			},
+			isValue: func(program []byte) bool {
+				return parseFGProgram(program).Expression.Value() != nil
+			},
 		})
 	}
 	if conf.enabledFGG() {
@@ -50,6 +54,9 @@ func reductionTests() []reductionTestCase {
 			parseAndReduce: func(program []byte) (fmt.Stringer, error) {
 				p, err := parseFGGAndReduceOneStep(program)
 				return p.Expression, err
+			},
+			isValue: func(program []byte) bool {
+				return parseFGGProgram(program).Expression.IsValue()
 			},
 		})
 	}
@@ -60,6 +67,7 @@ type valueTestCase struct {
 	name           string
 	parseAndReduce func(program []byte)
 	parseAndValue  func(program []byte) fmt.Stringer
+	isValue        func(program []byte) bool
 }
 
 func valueTests() []valueTestCase {
@@ -75,6 +83,9 @@ func valueTests() []valueTestCase {
 			parseAndValue: func(program []byte) fmt.Stringer {
 				return parseFGProgram(program).Expression.Value()
 			},
+			isValue: func(program []byte) bool {
+				return parseFGProgram(program).Expression.Value() != nil
+			},
 		})
 	}
 	if conf.enabledFGG() {
@@ -84,8 +95,10 @@ func valueTests() []valueTestCase {
 				parseFGGAndReduceOneStep(program)
 			},
 			parseAndValue: func(program []byte) fmt.Stringer {
-				// TODO
-				return nil
+				return parseFGGProgram(program).Expression
+			},
+			isValue: func(program []byte) bool {
+				return parseFGGProgram(program).Expression.IsValue()
 			},
 		})
 	}

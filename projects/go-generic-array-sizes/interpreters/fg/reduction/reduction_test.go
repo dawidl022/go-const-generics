@@ -198,6 +198,7 @@ func assertEqualAfterSingleReduction(t *testing.T, program []byte, expected stri
 
 			require.NoError(t, err)
 			require.Equal(t, expected, expr.String())
+			require.False(t, test.isValue(program))
 		})
 	}
 }
@@ -216,6 +217,8 @@ func assertEqualValueAndFailsToReduce(t *testing.T, program []byte, expectedValu
 	for _, test := range valueTests() {
 		t.Run(test.name, func(t *testing.T) {
 			require.Panics(t, func() { test.parseAndReduce(program) })
+
+			require.True(t, test.isValue(program))
 			require.Equal(t, expectedValue, test.parseAndValue(program).String())
 		})
 	}

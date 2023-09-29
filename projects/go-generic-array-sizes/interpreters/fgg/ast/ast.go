@@ -1,6 +1,8 @@
 package ast
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Program struct {
 	Declarations []Declaration
@@ -105,8 +107,10 @@ type NamedType struct {
 }
 
 type Expression interface {
+	IsValue() bool
 	expressionNode()
 	fmt.Stringer
+	ExpressionVisitable
 }
 
 type IntegerLiteral struct {

@@ -19,7 +19,6 @@ var valueArrayGo []byte
 
 func TestValue_givenArrayLiteral_returnsValueAndFailsToReduce(t *testing.T) {
 	assertEqualValueAndFailsToReduce(t, valueArrayGo, "Arr{1, 2}")
-
 }
 
 //go:embed testdata/value/matrix/matrix.go

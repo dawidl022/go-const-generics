@@ -35,6 +35,11 @@ func (v ValueLiteral) Reduce(declarations []Declaration) (Expression, error) {
 }
 
 func (v ValueLiteral) Value() Value {
+	for _, val := range v.Values {
+		if val.Value() == nil {
+			return nil
+		}
+	}
 	return v
 }
 

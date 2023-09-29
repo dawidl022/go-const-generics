@@ -10,7 +10,11 @@ func NewProgramReducer() ProgramReducer {
 }
 
 func (r ProgramReducer) Reduce(program ast.Program) (ast.Program, error) {
-	return program, nil
+	reducedExpr, err := NewReducingVisitor(program.Declarations).Reduce(program.Expression)
+	return ast.Program{
+		Declarations: program.Declarations,
+		Expression:   reducedExpr,
+	}, err
 }
 
 type ReducingVisitor struct {
@@ -22,5 +26,35 @@ func NewReducingVisitor(declarations []ast.Declaration) ReducingVisitor {
 }
 
 func (r ReducingVisitor) Reduce(e ast.Expression) (ast.Expression, error) {
-	return e, nil
+	return e.Accept(r)
+}
+
+func (r ReducingVisitor) VisitIntegerLiteral(i ast.IntegerLiteral) (ast.Expression, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r ReducingVisitor) VisitVariable(v ast.Variable) (ast.Expression, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r ReducingVisitor) VisitMethodCall(m ast.MethodCall) (ast.Expression, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r ReducingVisitor) VisitValueLiteral(v ast.ValueLiteral) (ast.Expression, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r ReducingVisitor) VisitSelect(s ast.Select) (ast.Expression, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (r ReducingVisitor) VisitArrayIndex(a ast.ArrayIndex) (ast.Expression, error) {
+	//TODO implement me
+	panic("implement me")
 }
