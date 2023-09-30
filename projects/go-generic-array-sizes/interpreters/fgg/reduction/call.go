@@ -22,7 +22,7 @@ func (r ReducingVisitor) VisitMethodCall(m ast.MethodCall) (ast.Expression, erro
 
 	namedReceiverType, isNamedReceiverType := receiver.Type.(ast.NamedType)
 	if !isNamedReceiverType {
-		panic("untested branch")
+		return nil, fmt.Errorf("type %q is not a valid value literal type", receiver.Type)
 	}
 
 	if r.isArraySetMethod(namedReceiverType, m.MethodName) {

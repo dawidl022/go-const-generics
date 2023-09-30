@@ -9,10 +9,6 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
 )
 
-type ASTBuilder[T any] interface {
-	BuildAST() T
-}
-
 type AntlrASTBuilder struct {
 	*antlr.BaseParseTreeVisitor
 	parseTree antlr.ParseTree
