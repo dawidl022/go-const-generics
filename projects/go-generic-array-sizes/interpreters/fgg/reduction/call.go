@@ -20,7 +20,16 @@ func (r ReducingVisitor) VisitMethodCall(m ast.MethodCall) (ast.Expression, erro
 		return nil, fmt.Errorf("cannot call method %q on primitive value %s", m.MethodName, m.Receiver)
 	}
 
-	return r.reduceMethodCall(m, receiver)
+	namedReceiverType, isNamedReceiverType := receiver.Type.(ast.NamedType)
+	if !isNamedReceiverType {
+		panic("untested branch")
+	}
+
+	if r.isArraySetMethod(namedReceiverType, m.MethodName) {
+		return r.reduceArraySetMethodCall(m, receiver, namedReceiverType)
+	}
+
+	return r.reduceMethodCall(m, namedReceiverType)
 }
 
 func (r ReducingVisitor) methodCallWithReducedReceiver(m ast.MethodCall) (ast.Expression, error) {
@@ -46,12 +55,7 @@ func (r ReducingVisitor) methodCallWithReducedArg(m ast.MethodCall, i int) (ast.
 	}, err
 }
 
-func (r ReducingVisitor) reduceMethodCall(m ast.MethodCall, receiver ast.ValueLiteral) (ast.Expression, error) {
-	namedReceiverType, isNamedReceiverType := receiver.Type.(ast.NamedType)
-	if !isNamedReceiverType {
-		panic("untested branch")
-	}
-
+func (r ReducingVisitor) reduceMethodCall(m ast.MethodCall, namedReceiverType ast.NamedType) (ast.Expression, error) {
 	parameterNames, methodBody, err := r.body(namedReceiverType, m.MethodName)
 	if err != nil {
 		return nil, err
@@ -88,9 +92,14 @@ func (r ReducingVisitor) body(receiverType ast.NamedType, methodName string) ([]
 	return nil, nil, fmt.Errorf("undeclared method %q on type %q", methodName, receiverType)
 }
 
-func matchesMethod(methodDeclaration ast.MethodDeclaration, receiverType ast.NamedType, methodName string) bool {
-	return methodDeclaration.MethodReceiver.TypeName == receiverType.TypeName &&
-		methodDeclaration.MethodSpecification.MethodName == methodName
+type CallableDeclaration interface {
+	GetMethodReceiver() ast.MethodReceiver
+	GetMethodName() string
+}
+
+func matchesMethod(methodDeclaration CallableDeclaration, receiverType ast.NamedType, methodName string) bool {
+	return methodDeclaration.GetMethodReceiver().TypeName == receiverType.TypeName &&
+		methodDeclaration.GetMethodName() == methodName
 }
 
 func bindArguments(m ast.MethodCall, methodBody ast.Expression, parameterNames []string) (ast.Expression, error) {
@@ -99,4 +108,62 @@ func bindArguments(m ast.MethodCall, methodBody ast.Expression, parameterNames [
 		arguments[param] = m.Arguments[i]
 	}
 	return newBindingVisitor(arguments).bind(methodBody)
+}
+
+func (r ReducingVisitor) isArraySetMethod(receiverType ast.NamedType, methodName string) bool {
+	for _, decl := range r.declarations {
+		methodDecl, isArraySetMethodDecl := decl.(ast.ArraySetMethodDeclaration)
+		if isArraySetMethodDecl && matchesMethod(methodDecl, receiverType, methodName) {
+			return true
+		}
+	}
+	return false
+}
+
+func (r ReducingVisitor) reduceArraySetMethodCall(m ast.MethodCall, receiver ast.ValueLiteral, receiverType ast.NamedType) (ast.Expression, error) {
+	index, err := r.getArraySetIndex(m, receiverType)
+	if err != nil {
+		return nil, err
+	}
+	return reduceArrayValues(m, receiver, receiverType, index)
+}
+
+func reduceArrayValues(m ast.MethodCall, receiver ast.ValueLiteral, receiverType ast.NamedType, index ast.IntegerLiteral) (ast.Expression, error) {
+	reducedArrayValues := make([]ast.Expression, len(receiver.Values))
+	copy(reducedArrayValues, receiver.Values)
+
+	reducedArrayValues[index.IntValue] = m.Arguments[1]
+
+	return ast.ValueLiteral{
+		Type:   receiverType,
+		Values: reducedArrayValues,
+	}, nil
+}
+
+func (r ReducingVisitor) getArraySetIndex(m ast.MethodCall, receiverType ast.NamedType) (ast.IntegerLiteral, error) {
+	if len(m.Arguments) != 2 {
+		return ast.IntegerLiteral{}, fmt.Errorf(
+			`expected 2 arguments in call to "%s.%s", but got %d`,
+			receiverType, m.MethodName, len(m.Arguments),
+		)
+	}
+
+	index, isIntIndex := m.Arguments[0].(ast.IntegerLiteral)
+	if !isIntIndex {
+		return ast.IntegerLiteral{}, fmt.Errorf(
+			`non-integer index %q in array set method call: %s.%s`,
+			m.Arguments[0], receiverType, m.MethodName,
+		)
+	}
+	withinBounds, err := inIndexBounds(r.declarations, receiverType, index.IntValue)
+	if err != nil {
+		return ast.IntegerLiteral{}, err
+	}
+	if !withinBounds {
+		return ast.IntegerLiteral{}, fmt.Errorf(
+			"array set index %d out of bounds for array of type %q",
+			index.IntValue, receiverType,
+		)
+	}
+	return index, nil
 }
