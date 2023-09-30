@@ -41,8 +41,3 @@ func (r ReducingVisitor) VisitIntegerLiteral(i ast.IntegerLiteral) (ast.Expressi
 func (r ReducingVisitor) VisitVariable(v ast.Variable) (ast.Expression, error) {
 	return nil, fmt.Errorf("unbound variable %q", v)
 }
-
-func (r ReducingVisitor) VisitMethodCall(m ast.MethodCall) (ast.Expression, error) {
-	//TODO implement me
-	panic("implement me")
-}

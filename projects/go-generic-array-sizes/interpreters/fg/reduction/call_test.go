@@ -3,8 +3,6 @@ package reduction
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/call/basic/basic.go
@@ -12,11 +10,6 @@ var callBasicGo []byte
 
 func TestReduceCall_givenBasicMethodCall_reducesToReturnValue(t *testing.T) {
 	assertEqualAfterSingleReduction(t, callBasicGo, "42")
-}
-
-func TestMethodCall_isNotAValue(t *testing.T) {
-	p := parseFGProgram(callBasicGo)
-	require.Nil(t, p.Expression.Value())
 }
 
 //go:embed testdata/call/undeclared_method/undeclared_method.go

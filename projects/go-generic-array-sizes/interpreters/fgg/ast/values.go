@@ -9,8 +9,7 @@ func (v Variable) IsValue() bool {
 }
 
 func (m MethodCall) IsValue() bool {
-	//TODO implement me
-	panic("implement me")
+	return false
 }
 
 func (v ValueLiteral) IsValue() bool {
