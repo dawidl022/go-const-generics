@@ -1,13 +1,11 @@
 package ast
 
 func (i IntegerLiteral) IsValue() bool {
-	//TODO implement me
-	panic("implement me")
+	return true
 }
 
 func (v Variable) IsValue() bool {
-	//TODO implement me
-	panic("implement me")
+	return false
 }
 
 func (m MethodCall) IsValue() bool {
@@ -16,16 +14,18 @@ func (m MethodCall) IsValue() bool {
 }
 
 func (v ValueLiteral) IsValue() bool {
-	//TODO implement me
-	panic("implement me")
+	for _, val := range v.Values {
+		if !val.IsValue() {
+			return false
+		}
+	}
+	return true
 }
 
 func (s Select) IsValue() bool {
-	//TODO implement me
-	panic("implement me")
+	return false
 }
 
 func (a ArrayIndex) IsValue() bool {
-	//TODO implement me
-	panic("implement me")
+	return false
 }

@@ -39,17 +39,17 @@ func Fields(declarations []Declaration, structTypeName TypeName) ([]Field, error
 	return nil, fmt.Errorf("no struct type named %q found in declarations", structTypeName)
 }
 
-func (s Select) reduceToField(structFields []Field, structure ValueLiteral) (Expression, error) {
+func (s Select) reduceToField(structFields []Field, receiver ValueLiteral) (Expression, error) {
 	for i, field := range structFields {
 		if field.Name == s.FieldName {
-			values := s.Receiver.Value().(ValueLiteral).Values
+			values := receiver.Values
 			if len(values) <= i {
 				return nil, fmt.Errorf("struct literal missing value at index %d", i)
 			}
 			return values[i], nil
 		}
 	}
-	return nil, fmt.Errorf("no field named %q found on struct of type %q", s.FieldName, structure.TypeName)
+	return nil, fmt.Errorf("no field named %q found on struct of type %q", s.FieldName, receiver.TypeName)
 }
 
 func (s Select) Value() Value {

@@ -3,8 +3,6 @@ package reduction
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/value/int/int.go
@@ -87,10 +85,7 @@ func TestReduce_givenArrayOfMultipleArrayIndices_reducesOnlyFirstArrayIndex(t *t
 //go:embed testdata/value/unbound_variable/unbound_variable.go
 var valueUnboundVariable []byte
 
-func TestReduceCall_givenUnboundIndexInMain_failsToReduceOrYieldValue(t *testing.T) {
-	p := parseFGProgram(valueUnboundVariable)
-	require.Nil(t, p.Expression.Value())
-
+func TestReduce_givenUnboundIndexInMain_failsToReduceOrYieldValue(t *testing.T) {
 	assertErrorAfterSingleReduction(t, valueUnboundVariable,
 		`unbound variable "x"`)
 }

@@ -1,6 +1,10 @@
 package reduction
 
-import "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+import (
+	"fmt"
+
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+)
 
 type ProgramReducer struct {
 }
@@ -35,26 +39,10 @@ func (r ReducingVisitor) VisitIntegerLiteral(i ast.IntegerLiteral) (ast.Expressi
 }
 
 func (r ReducingVisitor) VisitVariable(v ast.Variable) (ast.Expression, error) {
-	//TODO implement me
-	panic("implement me")
+	return nil, fmt.Errorf("unbound variable %q", v)
 }
 
 func (r ReducingVisitor) VisitMethodCall(m ast.MethodCall) (ast.Expression, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (r ReducingVisitor) VisitValueLiteral(v ast.ValueLiteral) (ast.Expression, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (r ReducingVisitor) VisitSelect(s ast.Select) (ast.Expression, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (r ReducingVisitor) VisitArrayIndex(a ast.ArrayIndex) (ast.Expression, error) {
 	//TODO implement me
 	panic("implement me")
 }

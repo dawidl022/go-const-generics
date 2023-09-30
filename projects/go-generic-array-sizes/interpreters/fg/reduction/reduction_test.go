@@ -209,6 +209,7 @@ func assertErrorAfterSingleReduction(t *testing.T, program []byte, expectedErrMs
 			_, err := test.parseAndReduce(program)
 
 			require.EqualError(t, err, expectedErrMsg)
+			require.False(t, test.isValue(program))
 		})
 	}
 }

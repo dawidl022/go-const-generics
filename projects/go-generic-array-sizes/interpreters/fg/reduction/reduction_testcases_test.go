@@ -7,7 +7,8 @@ import (
 	"strings"
 )
 
-var langsFlag = flag.String("langs", "fg", "comma-separated list of languages to run tests for")
+// TODO change back to fg
+var langsFlag = flag.String("langs", "fg,fgg", "comma-separated list of languages to run tests for")
 
 type testConf struct {
 	langFlags []string
