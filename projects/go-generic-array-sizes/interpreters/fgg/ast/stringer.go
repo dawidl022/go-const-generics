@@ -50,13 +50,24 @@ func (a ArrayIndex) String() string {
 }
 
 func (t TypeParameter) String() string {
-	//TODO implement me
-	panic("implement me")
+	return string(t)
 }
 
 func (n NamedType) String() string {
-	// TODO include type parameters
-	return n.TypeName.String()
+	s := n.TypeName.String()
+
+	if len(n.TypeArguments) > 0 {
+		s += "["
+
+		for i, arg := range n.TypeArguments {
+			if i > 0 {
+				s += ", "
+			}
+			s += arg.String()
+		}
+		s += "]"
+	}
+	return s
 }
 
 func (t TypeName) String() string {

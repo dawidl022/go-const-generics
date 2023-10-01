@@ -39,7 +39,7 @@ func (a ArrayIndex) reduceToIndex(declarations []Declaration, receiver ValueLite
 
 	withinBounds, err := inIndexBounds(declarations, receiver.TypeName, index)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not check index bounds of %q: %w", receiver, err)
 	}
 	if !withinBounds {
 		return nil, fmt.Errorf("index %d out of bounds for array of type %q", index, receiver.TypeName)

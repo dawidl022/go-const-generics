@@ -12,3 +12,11 @@ func TestReduce_givenMethodCallOnValueLiteralOfIntLiteralType_returnsError(t *te
 	assertErrorAfterSingleReduction(t, callIntValLiteralTypeFgg,
 		`type "1" is not a valid value literal type`)
 }
+
+//go:embed testdata/call/generic_receiver/generic_receiver.fgg
+var callGenericReceiverFgg []byte
+
+func TestReduce_givenMethodCallOnGenericReceiver_reducesToBoundMethodBody(t *testing.T) {
+	assertEqualAfterSingleReduction(t, callGenericReceiverFgg,
+		`Foo[2, int]{Arr[2, int]{1, 2}, 3}.arr`)
+}

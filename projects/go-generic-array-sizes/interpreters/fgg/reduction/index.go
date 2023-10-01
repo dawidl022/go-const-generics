@@ -40,12 +40,12 @@ func (r ReducingVisitor) reduceArrayIndex(receiver ast.ValueLiteral, argument as
 
 	namedReceiverType, isNamedReceiverType := receiver.Type.(ast.NamedType)
 	if !isNamedReceiverType {
-		panic("untested branch")
+		return nil, fmt.Errorf("type %q is not a valid value literal type", receiver.Type)
 	}
 
 	withinBounds, err := inIndexBounds(r.declarations, namedReceiverType, index)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not check index bounds of %q: %w", receiver, err)
 	}
 	if !withinBounds {
 		return nil, fmt.Errorf("index %d out of bounds for array of type %q", index, receiver.Type)
@@ -66,8 +66,29 @@ func inIndexBounds(declarations []ast.Declaration, arrayType ast.NamedType, n in
 		if isTypeDecl {
 			arrayTypeLit, isArrayTypeLit := typeDecl.TypeLiteral.(ast.ArrayTypeLiteral)
 			if isArrayTypeLit && typeDecl.TypeName == arrayType.TypeName {
-				// TODO add support for type parameters
-				return n < arrayTypeLit.Length.(ast.IntegerLiteral).IntValue, nil
+				switch arrayTypeLit.Length.(type) {
+				case ast.IntegerLiteral:
+					return n < arrayTypeLit.Length.(ast.IntegerLiteral).IntValue, nil
+				case ast.NamedType:
+					typeParam := ast.TypeParameter(arrayTypeLit.Length.(ast.NamedType).TypeName)
+					if len(arrayType.TypeArguments) < len(typeDecl.TypeParameters) {
+						return false, fmt.Errorf("badly instantiated type %q: "+
+							"expected %d type arguments but got %d",
+							arrayType.TypeName, len(typeDecl.TypeParameters), len(arrayType.TypeArguments))
+					}
+					for i, param := range typeDecl.TypeParameters {
+						if param.TypeParameter == typeParam {
+							typeArg := arrayType.TypeArguments[i]
+							size, isIntSize := typeArg.(ast.IntegerLiteral)
+							if !isIntSize {
+								return false, fmt.Errorf("badly instantiated type %q: "+
+									"%q is not a valid constant type parameter", arrayType.TypeName, typeArg)
+							}
+							return n < size.IntValue, nil
+						}
+					}
+					panic("untested path")
+				}
 			}
 		}
 	}

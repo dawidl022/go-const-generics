@@ -1,5 +1,5 @@
 package main
 
 func main() {
-	_ = 1{1, 2}.foo()
+	_ = 1{1, 2}[0]
 }

@@ -34,8 +34,7 @@ func (r ReducingVisitor) Reduce(e ast.Expression) (ast.Expression, error) {
 }
 
 func (r ReducingVisitor) VisitIntegerLiteral(i ast.IntegerLiteral) (ast.Expression, error) {
-	//TODO implement me
-	panic("implement me")
+	panic("terminal integer literal cannot be reduced")
 }
 
 func (r ReducingVisitor) VisitVariable(v ast.Variable) (ast.Expression, error) {

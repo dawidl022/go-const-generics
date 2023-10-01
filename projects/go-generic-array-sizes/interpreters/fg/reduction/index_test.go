@@ -41,7 +41,8 @@ var indexNonArrayGo []byte
 
 func TestReduceIndex_givenIndexOnStruct_returnsError(t *testing.T) {
 	assertErrorAfterSingleReduction(t, indexNonArrayGo,
-		`no array type named "Foo" found in declarations`)
+		`could not check index bounds of "Foo{1}": `+
+			`no array type named "Foo" found in declarations`)
 }
 
 //go:embed testdata/index/array_value/array_value.go

@@ -16,7 +16,7 @@ func (r ReducingVisitor) VisitSelect(s ast.Select) (ast.Expression, error) {
 	}
 	namedReceiverType, isNamedReceiverType := receiver.Type.(ast.NamedType)
 	if !isNamedReceiverType {
-		panic("untested branch")
+		return nil, fmt.Errorf("type %q is not a valid value literal type", receiver.Type)
 	}
 	structFields, err := Fields(r.declarations, namedReceiverType)
 	if err != nil {

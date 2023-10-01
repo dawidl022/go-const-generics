@@ -1,0 +1,16 @@
+package main
+
+type Foo[N const, T any] struct {
+	arr Arr[N, T]
+	x T
+}
+
+type Arr[N const, T any] [N]T
+
+func (f Foo[N, T]) getArr() Arr[N, T] {
+	return f.arr
+}
+
+func main() {
+	_ = Foo[2, int]{Arr[2, int]{1, 2}, 3}.getArr()
+}
