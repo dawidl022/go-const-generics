@@ -41,10 +41,19 @@ func TestReduce_givenArrayIndexOnUninstantiatedGenericValueLiteral_returnsError(
 			`expected 2 type arguments but got 0`)
 }
 
-//go:embed testdata/index/generic_out_of_bounds/generic_out_of_bounds.go
+//go:embed testdata/index/out_of_bounds/out_of_bounds.go
 var indexGenericOutOfBoundsFgg []byte
 
 func TestReduce_givenArrayIndexOutOfBoundsOnGenericType_returnsError(t *testing.T) {
 	assertErrorAfterSingleReduction(t, indexGenericOutOfBoundsFgg,
 		`index 2 out of bounds for array of type "Arr[2, int]"`)
+}
+
+//go:embed testdata/index/unbound_length_parameter/unbound_length_parameter.go
+var indexUnboundLengthParameterFgg []byte
+
+func TestReduce_givenArrayGenericTypeHasUnboundLengthParameter_returnsError(t *testing.T) {
+	assertErrorAfterSingleReduction(t, indexUnboundLengthParameterFgg,
+		`could not check index bounds of "Arr[int]{1, 2}": `+
+			`unbound length type parameter "Unbound" in declaration of type "Arr"`)
 }

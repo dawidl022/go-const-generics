@@ -66,31 +66,55 @@ func inIndexBounds(declarations []ast.Declaration, arrayType ast.NamedType, n in
 		if isTypeDecl {
 			arrayTypeLit, isArrayTypeLit := typeDecl.TypeLiteral.(ast.ArrayTypeLiteral)
 			if isArrayTypeLit && typeDecl.TypeName == arrayType.TypeName {
-				switch arrayTypeLit.Length.(type) {
-				case ast.IntegerLiteral:
-					return n < arrayTypeLit.Length.(ast.IntegerLiteral).IntValue, nil
-				case ast.NamedType:
-					typeParam := ast.TypeParameter(arrayTypeLit.Length.(ast.NamedType).TypeName)
-					if len(arrayType.TypeArguments) < len(typeDecl.TypeParameters) {
-						return false, fmt.Errorf("badly instantiated type %q: "+
-							"expected %d type arguments but got %d",
-							arrayType.TypeName, len(typeDecl.TypeParameters), len(arrayType.TypeArguments))
-					}
-					for i, param := range typeDecl.TypeParameters {
-						if param.TypeParameter == typeParam {
-							typeArg := arrayType.TypeArguments[i]
-							size, isIntSize := typeArg.(ast.IntegerLiteral)
-							if !isIntSize {
-								return false, fmt.Errorf("badly instantiated type %q: "+
-									"%q is not a valid constant type parameter", arrayType.TypeName, typeArg)
-							}
-							return n < size.IntValue, nil
-						}
-					}
-					panic("untested path")
-				}
+				return checkIndexBounds(n, arrayType, typeDecl, arrayTypeLit)
 			}
 		}
 	}
 	return false, fmt.Errorf("no array type named %q found in declarations", arrayType.TypeName)
+}
+
+func checkIndexBounds(n int, arrayType ast.NamedType, typeDecl ast.TypeDeclaration, arrayTypeLit ast.ArrayTypeLiteral) (bool, error) {
+	switch arrayTypeLit.Length.(type) {
+	case ast.IntegerLiteral:
+		return n < arrayTypeLit.Length.(ast.IntegerLiteral).IntValue, nil
+	case ast.NamedType:
+		length, err := getGenericArrayLength(arrayType, typeDecl, arrayTypeLit)
+		return n < length, err
+	default:
+		panic("unexpected Type type for Length")
+	}
+}
+
+func getGenericArrayLength(arrayType ast.NamedType, arrayTypeDecl ast.TypeDeclaration, arrayTypeLit ast.ArrayTypeLiteral) (int, error) {
+	err := checkTypeArgumentsCount(arrayType, arrayTypeDecl)
+	if err != nil {
+		return 0, err
+	}
+	lengthParam := ast.TypeParameter(arrayTypeLit.Length.(ast.NamedType).TypeName)
+
+	for i, param := range arrayTypeDecl.TypeParameters {
+		if param.TypeParameter == lengthParam {
+			return getArrayLengthFromTypeArgument(arrayType, i)
+		}
+	}
+	return 0, fmt.Errorf("unbound length type parameter %q in declaration of type %q", lengthParam, arrayTypeDecl.TypeName)
+}
+
+func checkTypeArgumentsCount(instantiatedType ast.NamedType, typeDecl ast.TypeDeclaration) error {
+	if len(instantiatedType.TypeArguments) < len(typeDecl.TypeParameters) {
+		return fmt.Errorf("badly instantiated type %q: "+
+			"expected %d type arguments but got %d",
+			instantiatedType.TypeName, len(typeDecl.TypeParameters), len(instantiatedType.TypeArguments))
+	}
+	return nil
+}
+
+func getArrayLengthFromTypeArgument(arrayType ast.NamedType, i int) (int, error) {
+	typeArg := arrayType.TypeArguments[i]
+	size, isIntSize := typeArg.(ast.IntegerLiteral)
+	if !isIntSize {
+		return 0, fmt.Errorf("badly instantiated type %q: "+
+			"%q is not a valid constant type parameter", arrayType.TypeName, typeArg)
+	}
+	return size.IntValue, nil
 }
