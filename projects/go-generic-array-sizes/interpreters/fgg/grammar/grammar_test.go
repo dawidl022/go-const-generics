@@ -13,8 +13,6 @@ import (
 //go:embed testdata/hello.fgg
 var helloGo []byte
 
-// TODO test FG is a subset of FGG
-
 func TestGrammarRecognisesHelloFGGProgram(t *testing.T) {
 	input := antlr.NewIoStream(bytes.NewBuffer(helloGo))
 	lexer := parser.NewFGGLexer(input)
