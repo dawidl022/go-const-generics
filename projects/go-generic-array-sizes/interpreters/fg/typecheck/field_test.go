@@ -3,16 +3,13 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/field/basic/basic.go
 var fieldBasicGo []byte
 
 func TestTypeCheck_givenBasicFieldAccess_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(fieldBasicGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, fieldBasicGo)
 }
 
 //go:embed testdata/field/invalid_field/invalid_field.go
@@ -53,16 +50,14 @@ func TestTypeCheck_givenFieldAccessWithUndeclaredReceiver_returnsError(t *testin
 var fieldUsedAsTypeGo []byte
 
 func TestTypeCheck_givenFieldAccessExpressionUsedAsSameTypeAsField_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(fieldUsedAsTypeGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, fieldUsedAsTypeGo)
 }
 
 //go:embed testdata/field/used_as_supertype/used_as_supertype.go
 var fieldUsedAsSupertypeGo []byte
 
 func TestTypeCheck_givenFieldAccessExpressionUsedAsSupertype_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(fieldUsedAsSupertypeGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, fieldUsedAsSupertypeGo)
 }
 
 //go:embed testdata/field/used_as_subtype/used_as_subtype.go

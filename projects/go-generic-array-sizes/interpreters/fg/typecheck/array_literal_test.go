@@ -3,24 +3,20 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/array_literal/basic/basic.go
 var arrayLiteralBasicGo []byte
 
 func TestTypeCheck_givenValidArrayLiteral_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(arrayLiteralBasicGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, arrayLiteralBasicGo)
 }
 
 //go:embed testdata/array_literal/element_subtypes/element_subtypes.go
 var arrayLiteralSubtypesGo []byte
 
 func TestTypeCheck_givenArrayLiteralSubtypeElements_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(arrayLiteralSubtypesGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, arrayLiteralSubtypesGo)
 }
 
 //go:embed testdata/array_literal/invalid_element_type/invalid_element_type.go

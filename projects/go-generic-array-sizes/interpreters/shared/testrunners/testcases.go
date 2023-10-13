@@ -16,3 +16,8 @@ type ValueTestCase interface {
 	ReductionTestCase
 	ParseAndValue(program []byte) fmt.Stringer
 }
+
+type TypeTestCase interface {
+	TestCase
+	ParseAndTypeCheck(program []byte) error
+}

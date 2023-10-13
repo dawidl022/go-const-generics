@@ -3,24 +3,20 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/call/basic/basic.go
 var callBasicGo []byte
 
 func TestTypeCheck_givenBasicMethodCall_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(callBasicGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, callBasicGo)
 }
 
 //go:embed testdata/call/with_arguments/with_arguments.go
 var callWithArgumentsGo []byte
 
 func TestTypeCheck_givenMethodCallWithValidArguments_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(callWithArgumentsGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, callWithArgumentsGo)
 }
 
 //go:embed testdata/call/with_invalid_argument_types/with_invalid_argument_types.go
@@ -61,8 +57,7 @@ func TestTypeCheck_givenMethodCallOnIntLiteralReceiver_returnsError(t *testing.T
 var callWithArgumentSubtypesGo []byte
 
 func TestTypeCheck_givenMethodCallWithSubtypeArguments_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(callWithArgumentSubtypesGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, callWithArgumentSubtypesGo)
 }
 
 //go:embed testdata/call/with_undeclared_argument_type/with_undeclared_argument_type.go
@@ -95,8 +90,7 @@ func TestTypeCheck_givenMethodCallWithExtraneousArguments_returnsError(t *testin
 var callAsMethodExpressionGo []byte
 
 func TestTypeCheck_givenMethodCallUsedAsMethodExpressionOfTheCorrectType_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(callAsMethodExpressionGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, callAsMethodExpressionGo)
 }
 
 //go:embed testdata/call/invalid_method_expression_type/invalid_method_expression.go

@@ -3,24 +3,20 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/array_set_method_declaration/basic/basic.go
 var arraySetBasicGo []byte
 
 func TestTypeCheck_givenBasicValidArraySetMethodDeclaration_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(arraySetBasicGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, arraySetBasicGo)
 }
 
 //go:embed testdata/array_set_method_declaration/subtype/subtype.go
 var arraySetSubtypeGo []byte
 
 func TestTypeCheck_givenValidArraySetMethodDeclarationWithValueParameterSubtypeOfArrayElementType_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(arraySetSubtypeGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, arraySetSubtypeGo)
 }
 
 //go:embed testdata/array_set_method_declaration/invalid_index_parameter_type/invalid_index_parameter_type.go

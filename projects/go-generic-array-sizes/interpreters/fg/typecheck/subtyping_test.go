@@ -3,8 +3,6 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/subtyping/covariant_method_return_type/covariant_method_return_type.go
@@ -58,6 +56,5 @@ func TestTypeCheck_givenStructWithContravariantMethodParameterTypeUsedAsStructFi
 var subtypingArraySetInMethodsGo []byte
 
 func TestTypeCheck_givenTypeImplementsInterfaceViaArraySetMethod_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(subtypingArraySetInMethodsGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, subtypingArraySetInMethodsGo)
 }

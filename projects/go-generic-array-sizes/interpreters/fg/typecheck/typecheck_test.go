@@ -2,36 +2,47 @@ package typecheck
 
 import (
 	_ "embed"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parsetree"
+	fggAst "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	fggParser "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
+	fggParsetree "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
+	fggTypecheck "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/typecheck"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
 )
 
 //go:embed testdata/acceptance/program.go
 var acceptanceProgramGo []byte
 
 func TestTypeCheck_givenWellTypedProgram_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(acceptanceProgramGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, acceptanceProgramGo)
 }
 
 func parseFGProgram(code []byte) ast.Program {
 	return testrunners.ParseProgram[ast.Program, *parser.FGParser](code, parsetree.ParseFGActions{})
 }
 
-func parseAndTypeCheck(program []byte) error {
+func parseFGGProgram(code []byte) fggAst.Program {
+	return testrunners.ParseProgram[fggAst.Program, *fggParser.FGGParser](code, fggParsetree.ParseFGGActions{})
+}
+
+func parseAndTypeCheckFG(program []byte) error {
 	p := parseFGProgram(program)
 	return TypeCheck(p)
 }
 
-func assertFailsTypeCheckWithError(t *testing.T, program []byte, errMsg string) {
-	err := parseAndTypeCheck(program)
+func parseAndTypeCheckFGG(program []byte) error {
+	p := parseFGGProgram(program)
+	return fggTypecheck.TypeCheck(p)
+}
 
-	require.Error(t, err)
-	require.Equal(t, errMsg, err.Error())
+func assertFailsTypeCheckWithError(t *testing.T, program []byte, errMsg string) {
+	testrunners.AssertFailsTypeCheckWithError(t, program, errMsg, testCases())
+}
+
+func assertPassesTypeCheck(t *testing.T, program []byte) {
+	testrunners.AssertPassesTypeCheck(t, program, testCases())
 }

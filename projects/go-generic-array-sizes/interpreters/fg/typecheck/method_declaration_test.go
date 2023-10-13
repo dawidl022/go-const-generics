@@ -3,8 +3,6 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/method_declaration/invalid_receiver_type/invalid_receiver_type.go
@@ -91,16 +89,14 @@ func TestTypeCheck_givenMethodExpressionInterfaceSubtypeWithDifferentParamNames_
 var declarationValidExpressionSubtypeGo []byte
 
 func TestTypeCheck_givenValidMethodExpressionSubtype_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(declarationValidExpressionSubtypeGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, declarationValidExpressionSubtypeGo)
 }
 
 //go:embed testdata/method_declaration/basic/basic.go
 var declarationBasicGo []byte
 
 func TestTypeCheck_givenValidMethodDeclarationWithBasicReturnExpressionType_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(declarationBasicGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, declarationBasicGo)
 }
 
 //go:embed testdata/method_declaration/unbound_variable/unbound_variable.go
@@ -115,6 +111,5 @@ func TestTypeCheck_givenMethodDeclarationWithUnboundVariable_returnsError(t *tes
 var methodDeclarationArrayReceiverGo []byte
 
 func TestTypeCheck_givenMethodDeclarationWithArrayReceiver_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(methodDeclarationArrayReceiverGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, methodDeclarationArrayReceiverGo)
 }

@@ -8,6 +8,7 @@ parser: grammar/antlr-4.13.0-complete.jar grammar/*
 
 test: parser
 	cd ../fg/reduction && go test -langs=fgg
+	cd ../fg/typecheck && go test -langs=fgg
 	go test ./...
 .PHONY: test
 

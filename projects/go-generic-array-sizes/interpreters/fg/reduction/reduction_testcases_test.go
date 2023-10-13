@@ -1,32 +1,11 @@
 package reduction
 
 import (
-	"flag"
 	"fmt"
-	"slices"
-	"strings"
 
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/testconf"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
 )
-
-var langsFlag = flag.String("langs", "fg", "comma-separated list of languages to run tests for")
-
-type testConf struct {
-	langFlags []string
-}
-
-func parseTestConf() *testConf {
-	flag.Parse()
-	return &testConf{langFlags: strings.Split(*langsFlag, ",")}
-}
-
-func (c testConf) enabledFG() bool {
-	return slices.Contains(c.langFlags, "fg")
-}
-
-func (c testConf) enabledFGG() bool {
-	return slices.Contains(c.langFlags, "fgg")
-}
 
 func reductionTests() []testrunners.ReductionTestCase {
 	tests := []testrunners.ReductionTestCase{}
@@ -37,13 +16,13 @@ func reductionTests() []testrunners.ReductionTestCase {
 }
 
 func valueTests() []testrunners.ValueTestCase {
-	conf := parseTestConf()
+	conf := testconf.ParseTestConf()
 	tests := []testrunners.ValueTestCase{}
 
-	if conf.enabledFG() {
+	if conf.EnabledFG() {
 		tests = append(tests, fgTestCase{})
 	}
-	if conf.enabledFGG() {
+	if conf.EnabledFGG() {
 		tests = append(tests, fggTestCase{})
 	}
 	return tests

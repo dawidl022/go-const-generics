@@ -3,8 +3,6 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/type_declaration/invalid_array_type/invalid_array_type.go
@@ -19,8 +17,7 @@ func TestTypeCheck_givenDeclarationWithInvalidArrayType_returnsError(t *testing.
 var declarationZeroSizeArrayGo []byte
 
 func TestTypeCheck_givenDeclarationWithZeroSizeArray_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(declarationZeroSizeArrayGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, declarationZeroSizeArrayGo)
 }
 
 //go:embed testdata/type_declaration/invalid_specification_return_type/invalid_specification_return_type.go

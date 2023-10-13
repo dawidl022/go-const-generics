@@ -49,3 +49,23 @@ func AssertEqualValueAndFailsToReduce(t *testing.T, program []byte, expectedValu
 		}
 	})
 }
+
+func AssertFailsTypeCheckWithError(t *testing.T, program []byte, expectedErrMsg string, typeTests []TypeTestCase) {
+	runTests(t, typeTests, func(test TypeTestCase) func(*testing.T) {
+		return func(t *testing.T) {
+			err := test.ParseAndTypeCheck(program)
+
+			require.EqualError(t, err, expectedErrMsg)
+		}
+	})
+}
+
+func AssertPassesTypeCheck(t *testing.T, program []byte, typeTests []TypeTestCase) {
+	runTests(t, typeTests, func(test TypeTestCase) func(*testing.T) {
+		return func(t *testing.T) {
+			err := test.ParseAndTypeCheck(program)
+
+			require.NoError(t, err)
+		}
+	})
+}

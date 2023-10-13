@@ -3,16 +3,13 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/array_index/basic/basic.go
 var arrayIndexBasicGo []byte
 
 func TestTypeCheck_givenBasicArrayIndexExpression_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(arrayIndexBasicGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, arrayIndexBasicGo)
 }
 
 //go:embed testdata/array_index/int_literal_receiver/int_literal_receiver.go
@@ -73,8 +70,7 @@ func TestTypeCheck_givenArrayIndexWithStructIndexArgument_returnsError(t *testin
 var arrayIndexIntLiteralIndexArgumentGo []byte
 
 func TestTypeCheck_givenArrayIndexWithIntLiteralIndexArgumentWithinBounds_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(arrayIndexIntLiteralIndexArgumentGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, arrayIndexIntLiteralIndexArgumentGo)
 }
 
 //go:embed testdata/array_index/out_of_bounds/out_of_bounds.go

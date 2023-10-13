@@ -3,24 +3,20 @@ package typecheck
 import (
 	_ "embed"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 )
 
 //go:embed testdata/struct_literal/struct_int_field_int_literal/struct_int_field_int_literal.go
 var expressionStructIntFieldIntLiteralGo []byte
 
 func TestTypeCheck_givenStructIntFieldInstantiatedWithIntLiteral_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(expressionStructIntFieldIntLiteralGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, expressionStructIntFieldIntLiteralGo)
 }
 
 //go:embed testdata/struct_literal/struct_any_field_int_literal/struct_any_field_int_literal.go
 var expressionStructAnyFieldIntLiteralGo []byte
 
 func TestTypeCheck_givenStructAnyFieldInstantiatedWithIntLiteral_returnsNoError(t *testing.T) {
-	err := parseAndTypeCheck(expressionStructAnyFieldIntLiteralGo)
-	require.NoError(t, err)
+	assertPassesTypeCheck(t, expressionStructAnyFieldIntLiteralGo)
 }
 
 //go:embed testdata/struct_literal/struct_invalid_field_int_literal/struct_invalid_field_int_literal.go
