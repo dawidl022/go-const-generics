@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"testing"
 
-	"github.com/antlr4-go/antlr/v4"
 	"github.com/stretchr/testify/require"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
@@ -109,48 +108,11 @@ func (s *savingObserver) stringifySteps() interface{} {
 }
 
 func parseFGProgram(code []byte) ast.Program {
-	return testrunners.ParseProgram[ast.Program](code, parseFGActions{})
-}
-
-type parseFGActions struct{}
-
-func (parseFGActions) NewLexer(input antlr.CharStream) antlr.Lexer {
-	return parser.NewFGLexer(input)
-}
-
-func (parseFGActions) NewParser(input antlr.TokenStream) antlr.Parser {
-	return parser.NewFGParser(input)
-}
-
-func (parseFGActions) Program(p antlr.Parser) antlr.ParseTree {
-	return p.(*parser.FGParser).Program()
-}
-
-func (parseFGActions) NewAstBuilder(tree antlr.ParseTree) testrunners.ASTBuilder[ast.Program] {
-	return parsetree.NewAntlrASTBuilder(tree)
+	return testrunners.ParseProgram[ast.Program, *parser.FGParser](code, parsetree.ParseFGActions{})
 }
 
 func parseFGGProgram(code []byte) fggAst.Program {
-	return testrunners.ParseProgram[fggAst.Program](code, parseFGGActions{})
-}
-
-type parseFGGActions struct {
-}
-
-func (parseFGGActions) NewLexer(input antlr.CharStream) antlr.Lexer {
-	return fggParser.NewFGGLexer(input)
-}
-
-func (parseFGGActions) NewParser(input antlr.TokenStream) antlr.Parser {
-	return fggParser.NewFGGParser(input)
-}
-
-func (parseFGGActions) Program(p antlr.Parser) antlr.ParseTree {
-	return p.(*fggParser.FGGParser).Program()
-}
-
-func (parseFGGActions) NewAstBuilder(tree antlr.ParseTree) testrunners.ASTBuilder[fggAst.Program] {
-	return fggParsetree.NewAntlrASTBuilder(tree)
+	return testrunners.ParseProgram[fggAst.Program, *fggParser.FGGParser](code, fggParsetree.ParseFGGActions{})
 }
 
 func parseFGAndReduceOneStep(program []byte) (ast.Program, error) {

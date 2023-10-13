@@ -6,6 +6,8 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 )
 
+// TODO reduce entire program
+
 type ProgramReducer struct {
 }
 

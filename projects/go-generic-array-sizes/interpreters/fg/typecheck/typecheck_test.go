@@ -1,11 +1,10 @@
 package typecheck
 
 import (
-	"bytes"
 	_ "embed"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
 	"testing"
 
-	"github.com/antlr4-go/antlr/v4"
 	"github.com/stretchr/testify/require"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
@@ -21,27 +20,8 @@ func TestTypeCheck_givenWellTypedProgram_returnsNoError(t *testing.T) {
 	require.NoError(t, err)
 }
 
-// TODO eliminate duplication of reduction_test.go
 func parseFGProgram(code []byte) ast.Program {
-	input := antlr.NewIoStream(bytes.NewBuffer(code))
-	lexer := parser.NewFGLexer(input)
-	stream := antlr.NewCommonTokenStream(lexer, 0)
-
-	p := parser.NewFGParser(stream)
-	p.AddErrorListener(failingErrorListener{})
-	p.BuildParseTrees = true
-
-	tree := p.Program()
-	astBuilder := parsetree.NewAntlrASTBuilder(tree)
-	return astBuilder.BuildAST()
-}
-
-type failingErrorListener struct {
-	*antlr.DefaultErrorListener
-}
-
-func (f failingErrorListener) SyntaxError(_ antlr.Recognizer, _ interface{}, _, _ int, msg string, _ antlr.RecognitionException) {
-	panic(msg)
+	return testrunners.ParseProgram[ast.Program, *parser.FGParser](code, parsetree.ParseFGActions{})
 }
 
 func parseAndTypeCheck(program []byte) error {
