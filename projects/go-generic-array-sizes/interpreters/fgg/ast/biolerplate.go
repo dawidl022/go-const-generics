@@ -107,8 +107,7 @@ func (i IntegerLiteral) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 }
 
 func (v Variable) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
-	//TODO implement me
-	return nil, nil
+	return visitor.VisitVariable(v)
 }
 
 func (m MethodCall) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
@@ -117,8 +116,7 @@ func (m MethodCall) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 }
 
 func (v ValueLiteral) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
-	//TODO implement me
-	return nil, nil
+	return visitor.VisitValueLiteral(v)
 }
 
 func (s Select) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {

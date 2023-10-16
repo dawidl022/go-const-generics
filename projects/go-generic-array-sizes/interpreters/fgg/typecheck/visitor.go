@@ -33,7 +33,7 @@ func (t typeCheckingVisitor) VisitProgram(p ast.Program) error {
 
 func (t typeCheckingVisitor) typeOf(
 	typeEnv map[ast.TypeParameter]ast.Bound,
-	variableEnv map[string]ast.TypeName,
+	variableEnv map[string]ast.Type,
 	expression ast.Expression,
 ) (ast.Type, error) {
 	return t.newTypeVisitor(typeEnv, variableEnv).typeOf(expression)
@@ -42,12 +42,12 @@ func (t typeCheckingVisitor) typeOf(
 type typeVisitor struct {
 	typeCheckingVisitor
 	typeEnv     map[ast.TypeParameter]ast.Bound
-	variableEnv map[string]ast.TypeName
+	variableEnv map[string]ast.Type
 }
 
 func (t typeCheckingVisitor) newTypeVisitor(
 	typeEnv map[ast.TypeParameter]ast.Bound,
-	variableEnv map[string]ast.TypeName,
+	variableEnv map[string]ast.Type,
 ) typeVisitor {
 	return typeVisitor{typeCheckingVisitor: t, typeEnv: typeEnv, variableEnv: variableEnv}
 }
