@@ -38,4 +38,5 @@ type EnvVisitor interface {
 	VisitNamedType(n NamedType) error
 	VisitInterfaceTypeLiteral(i InterfaceTypeLiteral) error
 	VisitMethodSpecification(m MethodSpecification) error
+	VisitStructTypeLiteral(s StructTypeLiteral) error
 }

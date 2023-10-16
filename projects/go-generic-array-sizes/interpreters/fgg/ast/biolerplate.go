@@ -146,8 +146,7 @@ func (a ArraySetMethodDeclaration) Accept(visitor Visitor) error {
 }
 
 func (s StructTypeLiteral) AcceptEnvVisitor(visitor EnvVisitor) error {
-	//TODO implement me
-	return nil
+	return visitor.VisitStructTypeLiteral(s)
 }
 
 func (i InterfaceTypeLiteral) AcceptEnvVisitor(visitor EnvVisitor) error {
