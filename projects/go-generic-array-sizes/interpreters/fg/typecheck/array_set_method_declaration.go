@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
 )
 
 func (t typeCheckingVisitor) VisitArraySetMethodDeclaration(a ast.ArraySetMethodDeclaration) error {
@@ -23,7 +24,7 @@ func (t typeCheckingVisitor) typeCheckArraySetMethodDeclaration(a ast.ArraySetMe
 }
 
 func (t typeCheckingVisitor) checkArraySetSignature(a ast.ArraySetMethodDeclaration) error {
-	if err := distinct(paramNames(a)); err != nil {
+	if err := auxiliary.Distinct(paramNames(a)); err != nil {
 		return err
 	}
 	_, isArrayType := t.typeDeclarationOf(a.MethodReceiver.TypeName).TypeLiteral.(ast.ArrayTypeLiteral)

@@ -10,6 +10,7 @@ type Program struct {
 }
 
 type Declaration interface {
+	Visitable
 	declarationNode()
 }
 
@@ -21,6 +22,7 @@ type TypeDeclaration struct {
 
 type Type interface {
 	Bound
+	EnvVisitable
 	typeNode()
 	fmt.Stringer
 }
@@ -39,6 +41,7 @@ type Bound interface {
 type ConstType struct{}
 
 type TypeLiteral interface {
+	EnvVisitable
 	typeLiteralNode()
 }
 
@@ -111,6 +114,7 @@ type Expression interface {
 	expressionNode()
 	fmt.Stringer
 	ExpressionVisitable
+	TypeVisitable
 }
 
 type IntegerLiteral struct {

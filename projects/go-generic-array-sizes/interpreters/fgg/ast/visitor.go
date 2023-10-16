@@ -1,5 +1,14 @@
 package ast
 
+type Visitable interface {
+	Accept(visitor Visitor) error
+}
+
+type Visitor interface {
+	VisitProgram(p Program) error
+	VisitTypeDeclaration(t TypeDeclaration) error
+}
+
 type ExpressionVisitable interface {
 	Accept(visitor ExpressionVisitor) (Expression, error)
 }
@@ -13,26 +22,18 @@ type ExpressionVisitor interface {
 	VisitArrayIndex(a ArrayIndex) (Expression, error)
 }
 
-func (i IntegerLiteral) Accept(visitor ExpressionVisitor) (Expression, error) {
-	return visitor.VisitIntegerLiteral(i)
+type TypeVisitable interface {
+	AcceptTypeVisitor(visitor TypeVisitor) (Type, error)
 }
 
-func (v Variable) Accept(visitor ExpressionVisitor) (Expression, error) {
-	return visitor.VisitVariable(v)
+type TypeVisitor interface {
 }
 
-func (m MethodCall) Accept(visitor ExpressionVisitor) (Expression, error) {
-	return visitor.VisitMethodCall(m)
+type EnvVisitable interface {
+	AcceptEnvVisitor(visitor EnvVisitor) error
 }
 
-func (v ValueLiteral) Accept(visitor ExpressionVisitor) (Expression, error) {
-	return visitor.VisitValueLiteral(v)
-}
-
-func (s Select) Accept(visitor ExpressionVisitor) (Expression, error) {
-	return visitor.VisitSelect(s)
-}
-
-func (a ArrayIndex) Accept(visitor ExpressionVisitor) (Expression, error) {
-	return visitor.VisitArrayIndex(a)
+type EnvVisitor interface {
+	AcceptArrayTypeLiteral(a ArrayTypeLiteral) error
+	VisitNamedType(n NamedType) error
 }

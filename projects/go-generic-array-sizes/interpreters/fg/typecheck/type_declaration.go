@@ -5,6 +5,7 @@ import (
 	"slices"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
 )
 
 func (t typeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDeclaration {
@@ -43,7 +44,7 @@ func checkDistinctParameterNames(m ast.MethodSpecification) error {
 	for _, param := range m.MethodSignature.MethodParameters {
 		paramNames = append(paramNames, name(param.ParameterName))
 	}
-	return distinct(paramNames)
+	return auxiliary.Distinct(paramNames)
 }
 
 type name string
@@ -79,7 +80,7 @@ func checkDistinctFiledNames(s ast.StructTypeLiteral) error {
 	for _, field := range s.Fields {
 		fieldNames = append(fieldNames, name(field.Name))
 	}
-	if err := distinct(fieldNames); err != nil {
+	if err := auxiliary.Distinct(fieldNames); err != nil {
 		return fmt.Errorf("field name %w", err)
 	}
 	return nil
@@ -102,7 +103,7 @@ func checkUniqueMethodNames(i ast.InterfaceTypeLiteral) error {
 	for _, spec := range i.MethodSpecifications {
 		methodNames = append(methodNames, name(spec.MethodName))
 	}
-	if err := distinct(methodNames); err != nil {
+	if err := auxiliary.Distinct(methodNames); err != nil {
 		return fmt.Errorf("method name %w", err)
 	}
 	return nil

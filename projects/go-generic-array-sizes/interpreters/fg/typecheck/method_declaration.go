@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
 )
 
 func (t typeCheckingVisitor) VisitMethodDeclaration(m ast.MethodDeclaration) error {
@@ -55,7 +56,7 @@ func (t typeCheckingVisitor) checkDistinctParameterNames(m ast.MethodDeclaration
 	for _, param := range m.MethodSpecification.MethodSignature.MethodParameters {
 		paramNames = append(paramNames, name(param.ParameterName))
 	}
-	err := distinct(paramNames)
+	err := auxiliary.Distinct(paramNames)
 	if err != nil {
 		return fmt.Errorf("parameter %w", err)
 	}
