@@ -151,8 +151,7 @@ func (s StructTypeLiteral) AcceptEnvVisitor(visitor EnvVisitor) error {
 }
 
 func (i InterfaceTypeLiteral) AcceptEnvVisitor(visitor EnvVisitor) error {
-	//TODO implement me
-	return nil
+	return visitor.VisitInterfaceTypeLiteral(i)
 }
 
 func (a ArrayTypeLiteral) AcceptEnvVisitor(visitor EnvVisitor) error {
@@ -171,4 +170,8 @@ func (n NamedType) AcceptEnvVisitor(visitor EnvVisitor) error {
 func (t TypeParameter) AcceptEnvVisitor(visitor EnvVisitor) error {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (m MethodSpecification) AcceptEnvVisitor(visitor EnvVisitor) error {
+	return visitor.VisitMethodSpecification(m)
 }

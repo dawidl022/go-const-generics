@@ -64,7 +64,7 @@ func (t typeCheckingVisitor) VisitArrayTypeLiteral(a ast.ArrayTypeLiteral) error
 }
 
 func (t typeCheckingVisitor) VisitStructTypeLiteral(s ast.StructTypeLiteral) error {
-	if err := checkDistinctFiledNames(s); err != nil {
+	if err := checkDistinctFieldNames(s); err != nil {
 		return err
 	}
 	for _, field := range s.Fields {
@@ -75,7 +75,7 @@ func (t typeCheckingVisitor) VisitStructTypeLiteral(s ast.StructTypeLiteral) err
 	return nil
 }
 
-func checkDistinctFiledNames(s ast.StructTypeLiteral) error {
+func checkDistinctFieldNames(s ast.StructTypeLiteral) error {
 	fieldNames := []name{}
 	for _, field := range s.Fields {
 		fieldNames = append(fieldNames, name(field.Name))
