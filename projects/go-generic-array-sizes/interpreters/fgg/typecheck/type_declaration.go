@@ -9,13 +9,13 @@ import (
 )
 
 func (t typeCheckingVisitor) VisitTypeDeclaration(tdecl ast.TypeDeclaration) error {
-	if err := t.typeCheckDeclaration(tdecl); err != nil {
+	if err := t.typeCheckTypeDeclaration(tdecl); err != nil {
 		return fmt.Errorf("type %q: %w", tdecl.TypeName, err)
 	}
 	return nil
 }
 
-func (t typeCheckingVisitor) typeCheckDeclaration(tdecl ast.TypeDeclaration) error {
+func (t typeCheckingVisitor) typeCheckTypeDeclaration(tdecl ast.TypeDeclaration) error {
 	if err := t.typeCheckTypeParams(tdecl.TypeParameters); err != nil {
 		return err
 	}

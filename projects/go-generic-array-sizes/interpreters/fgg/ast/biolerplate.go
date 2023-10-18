@@ -134,8 +134,7 @@ func (t TypeDeclaration) Accept(visitor Visitor) error {
 }
 
 func (m MethodDeclaration) Accept(visitor Visitor) error {
-	//TODO implement me
-	return nil
+	return visitor.VisitMethodDeclaration(m)
 }
 
 func (a ArraySetMethodDeclaration) Accept(visitor Visitor) error {

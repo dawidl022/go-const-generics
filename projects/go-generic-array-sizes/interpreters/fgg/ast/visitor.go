@@ -7,6 +7,7 @@ type Visitable interface {
 type Visitor interface {
 	VisitProgram(p Program) error
 	VisitTypeDeclaration(t TypeDeclaration) error
+	VisitMethodDeclaration(m MethodDeclaration) error
 }
 
 type ExpressionVisitable interface {
