@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/auxiliary"
 )
 
 func (r ReducingVisitor) VisitSelect(s ast.Select) (ast.Expression, error) {
@@ -18,7 +19,7 @@ func (r ReducingVisitor) VisitSelect(s ast.Select) (ast.Expression, error) {
 	if !isNamedReceiverType {
 		return nil, fmt.Errorf("type %q is not a valid value literal type", receiver.Type)
 	}
-	structFields, err := Fields(r.declarations, namedReceiverType)
+	structFields, err := auxiliary.Fields(r.declarations, namedReceiverType)
 	if err != nil {
 		return nil, err
 	}
@@ -29,20 +30,6 @@ func (r ReducingVisitor) VisitSelect(s ast.Select) (ast.Expression, error) {
 func (r ReducingVisitor) selectWithReducedReceiver(s ast.Select) (ast.Expression, error) {
 	reducedReceiver, err := r.Reduce(s.Receiver)
 	return ast.Select{FieldName: s.FieldName, Receiver: reducedReceiver}, err
-}
-
-func Fields(declarations []ast.Declaration, typ ast.NamedType) ([]ast.Field, error) {
-	for _, decl := range declarations {
-		typeDecl, isTypeDecl := decl.(ast.TypeDeclaration)
-
-		if isTypeDecl {
-			structTypeLit, isStructLit := typeDecl.TypeLiteral.(ast.StructTypeLiteral)
-			if isStructLit && typeDecl.TypeName == typ.TypeName {
-				return structTypeLit.Fields, nil
-			}
-		}
-	}
-	return nil, fmt.Errorf("no struct type named %q found in declarations", typ.TypeName)
 }
 
 func (r ReducingVisitor) reduceSelectToField(s ast.Select, fields []ast.Field, receiver ast.ValueLiteral) (ast.Expression, error) {

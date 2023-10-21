@@ -119,8 +119,7 @@ func (v ValueLiteral) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 }
 
 func (s Select) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
-	//TODO implement me
-	return NamedType{}, nil
+	return visitor.VisitSelect(s)
 }
 
 func (a ArrayIndex) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
