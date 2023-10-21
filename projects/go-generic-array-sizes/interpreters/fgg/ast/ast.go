@@ -23,6 +23,8 @@ type TypeDeclaration struct {
 type Type interface {
 	Bound
 	EnvVisitable
+	MethodVisitable
+	Equal(other Type) bool
 	typeNode()
 	fmt.Stringer
 }
@@ -102,6 +104,16 @@ type ArraySetMethodDeclaration struct {
 	IndexVariable         string
 	NewValueVariable      string
 	ReturnVariable        string
+}
+
+func (a ArraySetMethodDeclaration) MethodSpecification() MethodSpecification {
+	return MethodSpecification{
+		MethodName: a.MethodName,
+		MethodSignature: MethodSignature{
+			MethodParameters: []MethodParameter{a.IndexParameter, a.ValueParameter},
+			ReturnType:       a.ReturnType,
+		},
+	}
 }
 
 type NamedType struct {

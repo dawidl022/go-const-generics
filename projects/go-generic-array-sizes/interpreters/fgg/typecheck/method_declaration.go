@@ -32,11 +32,14 @@ func (t typeCheckingVisitor) typeCheckMethodDeclaration(m ast.MethodDeclaration)
 	if err != nil {
 		return err
 	}
-	_, err = t.typeOf(nil, makeMethodVariableEnv(m, receiverType), m.ReturnExpression) // TODO fill in typing environment
+	expressionType, err := t.typeOf(nil, makeMethodVariableEnv(m, receiverType), m.ReturnExpression) // TODO fill in typing environment
 	if err != nil {
 		return err
 	}
-	// TODO check subtype
+	err = t.newTypeEnvTypeCheckingVisitor(nil).checkIsSubtypeOf(expressionType, m.MethodSpecification.MethodSignature.ReturnType) // TODO fill in typing env
+	if err != nil {
+		return fmt.Errorf("return expression of %w", err)
+	}
 	return nil
 }
 
@@ -56,7 +59,10 @@ func (t typeCheckingVisitor) getReceiverType(typeName ast.TypeName) (ast.Type, e
 	for _, decl := range t.declarations {
 		typeDecl, isTypeDecl := decl.(ast.TypeDeclaration)
 		if isTypeDecl && typeDecl.TypeName == typeName {
-			return nil, nil
+			return ast.NamedType{
+				TypeName:      typeName,
+				TypeArguments: nil, // TODO fill in type arguments
+			}, nil
 		}
 	}
 	return nil, fmt.Errorf("receiver type name not declared: %q", typeName)

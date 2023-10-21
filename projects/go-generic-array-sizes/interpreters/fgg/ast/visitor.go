@@ -30,6 +30,7 @@ type TypeVisitable interface {
 type TypeVisitor interface {
 	VisitVariable(v Variable) (Type, error)
 	VisitValueLiteral(v ValueLiteral) (Type, error)
+	VisitIntegerLiteral(i IntegerLiteral) (Type, error)
 }
 
 type EnvVisitable interface {
@@ -42,4 +43,14 @@ type EnvVisitor interface {
 	VisitInterfaceTypeLiteral(i InterfaceTypeLiteral) error
 	VisitMethodSpecification(m MethodSpecification) error
 	VisitStructTypeLiteral(s StructTypeLiteral) error
+}
+
+type MethodVisitable interface {
+	AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification
+}
+
+type MethodVisitor interface {
+	VisitIntegerLiteral(i IntegerLiteral) []MethodSpecification
+	VisitNamedType(n NamedType) []MethodSpecification
+	TypeParameter(t TypeParameter) []MethodSpecification
 }

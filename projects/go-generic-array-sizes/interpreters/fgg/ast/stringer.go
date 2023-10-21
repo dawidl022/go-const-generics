@@ -27,6 +27,27 @@ func (m MethodCall) String() string {
 	return str
 }
 
+func (m MethodSpecification) String() string {
+	return fmt.Sprintf("%s%s", m.MethodName, m.MethodSignature)
+}
+
+func (m MethodSignature) String() string {
+	s := "("
+
+	for i, param := range m.MethodParameters {
+		if i > 0 {
+			s += ", "
+		}
+		s += param.String()
+	}
+	s += fmt.Sprintf(") %s", m.ReturnType)
+	return s
+}
+
+func (p MethodParameter) String() string {
+	return fmt.Sprintf("%s %s", p.ParameterName, p.Type)
+}
+
 func (v ValueLiteral) String() string {
 	str := v.Type.String() + "{"
 

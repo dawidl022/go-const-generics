@@ -8,6 +8,15 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
 )
 
+func (t typeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDeclaration {
+	for _, decl := range t.declarations {
+		if typeDecl, isTypeDecl := decl.(ast.TypeDeclaration); isTypeDecl && typeDecl.TypeName == typeName {
+			return typeDecl
+		}
+	}
+	panic(fmt.Sprintf("could not find declaration for typename %q", typeName))
+}
+
 func (t typeCheckingVisitor) VisitTypeDeclaration(tdecl ast.TypeDeclaration) error {
 	if err := t.typeCheckTypeDeclaration(tdecl); err != nil {
 		return fmt.Errorf("type %q: %w", tdecl.TypeName, err)
@@ -27,8 +36,8 @@ func (t typeCheckingVisitor) typeCheckTypeParams(params []ast.TypeParameterConst
 }
 
 type typeEnvTypeCheckingVisitor struct {
-	declarations []ast.Declaration
-	typeEnv      map[ast.TypeParameter]ast.Bound
+	typeCheckingVisitor
+	typeEnv map[ast.TypeParameter]ast.Bound
 }
 
 func (t typeCheckingVisitor) newTypeEnvTypeCheckingVisitor(typeParams []ast.TypeParameterConstraint) typeEnvTypeCheckingVisitor {
@@ -37,8 +46,8 @@ func (t typeCheckingVisitor) newTypeEnvTypeCheckingVisitor(typeParams []ast.Type
 		env[param.TypeParameter] = param.Bound
 	}
 	return typeEnvTypeCheckingVisitor{
-		declarations: t.declarations,
-		typeEnv:      env,
+		typeCheckingVisitor: t,
+		typeEnv:             env,
 	}
 }
 

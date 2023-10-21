@@ -102,8 +102,7 @@ func (p Program) Accept(visitor Visitor) error {
 }
 
 func (i IntegerLiteral) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
-	//TODO implement me
-	return nil, nil
+	return visitor.VisitIntegerLiteral(i)
 }
 
 func (v Variable) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
@@ -112,7 +111,7 @@ func (v Variable) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 
 func (m MethodCall) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 	//TODO implement me
-	return nil, nil
+	return NamedType{}, nil
 }
 
 func (v ValueLiteral) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
@@ -121,12 +120,12 @@ func (v ValueLiteral) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 
 func (s Select) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 	//TODO implement me
-	return nil, nil
+	return NamedType{}, nil
 }
 
 func (a ArrayIndex) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 	//TODO implement me
-	return nil, nil
+	return NamedType{}, nil
 }
 
 func (t TypeDeclaration) Accept(visitor Visitor) error {
@@ -170,4 +169,16 @@ func (t TypeParameter) AcceptEnvVisitor(visitor EnvVisitor) error {
 
 func (m MethodSpecification) AcceptEnvVisitor(visitor EnvVisitor) error {
 	return visitor.VisitMethodSpecification(m)
+}
+
+func (i IntegerLiteral) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
+	return visitor.VisitIntegerLiteral(i)
+}
+
+func (n NamedType) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
+	return visitor.VisitNamedType(n)
+}
+
+func (t TypeParameter) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
+	return visitor.TypeParameter(t)
 }
