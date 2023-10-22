@@ -146,12 +146,11 @@ func (i InterfaceTypeLiteral) AcceptEnvVisitor(visitor EnvVisitor) error {
 }
 
 func (a ArrayTypeLiteral) AcceptEnvVisitor(visitor EnvVisitor) error {
-	return visitor.AcceptArrayTypeLiteral(a)
+	return visitor.VisitArrayTypeLiteral(a)
 }
 
 func (i IntegerLiteral) AcceptEnvVisitor(visitor EnvVisitor) error {
-	//TODO implement me
-	panic("implement me")
+	return visitor.VisitIntegerLiteral(i)
 }
 
 func (n NamedType) AcceptEnvVisitor(visitor EnvVisitor) error {
@@ -177,4 +176,29 @@ func (n NamedType) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecificat
 
 func (t TypeParameter) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
 	return visitor.TypeParameter(t)
+}
+
+func (c ConstType) AcceptEnvVisitor(visitor EnvVisitor) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c ConstType) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c ConstType) Equal(other Type) bool {
+	_, isOtherConstType := other.(ConstType)
+	return isOtherConstType
+}
+
+func (c ConstType) typeNode() {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (c ConstType) String() string {
+	//TODO implement me
+	panic("implement me")
 }

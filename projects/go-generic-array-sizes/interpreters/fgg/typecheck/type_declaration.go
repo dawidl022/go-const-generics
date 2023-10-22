@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"slices"
 
+	"golang.org/x/exp/maps"
+
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
 )
@@ -55,18 +57,12 @@ func (t typeEnvTypeCheckingVisitor) typeCheck(v ast.EnvVisitable) error {
 	return v.AcceptEnvVisitor(t)
 }
 
-func (t typeEnvTypeCheckingVisitor) AcceptArrayTypeLiteral(a ast.ArrayTypeLiteral) error {
-	// TODO might need to t.typeCheck(a.Length) (not currently in formal rules)
-	if err := t.typeCheck(a.ElementType); err != nil {
-		return fmt.Errorf("element %w", err)
-	}
-	return nil
-}
-
 func (t typeEnvTypeCheckingVisitor) VisitNamedType(n ast.NamedType) error {
 	// TODO type check each type argument
 	// TODO check type arguments satisfy parameter bounds
-	if !(slices.Contains(typeDeclarationNames(t.declarations), n.TypeName) || n.TypeName == intTypeName) {
+	if !(slices.Contains(maps.Keys(t.typeEnv), ast.TypeParameter(n.TypeName)) ||
+		slices.Contains(typeDeclarationNames(t.declarations), n.TypeName) || n.TypeName == intTypeName) {
+
 		return fmt.Errorf("type name not declared: %q", n.TypeName)
 	}
 	return nil

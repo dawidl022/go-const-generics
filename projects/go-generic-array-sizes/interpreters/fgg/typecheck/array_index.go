@@ -6,8 +6,6 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 )
 
-// TODO check if all FG ArrayIndex tests pass
-
 func (t typeVisitor) VisitArrayIndex(a ast.ArrayIndex) (ast.Type, error) {
 	namedReceiverType, arrayTypeDecl, err := t.arrayIndexReceiverType(a)
 	if err != nil {

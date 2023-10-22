@@ -42,11 +42,12 @@ type EnvVisitable interface {
 }
 
 type EnvVisitor interface {
-	AcceptArrayTypeLiteral(a ArrayTypeLiteral) error
+	VisitArrayTypeLiteral(a ArrayTypeLiteral) error
 	VisitNamedType(n NamedType) error
 	VisitInterfaceTypeLiteral(i InterfaceTypeLiteral) error
 	VisitMethodSpecification(m MethodSpecification) error
 	VisitStructTypeLiteral(s StructTypeLiteral) error
+	VisitIntegerLiteral(i IntegerLiteral) error
 }
 
 type MethodVisitable interface {
