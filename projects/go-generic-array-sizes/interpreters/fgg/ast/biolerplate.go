@@ -135,8 +135,7 @@ func (m MethodDeclaration) Accept(visitor Visitor) error {
 }
 
 func (a ArraySetMethodDeclaration) Accept(visitor Visitor) error {
-	//TODO implement me
-	return nil
+	return visitor.VisitArraySetMethodDeclaration(a)
 }
 
 func (s StructTypeLiteral) AcceptEnvVisitor(visitor EnvVisitor) error {

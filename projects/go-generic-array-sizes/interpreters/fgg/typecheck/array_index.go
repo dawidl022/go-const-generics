@@ -21,7 +21,7 @@ func (t typeVisitor) VisitArrayIndex(a ast.ArrayIndex) (ast.Type, error) {
 	if err != nil {
 		return nil, err
 	}
-	return t.elementType(namedReceiverType), nil
+	return t.elementType(namedReceiverType.TypeName), nil
 }
 
 func (t typeVisitor) arrayIndexReceiverType(a ast.ArrayIndex) (ast.NamedType, *ast.ArrayTypeLiteral, error) {

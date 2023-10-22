@@ -8,6 +8,7 @@ type Visitor interface {
 	VisitProgram(p Program) error
 	VisitTypeDeclaration(t TypeDeclaration) error
 	VisitMethodDeclaration(m MethodDeclaration) error
+	VisitArraySetMethodDeclaration(a ArraySetMethodDeclaration) error
 }
 
 type ExpressionVisitable interface {
