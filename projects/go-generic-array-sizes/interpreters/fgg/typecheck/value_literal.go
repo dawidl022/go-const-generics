@@ -19,13 +19,3 @@ func (t typeVisitor) VisitValueLiteral(v ast.ValueLiteral) (ast.Type, error) {
 	}
 	return nil, fmt.Errorf("undeclared value literal type name: %q", v.Type)
 }
-
-func (t typeVisitor) typeCheckStructLiteral(v ast.ValueLiteral) error {
-	//	TODO
-	return nil
-}
-
-func (t typeVisitor) typeCheckArrayLiteral(v ast.ValueLiteral) error {
-	// TODO
-	return nil
-}
