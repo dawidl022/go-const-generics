@@ -110,8 +110,7 @@ func (v Variable) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 }
 
 func (m MethodCall) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
-	//TODO implement me
-	return NamedType{}, nil
+	return visitor.VisitMethodCall(m)
 }
 
 func (v ValueLiteral) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {

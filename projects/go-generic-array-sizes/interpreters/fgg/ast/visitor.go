@@ -34,6 +34,7 @@ type TypeVisitor interface {
 	VisitIntegerLiteral(i IntegerLiteral) (Type, error)
 	VisitSelect(s Select) (Type, error)
 	VisitArrayIndex(a ArrayIndex) (Type, error)
+	VisitMethodCall(m MethodCall) (Type, error)
 }
 
 type EnvVisitable interface {
