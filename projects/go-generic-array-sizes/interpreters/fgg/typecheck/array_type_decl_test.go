@@ -51,3 +51,17 @@ var typeDeclArrayConstTypeParamFgg []byte
 func TestTypeCheck_givenArrayTypeDeclarationWithConstantLengthTypeParameter_returnsNoError(t *testing.T) {
 	assertPassesTypeCheck(t, typeDeclArrayConstTypeParamFgg)
 }
+
+//go:embed testdata/type_declaration/array_type_params/array_type_params.go
+var typeDeclArrayTypeParamsFgg []byte
+
+func TestTypeCheck_givenArrayTypeDeclarationWithBothLengthAndElementTypeParameters_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, typeDeclArrayTypeParamsFgg)
+}
+
+//go:embed testdata/type_declaration/array_type_nested/array_type_nested.go
+var typeDeclArrayTypeNestedFgg []byte
+
+func TestTypeCheck_givenNestedArrayTypeDeclarationWithTypeParameters_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, typeDeclArrayTypeNestedFgg)
+}

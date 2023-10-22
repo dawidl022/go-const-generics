@@ -5,7 +5,6 @@
 
 \include{macros}
 
-% TODO compare with original FGG definition using "ranges"
 $\Delta$ is defined as a typing environment mapping type parameters $\alpha$
 to their bounds $\gamma$. Type parameter constraint sequences $\ov{\Phi}$ may
 implicitly coerce to type environments.
@@ -37,16 +36,18 @@ implicitly coerce to type environments.
         {(\ov{\Phi \by \tau}) = \eta}
 
         \inferrule
+        {\Delta \vdash \tau \imp \const}
+        {\isconst_\Delta(\tau)}
+
+        \inferrule
         {
             (\ov{\alpha~\gamma}) = \ov{\Phi} \\
             \eta = (\ov{\Phi \by \tau}) \\
-            \Delta \vdash (\ov{\alpha \imp \gamma})[\eta]
+            \Delta \vdash (\ov{\alpha \imp \gamma})[\eta] \\
+            \ov{\isconst_\Delta(\alpha) = \isconst_\Delta(\gamma)}
         }
         {(\ov{\Phi \by_\Delta \tau}) = \eta}
 
-        \inferrule
-        {\Delta \vdash \tau \imp \const}
-        {\isconst_\Delta(\tau)}
         \\
         \inferrule
         {~}

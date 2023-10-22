@@ -21,8 +21,8 @@ type TypeDeclaration struct {
 }
 
 type Type interface {
-	Bound
 	EnvVisitable
+	EnvTypeVisitable
 	MethodVisitable
 	Equal(other Type) bool
 	typeNode()
@@ -36,14 +36,13 @@ type TypeParameterConstraint struct {
 
 type TypeParameter string
 
-type Bound interface {
-	boundNode()
-}
+type Bound = Type
 
 type ConstType struct{}
 
 type TypeLiteral interface {
 	EnvVisitable
+	EnvTypeLiteralVisitable
 	typeLiteralNode()
 }
 

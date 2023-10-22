@@ -48,6 +48,25 @@ type EnvVisitor interface {
 	VisitMethodSpecification(m MethodSpecification) error
 	VisitStructTypeLiteral(s StructTypeLiteral) error
 	VisitIntegerLiteral(i IntegerLiteral) error
+	VisitTypeParameter(t TypeParameter) error
+}
+
+// TODO check if error is necessary
+type EnvTypeVisitable interface {
+	AcceptEnvTypeVisitor(visitor EnvTypeVisitor) (Type, error)
+}
+
+type EnvTypeVisitor interface {
+	VisitEnvNamedType(n NamedType) (Type, error)
+}
+
+// TODO check if error is necessary
+type EnvTypeLiteralVisitable interface {
+	AcceptEnvTypeVisitor(visitor EnvTypeLiteralVisitor) (TypeLiteral, error)
+}
+
+type EnvTypeLiteralVisitor interface {
+	VisitEnvArrayTypeLiteral(a ArrayTypeLiteral) (TypeLiteral, error)
 }
 
 type MethodVisitable interface {
@@ -57,5 +76,5 @@ type MethodVisitable interface {
 type MethodVisitor interface {
 	VisitIntegerLiteral(i IntegerLiteral) []MethodSpecification
 	VisitNamedType(n NamedType) []MethodSpecification
-	TypeParameter(t TypeParameter) []MethodSpecification
+	VisitTypeParameter(t TypeParameter) []MethodSpecification
 }

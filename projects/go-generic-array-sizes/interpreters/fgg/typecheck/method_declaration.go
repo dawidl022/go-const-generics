@@ -36,6 +36,7 @@ func (t typeCheckingVisitor) typeCheckMethodDeclaration(m ast.MethodDeclaration)
 	if err != nil {
 		return err
 	}
+	// TODO consolidate creation of excess EnvTypeCheckingVisitor
 	err = t.newTypeEnvTypeCheckingVisitor(nil).checkIsSubtypeOf(expressionType, m.MethodSpecification.MethodSignature.ReturnType) // TODO fill in typing env
 	if err != nil {
 		return fmt.Errorf("return expression of %w", err)

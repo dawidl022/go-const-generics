@@ -94,3 +94,7 @@ func (n NamedType) String() string {
 func (t TypeName) String() string {
 	return string(t)
 }
+
+func (c ConstType) String() string {
+	return "const"
+}

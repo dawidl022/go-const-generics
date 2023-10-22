@@ -11,6 +11,9 @@ import (
 )
 
 func (t typeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDeclaration {
+	if typeName == intTypeName {
+		return ast.TypeDeclaration{TypeName: intTypeName}
+	}
 	for _, decl := range t.declarations {
 		if typeDecl, isTypeDecl := decl.(ast.TypeDeclaration); isTypeDecl && typeDecl.TypeName == typeName {
 			return typeDecl
@@ -30,16 +33,66 @@ func (t typeCheckingVisitor) typeCheckTypeDeclaration(tdecl ast.TypeDeclaration)
 	if err := t.typeCheckTypeParams(tdecl.TypeParameters); err != nil {
 		return err
 	}
-	return t.newTypeEnvTypeCheckingVisitor(tdecl.TypeParameters).typeCheck(tdecl.TypeLiteral)
+	envChecker := t.newTypeEnvTypeCheckingVisitor(tdecl.TypeParameters)
+	// TODO may be worth moving identification into separate struct so it only does one thing
+	declWithIdentifiedTypeParams, err := envChecker.identifyTypeLiteralParams(tdecl.TypeLiteral)
+	if err != nil {
+		return nil
+	}
+	return envChecker.typeCheck(declWithIdentifiedTypeParams)
 }
 
 func (t typeCheckingVisitor) typeCheckTypeParams(params []ast.TypeParameterConstraint) error {
+	// TODO
 	return nil
 }
 
 type typeEnvTypeCheckingVisitor struct {
 	typeCheckingVisitor
 	typeEnv map[ast.TypeParameter]ast.Bound
+}
+
+func (t typeEnvTypeCheckingVisitor) VisitTypeParameter(typeParam ast.TypeParameter) error {
+	if _, inEnv := t.typeEnv[typeParam]; !inEnv {
+		panic("untested path")
+	}
+	return nil
+}
+
+func (t typeEnvTypeCheckingVisitor) VisitEnvNamedType(n ast.NamedType) (ast.Type, error) {
+	// TODO what happens in case type param shadows type decl? Is this allowed in Go?
+	typeParam := ast.TypeParameter(n.TypeName)
+	if _, isTypeParam := t.typeEnv[typeParam]; isTypeParam {
+		return typeParam, nil
+	}
+		typeArgs := slices.Clone(n.TypeArguments)
+	for i, typeArg := range n.TypeArguments {
+		if namedTypeArg, isNamedTypeArg := typeArg.(ast.NamedType); isNamedTypeArg {
+			typeParam := ast.TypeParameter(namedTypeArg.TypeName)
+			if _, isTypeParam := t.typeEnv[typeParam]; isTypeParam {
+				typeArgs[i] = typeParam
+			}
+		}
+	}
+	return ast.NamedType{
+		TypeName:      n.TypeName,
+		TypeArguments: typeArgs,
+	}, nil
+}
+
+func (t typeEnvTypeCheckingVisitor) VisitEnvArrayTypeLiteral(a ast.ArrayTypeLiteral) (ast.TypeLiteral, error) {
+	lengthType, err := t.identifyTypeParams(a.Length)
+	if err != nil {
+		return nil, err
+	}
+	elementType, err := t.identifyTypeParams(a.ElementType)
+	if err != nil {
+		return nil, err
+	}
+	return ast.ArrayTypeLiteral{
+		Length:      lengthType,
+		ElementType: elementType,
+	}, nil
 }
 
 func (t typeCheckingVisitor) newTypeEnvTypeCheckingVisitor(typeParams []ast.TypeParameterConstraint) typeEnvTypeCheckingVisitor {
@@ -57,15 +110,53 @@ func (t typeEnvTypeCheckingVisitor) typeCheck(v ast.EnvVisitable) error {
 	return v.AcceptEnvVisitor(t)
 }
 
-func (t typeEnvTypeCheckingVisitor) VisitNamedType(n ast.NamedType) error {
-	// TODO type check each type argument
-	// TODO check type arguments satisfy parameter bounds
-	if !(slices.Contains(maps.Keys(t.typeEnv), ast.TypeParameter(n.TypeName)) ||
-		slices.Contains(typeDeclarationNames(t.declarations), n.TypeName) || n.TypeName == intTypeName) {
+func (t typeEnvTypeCheckingVisitor) identifyTypeParams(v ast.EnvTypeVisitable) (ast.Type, error) {
+	return v.AcceptEnvTypeVisitor(t)
+}
 
+func (t typeEnvTypeCheckingVisitor) identifyTypeLiteralParams(v ast.EnvTypeLiteralVisitable) (ast.TypeLiteral, error) {
+	return v.AcceptEnvTypeVisitor(t)
+}
+
+func (t typeEnvTypeCheckingVisitor) VisitNamedType(n ast.NamedType) error {
+	for _, arg := range n.TypeArguments {
+		err := t.typeCheck(arg)
+		if err != nil {
+			return fmt.Errorf("type %q badly instantiated: %w", n.TypeName, err)
+		}
+	}
+	if slices.Contains(maps.Keys(t.typeEnv), ast.TypeParameter(n.TypeName)) {
+		return nil
+	}
+	if !(slices.Contains(typeDeclarationNames(t.declarations), n.TypeName) || n.TypeName == intTypeName) {
 		return fmt.Errorf("type name not declared: %q", n.TypeName)
 	}
-	return nil
+	_, err := t.makeTypeSubstitutionsCheckingBounds(n)
+	return err
+}
+
+func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.NamedType) (map[ast.TypeParameter]ast.Type, error) {
+	decl := t.typeDeclarationOf(n.TypeName)
+	typeSubstitutions := makeTypeSubstitutions(n, decl.TypeParameters)
+
+	for _, typeParam := range decl.TypeParameters {
+		err := t.checkIsSubtypeOf(typeSubstitutions[typeParam.TypeParameter], typeParam.Bound)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return typeSubstitutions, nil
+}
+
+func makeTypeSubstitutions(n ast.NamedType, typeParams []ast.TypeParameterConstraint) map[ast.TypeParameter]ast.Type {
+	if len(n.TypeArguments) != len(typeParams) {
+		panic("untested branch")
+	}
+	typeSubstitutions := make(map[ast.TypeParameter]ast.Type)
+	for i, typeParam := range typeParams {
+		typeSubstitutions[typeParam.TypeParameter] = n.TypeArguments[i]
+	}
+	return typeSubstitutions
 }
 
 func (t typeEnvTypeCheckingVisitor) VisitInterfaceTypeLiteral(i ast.InterfaceTypeLiteral) error {

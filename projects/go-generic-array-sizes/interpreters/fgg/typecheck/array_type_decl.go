@@ -7,7 +7,6 @@ import (
 )
 
 func (t typeEnvTypeCheckingVisitor) VisitArrayTypeLiteral(a ast.ArrayTypeLiteral) error {
-	// TODO might need to t.typeCheck(a.Length) (not currently in formal rules)
 	if err := t.typeCheck(a.Length); err != nil {
 		return fmt.Errorf("length %w", err)
 	}

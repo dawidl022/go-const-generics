@@ -54,9 +54,8 @@ func (v methodVisitor) VisitNamedType(n ast.NamedType) []ast.MethodSpecification
 	}
 }
 
-func (v methodVisitor) TypeParameter(t ast.TypeParameter) []ast.MethodSpecification {
-	//TODO implement me
-	panic("implement me")
+func (v methodVisitor) VisitTypeParameter(t ast.TypeParameter) []ast.MethodSpecification {
+	return v.methodsOf(v.typeEnv[t])
 }
 
 func (v methodVisitor) valueTypeMethods(typeName ast.TypeName) []ast.MethodSpecification {

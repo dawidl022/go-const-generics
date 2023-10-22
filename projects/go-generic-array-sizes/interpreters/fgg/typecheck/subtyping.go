@@ -35,11 +35,11 @@ func (t typeEnvTypeCheckingVisitor) isConstSubtype(subtype ast.Type) bool {
 	if _, isIntLiteral := subtype.(ast.IntegerLiteral); isIntLiteral {
 		return true
 	}
-	namedSubtype, isNamedSubtype := subtype.(ast.NamedType)
-	if !isNamedSubtype {
+	subtypeParam, isSubtypeParam := subtype.(ast.TypeParameter)
+	if !isSubtypeParam {
 		return false
 	}
-	bound, isInTypeEnv := t.typeEnv[ast.TypeParameter(namedSubtype.TypeName)]
+	bound, isInTypeEnv := t.typeEnv[subtypeParam]
 	if isInTypeEnv && (bound == ast.ConstType{}) {
 		return true
 	}
