@@ -32,6 +32,7 @@ type TypeVisitor interface {
 	VisitValueLiteral(v ValueLiteral) (Type, error)
 	VisitIntegerLiteral(i IntegerLiteral) (Type, error)
 	VisitSelect(s Select) (Type, error)
+	VisitArrayIndex(a ArrayIndex) (Type, error)
 }
 
 type EnvVisitable interface {

@@ -123,8 +123,7 @@ func (s Select) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 }
 
 func (a ArrayIndex) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
-	//TODO implement me
-	return NamedType{}, nil
+	return visitor.VisitArrayIndex(a)
 }
 
 func (t TypeDeclaration) Accept(visitor Visitor) error {
