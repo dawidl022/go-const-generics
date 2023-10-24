@@ -65,7 +65,7 @@ func (t typeEnvTypeCheckingVisitor) VisitEnvNamedType(n ast.NamedType) (ast.Type
 	if _, isTypeParam := t.typeEnv[typeParam]; isTypeParam {
 		return typeParam, nil
 	}
-		typeArgs := slices.Clone(n.TypeArguments)
+	typeArgs := slices.Clone(n.TypeArguments)
 	for i, typeArg := range n.TypeArguments {
 		if namedTypeArg, isNamedTypeArg := typeArg.(ast.NamedType); isNamedTypeArg {
 			typeParam := ast.TypeParameter(namedTypeArg.TypeName)
@@ -131,8 +131,10 @@ func (t typeEnvTypeCheckingVisitor) VisitNamedType(n ast.NamedType) error {
 	if !(slices.Contains(typeDeclarationNames(t.declarations), n.TypeName) || n.TypeName == intTypeName) {
 		return fmt.Errorf("type name not declared: %q", n.TypeName)
 	}
-	_, err := t.makeTypeSubstitutionsCheckingBounds(n)
-	return err
+	if _, err := t.makeTypeSubstitutionsCheckingBounds(n); err != nil {
+		return fmt.Errorf("type %q badly instantiated: %w", n.TypeName, err)
+	}
+	return nil
 }
 
 func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.NamedType) (map[ast.TypeParameter]ast.Type, error) {
@@ -140,12 +142,26 @@ func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.Na
 	typeSubstitutions := makeTypeSubstitutions(n, decl.TypeParameters)
 
 	for _, typeParam := range decl.TypeParameters {
-		err := t.checkIsSubtypeOf(typeSubstitutions[typeParam.TypeParameter], typeParam.Bound)
-		if err != nil {
+		typeArg := typeSubstitutions[typeParam.TypeParameter]
+
+		if err := t.checkConstEquivalence(typeArg, typeParam.Bound); err != nil {
+			return nil, err
+		}
+		if err := t.checkIsSubtypeOf(typeArg, typeParam.Bound); err != nil {
 			return nil, err
 		}
 	}
 	return typeSubstitutions, nil
+}
+
+func (t typeEnvTypeCheckingVisitor) checkConstEquivalence(typeArg ast.Type, typeParamBound ast.Bound) error {
+	if t.isConst(typeParamBound) && !t.isConst(typeArg) {
+		return fmt.Errorf("type %q cannot be used as const type argument", typeArg)
+	}
+	if !t.isConst(typeParamBound) && t.isConst(typeArg) {
+		return fmt.Errorf("type %q cannot be used as non-const type argument", typeArg)
+	}
+	return nil
 }
 
 func makeTypeSubstitutions(n ast.NamedType, typeParams []ast.TypeParameterConstraint) map[ast.TypeParameter]ast.Type {
