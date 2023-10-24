@@ -196,34 +196,34 @@ func (c ConstType) typeNode() {
 	panic("implement me")
 }
 
-func (c ConstType) AcceptEnvTypeVisitor(visitor EnvTypeVisitor) (Type, error) {
-	return visitor.VisitEnvConstType(c)
+func (c ConstType) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
+	return visitor.VisitMapConstType(c)
 }
 
-func (t TypeParameter) AcceptEnvTypeVisitor(visitor EnvTypeVisitor) (Type, error) {
+func (t TypeParameter) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
 	//TODO implement me
-	panic("implement me")
+	return t
 }
 
-func (n NamedType) AcceptEnvTypeVisitor(visitor EnvTypeVisitor) (Type, error) {
-	return visitor.VisitEnvNamedType(n)
+func (n NamedType) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
+	return visitor.VisitMapNamedType(n)
 }
 
-func (i IntegerLiteral) AcceptEnvTypeVisitor(visitor EnvTypeVisitor) (Type, error) {
+func (i IntegerLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
 	//TODO implement me
-	return i, nil
+	return i
 }
 
-func (s StructTypeLiteral) AcceptEnvTypeVisitor(visitor EnvTypeLiteralVisitor) (TypeLiteral, error) {
+func (s StructTypeLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
 	//TODO implement me
-	return s, nil
+	return s
 }
 
-func (i InterfaceTypeLiteral) AcceptEnvTypeVisitor(visitor EnvTypeLiteralVisitor) (TypeLiteral, error) {
+func (i InterfaceTypeLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
 	//TODO implement me
-	return i, nil
+	return i
 }
 
-func (a ArrayTypeLiteral) AcceptEnvTypeVisitor(visitor EnvTypeLiteralVisitor) (TypeLiteral, error) {
-	return visitor.VisitEnvArrayTypeLiteral(a)
+func (a ArrayTypeLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
+	return visitor.VisitMapArrayTypeLiteral(a)
 }

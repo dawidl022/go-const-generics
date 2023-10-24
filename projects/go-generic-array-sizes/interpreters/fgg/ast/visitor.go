@@ -39,6 +39,7 @@ type TypeVisitor interface {
 
 type EnvVisitable interface {
 	AcceptEnvVisitor(visitor EnvVisitor) error
+	AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable
 }
 
 type EnvVisitor interface {
@@ -52,23 +53,10 @@ type EnvVisitor interface {
 	VisitConstType(c ConstType) error
 }
 
-// TODO check if error is necessary
-type EnvTypeVisitable interface {
-	AcceptEnvTypeVisitor(visitor EnvTypeVisitor) (Type, error)
-}
-
-type EnvTypeVisitor interface {
-	VisitEnvNamedType(n NamedType) (Type, error)
-	VisitEnvConstType(c ConstType) (Type, error)
-}
-
-// TODO check if error is necessary
-type EnvTypeLiteralVisitable interface {
-	AcceptEnvTypeVisitor(visitor EnvTypeLiteralVisitor) (TypeLiteral, error)
-}
-
-type EnvTypeLiteralVisitor interface {
-	VisitEnvArrayTypeLiteral(a ArrayTypeLiteral) (TypeLiteral, error)
+type EnvMapperVisitor interface {
+	VisitMapNamedType(n NamedType) EnvVisitable
+	VisitMapConstType(c ConstType) EnvVisitable
+	VisitMapArrayTypeLiteral(a ArrayTypeLiteral) EnvVisitable
 }
 
 type MethodVisitable interface {

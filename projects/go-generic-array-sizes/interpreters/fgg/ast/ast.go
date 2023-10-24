@@ -22,7 +22,6 @@ type TypeDeclaration struct {
 
 type Type interface {
 	EnvVisitable
-	EnvTypeVisitable
 	MethodVisitable
 	Equal(other Type) bool
 	typeNode()
@@ -42,7 +41,6 @@ type ConstType struct{}
 
 type TypeLiteral interface {
 	EnvVisitable
-	EnvTypeLiteralVisitable
 	typeLiteralNode()
 }
 
@@ -62,6 +60,11 @@ type InterfaceTypeLiteral struct {
 type MethodSpecification struct {
 	MethodName      string
 	MethodSignature MethodSignature
+}
+
+func (m MethodSpecification) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
+	//TODO implement me
+	return m
 }
 
 type MethodSignature struct {

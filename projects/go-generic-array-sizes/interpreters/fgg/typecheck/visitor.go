@@ -41,7 +41,6 @@ func (t typeCheckingVisitor) typeOf(
 
 type typeVisitor struct {
 	typeEnvTypeCheckingVisitor
-	typeEnv     map[ast.TypeParameter]ast.Bound
 	variableEnv map[string]ast.Type
 }
 
@@ -54,7 +53,6 @@ func (t typeCheckingVisitor) newTypeVisitor(
 			typeCheckingVisitor: t,
 			typeEnv:             typeEnv,
 		},
-		typeEnv:     typeEnv,
 		variableEnv: variableEnv,
 	}
 }

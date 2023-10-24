@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"slices"
 
-	"golang.org/x/exp/maps"
-
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
 )
@@ -33,14 +31,7 @@ func (t typeCheckingVisitor) typeCheckTypeDeclaration(tdecl ast.TypeDeclaration)
 	if err := t.typeCheckTypeParams(tdecl.TypeParameters); err != nil {
 		return err
 	}
-	envChecker := t.newTypeEnvTypeCheckingVisitor(tdecl.TypeParameters)
-	// TODO may be worth moving identification into separate struct so it only does one thing
-	// alternatively perform on every call to typeCheck (inefficient)
-	declWithIdentifiedTypeParams, err := envChecker.identifyTypeLiteralParams(tdecl.TypeLiteral)
-	if err != nil {
-		return nil
-	}
-	return envChecker.typeCheck(declWithIdentifiedTypeParams)
+	return t.newTypeEnvTypeCheckingVisitor(tdecl.TypeParameters).typeCheck(tdecl.TypeLiteral)
 }
 
 func (t typeCheckingVisitor) typeCheckTypeParams(params []ast.TypeParameterConstraint) error {
@@ -49,15 +40,10 @@ func (t typeCheckingVisitor) typeCheckTypeParams(params []ast.TypeParameterConst
 	}
 	envChecker := t.newTypeEnvTypeCheckingVisitor(params)
 	for _, param := range params {
-		bound, err := envChecker.identifyTypeParams(param.Bound)
-		if err != nil {
-			panic("untested path")
-		}
-
-		if err := envChecker.typeCheck(bound); err != nil {
+		if err := envChecker.typeCheck(param.Bound); err != nil {
 			return fmt.Errorf("illegal bound of type parameter %q: %w", param.TypeParameter, err)
 		}
-		if !envChecker.isValidBoundType(bound) {
+		if !envChecker.isValidBoundType(param.Bound) {
 			return fmt.Errorf(`cannot use type %q as bound: bound must be interface type or the keyword "const"`, param.Bound)
 		}
 	}
@@ -77,57 +63,6 @@ type typeEnvTypeCheckingVisitor struct {
 	typeEnv map[ast.TypeParameter]ast.Bound
 }
 
-func (t typeEnvTypeCheckingVisitor) VisitConstType(c ast.ConstType) error {
-	return nil
-}
-
-func (t typeEnvTypeCheckingVisitor) VisitEnvConstType(c ast.ConstType) (ast.Type, error) {
-	return c, nil
-}
-
-func (t typeEnvTypeCheckingVisitor) VisitTypeParameter(typeParam ast.TypeParameter) error {
-	if _, inEnv := t.typeEnv[typeParam]; !inEnv {
-		panic("untested path")
-	}
-	return nil
-}
-
-func (t typeEnvTypeCheckingVisitor) VisitEnvNamedType(n ast.NamedType) (ast.Type, error) {
-	// TODO what happens in case type param shadows type decl? Is this allowed in Go?
-	typeParam := ast.TypeParameter(n.TypeName)
-	if _, isTypeParam := t.typeEnv[typeParam]; isTypeParam {
-		return typeParam, nil
-	}
-	typeArgs := slices.Clone(n.TypeArguments)
-	for i, typeArg := range n.TypeArguments {
-		if namedTypeArg, isNamedTypeArg := typeArg.(ast.NamedType); isNamedTypeArg {
-			typeParam := ast.TypeParameter(namedTypeArg.TypeName)
-			if _, isTypeParam := t.typeEnv[typeParam]; isTypeParam {
-				typeArgs[i] = typeParam
-			}
-		}
-	}
-	return ast.NamedType{
-		TypeName:      n.TypeName,
-		TypeArguments: typeArgs,
-	}, nil
-}
-
-func (t typeEnvTypeCheckingVisitor) VisitEnvArrayTypeLiteral(a ast.ArrayTypeLiteral) (ast.TypeLiteral, error) {
-	lengthType, err := t.identifyTypeParams(a.Length)
-	if err != nil {
-		return nil, err
-	}
-	elementType, err := t.identifyTypeParams(a.ElementType)
-	if err != nil {
-		return nil, err
-	}
-	return ast.ArrayTypeLiteral{
-		Length:      lengthType,
-		ElementType: elementType,
-	}, nil
-}
-
 func (t typeCheckingVisitor) newTypeEnvTypeCheckingVisitor(typeParams []ast.TypeParameterConstraint) typeEnvTypeCheckingVisitor {
 	env := make(map[ast.TypeParameter]ast.Bound)
 	for _, param := range typeParams {
@@ -140,15 +75,25 @@ func (t typeCheckingVisitor) newTypeEnvTypeCheckingVisitor(typeParams []ast.Type
 }
 
 func (t typeEnvTypeCheckingVisitor) typeCheck(v ast.EnvVisitable) error {
-	return v.AcceptEnvVisitor(t)
+	return t.identifyTypeParams(v).AcceptEnvVisitor(t)
 }
 
-func (t typeEnvTypeCheckingVisitor) identifyTypeParams(v ast.EnvTypeVisitable) (ast.Type, error) {
-	return v.AcceptEnvTypeVisitor(t)
+// since there is no way to syntactically distinguish between a type parameter
+// and a named type with 0 type parameters, before type checking, it is
+// necessary to identify all type parameters
+func (t typeEnvTypeCheckingVisitor) identifyTypeParams(v ast.EnvVisitable) ast.EnvVisitable {
+	return typeParamIdentifier{t}.identifyTypeParams(v)
 }
 
-func (t typeEnvTypeCheckingVisitor) identifyTypeLiteralParams(v ast.EnvTypeLiteralVisitable) (ast.TypeLiteral, error) {
-	return v.AcceptEnvTypeVisitor(t)
+func (t typeEnvTypeCheckingVisitor) VisitConstType(c ast.ConstType) error {
+	return nil
+}
+
+func (t typeEnvTypeCheckingVisitor) VisitTypeParameter(typeParam ast.TypeParameter) error {
+	if _, inEnv := t.typeEnv[typeParam]; !inEnv {
+		panic("misidentified type parameter")
+	}
+	return nil
 }
 
 func (t typeEnvTypeCheckingVisitor) VisitNamedType(n ast.NamedType) error {
@@ -157,9 +102,6 @@ func (t typeEnvTypeCheckingVisitor) VisitNamedType(n ast.NamedType) error {
 		if err != nil {
 			return fmt.Errorf("type %q badly instantiated: %w", n.TypeName, err)
 		}
-	}
-	if slices.Contains(maps.Keys(t.typeEnv), ast.TypeParameter(n.TypeName)) {
-		return nil
 	}
 	if !(slices.Contains(typeDeclarationNames(t.declarations), n.TypeName) || n.TypeName == intTypeName) {
 		return fmt.Errorf("type name not declared: %q", n.TypeName)
@@ -187,16 +129,6 @@ func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.Na
 	return typeSubstitutions, nil
 }
 
-func (t typeEnvTypeCheckingVisitor) checkConstEquivalence(typeArg ast.Type, typeParamBound ast.Bound) error {
-	if t.isConst(typeParamBound) && !t.isConst(typeArg) {
-		return fmt.Errorf("type %q cannot be used as const type argument", typeArg)
-	}
-	if !t.isConst(typeParamBound) && t.isConst(typeArg) {
-		return fmt.Errorf("type %q cannot be used as non-const type argument", typeArg)
-	}
-	return nil
-}
-
 func makeTypeSubstitutions(n ast.NamedType, typeParams []ast.TypeParameterConstraint) map[ast.TypeParameter]ast.Type {
 	if len(n.TypeArguments) != len(typeParams) {
 		panic("untested branch")
@@ -206,6 +138,16 @@ func makeTypeSubstitutions(n ast.NamedType, typeParams []ast.TypeParameterConstr
 		typeSubstitutions[typeParam.TypeParameter] = n.TypeArguments[i]
 	}
 	return typeSubstitutions
+}
+
+func (t typeEnvTypeCheckingVisitor) checkConstEquivalence(typeArg ast.Type, typeParamBound ast.Bound) error {
+	if t.isConst(typeParamBound) && !t.isConst(typeArg) {
+		return fmt.Errorf("type %q cannot be used as const type argument", typeArg)
+	}
+	if !t.isConst(typeParamBound) && t.isConst(typeArg) {
+		return fmt.Errorf("type %q cannot be used as non-const type argument", typeArg)
+	}
+	return nil
 }
 
 func (t typeEnvTypeCheckingVisitor) VisitInterfaceTypeLiteral(i ast.InterfaceTypeLiteral) error {
@@ -273,19 +215,6 @@ func (t typeEnvTypeCheckingVisitor) VisitStructTypeLiteral(s ast.StructTypeLiter
 	return nil
 }
 
-func (t typeEnvTypeCheckingVisitor) isValidBoundType(bound ast.Bound) bool {
-	switch bound.(type) {
-	case ast.ConstType:
-		return true
-	case ast.NamedType:
-		tdecl := t.typeDeclarationOf(bound.(ast.NamedType).TypeName)
-		_, isInterfaceType := tdecl.TypeLiteral.(ast.InterfaceTypeLiteral)
-		return isInterfaceType
-	default:
-		return false
-	}
-}
-
 func checkDistinctFieldNames(s ast.StructTypeLiteral) error {
 	fieldNames := []name{}
 	for _, field := range s.Fields {
@@ -295,4 +224,17 @@ func checkDistinctFieldNames(s ast.StructTypeLiteral) error {
 		return fmt.Errorf("field name %w", err)
 	}
 	return nil
+}
+
+func (t typeEnvTypeCheckingVisitor) isValidBoundType(bound ast.Bound) bool {
+	switch t.identifyTypeParams(bound).(type) {
+	case ast.ConstType:
+		return true
+	case ast.NamedType:
+		tdecl := t.typeDeclarationOf(bound.(ast.NamedType).TypeName)
+		_, isInterfaceType := tdecl.TypeLiteral.(ast.InterfaceTypeLiteral)
+		return isInterfaceType
+	default:
+		return false
+	}
 }
