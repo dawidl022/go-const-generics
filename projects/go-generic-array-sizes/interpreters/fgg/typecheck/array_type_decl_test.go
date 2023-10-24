@@ -45,6 +45,16 @@ func TestTypeCheck_givenArrayTypeDeclarationWithContTypeParameterUsedAsElementTy
 		`ill-typed declaration: type "Arr": const type "N" used as element type`)
 }
 
+//go:embed testdata/type_declaration/array_invalid_element_type_arg/array_invalid_element_type_arg.go
+var typeDeclArrayInvalidElementTypeArgFgg []byte
+
+func TestTypeCheck_givenArrayDeclarationWithInvalidTypeArgument_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, typeDeclArrayInvalidElementTypeArgFgg,
+		`ill-typed declaration: type "Matrix": `+
+			`element type "Arr" badly instantiated: `+
+			`type "T" is not a subtype of "fooer": missing methods: "foo() int"`)
+}
+
 //go:embed testdata/type_declaration/array_const_type_param/array_const_type_param.go
 var typeDeclArrayConstTypeParamFgg []byte
 
