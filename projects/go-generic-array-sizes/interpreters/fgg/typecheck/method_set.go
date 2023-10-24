@@ -55,6 +55,8 @@ func (v methodVisitor) VisitNamedType(n ast.NamedType) []ast.MethodSpecification
 }
 
 func (v methodVisitor) VisitTypeParameter(t ast.TypeParameter) []ast.MethodSpecification {
+	// a type parameter's method set is equal to its bound, if the bound is an interface type
+	// apart from "const" (which has no methods), no other type of bound is allowed in FGG
 	return v.methodsOf(v.typeEnv[t])
 }
 
