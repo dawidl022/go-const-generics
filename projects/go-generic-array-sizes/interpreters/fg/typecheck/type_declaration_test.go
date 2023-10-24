@@ -33,7 +33,7 @@ var declarationInvalidSpecificationParamReturnTypeGo []byte
 
 func TestTypeCheck_givenDeclarationWithInvalidSpecificationParameterType_returnsError(t *testing.T) {
 	assertFailsTypeCheckWithError(t, declarationInvalidSpecificationParamReturnTypeGo,
-		`ill-typed declaration: type "Foo": method specification "something": argument "y" type name not declared: "thing"`)
+		`ill-typed declaration: type "Foo": method specification "something": parameter "y" type name not declared: "thing"`)
 }
 
 //go:embed testdata/type_declaration/duplicate_specification_param_names/duplicate_specification_param_names.go

@@ -45,3 +45,32 @@ func (t typeParamIdentifier) VisitMapArrayTypeLiteral(a ast.ArrayTypeLiteral) as
 		ElementType: t.identifyTypeParams(a.ElementType).(ast.Type),
 	}
 }
+
+func (t typeParamIdentifier) VisitMapInterfaceTypeLiteral(i ast.InterfaceTypeLiteral) ast.EnvVisitable {
+	methodSpecs := make([]ast.MethodSpecification, 0, len(i.MethodSpecifications))
+
+	for _, spec := range i.MethodSpecifications {
+		methodSpecs = append(methodSpecs, ast.MethodSpecification{
+			MethodName: spec.MethodName,
+			MethodSignature: ast.MethodSignature{
+				MethodParameters: t.identifyTypeParamsInMethodParams(spec),
+				ReturnType:       t.identifyTypeParams(spec.MethodSignature.ReturnType).(ast.Type),
+			},
+		})
+	}
+
+	return ast.InterfaceTypeLiteral{
+		MethodSpecifications: methodSpecs,
+	}
+}
+
+func (t typeParamIdentifier) identifyTypeParamsInMethodParams(spec ast.MethodSpecification) []ast.MethodParameter {
+	params := make([]ast.MethodParameter, 0, len(spec.MethodSignature.MethodParameters))
+	for _, param := range spec.MethodSignature.MethodParameters {
+		params = append(params, ast.MethodParameter{
+			ParameterName: param.ParameterName,
+			Type:          t.identifyTypeParams(param.Type).(ast.Type),
+		})
+	}
+	return params
+}
