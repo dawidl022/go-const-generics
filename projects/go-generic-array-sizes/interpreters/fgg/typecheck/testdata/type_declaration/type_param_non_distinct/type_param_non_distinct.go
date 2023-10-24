@@ -3,7 +3,8 @@ package main
 type any interface {
 }
 
-type Arr[T any] [T]int
+type Foo[T any, T any] struct {
+}
 
 func main() {
 	_ = 1

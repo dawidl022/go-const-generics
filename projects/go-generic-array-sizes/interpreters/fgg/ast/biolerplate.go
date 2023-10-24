@@ -178,8 +178,7 @@ func (t TypeParameter) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecif
 }
 
 func (c ConstType) AcceptEnvVisitor(visitor EnvVisitor) error {
-	//TODO implement me
-	panic("implement me")
+	return visitor.VisitConstType(c)
 }
 
 func (c ConstType) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
@@ -198,8 +197,7 @@ func (c ConstType) typeNode() {
 }
 
 func (c ConstType) AcceptEnvTypeVisitor(visitor EnvTypeVisitor) (Type, error) {
-	//TODO implement me
-	panic("implement me")
+	return visitor.VisitEnvConstType(c)
 }
 
 func (t TypeParameter) AcceptEnvTypeVisitor(visitor EnvTypeVisitor) (Type, error) {

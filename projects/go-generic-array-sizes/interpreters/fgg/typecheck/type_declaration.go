@@ -35,6 +35,7 @@ func (t typeCheckingVisitor) typeCheckTypeDeclaration(tdecl ast.TypeDeclaration)
 	}
 	envChecker := t.newTypeEnvTypeCheckingVisitor(tdecl.TypeParameters)
 	// TODO may be worth moving identification into separate struct so it only does one thing
+	// alternatively perform on every call to typeCheck (inefficient)
 	declWithIdentifiedTypeParams, err := envChecker.identifyTypeLiteralParams(tdecl.TypeLiteral)
 	if err != nil {
 		return nil
@@ -43,13 +44,45 @@ func (t typeCheckingVisitor) typeCheckTypeDeclaration(tdecl ast.TypeDeclaration)
 }
 
 func (t typeCheckingVisitor) typeCheckTypeParams(params []ast.TypeParameterConstraint) error {
-	// TODO
+	if err := checkDistinctTypeParameterNames(params); err != nil {
+		return fmt.Errorf("type parameter %w", err)
+	}
+	envChecker := t.newTypeEnvTypeCheckingVisitor(params)
+	for _, param := range params {
+		bound, err := envChecker.identifyTypeParams(param.Bound)
+		if err != nil {
+			panic("untested path")
+		}
+
+		if err := envChecker.typeCheck(bound); err != nil {
+			return fmt.Errorf("illegal bound of type parameter %q: %w", param.TypeParameter, err)
+		}
+		if !envChecker.isValidBoundType(bound) {
+			return fmt.Errorf(`cannot use type %q as bound: bound must be interface type or the keyword "const"`, param.Bound)
+		}
+	}
 	return nil
+}
+
+func checkDistinctTypeParameterNames(params []ast.TypeParameterConstraint) error {
+	paramNames := []ast.TypeParameter{}
+	for _, param := range params {
+		paramNames = append(paramNames, param.TypeParameter)
+	}
+	return auxiliary.Distinct(paramNames)
 }
 
 type typeEnvTypeCheckingVisitor struct {
 	typeCheckingVisitor
 	typeEnv map[ast.TypeParameter]ast.Bound
+}
+
+func (t typeEnvTypeCheckingVisitor) VisitConstType(c ast.ConstType) error {
+	return nil
+}
+
+func (t typeEnvTypeCheckingVisitor) VisitEnvConstType(c ast.ConstType) (ast.Type, error) {
+	return c, nil
 }
 
 func (t typeEnvTypeCheckingVisitor) VisitTypeParameter(typeParam ast.TypeParameter) error {
@@ -238,6 +271,19 @@ func (t typeEnvTypeCheckingVisitor) VisitStructTypeLiteral(s ast.StructTypeLiter
 		}
 	}
 	return nil
+}
+
+func (t typeEnvTypeCheckingVisitor) isValidBoundType(bound ast.Bound) bool {
+	switch bound.(type) {
+	case ast.ConstType:
+		return true
+	case ast.NamedType:
+		tdecl := t.typeDeclarationOf(bound.(ast.NamedType).TypeName)
+		_, isInterfaceType := tdecl.TypeLiteral.(ast.InterfaceTypeLiteral)
+		return isInterfaceType
+	default:
+		return false
+	}
 }
 
 func checkDistinctFieldNames(s ast.StructTypeLiteral) error {

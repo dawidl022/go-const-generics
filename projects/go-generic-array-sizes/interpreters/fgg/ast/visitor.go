@@ -49,6 +49,7 @@ type EnvVisitor interface {
 	VisitStructTypeLiteral(s StructTypeLiteral) error
 	VisitIntegerLiteral(i IntegerLiteral) error
 	VisitTypeParameter(t TypeParameter) error
+	VisitConstType(c ConstType) error
 }
 
 // TODO check if error is necessary
@@ -58,6 +59,7 @@ type EnvTypeVisitable interface {
 
 type EnvTypeVisitor interface {
 	VisitEnvNamedType(n NamedType) (Type, error)
+	VisitEnvConstType(c ConstType) (Type, error)
 }
 
 // TODO check if error is necessary
