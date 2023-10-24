@@ -17,7 +17,8 @@ func (t typeEnvTypeCheckingVisitor) checkIsSubtypeOf(subtype, supertype ast.Type
 		return fmt.Errorf("type %q is not a subtype of %q", subtype, ast.ConstType{})
 	}
 	namedSupertype, isNamedSupertype := supertype.(ast.NamedType)
-	if _, isIntLiteral := subtype.(ast.IntegerLiteral); isIntLiteral && isNamedSupertype && namedSupertype.TypeName == intTypeName {
+	_, isSubtypeIntLiteral := subtype.(ast.IntegerLiteral)
+	if isSubtypeIntLiteral && isNamedSupertype && namedSupertype.TypeName == intTypeName {
 		return nil
 	}
 	if !(isNamedSupertype && t.isInterfaceTypeName(namedSupertype.TypeName)) {
@@ -32,16 +33,13 @@ func (t typeEnvTypeCheckingVisitor) checkIsSubtypeOf(subtype, supertype ast.Type
 }
 
 func (t typeEnvTypeCheckingVisitor) isConstSubtype(subtype ast.Type) bool {
-	if _, isIntLiteral := subtype.(ast.IntegerLiteral); isIntLiteral {
-		return true
+	if intLiteral, isIntLiteral := subtype.(ast.IntegerLiteral); isIntLiteral {
+		return intLiteral.IntValue >= 0
 	}
 	subtypeParam, isSubtypeParam := subtype.(ast.TypeParameter)
 	if !isSubtypeParam {
 		return false
 	}
 	bound, isInTypeEnv := t.typeEnv[subtypeParam]
-	if isInTypeEnv && (bound == ast.ConstType{}) {
-		return true
-	}
-	return false
+	return isInTypeEnv && bound == ast.ConstType{}
 }

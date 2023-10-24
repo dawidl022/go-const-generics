@@ -15,3 +15,8 @@ func (n NamedType) Equal(other Type) bool {
 	// TODO check equality of type arguments
 	return isOtherNamedType && n.TypeName == otherNamedType.TypeName
 }
+
+func (c ConstType) Equal(other Type) bool {
+	_, isOtherConstType := other.(ConstType)
+	return isOtherConstType
+}

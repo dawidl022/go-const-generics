@@ -57,6 +57,24 @@ func TestTypeCheck_givenNestedArrayTypeDeclarationWithIntLiteralElementArgument_
 			`element type "Arr" badly instantiated: type "10" cannot be used as non-const type argument`)
 }
 
+//go:embed testdata/type_declaration/array_missing_type_arguments/array_missing_type_arguments.go
+var typeDeclArrayMissingTypeArgumentsFgg []byte
+
+func TestTypeCheck_givenNestedArrayTypeDeclarationWithMissingTypeArgument_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, typeDeclArrayMissingTypeArgumentsFgg,
+		`ill-typed declaration: type "Matrix": `+
+			`element type "Arr" badly instantiated: expected 2 type arguments but got 1`)
+}
+
+//go:embed testdata/type_declaration/array_extraneous_type_arguments/array_extraneous_type_arguments.go
+var typeDeclExtraneousTypeArgumentsFgg []byte
+
+func TestTypeCheck_givenNestedArrayTypeWithExtraneousTypeArgument_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, typeDeclExtraneousTypeArgumentsFgg,
+		`ill-typed declaration: type "Matrix": `+
+			`element type "Arr" badly instantiated: expected 2 type arguments but got 3`)
+}
+
 //go:embed testdata/type_declaration/type_param_undeclared_bound/type_param_undeclared_bound.go
 var typeDeclTypeParamUndeclaredBoundFgg []byte
 

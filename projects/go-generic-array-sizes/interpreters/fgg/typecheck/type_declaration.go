@@ -114,7 +114,10 @@ func (t typeEnvTypeCheckingVisitor) VisitNamedType(n ast.NamedType) error {
 
 func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.NamedType) (map[ast.TypeParameter]ast.Type, error) {
 	decl := t.typeDeclarationOf(n.TypeName)
-	typeSubstitutions := makeTypeSubstitutions(n, decl.TypeParameters)
+	typeSubstitutions, err := makeTypeSubstitutions(n, decl.TypeParameters)
+	if err != nil {
+		return nil, err
+	}
 
 	for _, typeParam := range decl.TypeParameters {
 		typeArg := typeSubstitutions[typeParam.TypeParameter]
@@ -129,15 +132,15 @@ func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.Na
 	return typeSubstitutions, nil
 }
 
-func makeTypeSubstitutions(n ast.NamedType, typeParams []ast.TypeParameterConstraint) map[ast.TypeParameter]ast.Type {
+func makeTypeSubstitutions(n ast.NamedType, typeParams []ast.TypeParameterConstraint) (map[ast.TypeParameter]ast.Type, error) {
 	if len(n.TypeArguments) != len(typeParams) {
-		panic("untested branch")
+		return nil, fmt.Errorf("expected %d type arguments but got %d", len(typeParams), len(n.TypeArguments))
 	}
 	typeSubstitutions := make(map[ast.TypeParameter]ast.Type)
 	for i, typeParam := range typeParams {
 		typeSubstitutions[typeParam.TypeParameter] = n.TypeArguments[i]
 	}
-	return typeSubstitutions
+	return typeSubstitutions, nil
 }
 
 func (t typeEnvTypeCheckingVisitor) checkConstEquivalence(typeArg ast.Type, typeParamBound ast.Bound) error {

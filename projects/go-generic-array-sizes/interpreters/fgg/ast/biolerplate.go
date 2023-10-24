@@ -186,11 +186,6 @@ func (c ConstType) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecificat
 	panic("implement me")
 }
 
-func (c ConstType) Equal(other Type) bool {
-	_, isOtherConstType := other.(ConstType)
-	return isOtherConstType
-}
-
 func (c ConstType) typeNode() {
 	//TODO implement me
 	panic("implement me")
