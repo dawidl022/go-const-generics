@@ -221,3 +221,7 @@ func (i InterfaceTypeLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) E
 func (a ArrayTypeLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
 	return visitor.VisitMapArrayTypeLiteral(a)
 }
+
+func (m MethodSpecification) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
+	return visitor.VisitMapMethodSpecification(m)
+}

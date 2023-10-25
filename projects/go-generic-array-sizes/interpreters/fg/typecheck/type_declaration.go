@@ -30,7 +30,7 @@ func (t typeCheckingVisitor) VisitMethodSpecification(m ast.MethodSpecification)
 	}
 	for _, param := range m.MethodSignature.MethodParameters {
 		if err := t.TypeCheck(param.TypeName); err != nil {
-			return fmt.Errorf("parameter %q %w", param.ParameterName, err)
+			return fmt.Errorf("parameter %q: %w", param.ParameterName, err)
 		}
 	}
 	if err := t.TypeCheck(m.MethodSignature.ReturnTypeName); err != nil {

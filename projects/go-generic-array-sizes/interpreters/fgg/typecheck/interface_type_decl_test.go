@@ -49,3 +49,20 @@ var typeDeclMethodSpecTypeParamsFgg []byte
 func TestTypeCheck_givenMethodSpecificationWithNonConstTypeParams_returnsNoError(t *testing.T) {
 	assertPassesTypeCheck(t, typeDeclMethodSpecTypeParamsFgg)
 }
+
+//go:embed testdata/type_declaration/method_spec_uninstantiated_return_type/method_spec_uninstantiated_return_type.go
+var typeDeclMethodSpecUninstantiatedReturnTypeFgg []byte
+
+func TestTypeCheck_givenMethodSpecificationWithUninstantiatedGenericReturnType(t *testing.T) {
+	assertFailsTypeCheckWithError(t, typeDeclMethodSpecUninstantiatedReturnTypeFgg,
+		`ill-typed declaration: type "mapper": `+
+			`method specification "Map": return type "mapper" badly instantiated: `+
+			`expected 2 type arguments but got 0`)
+}
+
+//go:embed testdata/type_declaration/method_spec_generic_return_type/method_spec_generic_return_type.go
+var typeDeclMethodSpecGenericReturnTypeFgg []byte
+
+func TestTypeCheck_givenMethodSpecificationWithGenericReturnType_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, typeDeclMethodSpecGenericReturnTypeFgg)
+}

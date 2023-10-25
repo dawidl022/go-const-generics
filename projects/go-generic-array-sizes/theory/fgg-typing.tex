@@ -154,13 +154,10 @@
         \distinct(x, \ov{x}) \\
         (\type~t_V[\ov{\Phi}]~T) \in \ov{D} \\
         (\ov{\alpha~\gamma}) = \ov{\Phi}\\
-        \ov{\neg \isconst_{\ov{\Phi}}(\tau)}\\
-        \ov{\Phi} \vdash \ov{\tau \ok} \\
-        \ov{\Phi} \vdash \sigma \ok \\
+        \ov{\Phi} \vdash m(\ov{x~\tau})~\sigma \ok \\
         \ov{\Phi} \stoup
         x : t_V[\ov{\alpha}] \comma \ov{x : \tau} \vdash e : \tau \\
         \ov{\Phi} \vdash \tau \imp \sigma \\
-        \neg \isconst_{\ov{\Phi}}(\sigma)
         }
         { \func~(x~t_V[\ov{\alpha}])~m(\ov{x~\tau})~\sigma~\br{\return~e} \ok }
     \end{mathpar}

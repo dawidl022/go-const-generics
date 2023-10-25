@@ -62,11 +62,6 @@ type MethodSpecification struct {
 	MethodSignature MethodSignature
 }
 
-func (m MethodSpecification) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
-	//TODO implement me
-	return m
-}
-
 type MethodSignature struct {
 	MethodParameters []MethodParameter
 	ReturnType       Type

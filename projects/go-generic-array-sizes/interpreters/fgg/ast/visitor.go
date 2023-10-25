@@ -58,6 +58,7 @@ type EnvMapperVisitor interface {
 	VisitMapConstType(c ConstType) EnvVisitable
 	VisitMapArrayTypeLiteral(a ArrayTypeLiteral) EnvVisitable
 	VisitMapInterfaceTypeLiteral(i InterfaceTypeLiteral) EnvVisitable
+	VisitMapMethodSpecification(m MethodSpecification) EnvVisitable
 }
 
 type MethodVisitable interface {

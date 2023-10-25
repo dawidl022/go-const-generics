@@ -74,6 +74,10 @@ func (t typeCheckingVisitor) newTypeEnvTypeCheckingVisitor(typeParams []ast.Type
 	}
 }
 
+func (t typeEnvTypeCheckingVisitor) typeOf(variableEnv map[string]ast.Type,  expr ast.Expression) (ast.Type, error) {
+	return t.typeCheckingVisitor.typeOf(t.typeEnv, variableEnv, expr)
+}
+
 func (t typeEnvTypeCheckingVisitor) typeCheck(v ast.EnvVisitable) error {
 	return t.identifyTypeParams(v).AcceptEnvVisitor(t)
 }

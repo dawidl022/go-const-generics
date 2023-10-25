@@ -1,5 +1,7 @@
 package ast
 
+import "slices"
+
 func (t TypeParameter) Equal(other Type) bool {
 	otherTypeParam, isOtherTypeParam := other.(TypeParameter)
 	return isOtherTypeParam && t == otherTypeParam
@@ -12,8 +14,13 @@ func (i IntegerLiteral) Equal(other Type) bool {
 
 func (n NamedType) Equal(other Type) bool {
 	otherNamedType, isOtherNamedType := other.(NamedType)
-	// TODO check equality of type arguments
-	return isOtherNamedType && n.TypeName == otherNamedType.TypeName
+	return isOtherNamedType && n.TypeName == otherNamedType.TypeName && n.typeParamsEqual(otherNamedType)
+}
+
+func (n NamedType) typeParamsEqual(other NamedType) bool {
+	return slices.EqualFunc(n.TypeArguments, other.TypeArguments, func(t1 Type, t2 Type) bool {
+		return t1.Equal(t2)
+	})
 }
 
 func (c ConstType) Equal(other Type) bool {

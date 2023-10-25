@@ -42,7 +42,7 @@ func (t typeEnvTypeCheckingVisitor) VisitMethodSpecification(m ast.MethodSpecifi
 	}
 	for _, param := range m.MethodSignature.MethodParameters {
 		if err := t.typeCheck(param.Type); err != nil {
-			return fmt.Errorf("parameter %q %w", param.ParameterName, err)
+			return fmt.Errorf("parameter %q: %w", param.ParameterName, err)
 		}
 		if t.isConst(param.Type) {
 			return fmt.Errorf("parameter %q: const type %q cannot be used as parameter type",

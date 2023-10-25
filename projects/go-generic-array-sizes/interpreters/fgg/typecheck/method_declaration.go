@@ -20,25 +20,22 @@ func (t typeCheckingVisitor) typeCheckMethodDeclaration(m ast.MethodDeclaration)
 	if err != nil {
 		return err
 	}
-	receiverType, err := t.getReceiverType(m.MethodReceiver.TypeName)
+	receiverType, typeParams, err := t.getReceiverType(m.MethodReceiver)
 	if err != nil {
 		return err
 	}
-	err = t.checkParameterTypes(m.MethodSpecification.MethodSignature.MethodParameters)
+	envChecker := t.newTypeEnvTypeCheckingVisitor(typeParams)
+	err = envChecker.typeCheck(m.MethodSpecification)
 	if err != nil {
 		return err
 	}
-	err = t.checkReturnType(m)
+	expressionType, err := envChecker.typeOf(makeMethodVariableEnv(m, receiverType), m.ReturnExpression)
 	if err != nil {
 		return err
 	}
-	expressionType, err := t.typeOf(nil, makeMethodVariableEnv(m, receiverType), m.ReturnExpression) // TODO fill in typing environment
+	err = envChecker.checkIsSubtypeOf(expressionType, m.MethodSpecification.MethodSignature.ReturnType)
 	if err != nil {
-		return err
-	}
-	// TODO consolidate creation of excess EnvTypeCheckingVisitor
-	err = t.newTypeEnvTypeCheckingVisitor(nil).checkIsSubtypeOf(expressionType, m.MethodSpecification.MethodSignature.ReturnType) // TODO fill in typing env
-	if err != nil {
+		// TODO will need to identify type param in return type
 		return fmt.Errorf("return expression of %w", err)
 	}
 	return nil
@@ -56,17 +53,31 @@ func (t typeCheckingVisitor) checkDistinctParameterNames(m ast.MethodDeclaration
 	return nil
 }
 
-func (t typeCheckingVisitor) getReceiverType(typeName ast.TypeName) (ast.Type, error) {
+func (t typeCheckingVisitor) getReceiverType(receiver ast.MethodReceiver) (ast.Type, []ast.TypeParameterConstraint, error) {
 	for _, decl := range t.declarations {
 		typeDecl, isTypeDecl := decl.(ast.TypeDeclaration)
-		if isTypeDecl && typeDecl.TypeName == typeName {
+		if isTypeDecl && typeDecl.TypeName == receiver.TypeName {
+			typeArgs := []ast.Type{}
+			if len(receiver.TypeParameters) != len(typeDecl.TypeParameters) {
+				return nil, nil, fmt.Errorf("expected %d type parameters on receiver but got %d",
+					len(typeDecl.TypeParameters), len(receiver.TypeParameters))
+			}
+			for i, param := range receiver.TypeParameters {
+				if param != typeDecl.TypeParameters[i].TypeParameter {
+					return nil, nil, fmt.Errorf(
+						"receiver type parameter name %q does not match type declaration parameter name %q",
+						param, typeDecl.TypeParameters[i].TypeParameter)
+				}
+				typeArgs = append(typeArgs, param)
+			}
 			return ast.NamedType{
-				TypeName:      typeName,
-				TypeArguments: nil, // TODO fill in type arguments
-			}, nil
+				TypeName: receiver.TypeName,
+				// TODO test these type args
+				TypeArguments: typeArgs,
+			}, typeDecl.TypeParameters, nil
 		}
 	}
-	return nil, fmt.Errorf("receiver type name not declared: %q", typeName)
+	return nil, nil, fmt.Errorf("receiver type name not declared: %q", receiver.TypeName)
 }
 
 func makeMethodVariableEnv(m ast.MethodDeclaration, receiverType ast.Type) map[string]ast.Type {
@@ -77,18 +88,22 @@ func makeMethodVariableEnv(m ast.MethodDeclaration, receiverType ast.Type) map[s
 	return env
 }
 
-func (t typeCheckingVisitor) checkParameterTypes(parameters []ast.MethodParameter) error {
+func (t typeEnvTypeCheckingVisitor) checkParameterTypes(parameters []ast.MethodParameter) error {
 	for _, param := range parameters {
-		err := t.newTypeEnvTypeCheckingVisitor(nil).typeCheck(param.Type) // TODO fill in env
+		err := t.typeCheck(param.Type)
 		if err != nil {
 			return fmt.Errorf("parameter %q: %w", param.ParameterName, err)
+		}
+		if t.isConst(param.Type) {
+			return fmt.Errorf("parameter %q: method parameter cannot be of const type %q",
+				param.ParameterName, param.Type)
 		}
 	}
 	return nil
 }
 
-func (t typeCheckingVisitor) checkReturnType(m ast.MethodDeclaration) error {
-	err := t.newTypeEnvTypeCheckingVisitor(nil).typeCheck(m.MethodSpecification.MethodSignature.ReturnType) // TODO fill in env
+func (t typeEnvTypeCheckingVisitor) checkReturnType(m ast.MethodDeclaration) error {
+	err := t.typeCheck(m.MethodSpecification.MethodSignature.ReturnType)
 	if err != nil {
 		return fmt.Errorf("return %w", err)
 	}
