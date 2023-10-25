@@ -7,7 +7,7 @@ import (
 )
 
 func (t typeVisitor) VisitArrayIndex(a ast.ArrayIndex) (ast.Type, error) {
-	namedReceiverType, arrayTypeDecl, err := t.arrayIndexReceiverType(a)
+	namedReceiverType, err := t.arrayIndexReceiverType(a)
 	if err != nil {
 		return nil, err
 	}
@@ -15,28 +15,38 @@ func (t typeVisitor) VisitArrayIndex(a ast.ArrayIndex) (ast.Type, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = t.checkArrayIndexBounds(namedReceiverType.TypeName, arrayTypeDecl, indexType)
+	err = t.checkArrayIndexBounds(namedReceiverType, indexType)
 	if err != nil {
 		return nil, err
 	}
-	return t.elementType(namedReceiverType.TypeName), nil
+	typeDecl := t.typeDeclarationOf(namedReceiverType.TypeName)
+	substitutions, err := makeTypeSubstitutions(namedReceiverType.TypeArguments, typeDecl.TypeParameters)
+	if err != nil {
+		return nil, err
+	}
+	elementType := t.elementType(namedReceiverType.TypeName)
+	elementTypeParam, isElementTypeParam := t.identifyTypeParams(elementType).(ast.TypeParameter)
+	if isElementTypeParam {
+		return substitutions[elementTypeParam], nil
+	}
+	return elementType, nil
 }
 
-func (t typeVisitor) arrayIndexReceiverType(a ast.ArrayIndex) (ast.NamedType, *ast.ArrayTypeLiteral, error) {
+func (t typeVisitor) arrayIndexReceiverType(a ast.ArrayIndex) (ast.NamedType, error) {
 	receiverType, err := t.typeOf(a.Receiver)
 	if err != nil {
-		return ast.NamedType{}, nil, err
+		return ast.NamedType{}, err
 	}
 	namedReceiverType, isNamedReceiverType := receiverType.(ast.NamedType)
 	if !isNamedReceiverType || namedReceiverType.TypeName == intTypeName {
-		return ast.NamedType{}, nil, fmt.Errorf("cannot perform array index on value of primitive type %q", receiverType)
+		return ast.NamedType{}, fmt.Errorf("cannot perform array index on value of primitive type %q", receiverType)
 	}
 	decl := t.typeDeclarationOf(namedReceiverType.TypeName)
-	arrayTypeDecl, isArrayTypeLitDecl := decl.TypeLiteral.(ast.ArrayTypeLiteral)
+	_, isArrayTypeLitDecl := decl.TypeLiteral.(ast.ArrayTypeLiteral)
 	if !isArrayTypeLitDecl {
-		return ast.NamedType{}, nil, fmt.Errorf("cannot perform array index on value of non-array type %q", receiverType)
+		return ast.NamedType{}, fmt.Errorf("cannot perform array index on value of non-array type %q", receiverType)
 	}
-	return namedReceiverType, &arrayTypeDecl, nil
+	return namedReceiverType, nil
 }
 
 func (t typeVisitor) arrayIndexIndexType(a ast.ArrayIndex) (ast.Type, error) {
@@ -51,18 +61,18 @@ func (t typeVisitor) arrayIndexIndexType(a ast.ArrayIndex) (ast.Type, error) {
 }
 
 func (t typeVisitor) checkArrayIndexBounds(
-	receiverType ast.TypeName,
-	arrayTypeDecl *ast.ArrayTypeLiteral,
+	namedReceiverType ast.NamedType,
 	indexType ast.Type,
 ) error {
+	expectedLen, hasDefinedLen := t.len(namedReceiverType).(ast.IntegerLiteral)
 	intLiteral, isIntLiteral := indexType.(ast.IntegerLiteral)
-	lengthLiteral, isLengthLiteral := arrayTypeDecl.Length.(ast.IntegerLiteral)
-	if !isLengthLiteral {
-		panic("untested path")
+	if isIntLiteral && !hasDefinedLen {
+		return fmt.Errorf("cannot use int literal %q to index into array of type %q with non-concrete length",
+			intLiteral, namedReceiverType)
 	}
-	if isIntLiteral && (intLiteral.IntValue < 0 || intLiteral.IntValue >= lengthLiteral.IntValue) {
+	if isIntLiteral && (intLiteral.IntValue < 0 || intLiteral.IntValue >= expectedLen.IntValue) {
 		return fmt.Errorf("cannot access index %d on array of type %q of size %d",
-			intLiteral.IntValue, receiverType, lengthLiteral.IntValue)
+			intLiteral.IntValue, namedReceiverType, expectedLen.IntValue)
 	}
 	return nil
 }
