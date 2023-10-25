@@ -35,7 +35,6 @@ func (t typeCheckingVisitor) typeCheckMethodDeclaration(m ast.MethodDeclaration)
 	}
 	err = envChecker.checkIsSubtypeOf(expressionType, m.MethodSpecification.MethodSignature.ReturnType)
 	if err != nil {
-		// TODO will need to identify type param in return type
 		return fmt.Errorf("return expression of %w", err)
 	}
 	return nil
@@ -71,7 +70,7 @@ func (t typeCheckingVisitor) getReceiverType(receiver ast.MethodReceiver) (ast.T
 				typeArgs = append(typeArgs, param)
 			}
 			return ast.NamedType{
-				TypeName: receiver.TypeName,
+				TypeName:      receiver.TypeName,
 				TypeArguments: typeArgs,
 			}, typeDecl.TypeParameters, nil
 		}

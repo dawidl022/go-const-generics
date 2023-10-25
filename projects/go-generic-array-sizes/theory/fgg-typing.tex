@@ -209,6 +209,7 @@
         \tau_A = t_A[\ov{\sigma}] \\
         \eta = (\ov{\Phi \by \sigma})\\
         \sigma = \elementtype(t_A)[\eta] \\
+        |\ov{e}| = \len(\tau_A)\\
         \Delta ; \Gamma \vdash \ov{e : \tau} \\
         \Delta \vdash \ov{\tau <: \sigma}
         }
@@ -233,7 +234,7 @@
         \tau = \elementtype(t_A)[\eta]\\
         \Delta; \Gamma \vdash e_1 : \tau_A\\
         \Delta; \Gamma \vdash ~e_2 : n \\
-        0 \le n < \len(t_A)
+        0 \le n < \len(\tau_A)
         }
         { \Delta;\Gamma \vdash e_1[e_2] : \tau }
 

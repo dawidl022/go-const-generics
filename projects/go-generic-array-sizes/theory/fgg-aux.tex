@@ -16,12 +16,20 @@ implicitly coerce to type environments.
         {\tau = \elementtype(t_A)}
 
         \inferrule
-        {(\type~t_A[\ov{\Phi}]~ [n]\tau) \in \ov{D}}
-        {n = \len(t_A)}
+        {
+        \tau_A = t_A[\ov{\tau}] \\
+        (\ov{\alpha~\gamma}) = \ov{\Phi} \\
+        (\type~t_A[\ov{\Phi}]~ [\alpha_i]\tau) \in \ov{D}
+        }
+        {\tau_i = \len(\tau_A)}
+
 
         \inferrule
-        {(\type~t_A[\ov{\Phi}]~ [\alpha]\tau) \in \ov{D}}
-        {0 = \len(t_A)}
+        {
+        \tau_A = t_A[\ov{\tau}] \\
+        (\type~t_A[\ov{\Phi}]~ [n]\tau) \in \ov{D}
+        }
+        {n = \len(\tau_A)}
 
 
         \inferrule

@@ -33,7 +33,8 @@ func AssertErrorAfterSingleReduction(t *testing.T, program []byte, expectedErrMs
 		return func(t *testing.T) {
 			_, err := test.ParseAndReduce(program)
 
-			require.EqualError(t, err, expectedErrMsg)
+			require.Error(t, err)
+			require.Equal(t, expectedErrMsg, err.Error())
 			require.False(t, test.IsValue(program))
 		}
 	})
@@ -55,7 +56,8 @@ func AssertFailsTypeCheckWithError(t *testing.T, program []byte, expectedErrMsg 
 		return func(t *testing.T) {
 			err := test.ParseAndTypeCheck(program)
 
-			require.EqualError(t, err, expectedErrMsg)
+			require.Error(t, err)
+			require.Equal(t, expectedErrMsg, err.Error())
 		}
 	})
 }

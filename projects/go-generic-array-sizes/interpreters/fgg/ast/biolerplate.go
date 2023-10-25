@@ -57,6 +57,9 @@ func (s Select) expressionNode() {
 func (a ArrayIndex) expressionNode() {
 }
 
+func (c ConstType) typeNode() {
+}
+
 func (m MethodDeclaration) GetMethodReceiver() MethodReceiver {
 	return m.MethodReceiver
 }
@@ -182,11 +185,6 @@ func (c ConstType) AcceptEnvVisitor(visitor EnvVisitor) error {
 }
 
 func (c ConstType) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (c ConstType) typeNode() {
 	//TODO implement me
 	panic("implement me")
 }

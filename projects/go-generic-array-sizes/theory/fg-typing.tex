@@ -159,6 +159,7 @@
         \inferrule[t-array-literal]
         {
             t_A \ok \\
+            |\ov{e}| = \len(t_A)\\
             \Gamma \vdash \ov{e : t} \\
             u = \elementtype(t_A) \\
             \ov{t <: u}
