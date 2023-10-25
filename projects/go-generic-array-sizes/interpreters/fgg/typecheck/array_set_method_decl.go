@@ -34,7 +34,19 @@ func (t typeCheckingVisitor) checkArraySetSignature(a ast.ArraySetMethodDeclarat
 	if !a.IndexParameter.Type.Equal(ast.NamedType{TypeName: intTypeName}) {
 		return fmt.Errorf(`first parameter %q must be of type "int"`, a.IndexParameter.ParameterName)
 	}
-	return t.checkArraySetReturnType(a)
+	receiverType, typeParams, err := t.getReceiverType(a.MethodReceiver)
+	if err != nil {
+		return err
+	}
+	envChecker := t.newTypeEnvTypeCheckingVisitor(typeParams)
+	if err := envChecker.checkArraySetValueParam(a); err != nil {
+		return err
+	}
+	returnType := envChecker.identifyTypeParams(a.ReturnType).(ast.Type)
+	if !returnType.Equal(receiverType) {
+		return fmt.Errorf("return type must be same as receiver type %q", receiverType)
+	}
+	return nil
 }
 
 func paramNames(a ast.ArraySetMethodDeclaration) []name {
@@ -45,9 +57,8 @@ func paramNames(a ast.ArraySetMethodDeclaration) []name {
 	}
 }
 
-func (t typeCheckingVisitor) checkArraySetReturnType(a ast.ArraySetMethodDeclaration) error {
-	envChecker := t.newTypeEnvTypeCheckingVisitor(nil) // TODO fill in type env
-	err := envChecker.checkIsSubtypeOf(a.ValueParameter.Type, t.elementType(a.MethodReceiver.TypeName))
+func (t typeEnvTypeCheckingVisitor) checkArraySetValueParam(a ast.ArraySetMethodDeclaration) error {
+	err := t.checkIsSubtypeOf(a.ValueParameter.Type, t.elementType(a.MethodReceiver.TypeName))
 	if err != nil {
 		return fmt.Errorf("second parameter %q cannot be used as element of array type %q: %w",
 			a.ValueParameter.ParameterName, a.MethodReceiver.TypeName, err)
@@ -56,10 +67,6 @@ func (t typeCheckingVisitor) checkArraySetReturnType(a ast.ArraySetMethodDeclara
 }
 
 func (t typeCheckingVisitor) checkArraySetMethodBody(a ast.ArraySetMethodDeclaration) error {
-	// TODO also compare type params
-	if !a.ReturnType.Equal(ast.NamedType{TypeName: a.MethodReceiver.TypeName}) {
-		return fmt.Errorf("return type must be same as receiver type %q", a.MethodReceiver.TypeName)
-	}
 	if a.IndexReceiverVariable != a.MethodReceiver.ParameterName {
 		return fmt.Errorf("index receiver must be the same as method receiver %q", a.MethodReceiver.ParameterName)
 	}

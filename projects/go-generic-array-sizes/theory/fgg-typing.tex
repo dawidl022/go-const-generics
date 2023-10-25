@@ -152,7 +152,7 @@
         \inferrule[t-func]
         {
         \distinct(x, \ov{x}) \\
-        (\type~t_V[\ov{\Phi}]~T) \in \ov{D} \\
+        \ov{\Phi} = \typeparams(t_V)\\
         (\ov{\alpha~\gamma}) = \ov{\Phi}\\
         \ov{\Phi} \vdash m(\ov{x~\tau})~\sigma \ok \\
         \ov{\Phi} \stoup
@@ -169,9 +169,9 @@
         \inferrule[t-func-arrayset]
         {
         \sigma = \elementtype(t_A) \\
-        \tau \imp \sigma \\
         \ov{\Phi} = \typeparams(t_A)\\
-        (\ov{\alpha~\gamma}) = \ov{\Phi}
+        (\ov{\alpha~\gamma}) = \ov{\Phi} \\
+        \ov{\Phi} \vdash \tau \imp \sigma
         }
         {
         \func~(x~t_A[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau) ~t_A~

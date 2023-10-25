@@ -72,7 +72,6 @@ func (t typeCheckingVisitor) getReceiverType(receiver ast.MethodReceiver) (ast.T
 			}
 			return ast.NamedType{
 				TypeName: receiver.TypeName,
-				// TODO test these type args
 				TypeArguments: typeArgs,
 			}, typeDecl.TypeParameters, nil
 		}
