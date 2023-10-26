@@ -74,7 +74,7 @@ func (t typeCheckingVisitor) newTypeEnvTypeCheckingVisitor(typeParams []ast.Type
 	}
 }
 
-func (t typeEnvTypeCheckingVisitor) typeOf(variableEnv map[string]ast.Type,  expr ast.Expression) (ast.Type, error) {
+func (t typeEnvTypeCheckingVisitor) typeOf(variableEnv map[string]ast.Type, expr ast.Expression) (ast.Type, error) {
 	return t.typeCheckingVisitor.typeOf(t.typeEnv, variableEnv, expr)
 }
 
@@ -110,30 +110,30 @@ func (t typeEnvTypeCheckingVisitor) VisitNamedType(n ast.NamedType) error {
 	if !(slices.Contains(typeDeclarationNames(t.declarations), n.TypeName) || n.TypeName == intTypeName) {
 		return fmt.Errorf("type name not declared: %q", n.TypeName)
 	}
-	if _, err := t.makeTypeSubstitutionsCheckingBounds(n); err != nil {
+	if err := t.makeTypeSubstitutionsCheckingBounds(n); err != nil {
 		return fmt.Errorf("type %q badly instantiated: %w", n.TypeName, err)
 	}
 	return nil
 }
 
-func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.NamedType) (map[ast.TypeParameter]ast.Type, error) {
+func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.NamedType) error {
 	decl := t.typeDeclarationOf(n.TypeName)
-	typeSubstitutions, err := makeTypeSubstitutions(n.TypeArguments, decl.TypeParameters)
+	substitutor, err := newTypeParamSubstituter(n.TypeArguments, decl.TypeParameters)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	for _, typeParam := range decl.TypeParameters {
-		typeArg := typeSubstitutions[typeParam.TypeParameter]
+		typeArg := substitutor.substituteTypeParams(typeParam.TypeParameter).(ast.Type)
 
 		if err := t.checkConstEquivalence(typeArg, typeParam.Bound); err != nil {
-			return nil, err
+			return err
 		}
 		if err := t.checkIsSubtypeOf(typeArg, typeParam.Bound); err != nil {
-			return nil, err
+			return err
 		}
 	}
-	return typeSubstitutions, nil
+	return nil
 }
 
 func makeTypeSubstitutions(typeArguments []ast.Type, typeParams []ast.TypeParameterConstraint) (map[ast.TypeParameter]ast.Type, error) {

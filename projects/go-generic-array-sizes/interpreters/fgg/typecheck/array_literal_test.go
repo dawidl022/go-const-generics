@@ -57,10 +57,17 @@ func TestTypeCheck_givenArrayLiteralWithTypeParamElementArgument_returnsNoError(
 }
 
 //go:embed testdata/array_literal/generic_non_empty_length_literal/generic_non_empty_length_literal.go
-var arrayLiteralNonEmptyGenericLengthLiteral []byte
+var arrayLiteralNonEmptyGenericLengthLiteralFgg []byte
 
 func TestTypeCheck_givenArrayLiteralWithLengthTypeParameterAndNonEmptyElementList_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, arrayLiteralNonEmptyGenericLengthLiteral,
+	assertFailsTypeCheckWithError(t, arrayLiteralNonEmptyGenericLengthLiteralFgg,
 		`ill-typed declaration: method "Arr.new": `+
 			`cannot create array literal of type "Arr[N, T]" with non-concrete length "N"`)
+}
+
+//go:embed testdata/array_literal/nested/nested.go
+var arrayLiteralNestedFgg []byte
+
+func TestTypeCheck_givenArrayLiteralNestedAndCorrectlyInstantiated_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, arrayLiteralNestedFgg)
 }

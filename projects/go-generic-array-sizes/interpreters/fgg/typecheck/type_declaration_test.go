@@ -142,3 +142,21 @@ func TestTypeCheck_givenTypeParametersNonDistinct_returnsError(t *testing.T) {
 	assertFailsTypeCheckWithError(t, typeDeclTypeParamNonDistinctFgg,
 		`ill-typed declaration: type "Foo": type parameter redeclared "T"`)
 }
+
+//go:embed testdata/type_declaration/type_param_nested/type_param_nested.go
+var typeDeclTypeParamNestedFgg []byte
+
+func TestTypeCheck_givenNestedTypeArguments_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, typeDeclTypeParamNestedFgg)
+}
+
+//go:embed testdata/type_declaration/type_param_nested_invalid/type_param_nested_invalid.go
+var typeDeclTypeParamNestedInvalidFgg []byte
+
+func TestTypeCheck_givenNestedTypeArgumentsNotSatisfyingBounds_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, typeDeclTypeParamNestedInvalidFgg,
+		`ill-typed declaration: type "Bar": `+
+			`field "x": type "Foo" badly instantiated: `+
+			`type "fooer[int]" is not a subtype of "fooer[barer]": `+
+			`missing methods: "foo() barer"`)
+}

@@ -20,16 +20,13 @@ func (t typeVisitor) VisitArrayIndex(a ast.ArrayIndex) (ast.Type, error) {
 		return nil, err
 	}
 	typeDecl := t.typeDeclarationOf(namedReceiverType.TypeName)
-	substitutions, err := makeTypeSubstitutions(namedReceiverType.TypeArguments, typeDecl.TypeParameters)
+	substituter, err := newTypeParamSubstituter(namedReceiverType.TypeArguments, typeDecl.TypeParameters)
 	if err != nil {
 		return nil, err
 	}
 	elementType := t.elementType(namedReceiverType.TypeName)
-	elementTypeParam, isElementTypeParam := t.identifyTypeParams(elementType).(ast.TypeParameter)
-	if isElementTypeParam {
-		return substitutions[elementTypeParam], nil
-	}
-	return elementType, nil
+	elementTypeWithParms := t.identifyTypeParams(elementType)
+	return substituter.substituteTypeParams(elementTypeWithParms).(ast.Type), nil
 }
 
 func (t typeVisitor) arrayIndexReceiverType(a ast.ArrayIndex) (ast.NamedType, error) {

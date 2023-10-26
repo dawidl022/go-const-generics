@@ -13,7 +13,7 @@ func (t typeEnvTypeCheckingVisitor) VisitStructTypeLiteral(s ast.StructTypeLiter
 	}
 	for _, field := range s.Fields {
 		if err := t.typeCheck(field.Type); err != nil {
-			return fmt.Errorf("field %q %w", field.Name, err)
+			return fmt.Errorf("field %q: %w", field.Name, err)
 		}
 		if t.isConst(field.Type) {
 			return fmt.Errorf("cannot use const type %q as field type", field.Type)

@@ -26,6 +26,6 @@ var typeDeclStructInvalidFieldTypeArgsFgg []byte
 func TestTypeCheck_givenStructDeclarationWithInvalidTypeArgument_returnsError(t *testing.T) {
 	assertFailsTypeCheckWithError(t, typeDeclStructInvalidFieldTypeArgsFgg,
 		`ill-typed declaration: type "Foo": `+
-			`field "arr" type "Arr" badly instantiated: `+
+			`field "arr": type "Arr" badly instantiated: `+
 			`type "T" is not a subtype of "fooer": missing methods: "foo() int"`)
 }

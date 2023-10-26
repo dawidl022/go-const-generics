@@ -57,7 +57,7 @@ var declarationInvalidFieldTypeGo []byte
 
 func TestTypeCheck_givenDeclarationWithInvalidStructFieldType_returnsError(t *testing.T) {
 	assertFailsTypeCheckWithError(t, declarationInvalidFieldTypeGo,
-		`ill-typed declaration: type "Foo": field "x" type name not declared: "Bar"`)
+		`ill-typed declaration: type "Foo": field "x": type name not declared: "Bar"`)
 }
 
 //go:embed testdata/type_declaration/duplicate_interface_method_names/duplicate_interface_method_names.go

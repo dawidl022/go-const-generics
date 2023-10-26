@@ -43,3 +43,10 @@ func TestTypeCheck_givenArrayIndexWithIntLiteralIntoGenericArrayWithTypeParamLen
 		`ill-typed declaration: method "Arr.get": `+
 			`cannot use int literal "0" to index into array of type "Arr[N, T]" with non-concrete length`)
 }
+
+//go:embed testdata/array_index/nested/nested.go
+var arrayIndexNestedFgg []byte
+
+func TestTypeCheck_givenArrayIndexOnNestedArray_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, arrayIndexNestedFgg)
+}

@@ -42,6 +42,21 @@ func (v methodVisitor) VisitNamedType(n ast.NamedType) []ast.MethodSpecification
 		return nil
 	}
 	typeDecl := v.typeDeclarationOf(n.TypeName)
+	baseMethods := v.baseMethods(n, typeDecl)
+	substituter, err := newTypeParamSubstituter(n.TypeArguments, typeDecl.TypeParameters)
+	if err != nil {
+		return nil
+	}
+	substitutedMethods := make([]ast.MethodSpecification, 0, len(baseMethods))
+	for _, method := range baseMethods {
+		envChecker := v.newTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
+		subsitutedMethod := substituter.substituteTypeParams(envChecker.identifyTypeParams(method)).(ast.MethodSpecification)
+		substitutedMethods = append(substitutedMethods, subsitutedMethod)
+	}
+	return substitutedMethods
+}
+
+func (v methodVisitor) baseMethods(n ast.NamedType, typeDecl ast.TypeDeclaration) []ast.MethodSpecification {
 	switch typeDecl.TypeLiteral.(type) {
 	case ast.StructTypeLiteral:
 		return v.valueTypeMethods(n.TypeName)

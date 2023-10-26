@@ -69,7 +69,7 @@ func (t typeCheckingVisitor) VisitStructTypeLiteral(s ast.StructTypeLiteral) err
 	}
 	for _, field := range s.Fields {
 		if err := t.TypeCheck(field.TypeName); err != nil {
-			return fmt.Errorf("field %q %w", field.Name, err)
+			return fmt.Errorf("field %q: %w", field.Name, err)
 		}
 	}
 	return nil

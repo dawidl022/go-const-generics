@@ -194,8 +194,7 @@ func (c ConstType) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable
 }
 
 func (t TypeParameter) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
-	//TODO implement me
-	return t
+	return visitor.VisitMapTypeParameter(t)
 }
 
 func (n NamedType) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {

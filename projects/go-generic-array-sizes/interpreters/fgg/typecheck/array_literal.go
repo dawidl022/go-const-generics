@@ -44,12 +44,14 @@ func (t typeVisitor) substitutedElementType(namedType ast.NamedType) (ast.Type, 
 	envChecker := t.newTypeEnvTypeCheckingVisitor(typeParams)
 
 	elemType := t.elementType(namedType.TypeName)
-	elemTypeParam, isElemTypeParam := envChecker.identifyTypeParams(elemType).(ast.TypeParameter)
-	if isElemTypeParam {
-		typeSubstitutions, err := makeTypeSubstitutions(namedType.TypeArguments, typeParams)
-		return typeSubstitutions[elemTypeParam], err
+	elemTypeWithParams := envChecker.identifyTypeParams(elemType)
+
+	// TODO replace remaining calls to make makeTypeSubstitutions with newTypeParamSubstituter
+	substituter, err := newTypeParamSubstituter(namedType.TypeArguments, typeParams)
+	if err != nil {
+		return nil, err
 	}
-	return elemType, nil
+	return substituter.substituteTypeParams(elemTypeWithParams).(ast.Type), nil
 }
 
 func (t typeVisitor) typeParams(typeName ast.TypeName) []ast.TypeParameterConstraint {
