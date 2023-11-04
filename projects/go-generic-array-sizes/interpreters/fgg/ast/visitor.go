@@ -70,4 +70,5 @@ type MethodVisitor interface {
 	VisitIntegerLiteral(i IntegerLiteral) []MethodSpecification
 	VisitNamedType(n NamedType) []MethodSpecification
 	VisitTypeParameter(t TypeParameter) []MethodSpecification
+	VisitConstType(c ConstType) []MethodSpecification
 }

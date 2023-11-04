@@ -185,8 +185,7 @@ func (c ConstType) AcceptEnvVisitor(visitor EnvVisitor) error {
 }
 
 func (c ConstType) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
-	//TODO implement me
-	panic("implement me")
+	return visitor.VisitConstType(c)
 }
 
 func (c ConstType) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {

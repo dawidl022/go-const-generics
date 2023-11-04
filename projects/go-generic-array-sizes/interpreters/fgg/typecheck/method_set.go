@@ -37,6 +37,10 @@ func (v methodVisitor) VisitIntegerLiteral(i ast.IntegerLiteral) []ast.MethodSpe
 	return nil
 }
 
+func (v methodVisitor) VisitConstType(c ast.ConstType) []ast.MethodSpecification {
+	panic("const type should not be used in context where method set of type is required")
+}
+
 func (v methodVisitor) VisitNamedType(n ast.NamedType) []ast.MethodSpecification {
 	if n.TypeName == intTypeName {
 		return nil
