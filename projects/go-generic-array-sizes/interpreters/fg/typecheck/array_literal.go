@@ -17,17 +17,17 @@ func (t typeVisitor) typeCheckArrayLiteral(v ast.ValueLiteral) error {
 		if err != nil {
 			return err
 		}
-		if err := t.checkIsSubtypeOf(valType, elemType); err != nil {
+		if err := t.CheckIsSubtypeOf(valType, elemType); err != nil {
 			return fmt.Errorf("cannot use %q as element of array of type %q: %w", val, v.TypeName, err)
 		}
 	}
 	return nil
 }
 
-func (t typeCheckingVisitor) elementType(typeName ast.TypeName) ast.TypeName {
+func (t TypeCheckingVisitor) elementType(typeName ast.TypeName) ast.TypeName {
 	return t.typeDeclarationOf(typeName).TypeLiteral.(ast.ArrayTypeLiteral).ElementTypeName
 }
 
-func (t typeCheckingVisitor) len(typeName ast.TypeName) int {
+func (t TypeCheckingVisitor) len(typeName ast.TypeName) int {
 	return t.typeDeclarationOf(typeName).TypeLiteral.(ast.ArrayTypeLiteral).Length
 }

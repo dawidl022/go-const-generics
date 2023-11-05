@@ -44,7 +44,7 @@ func (t typeVisitor) arrayIndexIndexType(a ast.ArrayIndex) (ast.Type, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := t.checkIsSubtypeOf(indexType, intTypeName); err != nil {
+	if err := t.CheckIsSubtypeOf(indexType, intTypeName); err != nil {
 		return nil, fmt.Errorf("cannot use value %q as array index argument: %w", a.Index, err)
 	}
 	return indexType, nil

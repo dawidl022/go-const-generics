@@ -7,7 +7,7 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
 )
 
-func (t typeCheckingVisitor) VisitArraySetMethodDeclaration(a ast.ArraySetMethodDeclaration) error {
+func (t TypeCheckingVisitor) VisitArraySetMethodDeclaration(a ast.ArraySetMethodDeclaration) error {
 	err := t.typeCheckArraySetMethodDeclaration(a)
 	if err != nil {
 		return fmt.Errorf(`array-set method "%s.%s": %w`, a.MethodReceiver.TypeName, a.GetMethodName(), err)
@@ -15,7 +15,7 @@ func (t typeCheckingVisitor) VisitArraySetMethodDeclaration(a ast.ArraySetMethod
 	return nil
 }
 
-func (t typeCheckingVisitor) typeCheckArraySetMethodDeclaration(a ast.ArraySetMethodDeclaration) error {
+func (t TypeCheckingVisitor) typeCheckArraySetMethodDeclaration(a ast.ArraySetMethodDeclaration) error {
 	err := t.checkArraySetSignature(a)
 	if err != nil {
 		return err
@@ -23,7 +23,7 @@ func (t typeCheckingVisitor) typeCheckArraySetMethodDeclaration(a ast.ArraySetMe
 	return t.checkArraySetMethodBody(a)
 }
 
-func (t typeCheckingVisitor) checkArraySetSignature(a ast.ArraySetMethodDeclaration) error {
+func (t TypeCheckingVisitor) checkArraySetSignature(a ast.ArraySetMethodDeclaration) error {
 	if err := auxiliary.Distinct(paramNames(a)); err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func (t typeCheckingVisitor) checkArraySetSignature(a ast.ArraySetMethodDeclarat
 	if a.IndexParameter.TypeName != intTypeName {
 		return fmt.Errorf(`first parameter %q must be of type "int"`, a.IndexParameter.ParameterName)
 	}
-	err := t.checkIsSubtypeOf(a.ValueParameter.TypeName, t.elementType(a.MethodReceiver.TypeName))
+	err := t.CheckIsSubtypeOf(a.ValueParameter.TypeName, t.elementType(a.MethodReceiver.TypeName))
 	if err != nil {
 		return fmt.Errorf("second parameter %q cannot be used as element of array type %q: %w",
 			a.ValueParameter.ParameterName, a.MethodReceiver.TypeName, err)
@@ -50,7 +50,7 @@ func paramNames(a ast.ArraySetMethodDeclaration) []name {
 	}
 }
 
-func (t typeCheckingVisitor) checkArraySetMethodBody(a ast.ArraySetMethodDeclaration) error {
+func (t TypeCheckingVisitor) checkArraySetMethodBody(a ast.ArraySetMethodDeclaration) error {
 	if a.MethodReceiver.TypeName != a.ReturnType {
 		return fmt.Errorf("return type must be same as receiver type %q", a.MethodReceiver.TypeName)
 	}

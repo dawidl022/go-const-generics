@@ -18,7 +18,7 @@ func isTypeNameOfType[T ast.TypeLiteral](declarations []ast.Declaration, typeNam
 	return false
 }
 
-func (t typeCheckingVisitor) isInterfaceTypeName(typeName ast.TypeName) bool {
+func (t TypeCheckingVisitor) isInterfaceTypeName(typeName ast.TypeName) bool {
 	return isTypeNameOfType[ast.InterfaceTypeLiteral](t.declarations, typeName)
 }
 

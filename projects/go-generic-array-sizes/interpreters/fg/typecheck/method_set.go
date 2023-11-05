@@ -17,16 +17,16 @@ func (m MethodSet) get(methodName string) *ast.MethodSpecification {
 	return nil
 }
 
-func (t typeCheckingVisitor) methods(astType ast.Type) MethodSet {
+func (t TypeCheckingVisitor) methods(astType ast.Type) MethodSet {
 	return t.newMethodVisitor().methodsOf(astType)
 }
 
 type methodVisitor struct {
-	typeCheckingVisitor
+	TypeCheckingVisitor
 }
 
-func (t typeCheckingVisitor) newMethodVisitor() methodVisitor {
-	return methodVisitor{typeCheckingVisitor: t}
+func (t TypeCheckingVisitor) newMethodVisitor() methodVisitor {
+	return methodVisitor{TypeCheckingVisitor: t}
 }
 
 func (v methodVisitor) methodsOf(astType ast.Type) MethodSet {

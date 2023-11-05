@@ -20,7 +20,7 @@ func (t typeVisitor) typeCheckStructLiteral(v ast.ValueLiteral) error {
 		if err != nil {
 			return err
 		}
-		err = t.checkIsSubtypeOf(fieldType, f.TypeName)
+		err = t.CheckIsSubtypeOf(fieldType, f.TypeName)
 		if err != nil {
 			return fmt.Errorf("cannot use %q as field %q of struct %q: %w", v.Values[i], f.Name, v.TypeName, err)
 		}

@@ -23,9 +23,13 @@ func Interpret(program io.Reader, debugOutput io.Writer) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("type error: %w", err)
 	}
+	exprType, err := typecheck.NewTypeCheckingVisitor(p.Declarations).TypeOf(nil, p.Expression)
+	if err != nil {
+		panic("call to TypeCheck should have failed if TypeOf main expression returns error")
+	}
 
 	debugObserver := &debugObserver{writer: debugOutput}
-	typeObserver := &typeCheckingObserver{declarations: p.Declarations, writer: debugOutput}
+	typeObserver := &typeCheckingObserver{declarations: p.Declarations, writer: debugOutput, exprType: exprType}
 
 	reducer := reduction.NewProgramReducer([]reduction.Observer{debugObserver, typeObserver})
 
@@ -89,6 +93,7 @@ func (d *debugObserver) Notify(expression ast.Expression) error {
 type typeCheckingObserver struct {
 	writer       io.Writer
 	declarations []ast.Declaration
+	exprType     ast.Type
 }
 
 func (t *typeCheckingObserver) Notify(expression ast.Expression) error {
@@ -99,8 +104,32 @@ func (t *typeCheckingObserver) Notify(expression ast.Expression) error {
 	if err != nil {
 		return fmt.Errorf("type error: %s\n", err)
 	}
-	_, err = fmt.Fprint(t.writer, "program well typed\n\n")
+	// TODO consider unit testing preservation using mock visitor
+	newExprType, err := typecheck.NewTypeCheckingVisitor(t.declarations).TypeOf(nil, expression)
 	if err != nil {
+		panic("call to TypeCheck should have failed if TypeOf main expression returns error")
+	}
+	err = typecheck.NewTypeCheckingVisitor(t.declarations).CheckIsSubtypeOf(newExprType, t.exprType)
+	if err != nil {
+		return fmt.Errorf("type preservation violated: %w", err)
+	}
+	err = handleWriteErrors(func() error {
+		_, err = fmt.Fprint(t.writer, "program well typed\n")
+		if err != nil {
+			return err
+		}
+		_, err := fmt.Fprintf(t.writer,
+			"expression type preserved: expression of type %q is a subtype of previous expression type %q\n\n",
+			newExprType, t.exprType,
+		)
+		return err
+	})
+	t.exprType = newExprType
+	return err
+}
+
+func handleWriteErrors(f func() error) error {
+	if err := f(); err != nil {
 		return fmt.Errorf("failed to write to debug output: %w", err)
 	}
 	return nil

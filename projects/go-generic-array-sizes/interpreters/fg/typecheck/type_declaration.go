@@ -8,7 +8,7 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
 )
 
-func (t typeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDeclaration {
+func (t TypeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDeclaration {
 	for _, decl := range t.declarations {
 		if typeDecl, isTypeDecl := decl.(ast.TypeDeclaration); isTypeDecl && typeDecl.TypeName == typeName {
 			return typeDecl
@@ -17,14 +17,14 @@ func (t typeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDe
 	panic(fmt.Sprintf("could not find declaration for typename %q", typeName))
 }
 
-func (t typeCheckingVisitor) VisitTypeName(typeName ast.TypeName) error {
+func (t TypeCheckingVisitor) VisitTypeName(typeName ast.TypeName) error {
 	if slices.Contains(typeDeclarationNames(t.declarations), typeName) || typeName == intTypeName {
 		return nil
 	}
 	return fmt.Errorf("type name not declared: %q", typeName)
 }
 
-func (t typeCheckingVisitor) VisitMethodSpecification(m ast.MethodSpecification) error {
+func (t TypeCheckingVisitor) VisitMethodSpecification(m ast.MethodSpecification) error {
 	if err := checkDistinctParameterNames(m); err != nil {
 		return fmt.Errorf("argument name %w", err)
 	}
@@ -53,7 +53,7 @@ func (n name) String() string {
 	return string(n)
 }
 
-func (t typeCheckingVisitor) VisitArrayTypeLiteral(a ast.ArrayTypeLiteral) error {
+func (t TypeCheckingVisitor) VisitArrayTypeLiteral(a ast.ArrayTypeLiteral) error {
 	if a.Length < 0 {
 		return fmt.Errorf("length cannot be less than 0")
 	}
@@ -63,7 +63,7 @@ func (t typeCheckingVisitor) VisitArrayTypeLiteral(a ast.ArrayTypeLiteral) error
 	return nil
 }
 
-func (t typeCheckingVisitor) VisitStructTypeLiteral(s ast.StructTypeLiteral) error {
+func (t TypeCheckingVisitor) VisitStructTypeLiteral(s ast.StructTypeLiteral) error {
 	if err := checkDistinctFieldNames(s); err != nil {
 		return err
 	}
@@ -86,7 +86,7 @@ func checkDistinctFieldNames(s ast.StructTypeLiteral) error {
 	return nil
 }
 
-func (t typeCheckingVisitor) VisitInterfaceLiteral(i ast.InterfaceTypeLiteral) error {
+func (t TypeCheckingVisitor) VisitInterfaceLiteral(i ast.InterfaceTypeLiteral) error {
 	if err := checkUniqueMethodNames(i); err != nil {
 		return err
 	}
@@ -109,7 +109,7 @@ func checkUniqueMethodNames(i ast.InterfaceTypeLiteral) error {
 	return nil
 }
 
-func (t typeCheckingVisitor) VisitTypeDeclaration(d ast.TypeDeclaration) error {
+func (t TypeCheckingVisitor) VisitTypeDeclaration(d ast.TypeDeclaration) error {
 	err := t.TypeCheck(d.TypeLiteral)
 	if err != nil {
 		return fmt.Errorf("type %q: %w", d.TypeName, err)

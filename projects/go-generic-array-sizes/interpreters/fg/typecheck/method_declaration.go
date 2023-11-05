@@ -7,7 +7,7 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
 )
 
-func (t typeCheckingVisitor) VisitMethodDeclaration(m ast.MethodDeclaration) error {
+func (t TypeCheckingVisitor) VisitMethodDeclaration(m ast.MethodDeclaration) error {
 	err := t.typeCheckMethodDeclaration(m)
 	if err != nil {
 		return fmt.Errorf(`method "%s.%s": %w`, m.MethodReceiver.TypeName, m.GetMethodName(), err)
@@ -15,7 +15,7 @@ func (t typeCheckingVisitor) VisitMethodDeclaration(m ast.MethodDeclaration) err
 	return nil
 }
 
-func (t typeCheckingVisitor) typeCheckMethodDeclaration(m ast.MethodDeclaration) error {
+func (t TypeCheckingVisitor) typeCheckMethodDeclaration(m ast.MethodDeclaration) error {
 	err := t.checkDistinctParameterNames(m)
 	if err != nil {
 		return err
@@ -32,11 +32,11 @@ func (t typeCheckingVisitor) typeCheckMethodDeclaration(m ast.MethodDeclaration)
 	if err != nil {
 		return err
 	}
-	expressionType, err := t.typeOf(makeMethodVariableEnv(m), m.ReturnExpression)
+	expressionType, err := t.TypeOf(makeMethodVariableEnv(m), m.ReturnExpression)
 	if err != nil {
 		return err
 	}
-	err = t.checkIsSubtypeOf(expressionType, m.MethodSpecification.MethodSignature.ReturnTypeName)
+	err = t.CheckIsSubtypeOf(expressionType, m.MethodSpecification.MethodSignature.ReturnTypeName)
 	if err != nil {
 		return fmt.Errorf("return expression of %w", err)
 	}
@@ -51,7 +51,7 @@ func makeMethodVariableEnv(m ast.MethodDeclaration) map[string]ast.TypeName {
 	return env
 }
 
-func (t typeCheckingVisitor) checkDistinctParameterNames(m ast.MethodDeclaration) error {
+func (t TypeCheckingVisitor) checkDistinctParameterNames(m ast.MethodDeclaration) error {
 	paramNames := []name{name(m.MethodReceiver.ParameterName)}
 	for _, param := range m.MethodSpecification.MethodSignature.MethodParameters {
 		paramNames = append(paramNames, name(param.ParameterName))
@@ -63,7 +63,7 @@ func (t typeCheckingVisitor) checkDistinctParameterNames(m ast.MethodDeclaration
 	return nil
 }
 
-func (t typeCheckingVisitor) checkParameterTypeNames(parameters []ast.MethodParameter) error {
+func (t TypeCheckingVisitor) checkParameterTypeNames(parameters []ast.MethodParameter) error {
 	for _, param := range parameters {
 		err := t.TypeCheck(param.TypeName)
 		if err != nil {
@@ -73,7 +73,7 @@ func (t typeCheckingVisitor) checkParameterTypeNames(parameters []ast.MethodPara
 	return nil
 }
 
-func (t typeCheckingVisitor) checkReturnType(m ast.MethodDeclaration) error {
+func (t TypeCheckingVisitor) checkReturnType(m ast.MethodDeclaration) error {
 	err := t.TypeCheck(m.MethodSpecification.MethodSignature.ReturnTypeName)
 	if err != nil {
 		return fmt.Errorf("return %w", err)
