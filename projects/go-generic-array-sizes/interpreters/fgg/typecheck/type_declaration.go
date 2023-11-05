@@ -31,14 +31,14 @@ func (t typeCheckingVisitor) typeCheckTypeDeclaration(tdecl ast.TypeDeclaration)
 	if err := t.typeCheckTypeParams(tdecl.TypeParameters); err != nil {
 		return err
 	}
-	return t.newTypeEnvTypeCheckingVisitor(tdecl.TypeParameters).typeCheck(tdecl.TypeLiteral)
+	return t.NewTypeEnvTypeCheckingVisitor(tdecl.TypeParameters).typeCheck(tdecl.TypeLiteral)
 }
 
 func (t typeCheckingVisitor) typeCheckTypeParams(params []ast.TypeParameterConstraint) error {
 	if err := checkDistinctTypeParameterNames(params); err != nil {
 		return fmt.Errorf("type parameter %w", err)
 	}
-	envChecker := t.newTypeEnvTypeCheckingVisitor(params)
+	envChecker := t.NewTypeEnvTypeCheckingVisitor(params)
 	for _, param := range params {
 		if err := envChecker.typeCheck(param.Bound); err != nil {
 			return fmt.Errorf("illegal bound of type parameter %q: %w", param.TypeParameter, err)
@@ -63,7 +63,7 @@ type typeEnvTypeCheckingVisitor struct {
 	typeEnv map[ast.TypeParameter]ast.Bound
 }
 
-func (t typeCheckingVisitor) newTypeEnvTypeCheckingVisitor(typeParams []ast.TypeParameterConstraint) typeEnvTypeCheckingVisitor {
+func (t typeCheckingVisitor) NewTypeEnvTypeCheckingVisitor(typeParams []ast.TypeParameterConstraint) typeEnvTypeCheckingVisitor {
 	env := make(map[ast.TypeParameter]ast.Bound)
 	for _, param := range typeParams {
 		env[param.TypeParameter] = param.Bound
@@ -75,7 +75,7 @@ func (t typeCheckingVisitor) newTypeEnvTypeCheckingVisitor(typeParams []ast.Type
 }
 
 func (t typeEnvTypeCheckingVisitor) typeOf(variableEnv map[string]ast.Type, expr ast.Expression) (ast.Type, error) {
-	return t.typeCheckingVisitor.typeOf(t.typeEnv, variableEnv, expr)
+	return t.typeCheckingVisitor.TypeOf(t.typeEnv, variableEnv, expr)
 }
 
 func (t typeEnvTypeCheckingVisitor) typeCheck(v ast.EnvVisitable) error {
@@ -129,7 +129,7 @@ func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.Na
 		if err := t.checkConstEquivalence(typeArg, typeParam.Bound); err != nil {
 			return err
 		}
-		if err := t.checkIsSubtypeOf(typeArg, typeParam.Bound); err != nil {
+		if err := t.CheckIsSubtypeOf(typeArg, typeParam.Bound); err != nil {
 			return err
 		}
 	}

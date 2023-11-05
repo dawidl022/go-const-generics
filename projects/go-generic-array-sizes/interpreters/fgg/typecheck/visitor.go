@@ -10,7 +10,7 @@ type typeCheckingVisitor struct {
 	declarations []ast.Declaration
 }
 
-func newTypeCheckingVisitor(declarations []ast.Declaration) typeCheckingVisitor {
+func NewTypeCheckingVisitor(declarations []ast.Declaration) typeCheckingVisitor {
 	return typeCheckingVisitor{declarations: declarations}
 }
 
@@ -24,14 +24,14 @@ func (t typeCheckingVisitor) VisitProgram(p ast.Program) error {
 			return fmt.Errorf("ill-typed declaration: %w", err)
 		}
 	}
-	_, err := t.typeOf(nil, nil, p.Expression)
+	_, err := t.TypeOf(nil, nil, p.Expression)
 	if err != nil {
 		return fmt.Errorf("ill-typed main expression: %w", err)
 	}
 	return nil
 }
 
-func (t typeCheckingVisitor) typeOf(
+func (t typeCheckingVisitor) TypeOf(
 	typeEnv map[ast.TypeParameter]ast.Bound,
 	variableEnv map[string]ast.Type,
 	expression ast.Expression,

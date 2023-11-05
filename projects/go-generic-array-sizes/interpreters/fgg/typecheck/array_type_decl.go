@@ -23,5 +23,5 @@ func (t typeEnvTypeCheckingVisitor) VisitArrayTypeLiteral(a ast.ArrayTypeLiteral
 }
 
 func (t typeEnvTypeCheckingVisitor) isConst(typ ast.Type) bool {
-	return t.checkIsSubtypeOf(typ, ast.ConstType{}) == nil
+	return t.CheckIsSubtypeOf(typ, ast.ConstType{}) == nil
 }

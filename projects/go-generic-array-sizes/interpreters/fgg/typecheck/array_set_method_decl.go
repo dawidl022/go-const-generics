@@ -38,7 +38,7 @@ func (t typeCheckingVisitor) checkArraySetSignature(a ast.ArraySetMethodDeclarat
 	if err != nil {
 		return err
 	}
-	envChecker := t.newTypeEnvTypeCheckingVisitor(typeParams)
+	envChecker := t.NewTypeEnvTypeCheckingVisitor(typeParams)
 	if err := envChecker.checkArraySetValueParam(a); err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func paramNames(a ast.ArraySetMethodDeclaration) []name {
 }
 
 func (t typeEnvTypeCheckingVisitor) checkArraySetValueParam(a ast.ArraySetMethodDeclaration) error {
-	err := t.checkIsSubtypeOf(a.ValueParameter.Type, t.elementType(a.MethodReceiver.TypeName))
+	err := t.CheckIsSubtypeOf(a.ValueParameter.Type, t.elementType(a.MethodReceiver.TypeName))
 	if err != nil {
 		return fmt.Errorf("second parameter %q cannot be used as element of array type %q: %w",
 			a.ValueParameter.ParameterName, a.MethodReceiver.TypeName, err)

@@ -6,7 +6,7 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 )
 
-func (t typeEnvTypeCheckingVisitor) checkIsSubtypeOf(subtype, supertype ast.Type) error {
+func (t typeEnvTypeCheckingVisitor) CheckIsSubtypeOf(subtype, supertype ast.Type) error {
 	subtype = t.identifyTypeParams(subtype).(ast.Type)
 	supertype = t.identifyTypeParams(supertype).(ast.Type)
 

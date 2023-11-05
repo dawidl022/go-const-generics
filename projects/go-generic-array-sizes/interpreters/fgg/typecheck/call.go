@@ -35,5 +35,5 @@ func (t typeVisitor) checkParameterType(param ast.MethodParameter, arg ast.Expre
 	if err != nil {
 		return err
 	}
-	return t.checkIsSubtypeOf(argType, param.Type)
+	return t.CheckIsSubtypeOf(argType, param.Type)
 }

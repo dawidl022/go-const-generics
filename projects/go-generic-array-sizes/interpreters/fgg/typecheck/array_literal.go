@@ -32,7 +32,7 @@ func (t typeVisitor) typeCheckArrayLiteral(v ast.ValueLiteral, namedType ast.Nam
 		if err != nil {
 			return err
 		}
-		if err := t.checkIsSubtypeOf(valType, elemType); err != nil {
+		if err := t.CheckIsSubtypeOf(valType, elemType); err != nil {
 			return fmt.Errorf("cannot use %q as element of array of type %q: %w", val, namedType, err)
 		}
 	}
@@ -41,7 +41,7 @@ func (t typeVisitor) typeCheckArrayLiteral(v ast.ValueLiteral, namedType ast.Nam
 
 func (t typeVisitor) substitutedElementType(namedType ast.NamedType) (ast.Type, error) {
 	typeParams := t.typeParams(namedType.TypeName)
-	envChecker := t.newTypeEnvTypeCheckingVisitor(typeParams)
+	envChecker := t.NewTypeEnvTypeCheckingVisitor(typeParams)
 
 	elemType := t.elementType(namedType.TypeName)
 	elemTypeWithParams := envChecker.identifyTypeParams(elemType)
@@ -62,12 +62,12 @@ func (t typeVisitor) typeCheckTypeArgument(typeArg ast.Type, param ast.TypeParam
 	if err := t.checkConstEquivalence(typeArg, param.Bound); err != nil {
 		return err
 	}
-	return t.checkIsSubtypeOf(typeArg, param.Bound)
+	return t.CheckIsSubtypeOf(typeArg, param.Bound)
 }
 
 func (t typeCheckingVisitor) len(namedType ast.NamedType) ast.Type {
 	typeDecl := t.typeDeclarationOf(namedType.TypeName)
-	envChecker := t.newTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
+	envChecker := t.NewTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
 
 	lenType := envChecker.identifyTypeParams(typeDecl.TypeLiteral.(ast.ArrayTypeLiteral).Length)
 	if intLenType, isIntLenType := lenType.(ast.IntegerLiteral); isIntLenType {

@@ -9,5 +9,5 @@ func TypeCheck(p ast.Program) error {
 	if err := checkDistinctMethodDeclarations(p); err != nil {
 		return err
 	}
-	return newTypeCheckingVisitor(p.Declarations).TypeCheck(p)
+	return NewTypeCheckingVisitor(p.Declarations).TypeCheck(p)
 }

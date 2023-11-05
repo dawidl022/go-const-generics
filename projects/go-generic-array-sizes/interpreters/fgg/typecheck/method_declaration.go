@@ -24,7 +24,7 @@ func (t typeCheckingVisitor) typeCheckMethodDeclaration(m ast.MethodDeclaration)
 	if err != nil {
 		return err
 	}
-	envChecker := t.newTypeEnvTypeCheckingVisitor(typeParams)
+	envChecker := t.NewTypeEnvTypeCheckingVisitor(typeParams)
 	err = envChecker.typeCheck(m.MethodSpecification)
 	if err != nil {
 		return err
@@ -33,7 +33,7 @@ func (t typeCheckingVisitor) typeCheckMethodDeclaration(m ast.MethodDeclaration)
 	if err != nil {
 		return err
 	}
-	err = envChecker.checkIsSubtypeOf(expressionType, m.MethodSpecification.MethodSignature.ReturnType)
+	err = envChecker.CheckIsSubtypeOf(expressionType, m.MethodSpecification.MethodSignature.ReturnType)
 	if err != nil {
 		return fmt.Errorf("return expression of %w", err)
 	}

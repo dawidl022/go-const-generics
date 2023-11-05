@@ -25,7 +25,7 @@ func (t typeVisitor) VisitSelect(s ast.Select) (ast.Type, error) {
 	if err != nil {
 		return nil, err
 	}
-	envChecker := t.newTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
+	envChecker := t.NewTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
 	for _, f := range fields {
 		if f.Name == s.FieldName {
 			return substituter.substituteTypeParams(envChecker.identifyTypeParams(f.Type)).(ast.Type), nil
