@@ -15,6 +15,7 @@ type Expression interface {
 }
 
 type Type interface {
+	fmt.Stringer
 }
 
 type Interpreter[P Program[E], E Expression, T Type] interface {

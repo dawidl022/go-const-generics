@@ -5,7 +5,7 @@ import (
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/parse"
 )
 
 type ParseFGGActions struct {
@@ -23,6 +23,6 @@ func (ParseFGGActions) Program(p *parser.FGGParser) antlr.ParseTree {
 	return p.Program()
 }
 
-func (ParseFGGActions) NewAstBuilder(tree antlr.ParseTree) testrunners.ASTBuilder[ast.Program] {
+func (ParseFGGActions) NewAstBuilder(tree antlr.ParseTree) parse.ASTBuilder[ast.Program] {
 	return NewAntlrASTBuilder(tree)
 }

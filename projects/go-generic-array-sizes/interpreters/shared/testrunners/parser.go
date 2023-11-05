@@ -4,16 +4,11 @@ import (
 	"bytes"
 
 	"github.com/antlr4-go/antlr/v4"
+
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/parse"
 )
 
-type ParseActionable[T any, P antlr.Parser] interface {
-	NewLexer(input antlr.CharStream) antlr.Lexer
-	NewParser(input antlr.TokenStream) P
-	Program(parser P) antlr.ParseTree
-	NewAstBuilder(tree antlr.ParseTree) ASTBuilder[T]
-}
-
-func ParseProgram[T any, P antlr.Parser](code []byte, actions ParseActionable[T, P]) T {
+func ParseProgram[T any, P antlr.Parser](code []byte, actions parse.Actionable[T, P]) T {
 	input := antlr.NewIoStream(bytes.NewBuffer(code))
 	lexer := actions.NewLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
