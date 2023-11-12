@@ -1,4 +1,5 @@
 https://blog.rust-lang.org/2021/03/25/Rust-1.51.0.html#const-generics-mvp
+https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html
 https://github.com/golang/go/issues/43651
 https://github.com/golang/go/issues/44253
 https://github.com/rust-lang/rfcs/pull/2000
