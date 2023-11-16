@@ -6,6 +6,10 @@
 *.pdf
 *.out
 *.synctex.gz
+*.bbl
+*.bcf
+*.blg
+*.run.xml
 
 # ANTLR generated files:
 .antlr

@@ -1,12 +1,15 @@
+\section{Introduction}
+
 Generics have been introduced in the Go programming language following the
 theoretical work by \cite{fg} in \emph{Featherweight Go}. The \emph{Type
-Parameters Proposal} \cite{genericsProposal} lists several generic programming
-constructs not supported by the initial implementation of generics (as of Go
-1.18). Among them is "no parameterization on non-type values such as
-constants." The most notable use case of such type parameters would be for
-arrays. In Go, the size of an array is part of its type. As such, if the
-programmer wishes to write a function that operates on arrays or a data type
-that contains arrays, it is necessary to hard-code the size of the
-operated/contained array. This imposes a limitation on what abstraction may be
-introduced where arrays are concerned. Extending the generic type system in Go
-to support constants as type parameters aims to resolve this issue.
+Parameters Proposal} lists several generic programming constructs not supported
+by the initial implementation of generics (as of Go 1.18). Among them is "no
+parameterization on non-type values such as constants."
+\autocite{genericsProposal} The most notable use case of such type parameters
+would be for arrays. In Go, the size of an array is part of its type
+\autocite{spec}. As such, if the programmer wishes to write a function that
+operates on arrays or a data type that contains arrays, it is necessary to
+hard-code the size of the operated/contained array. This imposes a limitation on
+what abstraction may be introduced where arrays are concerned. Extending the
+generic type system in Go to support constants as type parameters aims to
+resolve this issue.
