@@ -1,10 +1,3 @@
-\documentclass[acmsmall,screen]{acmart}
-\usepackage{mathpartir}
-
-\begin{document}
-
-\include{macros}
-
 \begin{figure}
 
     Implements
@@ -39,7 +32,7 @@
             }
             { \Delta \vdash \tau \imp \tau_I }
         }
-        \\
+
         \inferrule[<:int-n]
         { ~ }
         { \Delta \vdash n \imp \kw{int} }
@@ -139,6 +132,11 @@
         }
         {\ov{\Phi} \vdash [\tau_n]\tau \ok}
     \end{mathpar}
+    \caption{FGG typing  with arrays (1 of 3)}
+\end{figure}
+
+\begin{figure}
+
 
     Well-formed declarations \hfill \fbox{$D \ok$}
     \begin{mathpar}
@@ -161,9 +159,6 @@
         }
         { \func~(x~t_V[\ov{\alpha}])~m(\ov{x~\tau})~\sigma~\br{\return~e} \ok }
     \end{mathpar}
-\end{figure}
-
-\begin{figure}
 
     \begin{mathpar}
         \inferrule[t-func-arrayset]
@@ -178,6 +173,11 @@
         \br{ x[x_1] = x_2;~\return~x }
         }
     \end{mathpar}
+    \caption{FGG typing with arrays (2 of 3)}
+\end{figure}
+
+\begin{figure}
+
 
     Expressions \hfill \fbox{$\Delta \stoup \Gamma \vdash e : \tau$}
     \begin{mathpar}
@@ -279,6 +279,5 @@
         }
     \end{mathpar}
 
-    \caption{FGG typing  with arrays}
+    \caption{FGG typing with arrays (3 of 3)}
 \end{figure}
-\end{document}

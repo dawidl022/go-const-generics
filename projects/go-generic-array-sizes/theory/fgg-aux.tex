@@ -1,14 +1,3 @@
-\documentclass[acmsmall,screen]{acmart}
-\usepackage{mathpartir}
-
-\begin{document}
-
-\include{macros}
-
-$\Delta$ is defined as a typing environment mapping type parameters $\alpha$
-to their bounds $\gamma$. Type parameter constraint sequences $\ov{\Phi}$ may
-implicitly coerce to type environments.
-
 \begin{figure}
     \begin{mathpar}
         \inferrule
@@ -129,7 +118,5 @@ implicitly coerce to type environments.
         (\func~(x~\black{t_V[\ov{\Phi}]})~mM~\br{\return~e}) \in \ov{D}}}
         }
     \end{mathpar}
-    \caption{FGG auxiliary functions for array typing}
+    \caption{FGG auxiliary functions for typing with arrays}
 \end{figure}
-
-\end{document}

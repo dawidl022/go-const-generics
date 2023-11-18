@@ -1,10 +1,18 @@
-\documentclass{article}
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
 \usepackage[style=bath,sorting=ynt]{biblatex}
 \usepackage[hidelinks]{hyperref}
+\usepackage[section]{placeins}
+\usepackage{mathpartir}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{xcolor}
 
 % Referencing library setup
 \assignrefcontextentries[]{*}
 \addbibresource{ref.bib}
+
+\input{../../projects/go-generic-array-sizes/theory/macros}
 
 \begin{document}
 
@@ -15,18 +23,23 @@
 \clearpage
 
 \input{1-intro}
+\clearpage
 
 \section{Literature Review}
+\clearpage
 
 \section{Arrays by Example}
+\clearpage
 
-\section{Featherweight Go}
+\input{4-fg}
+\clearpage
 
-\section{Featherweight Generic Go}
+\input{5-fgg}
+\clearpage
 
 \section{Interpreter Implementation}
-
 \clearpage
+
 \addcontentsline{toc}{section}{References}
 \printbibliography
 
