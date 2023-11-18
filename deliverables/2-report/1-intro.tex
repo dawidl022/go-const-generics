@@ -13,3 +13,44 @@ hard-code the size of the operated/contained array. This imposes a limitation on
 what abstraction may be introduced where arrays are concerned. Extending the
 generic type system in Go to support constants as type parameters aims to
 resolve this issue.
+
+\subsection{Background}
+
+Arrays are a primitive data structure found in many programming languages.
+However, various languages treat arrays differently...
+% TODO talk about first-class vs non first-class arrays, static and only dynamic
+% arrays, and whether the size is part of the arrays type or not, and which
+% languages are similar to what Go does. Mention that Go has slices for most
+% practical use cases. Mention however, the use cases where arrays can come
+% handy in Go.
+
+% TODO explain how this problem is tackled in other languages
+
+% C: Arrays are just pointers to the first element (no abstraction)
+% "The C programming language"; https://stefansf.de/post/arrays-are-second-class-citizens/
+% Python, Ruby, JS: Only dynamic arrays - abstraction on language level
+% Java: Array size is static, but not part of its type
+% Go, Rust (+ other langs??): Array size is part of type
+
+\subsection{Problem Statement}
+
+% TODO something along the lines of "How can the type system be extended
+% to support generically sized arrays in an efficient way, compatible with the
+% existing implementation of generics in Go.
+
+\subsection{Aim}
+
+% TODO this will be a formal rules for arrays, their generic counterparts,
+% based on Featherweight Go.
+
+\subsection{Objectives}
+
+% Individual deliverable - formal rules + verifying design with interpreter +
+% monomorphiser
+
+\subsection{Research Questions}
+
+How have other languages where the size of an array is part of its type tackled
+this issue, if at all?
+
+\subsection{Report Structure}
