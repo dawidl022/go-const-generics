@@ -2,25 +2,26 @@ gantt
     tickInterval 4week
     dateFormat  YYYY-MM-DD
     section Formalisation
-        FG with arrays :2023-07-08, 2023-07-10
-        FGG with arrays :2023-07-10, 2023-08-20
+        FG with arrays :done, 2023-07-08, 2023-07-10
+        FGG with arrays :done, 2023-07-10, 2023-08-20
     section Interpreters
-        FG with arrays :2023-09-05,2023-09-23
-        FGG with arrays :fggi, 2023-09-23, 5w
-        Type assertions :tai, after fggi, 1w
+        FG with arrays :done, 2023-09-05,2023-09-23
+        FGG with arrays :done, fggi, 2023-09-23, 5w
+        Type assertions :tai, after interim, 1w
+        Operators :op, after tai, 1w
     section Monomorphiser
-        FGG with arrays to Go :fggm, after tai, 1w
+        FGG with arrays to Go :fggm, after op, 2w
     section Proposal
         Go generic array sizes :after fggm, 1w
-        Address feedback :2023-12-01, 2w
+        Address feedback :feedback, after report, 2w
     section Reports
-        Interim :interim, after fggm, 2023-11-27
-        Progress Presentation :after fggm, 2023-12-04
-        Final :report, after interim, 5w
+        Interim :interim, 2023-11-13, 2023-11-27
+        Progress Presentation :progress, after interim, 2023-12-04
+        Final :report, after progress, 5w
         Showcase video :after report, 2w
         Extension objectives :after compiler, 2w
     section Go Contribution
-        Compiler extension :compiler, after report, 12w
+        Compiler extension :compiler, after feedback, 12w
     section Proof
         Progress + preservation :2024-02-26, 4w
     section Publication
