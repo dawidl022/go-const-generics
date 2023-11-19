@@ -7,10 +7,16 @@
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{xcolor}
+\usepackage{array}
 
 % Referencing library setup
 \assignrefcontextentries[]{*}
 \addbibresource{ref.bib}
+
+% Setup table columns
+% https://stackoverflow.com/a/53857840/
+\newcolumntype{L}{>{\centering\arraybackslash}m{0.21\linewidth}}
+\newcolumntype{S}{>{\centering\arraybackslash}m{0.12\linewidth}}
 
 \input{../../projects/go-generic-array-sizes/theory/macros}
 
@@ -42,5 +48,9 @@
 
 \addcontentsline{toc}{section}{References}
 \printbibliography
+\clearpage
+
+\appendix
+\input{a-rist-assessment}
 
 \end{document}
