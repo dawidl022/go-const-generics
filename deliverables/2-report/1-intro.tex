@@ -2,7 +2,7 @@
 
 Generics have been introduced in the Go programming language following the
 theoretical work by \cite{fg} in \emph{Featherweight Go}. The \emph{Type
-Parameters Proposal} lists several generic programming constructs not supported
+    Parameters Proposal} lists several generic programming constructs not supported
 by the initial implementation of generics (as of Go 1.18). Among them is ``no
 parameterization on non-type values such as constants.''
 \autocite{genericsProposal} The most notable use case of such type parameters
@@ -17,7 +17,11 @@ resolve this issue.
 \subsection{Background}
 
 Arrays are a primitive data structure found in many programming languages.
-However, various languages treat arrays differently...
+However, various languages treat arrays differently. In Java, arrays are
+objects, and variables of array type are references to those objects. The size
+(or length) of an array is not part of its type, however it is a property of the
+array object instance and cannot be changed after initialisation of the instance
+\autocite{javaSpec}.
 % TODO talk about first-class vs non first-class arrays, static and only dynamic
 % arrays, and whether the size is part of the arrays type or not, and which
 % languages are similar to what Go does. Mention that Go has slices for most
