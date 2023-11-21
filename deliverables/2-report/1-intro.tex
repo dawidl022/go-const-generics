@@ -21,7 +21,14 @@ However, various languages treat arrays differently. In Java, arrays are
 objects, and variables of array type are references to those objects. The size
 (or length) of an array is not part of its type, however it is a property of the
 array object instance and cannot be changed after initialisation of the instance
-\autocite{javaSpec}.
+\autocite{javaSpec}. C\# treats arrays analogously \autocite{cSharpArrays}. In
+languages like Go and Rust, arrays are value types and the size of the array
+\emph{is} part is of its type \autocites{spec}{rustSpec}. In C, the size of an
+array is also part of its type, however, expressions of array type are converted
+to pointers to the first element of the array \autocite{cSpec}. Since
+dynamically typed languages do not have types associated with variables, we will
+not discuss those languages here.
+
 % TODO talk about first-class vs non first-class arrays, static and only dynamic
 % arrays, and whether the size is part of the arrays type or not, and which
 % languages are similar to what Go does. Mention that Go has slices for most
