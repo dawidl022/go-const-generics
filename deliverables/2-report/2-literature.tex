@@ -8,9 +8,38 @@ expressing that a variable holds an array of a specific size.
 
 \subsubsection{Const generics in Rust}
 
-\subsection{Programming language theory}
+\subsection{Type systems and programming language theory}
 
-% TODO review TAPL here
+\citeauthor{tapl} covers core topics in programming languages and type theory
+including how to precisely describe the syntax, evaluation and static type
+system of programming languages, and techniques for proving properties of those
+language (\citeyear{tapl}). The book formally presents the notion of language
+type safety consisting of \emph{progress} and \emph{preservation}.
+
+The progress theorem says that well-typed terms (i.e. those that are in the
+typing relation defined by the typing rules) do not get ``stuck'', i.e. they are
+either terminal values or can take a reduction step, as defined by the reduction
+(evaluation) rules.
+
+The preservation theorem says that if a term is well-typed, then it will
+continue to be well-typed after a reduction step. Depending on the language,
+the type system may impose further restrictions on this theorem, e.g. that
+the type of the term after taking a step is exactly the same type as before
+the step, or that it is a subtype of the type before the step.
+
+To summarise, if we have a term that is well-type, then by the preservation
+theorem, it will continue to be well-typed no matter how many reduction steps
+are taken. Together with the progress theorem, we know that the term will always
+be able to take a reduction step (because it is well-typed after each one) until
+it reaches a terminal value. In other words, the well-typed term will never get
+``stuck'' during execution. These theorems can be used to prove the soundness of
+a type system, which is fundamental for any well-designed type system, including
+the one proposed in this work.
+
+The book also presents how to conduct such proofs, namely using a technique
+called \emph{structural induction}. Structural induction is analogous to
+induction on natural numbers, except that it works on recursively defined
+structures, such as those found in the formal rules of programming languages.
 
 \subsection{Featherweight Go}
 

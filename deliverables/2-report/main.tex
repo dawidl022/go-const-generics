@@ -14,6 +14,14 @@
 \assignrefcontextentries[]{*}
 \addbibresource{ref.bib}
 
+% Enable hyperref for year citations
+% https://tex.stackexchange.com/a/83885
+\DeclareCiteCommand{\citeyear}
+    {}
+    {\bibhyperref{\printfield{year}}}
+    {\multicitedelim}
+    {}
+
 % Setup table columns
 % https://stackoverflow.com/a/53857840/
 \newcolumntype{L}{>{\centering\arraybackslash}m{0.21\linewidth}}
