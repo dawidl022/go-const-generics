@@ -1,4 +1,4 @@
-main.pdf: project-plan.pdf *.tex
+main.pdf: project-plan.pdf *.tex examples/*
 	pdflatex main
 
 project-plan.pdf: project-plan.mmd

@@ -6,6 +6,7 @@
 \usepackage{mathpartir}
 \usepackage{amsfonts}
 \usepackage{graphicx}
+\usepackage{listings}
 \usepackage{amsmath}
 \usepackage{xcolor}
 \usepackage{array}
@@ -26,6 +27,12 @@
 % https://stackoverflow.com/a/53857840/
 \newcolumntype{L}{>{\centering\arraybackslash}m{0.21\linewidth}}
 \newcolumntype{S}{>{\centering\arraybackslash}m{0.12\linewidth}}
+
+% Setup basic styling for code snippets
+% https://tex.stackexchange.com/a/19950
+\newlength{\lstcolumnwidth}
+\settowidth{\lstcolumnwidth}{\ttfamily M}
+\lstset{basicstyle=\ttfamily,basewidth=\lstcolumnwidth,columns=fixed, fontadjust=true}
 
 \input{../../projects/go-generic-array-sizes/theory/macros}
 
@@ -64,5 +71,8 @@
 \clearpage
 
 \input{b-project-plan}
+\clearpage
+
+\input{c-code-examples}
 
 \end{document}
