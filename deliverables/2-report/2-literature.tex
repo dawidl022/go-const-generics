@@ -8,5 +8,26 @@ expressing that a variable holds an array of a specific size.
 
 \subsubsection{Const generics in Rust}
 
+\subsection{Programming language theory}
+
+% TODO review TAPL here
 
 \subsection{Featherweight Go}
+
+For many years, the biggest criticism against the Go language was the lack of
+generics \autocites{survey2021}{survey2020}{survey2019}. The Go team recognised
+the importance of solving this problem ``right'' and consequently reached out to
+the world of academics for a collaboration, the result of which was a paper
+named \emph{Featherweight Go} \autocite{fg}. The work was inspired by
+\emph{Featherweight Java}, an effort two decades prior aimed at formalising Java
+and its generic extension \autocite{fj}.
+The common theme in the two papers is the reduction of the programming language
+into a small core subset, making it easier to prove properties about the
+language and, subsequently, any proposed extensions.
+% TODO why is it important to proove properties of a language?
+Both papers also extended their language subsets into variants with generics
+(parametric polymorphism), and showed how the generic variant can be translated
+into the non-generic base language.
+
+% TODO talk about contracts and then how Featherweight Go simplified it and
+% convinced the team
