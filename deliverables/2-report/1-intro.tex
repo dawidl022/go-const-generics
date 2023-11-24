@@ -2,7 +2,7 @@
 
 Generics have been introduced in the Go programming language following the
 theoretical work by \cite{fg} in \emph{Featherweight Go}. The \emph{Type
-    Parameters Proposal} lists several generic programming constructs not supported
+      Parameters Proposal} lists several generic programming constructs not supported
 by the initial implementation of generics (as of Go 1.18). Among them is ``no
 parameterization on non-type values such as constants.''
 \autocite{genericsProposal} The most notable use case of such type parameters
@@ -26,8 +26,10 @@ languages like Go and Rust, arrays are value types and the size of the array
 \emph{is} part is of its type \autocites{spec}{rustSpec}. In C, the size of an
 array is also part of its type, however, expressions of array type are converted
 to pointers to the first element of the array \autocite{cSpec}. Since
-dynamically typed languages do not have types associated with variables, we will
-not discuss those languages here.
+dynamically typed languages do not have types associated with variables, those
+languages will not be discussed here.
+
+% TODO explore more languages
 
 % TODO talk about first-class vs non first-class arrays, static and only dynamic
 % arrays, and whether the size is part of the arrays type or not, and which
@@ -39,30 +41,87 @@ not discuss those languages here.
 
 % C: Arrays are just pointers to the first element (no abstraction)
 % "The C programming language"; https://stefansf.de/post/arrays-are-second-class-citizens/
-% Python, Ruby, JS: Only dynamic arrays - abstraction on language level
-% Java: Array size is static, but not part of its type
-% Go, Rust (+ other langs??): Array size is part of type
 
 \subsection{Problem Statement}
 
-% TODO something along the lines of "How can the type system be extended
-% to support generically sized arrays in an efficient way, compatible with the
-% existing implementation of generics in Go.
+Arrays in the Go programming language have a number of use cases and situational
+benefits over slices --- their dynamic counterparts. One practical scenario is
+when wanting to use a collection as a map key. Since the comparison operators
+are fully defined for arrays, they may be used as map keys, which is a very
+common data structure used in Go programs. The comparison operators are not
+fully defined for slices, hence they cannot be used as map keys in the same way.
+\autocite{spec}. Arrays may also be useful when value semantics are desired,
+i.e. assigning an array to another variable or passing it as an argument to a
+function makes a copy. For slices, which hold references to underlying arrays,
+copies need to be performed manually, which can be more verbose and error-prone.
+Since the size of an array is part of its type, it can also serve as
+documentation to the reader of the code.
+
+In current day Go (version 1.21 as of time of writing), there is no way of
+abstracting over arrays of any size, e.g. it is impossible to define a function
+that operates on an array of any size. While workarounds exist that make use of
+type set interfaces introduced in the \emph{Type Parameters Proposal}
+\autocite{genericsProposal}, this solution is not very elegant since it requires
+manually enumerating all the array sizes the function can operate on, and also
+cannot be used in functions exposed as part of a library, as there is no way of
+knowing what array size the library consumer will use.
+
+This work aims to address this problem, by introducing constant (integer) type
+parameters that may be used to define generically-sized array types.
 
 \subsection{Aim}
 
-% TODO this will be a formal rules for arrays, their generic counterparts,
-% based on Featherweight Go.
+The aim is to produce a set of formal rules specifying the syntax, reduction
+semantics and type system of a subset of the Go programming language, extended
+with support for generically sized arrays. The rules are to be verified by
+implementing an interpreter that includes the new language feature, as well
+as a monomorphiser that translates the extended language into regular Go.
+
+As an extension to the project, a formal proof of correctness of the language
+extension may be carried out. Another extension would be to implement the
+proposed design into the mainstream Go compiler.
 
 \subsection{Objectives}
 
-% Individual deliverable - formal rules + verifying design with interpreter +
-% monomorphiser
+\begin{itemize}
+      \item Investigate how the problem of abstracting over arrays of any size
+            has been solved in other statically-typed programming languages, and what
+            research has been done in this area.
+      \item Formalise the syntax, reduction and typing rules of arrays in Go,
+            based on \emph{Featherweight Go}, referred to as FG going forward
+            \autocite{fg}.
+      \item Design and formalise the syntax, reduction and typing rules of
+            generically sized arrays, based on \emph{Featherweight Generic Go},
+            updated with the existing state of generics in Go, referred to as
+            FGG going forward \autocite{fg}.
+      \item Implement and test a typecheker and interpreter for FG extended with
+            support for arrays.
+      \item Implement and test a typecheker and interpreter for FGG extended with
+            support for generically sized arrays.
+      \item Implement and test a monomorphiser that translates code written in the
+            extended FGG into real Go code.
+      \item Submit a proposal for adding the language extension to the open
+            source community, addressing the challenges previously discussed by
+            the community, and address any feedback for my design.
+      \item Extension: formally prove the correctness (progress and
+            preservation) of the addition of generally sized arrays to FGG.
+      \item Extension: implement generally sized arrays in the mainstream Go
+            compiler.
+\end{itemize}
 
 \subsection{Research Questions}
 
-How have other languages where the size of an array is part of its type tackled
-this issue, if at all?
+\begin{itemize}
+      \item How have other statically typed languages where the size of an array
+            is part of its type tackled this issue, if at all?
+      \item How can the Go type system be extended to support generically sized
+            arrays, compatible with the existing implementation of generics in
+            Go?
+      \item Extension: How can the proposed design be proven to be correct?
+      \item Extension: What are the challenges of implementing the theoretical
+            design of generically sized arrays into the mainstream Go compiler?
+\end{itemize}
+
 
 \subsection{Report Structure}
 
