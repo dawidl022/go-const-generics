@@ -26,13 +26,29 @@ bounds of const type parameters, which is reasonable given that the main
 rationale for const generics is to be able to parameterise over array sizes. The
 authors could have limited const generics to the \texttt{usize} type (the type
 used for array sizes in Rust), however they claim it would have not made the
-implementation simpler \autocite{rustConstRFC}. Since Go puts a strong emphasis on language simplicity
-\autocite{goSimplicity}, this work proposes to limit constant generics in Go to
-only accept integral type parameters of the same type that can be used as array
-sizes, i.e. ``a non-negative constant representable by a value of type
-\texttt{int}'' \autocite{spec}. The implication of this design decision is that
-the syntax can be simplified, as \texttt{const} can be made to imply the
-array-length type described by the Go spec.
+implementation simpler \autocite{rustConstRFC}. Since Go puts a strong emphasis
+on language simplicity \autocite{goSimplicity}, this work proposes to limit
+constant generics in Go to only accept integral type parameters of the same type
+that can be used as array sizes, i.e. ``a non-negative constant representable by
+a value of type \texttt{int}'' \autocite{spec}. The implication of this design
+decision is that the syntax can be simplified, as \texttt{const} can be made to
+imply the array-length type described by the Go specification.
+
+Rust imposes limitations on constant type arguments for ease of implementation.
+In particular, expressions including a const parameter (with the exception of a
+lone const parameter) are not permitted as type arguments. In the
+monomorphisation model of generics, recursive definitions with const type
+argument expressions containing const type parameters could lead to extreme code
+bloat in the compiled binary. Another issue would be the potential for the const
+type argument to go out of bounds (e.g. less than 0 as a result of a subtraction
+operation on the type parameter). The simple solution is to not permit such type
+arguments. This insight can be carried over to the Go design. The simplicity of
+the feature with this constraint also aligns with the ethos of Go
+\autocite{goSimplicity}.
+
+% TODO create semi-realistic code examples for problematic expressions with
+% const type parameters (can adapt example from
+% https://github.com/golang/go/issues/44253)
 
 \begin{figure}
     \begin{lstlisting}
