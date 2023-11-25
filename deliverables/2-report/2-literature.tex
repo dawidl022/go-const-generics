@@ -17,11 +17,40 @@ are value types and the size is part of the array's type. As such, developments
 of arrays in Rust are of particular interest when designing the generic
 extension in Go. In particular, \emph{const generics} have already been
 introduced to Rust, facilitating parameterisation over array sizes
-\autocite{rustConstBlog}. While Rust implements generics using monomorphisation
+\autocite{rustConstBlog}.
+
+The syntax introduces the \texttt{const} keyword in the type parameter list,
+followed by the type parameter name and its bound (same as for non-constant type
+parameters). The current implementation only permits integral types for the
+bounds of const type parameters, which is reasonable given that the main
+rationale for const generics is to be able to parameterise over array sizes. The
+authors could have limited const generics to the \texttt{usize} type (the type
+used for array sizes in Rust), however they claim it would have not made the
+implementation simpler \autocite{rustConstRFC}. Since Go puts a strong emphasis on language simplicity
+\autocite{goSimplicity}, this work proposes to limit constant generics in Go to
+only accept integral type parameters of the same type that can be used as array
+sizes, i.e. ``a non-negative constant representable by a value of type
+\texttt{int}'' \autocite{spec}. The implication of this design decision is that
+the syntax can be simplified, as \texttt{const} can be made to imply the
+array-length type described by the Go spec.
+
+\begin{figure}
+    \begin{lstlisting}
+struct ArrayPair<T, const N: usize> {
+    left: [T; N],
+    right: [T; N],
+}
+\end{lstlisting}
+    \caption{Example of const generics for arrays in Rust \autocite{rustConstBlog}}
+\end{figure}
+
+
+While Rust implements generics using monomorphisation
 \autocite{rustCompilerGuide}, Go uses a hybrid of monomorphisation and
 dictionary-passing \autocite{generics1.18}. Further investigation needs to be
 undertaken to determine whether this difference affects how constant type
-parameters could be implemented in Go.
+parameters could be implemented in Go, such as potentially lifting the
+constraint on recursive constant type parameter expressions.
 
 \subsection{Type systems and programming language theory}
 
