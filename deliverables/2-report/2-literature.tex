@@ -12,6 +12,17 @@ the ability to parameterise the size of an array forming part of its type (see
 
 \subsubsection{Const generics in Rust}
 
+In Rust, arrays are treated very similarly to how they're treated in Go: arrays
+are value types and the size is part of the array's type. As such, developments
+of arrays in Rust are of particular interest when designing the generic
+extension in Go. In particular, \emph{const generics} have already been
+introduced to Rust, facilitating parameterisation over array sizes
+\autocite{rustConstBlog}. While Rust implements generics using monomorphisation
+\autocite{rustCompilerGuide}, Go uses a hybrid of monomorphisation and
+dictionary-passing \autocite{generics1.18}. Further investigation needs to be
+undertaken to determine whether this difference affects how constant type
+parameters could be implemented in Go.
+
 \subsection{Type systems and programming language theory}
 
 \citeauthor{tapl} covers core topics in programming languages and type theory
