@@ -19,12 +19,12 @@ resolve this issue.
 Arrays are a primitive data structure found in many programming languages.
 However, various languages treat arrays differently. In Java, arrays are
 objects, and variables of array type are references to those objects. The size
-(or length) of an array is not part of its type, however it is a property of the
+(or length) of an array is not part of its type. However, it is a property of the
 array object instance and cannot be changed after initialisation of the instance
 \autocite{javaSpec}. C\# treats arrays analogously \autocite{cSharpArrays}. In
-languages like Go and Rust, arrays are value types and the size of the array
+languages like Go and Rust, arrays are value types, and the size of the array
 \emph{is} part is of its type \autocites{spec}{rustSpec}. In C, the size of an
-array is also part of its type, however, expressions of array type are converted
+array is also part of its type. However, expressions of array type are converted
 to pointers to the first element of the array \autocite{cSpec}. Since
 dynamically typed languages do not have types associated with variables, those
 languages will not be discussed here.
@@ -49,7 +49,7 @@ benefits over slices --- their dynamic counterparts. One practical scenario is
 when wanting to use a collection as a map key. Since the comparison operators
 are fully defined for arrays, they may be used as map keys, which is a very
 common data structure used in Go programs. The comparison operators are not
-fully defined for slices, hence they cannot be used as map keys in the same way.
+fully defined for slices. Hence, they cannot be used as map keys in the same way.
 \autocite{spec}. Arrays may also be useful when value semantics are desired,
 i.e. assigning an array to another variable or passing it as an argument to a
 function makes a copy. For slices, which hold references to underlying arrays,
@@ -57,7 +57,7 @@ copies need to be performed manually, which can be more verbose and error-prone.
 Since the size of an array is part of its type, it can also serve as
 documentation to the reader of the code.
 
-In current day Go (version 1.21 as of time of writing), there is no way of
+In current day Go (version 1.21 as of the time of writing), there is no way of
 abstracting over arrays of any size, e.g. it is impossible to define a function
 that operates on an array of any size. While workarounds exist that make use of
 type set interfaces introduced in the \emph{Type Parameters Proposal}
@@ -66,11 +66,11 @@ manually enumerating all the array sizes the function can operate on, and also
 cannot be used in functions exposed as part of a library, as there is no way of
 knowing what array size the library consumer will use.
 
-This work aims to address this problem, by introducing constant (integer) type
+This work aims to address this problem by introducing constant (integer) type
 parameters that may be used to define generically-sized array types. A proposal
 exists to allow for generic parameterisation of array sizes in Go, demonstrating
-the demand for this feature, however the design proposed in this work differs
-from the existing proposal \autocite{goArrayProposal}.
+the demand for this feature \autocite{goArrayProposal}. However, the design
+proposed in this work differs from the existing proposal.
 
 % TODO perform more detailed comparison with the existing proposal once my
 % design is laid out (e.g. in/after the examples chapter)

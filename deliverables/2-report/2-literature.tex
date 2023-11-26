@@ -6,16 +6,16 @@ Languages where the size of an array is not part of its type (e.g. Java, C\#),
 automatically abstract over arrays of all sizes, as there is no way of
 expressing that a variable holds an array of a specific size.
 
-In C, macros can be used to achieve a form a generic programming, which includes
+In C, macros can be used to achieve a form of generic programming, which includes
 the ability to parameterise the size of an array forming part of its type (see
-\hyperref[sec:generic-c]{code example in appendeix}).
+\hyperref[sec:generic-c]{code example in appendix}).
 
 \subsubsection{Const generics in Rust}
 
-In Rust, arrays are treated very similarly to how they're treated in Go: arrays
-are value types and the size is part of the array's type. As such, developments
-of arrays in Rust are of particular interest when designing the generic
-extension in Go. In particular, \emph{const generics} have already been
+In Rust, arrays are treated very similarly to how they are treated in Go: arrays
+are value types, and the size is part of the array's type. As such, the
+development of arrays in Rust is of particular interest when designing the
+generic extension in Go. In particular, \emph{const generics} have already been
 introduced to Rust, facilitating parameterisation over array sizes
 \autocite{rustConstBlog}.
 
@@ -25,7 +25,7 @@ parameters). The current implementation only permits integral types for the
 bounds of const type parameters, which is reasonable given that the main
 rationale for const generics is to be able to parameterise over array sizes. The
 authors could have limited const generics to the \texttt{usize} type (the type
-used for array sizes in Rust), however they claim it would have not made the
+used for array sizes in Rust). However, they claim it would not have made the
 implementation simpler \autocite{rustConstRFC}. Since Go puts a strong emphasis
 on language simplicity \autocite{goSimplicity}, this work proposes to limit
 constant generics in Go to only accept integral type parameters of the same type
@@ -119,7 +119,7 @@ Both papers also extended their language subsets into variants with generics
 into the non-generic base language.
 
 \emph{Featherweight Go} formalises a subset of Go through syntax, reduction and
-typing rules, as well as an extended variant with generics. They are used the
+typing rules, as well as an extended variant with generics. They are used as the
 starting point for the formal rules in this work. In their work, \citeauthor{fg}
 proove the soundness of the FG and FGG type systems using the progress and
 progress theorems described in the previous section.
