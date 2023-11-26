@@ -5,7 +5,9 @@ programming language, introduced by \citeauthor{fg} for the purpose of showing
 how generics can be added to the language (\citeyear{fg}). This section will
 extend \emph{Featherweight Go} with arrays, as found in Go. In a similar
 fashion, only a subset of array features are included to keep things manageable.
-In particular, slices are excluded.
+In particular, slices are excluded. Since FG is a subset of Go, many constructs
+and syntax that are allowed in Go, are disallowed in FG to keep the rules
+simpler.
 
 A couple of notes on formal notation: a bar above a term or group of terms
 denotes a sequence or a rule to be applied to each element in the sequence. A
@@ -22,6 +24,106 @@ modification. The rules (or rule fragments) in black show the changes introduced
 when extending the rules to include arrays.
 
 \subsection{FG Syntax}
+
+An FG program is defined in a single file. The program starts with the package
+name, and since we limit the language to a single file, the package must be
+named $\main$, allowing the program to be compiled into an executable in regular
+Go. It is then followed by a sequence of 0 or more declarations, and finally the
+$\main$ function is required at the end. The $\main$ function consists of a
+single expression, and to make it compatible with Go, the expression is assigned
+to the blank identifier, denoted by an underscore. This makes it so that the Go
+compiler does not reject the program because of an unused expression or
+variable.
+
+Two main types of declarations exist: a type declaration and a method
+declaration. The latter is subdivided further into a regular method declaration
+and an ``array set'' method declaration. The reason for having a special
+syntactical form for methods that set a particular element of an array (more
+precisely of a copy of an array, due to the value semantics of arrays), is that
+FG is a functional subset of Go, and does not support variable assignment in the
+general sense. By encapsulating the operation of creating an array copy with a
+certain element taking on a new value, FG is able to maintain its functional
+property. It also makes the rules simpler since there is no need to introduce
+general assignment, yet the ``array set'' syntax is fully compatible with Go and
+will behave as expected.
+
+A type declaration is defined as the keyword \type, followed by a declared type
+name, followed by a type literal. A ``declared'' type name can be any identifier
+as defined by \autocite{spec}, except for the predeclared \kw{int}. In Go, it is
+actually legal to redefine predeclared type names, such as the built-in
+\kw{int}, however to keep things simple FG does not permit this. That is to say,
+the only predeclared type name in FG is \kw{int}, for values of integer type.
+No other primitive types (e.g. \kw{bool} or \kw{string}) are defined in FG.
+
+A type literal can be one of 3 things: a struct literal, an interface literal,
+or an array literal. A struct type literal consists of the keyword \struct,
+followed by a sequence of fields inside curly braces. Each field is a pair of a
+field identifier and a type name, separated by a space. A type name can be
+either an aforementioned declared type name, or the predeclared type name
+\kw{int}. The rules specify integer literals as valid type names. However, these
+are not allowed in user programs, and are only used internally by the reduction
+and typing rules.
+
+An interface type literal consists of the keyword \interface, followed by a
+sequence of method specifications inside curly braces. Each method specification
+consists of a method name (an identifier) followed by the method signature. A
+method signature consists of a sequence of parameters within parenthesis,
+followed by a type name denoting the return type of the method. Each parameter
+is a pair of a variable name (an identifier) and a type name, separated by a
+space.
+
+An array type literal consists of an integer literal within square brackets,
+denoting the length of the array followed by a type name, denoting the type of
+the array elements. This restricts array type literals to a single dimension,
+i.e. \texttt{[2][3]int} is not allowed. However, in practice this is not a
+concern, as one can define a nested array in two steps, i.e. declaring the inner
+array as a type and using that declared type name as the element type of the
+outer array.
+
+A method declaration consists of the keyword \func, followed by the receiver in
+parentheses, followed by a method specification, followed by the method body.
+The method receiver is just a single parameter, where its type name refers to a
+declared value type name. A value type name is a type name defined in terms of
+either a struct type literal, or an array type literal. The method body consists
+of the keyword \return, followed by an expression, all enclosed within curly
+braces.
+
+An array set method declaration is a special syntactical term in FG, which is a
+valid method in Go. The receiver type refers to a declared array type name,
+which is a type name defined in terms of an array literal. The method can have
+any name (identifier), and its parameters can be any identifier as long as all
+the parameters are named uniquely. However, there are stricter restrictions on
+the rest of the construct. The return type must match the receiver type. The
+first parameter must have a type of \kw{int}, while the second parameter may
+(syntactically) be any type name. The method body is constructed from the
+parameter names, where $x$ refers to the array, $x_1$ to the array index, and
+$x_2$ to the new value to be assigned to that index. In figure
+\ref{fig:fg-syntax}, identical metavariables should be understood as identical
+syntactical terms in the rule defining array set methods, e.g. where a concrete
+term appears for $x$ in one part of the rule, any other occurrence of the
+metavariable $x$ must be instantiated with the same concrete term. The same does
+not apply to other rules in the figure (e.g. array index consists of two
+potentially distinct subexpressions). This is the only instance where,
+syntactically, two statements are allowed within the method body, as there is no
+way in Go to perform an array index assignment and return the array in a single
+expression.
+
+Finally, expressions may take on a number of forms. The most basic expressions
+are integer literals (e.g. 0, 1, 2, 10, -1 etc.). Variables, which in the
+context of FG happen to be parameter names, are also basic expressions.
+
+Complex expressions may involve 0 or more subexpressions. The first kind are
+method calls, which are recursively defined as an expression, followed by a dot,
+followed by a method name (an identifier), followed by a sequence of expressions
+enclosed in parentheses. Another recursively defined kind of expression is a
+value literal, which consists of a value type name, followed by a sequence of
+expressions enclosed in curly brackets. Value literals are used to instantiate
+structs or arrays. The select expression consists of an expression, followed by
+a dot and the field name (an identifier), which is used to select a field from a
+struct. An array index consists of an expression, followed by another expression
+enclosed in square brackets. The array index expression is used to retrieve an
+element of an array (the first subexpression) at a specified index (the second
+subexpression).
 
 \input{../../projects/go-generic-array-sizes/theory/fg-syntax}
 
