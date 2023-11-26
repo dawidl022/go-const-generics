@@ -109,14 +109,35 @@ the importance of solving this problem ``right'' and consequently reached out to
 the world of academics for a collaboration, the result of which was a paper
 named \emph{Featherweight Go} \autocite{fg}. The work was inspired by
 \emph{Featherweight Java}, an effort two decades prior aimed at formalising Java
-and its generic extension \autocite{fj}.
-The common theme in the two papers is the reduction of the programming language
-into a small core subset, making it easier to prove properties about the
-language and, subsequently, any proposed extensions.
+and its generic extension \autocite{fj}. The common theme in the two papers is
+the reduction of the programming language into a small core ``featherweight''
+subset, making it easier to prove properties about the language and,
+subsequently, any proposed extensions.
 % TODO why is it important to proove properties of a language?
 Both papers also extended their language subsets into variants with generics
 (parametric polymorphism), and showed how the generic variant can be translated
 into the non-generic base language.
 
-% TODO talk about contracts and then how Featherweight Go simplified it and
-% convinced the team
+\emph{Featherweight Go} formalises a subset of Go through syntax, reduction and
+typing rules, as well as an extended variant with generics. They are used the
+starting point for the formal rules in this work. In their work, \citeauthor{fg}
+proove the soundness of the FG and FGG type systems using the progress and
+progress theorems described in the previous section.
+
+\citeauthor{fg} argue that both ``featherweight'' and ``complete'' descriptions
+of languages have value. This work will follow the featherweight approach, since
+it was a successful strategy in the case of \emph{Featherweight Go}, aimed at
+introducing a new feature to the language, and keeps the focus on the parts of
+the language that matter most when making the addition.
+
+Because the \citetitle{genericsProposal} (implemented as of Go 1.18) only
+includes a subset of the generic extension features described in
+\emph{Featherweight Go}, this work will use that reduced description, both for
+simplicity and to better mirror the state of generics in current-day Go
+\autocite{genericsProposal}.
+
+\emph{Featherweight Go} also fully implemented the described languages as
+interpreters to test that all presented examples work as expected. This work
+intends to follow in the footsteps of \citeauthor{fg} in this regard.
+
+% TODO mention the monomorphiser
