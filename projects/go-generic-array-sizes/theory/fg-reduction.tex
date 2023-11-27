@@ -1,16 +1,20 @@
 \begin{figure}
     \begin{mathpar}
+        \gray{
+            \inferrule
+            {(\type~t_S~\struct\br{\ov{f~t}}) \in \ov{D}}
+            {\fields(t_S) = \ov{f~t}}
+
+            \inferrule
+            {(\func~(x~\black{t_V})~m(\ov{x~t})~t~\br{\return~e}) \in \ov{D}}
+            {\mbody(\black{t_V}.m) = (x:\black{t_V},\ov{x:t}).e}
+        }
+
         \inferrule
         {
         (\type~t_A~ [n]t) \in \ov{D}
         }
         { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \indexbounds(t_A)}
-
-        \gray{
-            \inferrule
-            {(\func~(x~\black{t_V})~m(\ov{x~t})~t~\br{\return~e}) \in \ov{D}}
-            {\mbody(\black{t_V}.m) = (x:\black{t_V},\ov{x:t}).e}
-        }
 
         \inferrule
         {(\func~(x~t_A) ~m(x_1~\kw{int},~x_2~t) ~t_A~
@@ -18,12 +22,13 @@
         {\isarraysetmethod(t_A.m)}
     \end{mathpar}
     \caption{FG auxiliary functions for reduction with arrays}
+    \label{fig:fg-reduction-aux}
 \end{figure}
 
 
 \begin{figure}
     \begin{center}
-        Value \qquad $v$ ::= $t_S\br{\ov{v}} \mid t_A\br{\ov{v}} \mid n$
+        Value \qquad $v$ ::= $t_V\br{\ov{v}} \mid n$
     \end{center}
 
     \begin{center}
@@ -86,4 +91,5 @@
 
     \end{mathpar}
     \caption{FG reduction with arrays}
+    \label{fig:fg-reduction}
 \end{figure}

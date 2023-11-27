@@ -129,6 +129,63 @@ subexpression).
 
 \subsection{FG Reduction}
 
+Figure \ref{fig:fg-reduction} describes the small-step operational semantics of
+FG, with auxiliary functions defined in figure \ref{fig:fg-reduction-aux}. A
+value is a term that cannot be reduced further, i.e. is the final result of
+computation. In FG, a value is either an integer literal, or a value literal
+(struct or array), whose elements are all values themselves. An expression $d$
+reduces to expression $e$ in a single step (denoted as $d \to e$), if one of the
+reduction rule templates can be instantiated with the metaexpression $d \to e$
+by pattern matching.
+
+The auxiliary function $\fields$ looks up the struct type name given as an
+argument in the sequence of declarations, and returns the sequence of fields in
+the definition of the struct type. The rule R-Field says that a select
+expression on a struct literal \emph{value} evaluates to the field value
+corresponding to the same position in the struct literal as the field name is in
+the struct type declaration.
+
+The auxiliary function $\indexbounds$ returns a set of valid index indices of an
+array type, i.e. the set of indices that are within bounds of the array. The
+rule R-Index says an array index expression on an array literal \emph{value}
+with an integer literal $n$ as the index reduces to the element of the array at
+index $n$, if and only if $n$ is within bounds of the array.
+
+The auxiliary function $\mbody$ looks up the method declaration given by the
+type name and method name, and returns the expression in the body of that method
+with a template for the receiver and parameters. The rule R-Call says that a
+method call expression where the receiver is a value and the arguments are also
+values, reduces to the $\mbody$ of the method, with the actual parameters
+(receiver and arguments) substituted for the formal parameters in the $\mbody$
+template.
+
+The auxiliary predicate $\isarraysetmethod$ returns true if and only if the
+method given by the type name and method name exists in the sequence of
+declarations and is syntactically an array set method, as defined in figure
+\ref{fig:fg-syntax}. The rule R-Array-Set says that given a method call
+expression, where the receiver is an array literal value, the first argument is
+an integer literal, and the second argument is a value, evaluates to an array
+value literal, with the same elements but for the $n$\textsuperscript{th} index
+which is replaced with the value in the second argument of the method call. This
+rule can be applied if and only of the method in question is an array set method
+and the integer literal $n$ is within bounds of the array.
+
+Apart from the 4 computation rules described above, there is also a congruence
+rule defined in terms of evaluation contexts, which says that if $d$ evaluates
+to $e$, then $d$ in the context of $E$ evaluates to $e$ in the same context $E$.
+The evaluation context defines the order of evaluation \autocite{evalContexts},
+when there are multiple subexpressions in a single expression, and where at
+least one of the subexpressions is not a value.
+
+By the evaluation context rules, a method call must first reduce its receiver to
+a value, and subsequently reduce its arguments to values, one by one. A value
+literal has its elements reduced to values, one by one. A select expression must
+first reduce its receiver to a value. An array index must first reduce its
+receiver to an array literal value, then its index expression to a value.
+
+% TODO explicitly capture panicking in reduction rules, in case indexBounds is
+% violated
+
 \input{../../projects/go-generic-array-sizes/theory/fg-reduction}
 
 \subsection{FG Typing}
