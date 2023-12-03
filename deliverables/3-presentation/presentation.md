@@ -21,7 +21,7 @@ How various languages treat arrays
 ## Problem: Size of an array in Go is part of its type
 
 <!-- TODO insert oh-no gopher  -->
-
+<br>
 
 ```go
 func reversed(arr [5]int) [5]int {
