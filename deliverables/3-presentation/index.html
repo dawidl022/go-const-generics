@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<title>reveal.js</title>
+	<title>Generically sized arrays in Go</title>
 
 	<link rel="stylesheet" href="dist/reset.css">
 	<link rel="stylesheet" href="dist/reveal.css">
@@ -13,13 +13,26 @@
 
 	<!-- Theme used for syntax highlighted code -->
 	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+
+	<style>
+		.flex-container {
+			display: flex;
+			gap: 2rem;
+			background-color: #262829;
+			padding: 1rem;
+
+			.flex-item {
+				flex: 1;
+				font-size: 2rem;
+			}
+		}
+	</style>
 </head>
 
 <body>
 	<div class="reveal">
 		<div class="slides">
-			<section>Slide 1</section>
-			<section>Slide 2</section>
+			<section data-markdown="presentation.md"></section>
 		</div>
 	</div>
 
@@ -27,6 +40,7 @@
 	<script src="plugin/notes/notes.js"></script>
 	<script src="plugin/markdown/markdown.js"></script>
 	<script src="plugin/highlight/highlight.js"></script>
+	<script src="plugin/math/math.js"></script>
 	<script>
 		// More info about initialization & config:
 		// - https://revealjs.com/initialization/
@@ -35,7 +49,7 @@
 			hash: true,
 
 			// Learn about plugins: https://revealjs.com/plugins/
-			plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
 		});
 	</script>
 </body>
