@@ -22,7 +22,6 @@ How various languages treat arrays
 
 <!-- TODO insert oh-no gopher  -->
 
-<!-- TODO insert code snippet with hard-coded array sizes -->
 
 ```go
 func reversed(arr [5]int) [5]int {
@@ -81,7 +80,6 @@ struct ArrayPair<T, const N: usize> {
 
 (The const generics project group, 2021)
 
-<!-- TODO insert rust snippet -->
 
 <!-- TODO insert rustling -->
 
@@ -91,12 +89,7 @@ struct ArrayPair<T, const N: usize> {
 
 Syntax, reduction and typing rules for Featherweight Go with arrays
 
-<!-- TODO include snippet of a single rule for each of the 3 types -->
-
-
 <div class="flex-container">
-
-
 <div class="flex-item">
 
 Syntax

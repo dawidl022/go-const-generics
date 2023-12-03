@@ -2,56 +2,41 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<title>Generically sized arrays in Go</title>
+  <title>Generically sized arrays in Go</title>
 
-	<link rel="stylesheet" href="dist/reset.css">
-	<link rel="stylesheet" href="dist/reveal.css">
-	<link rel="stylesheet" href="dist/theme/black.css">
+  <link rel="stylesheet" href="/node_modules/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css">
+  <link rel="stylesheet" href="/node_modules/reveal.js/dist/theme/black.css">
 
-	<!-- Theme used for syntax highlighted code -->
-	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+  <!-- Theme used for syntax highlighted code -->
+  <link rel="stylesheet" href="/node_modules/reveal.js/plugin/highlight/monokai.css">
 
-	<style>
-		.flex-container {
-			display: flex;
-			gap: 2rem;
-			background-color: #262829;
-			padding: 1rem;
+  <style>
+    .flex-container {
+      display: flex;
+      gap: 2rem;
+      background-color: #262829;
+      padding: 1rem;
+    }
 
-			.flex-item {
-				flex: 1;
-				font-size: 2rem;
-			}
-		}
-	</style>
+    .flex-item {
+      flex: 1;
+      font-size: 2rem;
+    }
+  </style>
 </head>
 
 <body>
-	<div class="reveal">
-		<div class="slides">
-			<section data-markdown="presentation.md"></section>
-		</div>
-	</div>
+  <div class="reveal">
+    <div class="slides">
+      <section data-markdown="presentation.md"></section>
+    </div>
+  </div>
 
-	<script src="dist/reveal.js"></script>
-	<script src="plugin/notes/notes.js"></script>
-	<script src="plugin/markdown/markdown.js"></script>
-	<script src="plugin/highlight/highlight.js"></script>
-	<script src="plugin/math/math.js"></script>
-	<script>
-		// More info about initialization & config:
-		// - https://revealjs.com/initialization/
-		// - https://revealjs.com/config/
-		Reveal.initialize({
-			hash: true,
-
-			// Learn about plugins: https://revealjs.com/plugins/
-			plugins: [RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX]
-		});
-	</script>
+  <script type="module" src="/main.js"></script>
 </body>
 
 </html>
