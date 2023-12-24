@@ -67,3 +67,11 @@ func TestTypeCheck_givenInterfaceDeclarationWithDuplicateMethodNames_returnsErro
 	assertFailsTypeCheckWithError(t, declarationDuplicateInterfaceMethodNamesGo,
 		`ill-typed declaration: type "xGetter": method name redeclared "getX"`)
 }
+
+//go:embed testdata/type_declaration/duplicate_interface_methods/duplicate_interface_methods.go
+var declarationDuplicateInterfaceMethods []byte
+
+func TestTypeCheck_givenInterfaceDeclarationWithDuplicateMethods_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationDuplicateInterfaceMethods,
+		`ill-typed declaration: type "xGetter": method name redeclared "getX"`)
+}

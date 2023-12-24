@@ -1,12 +1,12 @@
-\section{Featherweight Go}
+\section{Featherweight Go with Arrays}
 
 \emph{Featherweight Go} is a small, functional, Turing-complete subset of the Go
 programming language, introduced by \citeauthor{fg} for the purpose of showing
 how generics can be added to the language (\citeyear{fg}). This section will
-extend \emph{Featherweight Go} with arrays, as found in Go. In a similar
+extend \emph{Featherweight Go} with arrays (FGA), as found in Go. In a similar
 fashion, only a subset of array features are included to keep things manageable.
-In particular, slices are excluded. Since FG is a subset of Go, many constructs
-and syntax that are allowed in Go, are disallowed in FG to keep the rules
+In particular, slices are excluded. Since FGA is a subset of Go, many constructs
+and syntax that are allowed in Go, are disallowed in FGA to keep the rules
 simpler.
 
 A couple of notes on formal notation: a bar above a term or group of terms
@@ -23,9 +23,9 @@ directly from the original \emph{Featherweight Go} \autocite{fg} without any
 modification. The rules (or rule fragments) in black show the changes introduced
 when extending the rules to include arrays.
 
-\subsection{FG Syntax}
+\subsection{FGA Syntax}
 
-An FG program is defined in a single file. The program starts with the package
+An FGA program is defined in a single file. The program starts with the package
 name, and since we limit the language to a single file, the package must be
 named $\main$, allowing the program to be compiled into an executable in regular
 Go. It is then followed by a sequence of 0 or more declarations, and finally the
@@ -40,9 +40,9 @@ declaration. The latter is subdivided further into a regular method declaration
 and an ``array set'' method declaration. The reason for having a special
 syntactical form for methods that set a particular element of an array (more
 precisely of a copy of an array, due to the value semantics of arrays), is that
-FG is a functional subset of Go, and does not support variable assignment in the
-general sense. By encapsulating the operation of creating an array copy with a
-certain element taking on a new value, FG is able to maintain its functional
+FGA is a functional subset of Go, and does not support variable assignment in
+the general sense. By encapsulating the operation of creating an array copy with
+a certain element taking on a new value, FGA is able to maintain its functional
 property. It also makes the rules simpler since there is no need to introduce
 general assignment, yet the ``array set'' syntax is fully compatible with Go and
 will behave as expected.
@@ -51,9 +51,9 @@ A type declaration is defined as the keyword \type, followed by a declared type
 name, followed by a type literal. A ``declared'' type name can be any identifier
 as defined by \autocite{spec}, except for the predeclared \kw{int}. In Go, it is
 actually legal to redefine predeclared type names, such as the built-in
-\kw{int}, however to keep things simple FG does not permit this. That is to say,
-the only predeclared type name in FG is \kw{int}, for values of integer type.
-No other primitive types (e.g. \kw{bool} or \kw{string}) are defined in FG.
+\kw{int}, however to keep things simple FGA does not permit this. That is to say,
+the only predeclared type name in FGA is \kw{int}, for values of integer type.
+No other primitive types (e.g. \kw{bool} or \kw{string}) are defined in FGA.
 
 A type literal can be one of 3 things: a struct literal, an interface literal,
 or an array literal. A struct type literal consists of the keyword \struct,
@@ -88,7 +88,7 @@ either a struct type literal, or an array type literal. The method body consists
 of the keyword \return, followed by an expression, all enclosed within curly
 braces.
 
-An array set method declaration is a special syntactical term in FG, which is a
+An array set method declaration is a special syntactical term in FGA, which is a
 valid method in Go. The receiver type refers to a declared array type name,
 which is a type name defined in terms of an array literal. The method can have
 any name (identifier), and its parameters can be any identifier as long as all
@@ -110,7 +110,7 @@ expression.
 
 Finally, expressions may take on a number of forms. The most basic expressions
 are integer literals (e.g. 0, 1, 2, 10, -1 etc.). Variables, which in the
-context of FG happen to be parameter names, are also basic expressions.
+context of FGA happen to be parameter names, are also basic expressions.
 
 Complex expressions may involve 0 or more subexpressions. The first kind are
 method calls, which are recursively defined as an expression, followed by a dot,
@@ -127,12 +127,12 @@ subexpression).
 
 \input{../../projects/go-generic-array-sizes/theory/fg-syntax}
 
-\subsection{FG Reduction}
+\subsection{FGA Reduction}
 
 Figure \ref{fig:fg-reduction} describes the small-step operational semantics of
-FG, with auxiliary functions defined in figure \ref{fig:fg-reduction-aux}. A
+FGA, with auxiliary functions defined in figure \ref{fig:fg-reduction-aux}. A
 value is a term that cannot be reduced further, i.e. is the final result of
-computation. In FG, a value is either an integer literal, or a value literal
+computation. In FGA, a value is either an integer literal, or a value literal
 (struct or array), whose elements are all values themselves. An expression $d$
 reduces to expression $e$ in a single step (denoted as $d \to e$), if one of the
 reduction rule templates can be instantiated with the metaexpression $d \to e$
@@ -155,9 +155,9 @@ The auxiliary function $\mbody$ looks up the method declaration given by the
 type name and method name, and returns the expression in the body of that method
 with a template for the receiver and parameters. The rule R-Call says that a
 method call expression where the receiver is a value and the arguments are also
-values, reduces to the $\mbody$ of the method, with the actual parameters
-(receiver and arguments) substituted for the formal parameters in the $\mbody$
-template.
+values, reduces to the $\mbody$ of the method defined on the $\vtype$ of the
+receiver, with the actual parameters (receiver and arguments) substituted for
+the formal parameters in the $\mbody$ template.
 
 The auxiliary predicate $\isarraysetmethod$ returns true if and only if the
 method given by the type name and method name exists in the sequence of
@@ -191,7 +191,94 @@ be found in \hyperref[sec:fg-derivation-example]{the appendix}.
 
 \input{../../projects/go-generic-array-sizes/theory/fg-reduction}
 
-\subsection{FG Typing}
+\subsection{FGA Typing}
+
+Figures \ref{fig:fg-typing-1} and \ref{fig:fg-typing-2} describe the typing
+rules in FGA, with auxiliary functions defined in figure
+\ref{fig:fg-typing-aux}. A term is considered well-typed (or well-formed) when
+there exists a typing rule that the term can pattern match against, followed by
+the \emph{ok} symbol. The $\imp$ symbol denotes a subtyping or ``implements''
+relation between two types. The metaexpression $\Gamma \vdash e : t$ denotes a
+3-tuple relation where an expression $e$ is of type $t$ in the environment
+$\Gamma$, which maps variables $x$ to types $t$.
+
+The first set of rules define the subtyping relation between types. A type is
+said to be a subtype of another type in FGA when it \emph{implements} the latter
+type. Any type implements itself (rules $\imp_V$ $\imp_{int}$, $\imp_n$, and
+implicitly $\imp_I$). The $\methods$ helper function returns the set of method
+specifications (referred later as a ``method set'') defined on a given type
+(including array set methods). A type implements an interface if the type's
+method set is a superset of the interface's method set. By this definition,
+interfaces can also implement other interfaces (and themselves).
+
+A type, identified by its name, is considered well-formed, when it's either the
+predeclared \kw{int} type (rule T-Int-Type), or it is the type name of one of
+the type declarations in the program (rule T-Named).
+
+A method specification is considered well typed if the parameter names are
+distinct (i.e. each parameter name is different) and the parameter and return
+types are themselves well-typed (rule T-Specification).
+
+A struct type literal is well-formed if all of its fields are distinct and the
+field types are themselves well-formed (rule T-Struct). An interface type literal is well-formed
+if all of its methods specifications are unique (i.e. each method specified in
+the interface has a different name) and well-formed (rule T-Interface). An array type literal is
+well-formed if the integer literal defining the size of the array is greater
+than or equal to zero, and the array element type if well-formed (rule T-Array).
+
+A type declaration is well-formed, if its type literal is well-formed (rule
+T-Type). A method declaration is well-formed if the parameters (including the
+receiver) are distinct, the receiver, parameter and return types are well-formed
+and the method expression's type is a subtype of the return type under the
+environment formed from the method parameters (and receiver) (rule T-Func). An
+array set method is well-formed if the 2nd parameter's type is a subtype of the
+receiver type's element type, and the receiver type is itself a well-formed
+array type (rule T-Func-Arrayset).
+
+The rule T-Var formally defines what it means for a variable $x$ to be of type
+$t$ under the environment $\Gamma$, i.e. when the pair $x : t$ is in $\Gamma$. A
+method call expression is well-formed and of the type $u$ being the method
+specification's return type, when the receiver expression is well-typed and has
+a method named $m$ in the method set of its type. In addition, all the argument
+expressions must be well-typed, and be subtypes of the formal parameter types
+(rule T-Call). A struct literal expression is well-formed and of the struct type
+that was instantiated, if the struct type is well-formed, and each element's
+type of the struct literal is a subtype of the corresponding field types in the
+struct type declaration (rule T-Struct-Literal). A field select expression is
+well-typed if the receiver is a well-typed and of struct type. The expression is
+of the same type as the field corresponding to the selected field name in the
+struct type declaration (rule T-Field). An array literal expression is
+well-formed and of the array type that was instantiated, if the array type is
+well-formed, the number of elements matches the size of the array (note that
+unlike in Go, zero values are not defined in FGA, as such, all elements of an
+array must be explicitly instantiated upfront), and all elements' types are
+subtypes of the array's element type (rule T-Array-Literal).
+
+For reasons that will be discussed when type parameters are introduced, integer
+literals are of their own types, e.g. the expression $1$ is of type $1$ (rule
+T-Int-Literal). Integer literal types are subtypes of the \kw{int} type, e.g. $1
+    \imp \kw{int}$ (rule $\imp_{int-n}$). Go does not make such a distinction (i.e.
+each integer literal being its own type), however, integer literals (constants)
+in Go may be ``untyped'', which can be used as subtypes of other numerical types
+(e.g. \kw{int}, \kw{byte}, \kw{int16} etc.). In FGA, integer literals are
+treated similarly to untyped integer constants in Go \autocite{spec}.
+
+Because of the distinction between constant (literal) and non-constant integers
+types, there are two typing rules for an array index expression. In both cases,
+the array expression must be well-typed and of an array type, and the array
+index expression's type is of the element type of the array. When the index
+expression is of the non-constant \kw{int} type, no other checks are performed
+(statically) (rule T-Array-Index). However, when the index expression is of an
+integer literal type, an index bounds check is also statically performed via the
+type system (rule T-Array-Index-Literal).
+
+Finally, a program is well-typed when all the type declarations names are
+distinct (and do not coincide with the predeclared \kw{int} type name). The
+auxiliary function $\tdecls$ returns all type names declared in the program. The
+method declarations must also be distinct, in the sense that no two methods on
+the same type may have the same name. The auxiliary function $\mdecls$ returns
+all pairs of $t_V.m$ (receiver type + method name) declared in the program. All
+declarations along with main expression must also be well-formed (rule T-Prog).
 
 \input{../../projects/go-generic-array-sizes/theory/fg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fg-typing}

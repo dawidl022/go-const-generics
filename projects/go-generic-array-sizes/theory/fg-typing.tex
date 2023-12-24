@@ -3,24 +3,24 @@
     \hfill \fbox{$t \imp u$} \qquad \fbox{$t \ok$}
     \begin{mathpar}
 
-        \inferrule[<:$_V$]
+        \inferrule[$\imp_V$]
         {~}
-        {t_V <: t_V}
+        {t_V \imp t_V}
 
-        \inferrule[<:$_{int}$]
+        \inferrule[$\imp_{int}$]
         {~}
-        {\kw{int} <: \kw{int}}
+        {\kw{int} \imp \kw{int}}
 
-        \inferrule[<:$_{n}$]
+        \inferrule[$\imp_{n}$]
         {~}
-        {n <: n}
+        {n \imp n}
 
-        \inferrule[<:int-n]
+        \inferrule[$\imp_{int-n}$]
         {~}
         { n \imp \kw{int} }
 
         \gray{
-            \inferrule[<:$_I$]
+            \inferrule[$\imp_I$]
             {
                 \methods(t) \supseteq \methods(t_I)
             }
@@ -114,6 +114,7 @@
     \end{mathpar}
 
     \caption{FG typing with arrays (1 of 2)}
+    \label{fig:fg-typing-1}
 \end{figure}
 
 \begin{figure}
@@ -202,4 +203,5 @@
     \end{mathpar}
 
     \caption{FG typing with arrays (2 of 2)}
+    \label{fig:fg-typing-2}
 \end{figure}

@@ -34,11 +34,17 @@
             \inferrule
             {\type~t_I~\interface\br{\ov{S}} \in \ov{D}}
             {\methods(t_I) = \ov{S}}
-
-            \inferrule
-            {\text{$mM_1, mM_2 \in \ov{S}$ implies $M_1 = M_2$}}
-            {\unique(\ov{S})}
         }
+
+        \inferrule
+        {\distinct(\ov{m})}
+        {\unique(\ov{mM})}
+
+        \inferrule
+        {a_i \neq a_j~\forall a_i, a_j \in \ov{a},~i \neq j}
+        {\distinct(\ov{a})}
+
+        % TODO update unique and distinct rules in FGG aux
 
         \gray{
             \inferrule
@@ -52,4 +58,5 @@
         }
     \end{mathpar}
     \caption{FG auxiliary functions for typing with arrays}
+    \label{fig:fg-typing-aux}
 \end{figure}
