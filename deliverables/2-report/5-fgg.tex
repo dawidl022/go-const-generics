@@ -1,6 +1,53 @@
-\section{Featherweight Generic Go}
+\section{Featherweight Generic Go with Arrays}
 
-\subsection{FGG Syntax}
+\emph{Featherweight Generic Go} (FGG) is an extension to \emph{Featherweight Go}
+that introduces generics via type parameters, formalised in \autocite{fg}. This
+sections adapts FGG with the syntax and restrictions introduced in the Type
+Parameters Proposal and ultimately implemented in Go v1.18
+\autocite{genericsProposal}, and extends it with arrays and numerical type
+parameters that can be used to create generic array types, referred to as FGGA
+going forwards.
+
+Rules or rule fragments that remain unchanged from FGA are shown in gray,
+whereas new rules or rule modifications are shown in black.
+
+\subsection{FGGA Syntax}
+
+Syntactically, a type is now one of 4 things --- it is either a type parameter,
+which is just an identifier, an integer literal, the keyword $\const$ (which
+cannot be used as a regular type in user programs) or a named type. Named types
+are defined in terms of type names from FGA, with the addition of a sequence of
+zero or more type arguments enclosed in square brackets, following the type
+name. The type arguments are themselves types. While it's not explicitly stated
+in figure \ref{fig:fgg-syntax}, when there are no type arguments, the square
+brackets \emph{must} be omitted, to ensure compatibility with Go. The
+consequence of this, is that syntactically, there is no way to differentiate
+between a type parameter, and a named type with no type arguments. A value type
+is a named type whose base type name (i.e. outermost type name) is a value type
+name. The situation is analogous for interface types. An interface-like type is
+either an interface type or a type parameter, which are used for interface-like
+type assertions. An integer-like type is either an integer literal, or a type
+parameter, and can be used as the size of an array type literal. A bound is used
+to restrict the set of type arguments that can be used in place of a type
+parameter. A type parameter constraint $\Phi$ is used to define a type parameter
+along with its constraint (bound).
+
+Method signatures, struct type literals, array type literals and value literals
+are updated to used types in the place of type names. Type declarations now have
+a sequence of type parameter constraints following the type name, that are
+required when instantiating the type. Similarly to type arguments, a type with
+no type parameters \emph{must} omit the square brackets.
+
+Unlike in FGG, method receivers are invariant, as such, there is no need to
+repeat the type parameter constraints on the receiver type parameters. Instead,
+a simple type parameter sequence is used. In Go, these type parameters can be
+named differently to type parameters in the type declaration, since the order of
+the parameters is sufficient to identify them, however, to keep the rules
+simpler, in FGGA the type parameter names must match exactly with the ones
+specified in the type declaration. Another feature omitted from the current
+implementation of generics in Go, but present in FGG, are method-specific type
+parameters. In order to be compatible with the current implementation, these
+constructs are also omitted from FGGA.
 
 \input{../../projects/go-generic-array-sizes/theory/fgg-syntax}
 
