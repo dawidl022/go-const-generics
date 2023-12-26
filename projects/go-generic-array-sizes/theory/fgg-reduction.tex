@@ -37,7 +37,7 @@
 
 \begin{figure}
     \begin{center}
-        Value \qquad $v$ ::= $\tau_S\br{\ov{v}} \mid \tau_A\br{\ov{v}} \mid n$
+        \gray{Value \qquad $v$ ::= $\black{\tau_V}\br{\ov{v}} \mid n$}
     \end{center}
 
     \begin{center}
@@ -52,11 +52,11 @@
             \end{minipage}
             \begin{minipage}{0.4\textwidth}
                 \begin{tabular}{ll}
-                    ~                                                                         \\
-                    \quad Value literal          & \quad $\black{\tau_V}\br{\ov{v},E,\ov{e}}$ \\
-                    \quad Select                 & \quad $E.f$                                \\
-                    \quad \black{Index receiver} & \quad \black{$E[e]$}                       \\
-                    \quad \black{Index argument} & \quad \black{$\tau_A\br{\ov{v}}[E]$}
+                    ~                                                                 \\
+                    \quad Value literal  & \quad $\black{\tau_V}\br{\ov{v},E,\ov{e}}$ \\
+                    \quad Select         & \quad $E.f$                                \\
+                    \quad Index receiver & \quad $E[e]$                               \\
+                    \quad Index argument & \quad $\black{\tau_A}\br{\ov{v}}[E]$
                 \end{tabular}
             \end{minipage}
         }
@@ -67,32 +67,30 @@
 
         \gray{
             \inferrule[r-field]
-            { (\ov{f~t}) = \fields(\tau_S) }
-            { \tau_S\br{\ov{v}}.f_i \becomes v_i }
-        }
+            { (\ov{f~\black{\tau}}) = \fields(\black{\tau_S}) }
+            { \black{\tau_S}\br{\ov{v}}.f_i \becomes v_i }
 
-        \inferrule[r-index]
-        {
-            n \in \indexbounds(\tau_A)
-        }
-        { \tau_A\br{\ov{v}}[n] \becomes v_n }
+            \inferrule[r-index]
+            {
+                n \in \indexbounds(\black{\tau_A})
+            }
+            { \black{\tau_A}\br{\ov{v}}[n] \becomes v_n }
 
-        \gray{
             \inferrule[r-call]
-            { (x : \black{t_V},\ov{x: t}).e = \mbody(\vtype(v).m) }
+            { (x : \black{\tau_V},\ov{x: \black{\tau}}).e = \mbody(\vtype(v).m) }
             { v.m(\ov{v}) \becomes e[x \by v, \ov{x \by v}] }
         }
 
-        % potential ambiguity with regular r-call?
-        % no, because isarraysetmethod(t_A.m) and body(t_A.m) are mutually exclusive
-        \inferrule[r-array-set]
-        {
-            n \in \indexbounds(\tau_A) \\
-            \isarraysetmethod(\tau_A.m) \\
-        }
-        { \tau_A\br{\ov{v}}.m(n, v) \becomes \tau_A\br{\ov{v}}[n := v]}
-
         \gray{
+            % potential ambiguity with regular r-call?
+            % no, because isarraysetmethod(t_A.m) and body(t_A.m) are mutually exclusive
+            \inferrule[r-array-set]
+            {
+                n \in \indexbounds(\black{\tau_A}) \\
+                \isarraysetmethod(\black{\tau_A}.m) \\
+            }
+            { \black{\tau_A}\br{\ov{v}}.m(n, v) \becomes \black{\tau_A}\br{\ov{v}}[n := v]}
+
             \inferrule[r-context]
             { d \becomes e }
             { E[d] \becomes E[e] }

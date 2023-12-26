@@ -1,7 +1,3 @@
-\alias{AnyArrayTwo}{AnyArray2}
-\register{any}
-\register{this}
-\register{First}
 \register{Length}
 
 \begin{align*}
@@ -10,257 +6,262 @@
     D_2    & = \func (\this~\AnyArrayTwo)~\First()~\any~\br{ \return~\this[0] } \\
     D_3    & = \func (\this~\AnyArrayTwo)~\Length()~\kw{int}~\br{ \return~2 }   \\
     \ov{D} & = (D_0, D_1, D_2, D_3)                                             \\
+    % TODO potentially remove one of the programmes to avoid confusion
     e_1    & = \AnyArrayTwo\br{1, 2}.\First()                                   \\
     e_2    & = \AnyArrayTwo\br{1, 2}.\Length()                                  \\
     AA2    & = \AnyArrayTwo
 \end{align*}
 
-\ws
-
-\begin{prooftree}
-    \infer0[T-Interface]{
-        \interface\br{} \ok
-    }
-    \infer1[T-Type]{
+\begin{mathpar}
+    \derivrule[T-Type]{
+        \axiomrule[T-Interface]{
+            \interface\br{} \ok
+        }
+    }{
         D_0 \ok
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0{
-        2 \ge 0
-    }
-    \infer0{
-        D_0 \in \ov{D}
-    }
-    \infer1[T-Named]{
-        \any \ok
-    }
-    \infer2[T-Array]{
-        [2]\any \ok
-    }
-    \infer1[T-Type]{
+    \derivrule[T-Type]{
+        \derivrule[T-Array]{
+            \axiomrule{
+                2 \ge 0
+            }
+            \\
+            \derivrule[T-Named]{
+                \axiomrule{
+                    D_0 \in \ov{D}
+                }
+            }{
+                \any \ok
+            }
+        }{
+            [2]\any \ok
+        }
+    }{
         D_1 \ok
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0{
-        (\this : AA2) \in (\this : AA2)
+
+
+    \axiomrule{
+        \distinct(\this)
     }
-    \infer1[T-Var]{
+
+    \derivrule[T-Named]{
+        \axiomrule{
+            D_1 \in \ov{D}
+        }
+    }{
+        \AnyArrayTwo \ok
+    }
+
+    \derivrule[T-Named]{
+        \axiomrule{
+            D_0 \in \ov{D}
+        }
+    }{
+        \any \ok
+    }
+
+    \derivrule[T-Var]{
+        (\this : AA2) \in (\this : AA2)
+    }{
         \this : AA2 \vdash \this : AA2
     }
-    \infer0[T-Int-Literal]{
+
+    \axiomrule[T-Int-Literal]{
         \this : AA2 \vdash  0 : 0
     }
-    \infer0{
-        0 \le 0 < 2
-    }
-    \infer1{
+
+    \derivrule{
+        \axiomrule{
+            0 \le 0 < 2
+        }
+    }{
         0 \le 0 < \len(AA2)
     }
-    \infer0{
-        D_1 \in \ov{D}
-    }
-    \infer1{
+
+    \derivrule{
+        \axiomrule{
+            D_1 \in \ov{D}
+        }
+    }{
         \any = \elementtype(AA2)
     }
-    \infer4[T-Array-Index]{
+
+    \derivrule[T-Array-Index]{
+        \this : AA2 \vdash \this : AA2
+        \\
+        \this : AA2 \vdash  0 : 0
+        \\
+        0 \le 0 < \len(AA2)
+        \\
+        \any = \elementtype(AA2)
+    }{
         \this : AA2 \vdash \this[0] : \any
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0{
-        \methods(\any) \supseteq  \methods(\any)
-    }
-    \infer1[I]{
+
+    \derivrule[I]{
+        \axiomrule{
+            \methods(\any) \supseteq  \methods(\any)
+        }
+    }{
         \any \imp \any
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0{
+
+\end{mathpar}
+\begin{mathpar}
+
+    \derivrule[T-Func]{
         \distinct(\this)
-    }
-    \infer0{
-        D_1 \in \ov{D}
-    }
-    \infer1[T-Named]{
+        \\
         \AnyArrayTwo \ok
-    }
-    \infer0{
-        D_0 \in \ov{D}
-    }
-    \infer1[T-named]{
+        \\
         \any \ok
-    }
-    \hypo{
+        \\
         \this : \AnyArrayTwo \vdash \this[0] : \any
-    }
-    \hypo{
+        \\
         \any \imp \any
-    }
-    \infer5[T-Func]{
+    }{
         D_2 \ok
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0{
-        \distinct(\this)
-    }
-    \infer0{
-        D_1 \in \ov{D}
-    }
-    \infer1[T-Named]{
-        \AnyArrayTwo \ok
-    }
-    \infer0[T-Int-Type]{
+
+    \axiomrule[T-Int-Type]{
         \kw{int} \ok
     }
-    \infer0[T-Int-Literal]{
+
+    \axiomrule[T-Int-Literal]{
         \this : \AnyArrayTwo \vdash 2 : 2
     }
-    \infer0[Int-N]{
+
+    \axiomrule[Int-N]{
         2 \imp \kw{int}
     }
-    \infer5[T-Func]{
+
+    \derivrule[T-Func]{
+        \distinct(\this)
+        \\
+        \AnyArrayTwo \ok
+        \\
+        \kw{int} \ok
+        \\
+        \this : \AnyArrayTwo \vdash 2 : 2
+        \\
+        2 \imp \kw{int}
+    }{
         D_3 \ok
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0{
+
+    \derivrule[$\imp_I$]{
         \methods(1) \supseteq  \methods(\any)
-    }
-    \infer1[I]{
+    }{
         1 \imp \any
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0{
+
+    \derivrule[$\imp_I$]{
         \methods(2) \supseteq  \methods(\any)
-    }
-    \infer1[I]{
+    }{
         2 \imp \any
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0{
-        D_1 \in \ov{D}
+
+    \axiomrule[T-Int-Literal]{
+        \emptyset \vdash 1: 1
     }
-    \infer1[T-Named]{
+
+    \axiomrule[T-Int-Literal]{
+        \emptyset \vdash 2: 2
+    }
+
+    \derivrule[T-Array-Literal]{
         \AnyArrayTwo \ok
-    }
-    \infer0[T-Int-Literal]{
-        \emptyset \vdash 1: 1, 2: 2
-    }
-    \infer0{
-        D_1 \in \ov{D}
-    }
-    \infer1{
+        \\
+        \emptyset \vdash 1: 1
+        \\
+        \emptyset \vdash 2: 2
+        \\
         \any = \elementtype(\AnyArrayTwo)
-    }
-    \hypo{
+        \\
         1 \imp \any
-    }
-    \hypo{
+        \\
         2 \imp \any
-    }
-    \infer5[T-Array-Literal]{
+    }{
         \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \hypo{
-        \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
-    }
-    \infer0{
-        \methods(\AnyArrayTwo) = \{ (\First()~\any), (\Length()~\kw{int}) \}
-    }
-    \infer1{
+
+    \derivrule{
+        \axiomrule{
+            (\First()~\any) \in \{ (\First()~\any), (\Length()~\kw{int}) \}
+        }
+    }{
         (\First()~\any) \in \methods(\AnyArrayTwo)
     }
-    \infer2[T-Call]{
+
+    \derivrule[T-Call]{
+        \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
+        \\
+        (\First()~\any) \in \methods(\AnyArrayTwo)
+    }{
         \emptyset \vdash e_1 : \any
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0{
-        \distinct(\tdecls(\ov{D}), \kw{int})
-    }
-    \infer0{
-        \distinct(\mdecls(\ov{D}))
-    }
-    \hypo{
+
+    \derivrule{
         D_0 \ok
-    }
-    \hypo{
+        \\
         D_1 \ok
-    }
-    \hypo{
+        \\
         D_2 \ok
-    }
-    \hypo{
+        \\
         D_3 \ok
-    }
-    \infer4{
+    }{
         \ov{D \ok}
     }
-    \hypo{
-        \emptyset \vdash e_1 : \any
-    }
-    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_1} \ok }
-\end{prooftree}
 
-\wss
-\begin{prooftree}
-    \hypo{
-        \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
+    \derivrule[T-Prog]{
+        \axiomrule{
+            \distinct(\tdecls(\ov{D}), \kw{int})
+        }
+        \\
+        \axiomrule{
+            \distinct(\mdecls(\ov{D}))
+        }
+        \\
+        \ov{D \ok}
+        \\
+        \emptyset \vdash e_1 : \any
+    }{
+        \package~\main;~\ov{D}~\func~\main()~\br{\un=e_1} \ok
     }
-    \infer0{
-        \methods(\AnyArrayTwo) = \{ (\First()~\any), (\Length()~\kw{int}) \}
-    }
-    \infer1{
+
+    \derivrule{
+        \axiomrule{
+            (\Length()~\kw{int}) \in \{ (\First()~\any), (\Length()~\kw{int}) \}
+        }
+    }{
         (\Length()~\kw{int}) \in \methods(\AnyArrayTwo)
     }
-    \infer2[T-Call]{
-        \emptyset \vdash e_2 : \kw{int}
-    }
-\end{prooftree}
+\end{mathpar}
 
-\wss
-\begin{prooftree}
-    \infer0{
-        \distinct(\tdecls(\ov{D}))
-    }
-    \infer0{
-        \distinct(\mdecls(\ov{D}))
-    }
-    \hypo{
-        D_0 \ok
-    }
-    \hypo{
-        D_1 \ok
-    }
-    \hypo{
-        D_2 \ok
-    }
-    \hypo{
-        D_3 \ok
-    }
-    \infer4{
-        \ov{D \ok}
-    }
-    \hypo{
+\begin{mathpar}
+    \derivrule[T-Call]{
+        \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
+        \\
+        (\Length()~\kw{int}) \in \methods(\AnyArrayTwo)
+    }{
         \emptyset \vdash e_2 : \kw{int}
     }
-    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_2} \ok }
-\end{prooftree}
+
+    \derivrule[T-Prog]{
+        \axiomrule{
+            \distinct(\tdecls(\ov{D}))
+        }
+        \\
+        \axiomrule{
+            \distinct(\mdecls(\ov{D}))
+        }
+        \\
+        \ov{D \ok}
+        \\
+        \emptyset \vdash e_2 : \kw{int}
+    }{
+        \package~\main;~\ov{D}~\func~\main()~\br{\un=e_2} \ok
+    }
+\end{mathpar}

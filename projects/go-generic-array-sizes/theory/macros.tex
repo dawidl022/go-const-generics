@@ -57,6 +57,16 @@
 \newcommand{\bodies}{\meta{bodies}}
 \newcommand{\fix}{\kw{fix}}
 \newcommand{\lam}[1]{\lambda #1.\,}
+\newcommand{\derivrule}[3][]{
+    \inferrule*[right=#1]
+    {#2}
+    {#3}
+}
+\newcommand{\axiomrule}[2][]{
+    \inferrule*[right=#1]
+    {~}
+    {#2}
+}
 
 \newcommand{\register}[1]{
     \expandafter\newcommand\csname #1\endcsname{
@@ -80,9 +90,4 @@
     % create some whitespace
     \begin{equation*}
     \end{equation*}
-}
-
-\newcommand{\wss}{
-    \ws
-    \ws
 }

@@ -19,9 +19,6 @@
         D_0 \ok
     }
 
-\end{mathpar}
-\begin{mathpar}
-
     \derivrule[T-Formal]{
         \axiomrule{\distinct(\NParam, \TParam)} \\
         \axiomrule[T-Const]{\ov{\Phi} \vdash \const \ok} \\
@@ -104,6 +101,9 @@
         \ov{\Phi} = \typeparams(\Array)
     }
 
+\end{mathpar}
+\begin{mathpar}
+
     \derivrule{
         \eta_0 = (\NParam \by \NParam, \TParam \by \TParam)
     }{
@@ -155,9 +155,6 @@
     \axiomrule{
         \neg \isconst_{\ov{\Phi}}(T)
     }
-
-\end{mathpar}
-\begin{mathpar}
 
     \derivrule[T-Func]{
         \distinct(\this)                                                           \\
@@ -231,6 +228,11 @@
     {
         \emptyset \vdash \Array[2, \kw{int}] \ok
     }
+
+
+\end{mathpar}
+\begin{mathpar}
+
 
     \derivrule
     {

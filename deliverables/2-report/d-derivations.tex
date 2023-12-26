@@ -3,4 +3,33 @@
 \subsection{Featherweight Go with Arrays reduction}
 \label{sec:fg-derivation-example}
 
+Below are derivation trees reducing an example FGA expression down to a value.
+Each reduction step in the example program has its own derivation tree.
+
 \input{../../projects/go-generic-array-sizes/theory/hello-reduction-derivation}
+
+\subsection{Featherweight Go with Arrays type checking}
+\label{sec:fg-typing-derivation-example}
+
+Below are derivation trees type checking two simple FGA programs, using a common set
+of declarations. Since each type checking derivation tree would be too large to
+fit on a single page, the trees have been split into multiple smaller subtrees.
+
+\input{../../projects/go-generic-array-sizes/theory/hello-derivation}
+
+\subsection{Featherweight Generic Go with Arrays reduction}
+\label{sec:fgg-derivation-example}
+
+Below are derivation trees reducing an example FGGA expression down to a value.
+
+\input{../../projects/go-generic-array-sizes/theory/hello-generic-reduction-derivation}
+
+\subsection{Featherweight Generic Go with Arrays type checking}
+\label{sec:fgg-typing-derivation-example}
+
+Below is a derivation tree type checking a simple FGGA program.
+
+% TODO consider type checking second program, or removing e2 from the list of
+% expressions
+
+\input{../../projects/go-generic-array-sizes/theory/hello-generic-derivation}

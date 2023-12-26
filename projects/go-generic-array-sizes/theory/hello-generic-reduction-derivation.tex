@@ -1,25 +1,7 @@
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{ebproof}
-\usepackage[left=0.5cm, right=0.5cm]{geometry}
-
-\begin{document}
-
-\include{macros}
-
-\alias{AnyArrayTwo}{AnyArray2}
-\register{any}
-\register{this}
-\register{First}
-\register{Set}
-\aliasparam{i}
-\aliasparam{v}
 \aliasparam{N}
 \aliasparam{T}
 \register{Array}
 \register{Get}
-\register{Length}
 
 \begin{align*}
     D_0    & = \type~\any~\interface\br{}                                                                       \\
@@ -63,7 +45,7 @@
     }
 \end{prooftree}
 
-\wss
+\ws
 
 \begin{prooftree}
     \infer0{
@@ -79,7 +61,7 @@
     }
 \end{prooftree}
 
-\wss
+\ws
 
 \begin{prooftree}
     \infer0{
@@ -97,5 +79,3 @@
         3
     }
 \end{prooftree}
-
-\end{document}
