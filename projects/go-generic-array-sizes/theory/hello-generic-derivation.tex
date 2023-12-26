@@ -1,22 +1,3 @@
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{ebproof}
-\usepackage[left=0.5cm, right=0.5cm]{geometry}
-
-\begin{document}
-
-\include{macros}
-
-\aliasparam{N}
-\aliasparam{T}
-\register{Array}
-\register{any}
-\register{this}
-\register{Get}
-\aliasparam{i}
-\register{Length}
-
 \begin{align*}
     D_0       & = \type~\any~\interface\br{}                                                                       \\
     D_1       & = \type~\Array[\NParam~\const, \TParam~\any]~[\NParam]\TParam                                      \\
@@ -27,366 +8,323 @@
     \ov{\Phi} & = (\NParam~\const,\TParam~\any)
 \end{align*}
 
-\ws
 
+\begin{mathpar}
 
-\begin{prooftree}
-    \infer0[T-Interface]{
-        \interface\br{} \ok
-    }
-    \infer1[T-Type]{
+    \derivrule[T-Type]{
+        \axiomrule[T-Interface]{
+            \interface\br{} \ok
+        }
+    }{
         D_0 \ok
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0{\distinct(\NParam, \TParam)}
-    \infer0[T-Const]{\ov{\Phi} \vdash \const \ok}
-    \infer0{D_0 \in \ov{D}}
-    \infer1[T-Named]{\ov{\Phi} \vdash \any \ok}
-    \infer3[T-Formal]{
+\end{mathpar}
+\begin{mathpar}
+
+    \derivrule[T-Formal]{
+        \axiomrule{\distinct(\NParam, \TParam)} \\
+        \axiomrule[T-Const]{\ov{\Phi} \vdash \const \ok} \\
+        \derivrule[T-Named]{
+            \axiomrule{D_0 \in \ov{D}}
+        }{
+            \ov{\Phi} \vdash \any \ok
+        }
+    }{
         \ov{\Phi} \ok
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \hypo{
-        \ov{\Phi} \ok
-    }
-    \infer0{
-        (\NParam : \const) \in \ov{\Phi}
-    }
-    \infer1[Const-Param]{
-        \ov{\Phi} \vdash \NParam \imp \const
-    }
-    \infer1{
+    \derivrule{
+        \derivrule[Const-Param]{
+            \axiomrule{
+                (\NParam : \const) \in \ov{\Phi}
+            }
+        }{
+            \ov{\Phi} \vdash \NParam \imp \const
+        }
+    }{
         \isconst_{\ov{\Phi}}(\NParam)
     }
-    \infer0{
-        (\TParam : \any) \in \ov{\Phi}
-    }
-    \infer1[T-Param]{
-        \ov{\Phi} \vdash \TParam \ok
-    }
-    \infer0{
-        \neg \isconst_{\ov{\Phi}}(\TParam)
-    }
-    \infer3[T-Array]{
+
+    \derivrule[T-Array]{
+        \isconst_{\ov{\Phi}}(\NParam)
+        \\
+        \derivrule[T-Param]{
+            \axiomrule{
+                (\TParam : \any) \in \ov{\Phi}
+            }
+        }{
+            \ov{\Phi} \vdash \TParam \ok
+        }
+        \\
+        \axiomrule{
+            \neg \isconst_{\ov{\Phi}}(\TParam)
+        }
+    }{
         [\NParam]\TParam \imp \any
     }
-    \infer2[T-Type]{
-        D_1 \ok
+
+    \derivrule[T-Type]
+    {
+    \ov{\Phi} \ok
+    \\
+    [\NParam]\TParam \imp \any
     }
-\end{prooftree}
-\wss
+    {
+    D_1 \ok
+    }
 
-
-\begin{prooftree}
-    \infer0{
+    \axiomrule{
         \distinct(\this)
     }
-\end{prooftree}
-\wss
 
-
-\begin{prooftree}
-    \infer0{
+    \axiomrule{
         D_1 \in \ov{D}
     }
-\end{prooftree}
-\wss
 
-
-\begin{prooftree}
-    \infer0{
+    \axiomrule{
         \neg \isconst_{\ov{\Phi}}(\kw{int})
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0[T-Int-Type]{
+    \axiomrule[T-Int-Type]{
         \ov{\Phi} \vdash \kw{int} \ok
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0{
+    \derivrule[T-Param]{
         (\TParam : \any) \in \ov{\Phi}
-    }
-    \infer1[T-Param]{
+    }{
         \ov{\Phi} \vdash \TParam \ok
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0{
+    \derivrule
+    {
         D_1 \in \ov{D}
     }
-    \infer1{
+    {
         \ov{\Phi} = \typeparams(\Array)
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \hypo{
+    \derivrule{
         \eta_0 = (\NParam \by \NParam, \TParam \by \TParam)
-    }
-    \infer1{
+    }{
         \eta_0 = (\NParam~\const \by \NParam, \TParam~\any \by \TParam)
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0{
+    \derivrule{
         D_1 \in \ov{D}
-    }
-    \infer1{
+    }{
         \TParam = \elementtype(\Array)[\eta_0]
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0{
+    \derivrule[T-Var]
+    {
         (\this : \Array[\NParam, \TParam]) \in (\this: \Array[\NParam, \TParam], \iParam : \kw{int})
     }
-    \infer1[T-Var]{
+    {
         \ov{\Phi}; \this: \Array[\NParam, \TParam], \iParam : \kw{int} \vdash
         \this : \Array[\NParam, \TParam]
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0{
-        (        \iParam : \kw{int}) \in (\this: \Array[\NParam, \TParam], \iParam : \kw{int})
+    \derivrule[T-Var]
+    {
+        (\iParam : \kw{int}) \in (\this: \Array[\NParam, \TParam], \iParam : \kw{int})
     }
-    \infer1[T-Var]{
+    {
         \ov{\Phi}; \this: \Array[\NParam, \TParam], \iParam : \kw{int} \vdash
         \iParam : \kw{int}
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \hypo{
-        \begin{matrix}
-            \ov{\Phi} = \typeparams(\Array)                                 \\
-            \eta_0 = (\NParam~\const \by \NParam, \TParam~\any \by \TParam) \\
-            \TParam = \elementtype(\Array)[\eta_0]                          \\
-            \ov{\Phi}; \this: \Array[\NParam, \TParam], \iParam : \kw{int} \vdash
-            \this : \Array[\NParam, \TParam]                                \\
-            \ov{\Phi}; \this: \Array[\NParam, \TParam], \iParam : \kw{int} \vdash
-            \iParam : \kw{int}
-        \end{matrix}
+    \derivrule[T-Array-Index]
+    {
+        \ov{\Phi} = \typeparams(\Array)                                 \\
+        \eta_0 = (\NParam~\const \by \NParam, \TParam~\any \by \TParam) \\
+        \TParam = \elementtype(\Array)[\eta_0]                          \\
+        \ov{\Phi}; \this: \Array[\NParam, \TParam], \iParam : \kw{int} \vdash
+        \this : \Array[\NParam, \TParam]                                \\
+        \ov{\Phi}; \this: \Array[\NParam, \TParam], \iParam : \kw{int} \vdash
+        \iParam : \kw{int}
     }
-    \infer1[T-Array-Index]{
+    {
         \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \this[\iParam] : \TParam
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0[Param]{
+    \axiomrule[$\imp_{\text{Param}}$]{
         \ov{\Phi} \vdash \TParam \imp \TParam
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0{
+    \axiomrule{
         \neg \isconst_{\ov{\Phi}}(T)
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \hypo{
-        \begin{matrix}
-            \distinct(\this)                                                           \\
-            D_1 \in \ov{D}                                                             \\
-            \neg \isconst_{\ov{\Phi}}(\kw{int})                                        \\
-            \ov{\Phi} \vdash \kw{int} \ok                                              \\
-            \ov{\Phi} \vdash \TParam \ok                                               \\
-            \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \this[\iParam] : \TParam \\
-            \ov{\Phi} \vdash \TParam \imp \TParam                                      \\
-            \neg \isconst_{\ov{\Phi}}(T)
-        \end{matrix}
-    }
-    \infer1[T-Func]{
+\end{mathpar}
+\begin{mathpar}
+
+    \derivrule[T-Func]{
+        \distinct(\this)                                                           \\
+        D_1 \in \ov{D}                                                             \\
+        \neg \isconst_{\ov{\Phi}}(\kw{int})                                        \\
+        \ov{\Phi} \vdash \kw{int} \ok                                              \\
+        \ov{\Phi} \vdash \TParam \ok                                               \\
+        \ov{\Phi}; \this: \Array[\NParam, \TParam] \vdash \this[\iParam] : \TParam \\
+        \ov{\Phi} \vdash \TParam \imp \TParam                                      \\
+        \neg \isconst_{\ov{\Phi}}(T)
+    }{
         D_2 \ok
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \hypo{
-        \eta_1 = (\NParam \by 2,
-        \TParam \by \kw{int})
+    \derivrule[$\imp_{const-n}$]{
+        \axiomrule{ 2 \ge 0 }
+    }{
+        \emptyset \vdash 2 \imp \const
     }
-    \infer1{
-        \eta_1 = (\NParam~\const \by 2,
-        \TParam~\any \by \kw{int})
-    }
-    \infer0{
-        2 \ge 0
-    }
-    \infer0{
-        \methods_\emptyset(\kw{int}) \supseteq \methods_\emptyset(\any)
-    }
-    \infer2[Const-N + I]{
-        \emptyset \vdash 2 \imp \const, \kw{int} \imp \any
-    }
-    \infer2{
-        \eta_1 = (\NParam~\const \by_\emptyset 2,
-        \TParam~\any \by_\emptyset \kw{int})
-    }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \hypo{
+    \derivrule[$\imp_I$]{
+        \axiomrule{
+            \methods_\emptyset(\kw{int}) \supseteq \methods_\emptyset(\any)
+        }
+    }{
+        \emptyset \vdash \kw{int} \imp \any
+    }
+
+    \derivrule
+    {
+        \derivrule{
+            \eta_1 = (\NParam \by 2,
+            \TParam \by \kw{int})
+        }{
+            \eta_1 = (\NParam~\const \by 2,
+            \TParam~\any \by \kw{int})
+        }
+        \\
+        \emptyset \vdash 2 \imp \const
+        \\
+        \emptyset \vdash \kw{int} \imp \any
+    }
+    {
+        \eta_1 = (\NParam~\const \by_\emptyset 2,~
+        \TParam~\any \by_\emptyset~\kw{int})
+    }
+
+    \derivrule
+    {
         (\Get(\iParam~\kw{int})~\kw{int}) \in \{(\Get(\iParam~\kw{int})~\TParam)[\eta_1], (\Length()~\kw{int})[\eta_1] \}
     }
-    \infer1{
+    {
         (\Get(\iParam~\kw{int})~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0[T-N-Type + T-Int-Type]{
-        \emptyset \vdash 2 \ok, \kw{int} \ok
-    }
-    \infer0{
-        D_1 \in \ov{D}
-    }
-    \hypo{
+
+    \derivrule[T-Named]
+    {
+        \derivrule[T-N-Type]
+        { \axiomrule{ 2 \ge 0 } }
+        { \emptyset \vdash 2 \ok }
+        \\
+        \derivrule[T-Int-Type]
+        {~}
+        { \emptyset \vdash \kw{int} \ok }
+        \\
+        \axiomrule
+        { D_1 \in \ov{D} }
+        \\
         \eta_1
     }
-    \infer3[T-Named]{
+    {
         \emptyset \vdash \Array[2, \kw{int}] \ok
     }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0{
-        D_1 \in \ov{D}
-    }
-    \infer1{
-        \ov{\Phi} = \typeparams(\Array)
-    }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \hypo{
-        \eta_2 = (\NParam \by 2,
-        \TParam \by \kw{int})
-    }
-    \infer1{
-        \eta_2 = (\NParam~\const \by 2,
-        \TParam~\any \by \kw{int})
-    }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \hypo{
-        \kw{int} = \TParam[\eta_2]
-    }
-    \infer1{
-        \kw{int} = \elementtype(\Array)[\eta_2]
-    }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0[T-Int-Literal]{
-        \emptyset; \emptyset \vdash 1: 1, 2: 2
-    }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0[V]{
-        \emptyset \vdash 1 \imp \kw{int}
-    }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \infer0[V]{
-        \emptyset \vdash 2 \imp \kw{int}
-    }
-\end{prooftree}
-\wss
-\begin{prooftree}
-    \hypo{
-        \begin{matrix}
-            \emptyset \vdash \Array[2, \kw{int}] \ok \\
-            \ov{\Phi} = \typeparams(\Array)          \\
-            \eta_2 = (\NParam \by 2,
-            \TParam \by \kw{int})                    \\
-            \kw{int} = \elementtype(\Array)[\eta_2]  \\
-            \emptyset; \emptyset \vdash 1: 1, 2: 2   \\
-            \emptyset \vdash 1 \imp \kw{int}         \\
-            \emptyset \vdash 2 \imp \kw{int}         \\
-        \end{matrix}
-    }
-    \infer1[T-Array-Literal]{
-        \emptyset; \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
-    }
-\end{prooftree}
 
-\wss
-\begin{prooftree}
-    \hypo{
-        (\Get(\iParam~\kw{int})~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
+    \derivrule
+    {
+        \axiomrule{D_1 \in \ov{D}}
     }
-    \hypo{
+    { \ov{\Phi} = \typeparams(\Array) }
+
+    \derivrule
+    {
+        \eta_2 = (\NParam \by 2,~
+        \TParam \by~\kw{int})
+    }
+    {
+        \eta_2 = (\NParam~\const\by2,~
+        \TParam~\any \by~\kw{int})
+    }
+
+    \derivrule
+    { \kw{int} = \TParam[\eta_2] }
+    { \kw{int} = \elementtype(\Array)[\eta_2] }
+
+    \derivrule[T-Int-Literal]
+    { ~ }
+    { \emptyset; \emptyset \vdash 1: 1, 2: 2 }
+
+    \derivrule[$\imp_{int-n}$]
+    { ~ }
+    { \emptyset \vdash 1 \imp \kw{int} }
+
+    \derivrule[$\imp_{int-n}$]
+    { ~ }
+    { \emptyset \vdash 2 \imp \kw{int} }
+
+    \derivrule[T-Array-Literal]{
+        \emptyset \vdash \Array[2, \kw{int}] \ok \\
+        \ov{\Phi} = \typeparams(\Array)          \\
+        \eta_2 = (\NParam \by 2,
+        \TParam \by \kw{int})                    \\
+        \kw{int} = \elementtype(\Array)[\eta_2]  \\
+        \emptyset; \emptyset \vdash 1: 1, 2: 2   \\
+        \emptyset \vdash 1 \imp \kw{int}         \\
+        \emptyset \vdash 2 \imp \kw{int}
+    }{
         \emptyset; \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
     }
-    \infer0[T-Int-Literal]{
+
+    \axiomrule[T-Int-Literal]{
         \emptyset; \emptyset \vdash 0 : 0
     }
-    \infer0[Int-N]{
+
+    \axiomrule[Int-N]{
         \emptyset \vdash 0 \imp \kw{int}
     }
-    \infer4[T-Call]{
+
+\end{mathpar}
+\begin{mathpar}
+
+    \derivrule[T-Call]{
+        (\Get(\iParam~\kw{int})~\kw{int}) \in \methods_\emptyset(\Array[2, \kw{int}])
+        \\
+        \emptyset; \emptyset \vdash \Array[2, \kw{int}]\br{1, 2} : \Array[2, \kw{int}]
+        \\
+        \emptyset; \emptyset \vdash 0 : 0
+        \\
+        \emptyset \vdash 0 \imp \kw{int}
+    }{
         \emptyset; \emptyset \vdash e_1 : \kw{int}
     }
-\end{prooftree}
-\wss
 
-\begin{prooftree}
-    \infer0{
-        \distinct(\tdecls(\ov{D}), \kw{int})
-    }
-    \infer0{
-        \distinct(\mdecls(\ov{D}))
-    }
-    \hypo{
+    \derivrule{
         D_0 \ok
-    }
-    \hypo{
+        \\
         D_1 \ok
-    }
-    \hypo{
+        \\
         D_2 \ok
-    }
-    \hypo{
+        \\
         D_3 \ok
-    }
-    \infer4{
+    }{
         \ov{D \ok}
     }
-    \hypo{
-        \emptyset; \emptyset \vdash e_1 : \kw{int}
-    }
-    \infer4[T-Prog]{ \package~\main;~\ov{D}~\func~\main()~\br{\un=e_1} \ok }
-\end{prooftree}
-\wss
 
-\end{document}
+    \derivrule[T-Prog]{
+        \axiomrule{
+            \distinct(\tdecls(\ov{D}), \kw{int})
+        }
+        \\
+        \axiomrule{
+            \distinct(\mdecls(\ov{D}))
+        }
+        \\
+        \ov{D \ok}
+        \\
+        \emptyset; \emptyset \vdash e_1 : \kw{int}
+    }{
+        \package~\main;~\ov{D}~\func~\main()~\br{\un=e_1} \ok
+    }
+\end{mathpar}
