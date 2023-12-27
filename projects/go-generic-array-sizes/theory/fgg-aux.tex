@@ -26,13 +26,6 @@
         {\ov{\Phi} = \typeparams(t)}
 
         \inferrule
-        {
-            (\ov{\alpha~\gamma}) = \ov{\Phi} \\
-            \gray{\eta = (\ov{\alpha \by \tau})}
-        }
-        {(\ov{\Phi \by \tau}) = \eta}
-
-        \inferrule
         {\Delta \vdash \tau \imp \const}
         {\isconst_\Delta(\tau)}
 
@@ -96,13 +89,6 @@
         }
 
         \gray{
-            \inferrule
-            {
-                (\type~t_S\black{[\ov{\Phi}]}~\struct~\br{\ov{f~\tau}}) \in \ov{D} \\
-                \eta = (\black{\ov{\Phi \by \sigma}})
-            }
-            {\fields(t_S\black{[\ov{\sigma}]}) = (\ov{f~\tau})[\eta]}
-
             \inferrule
             {\text{$mM_1, mM_2 \in \ov{S}$ implies $M_1 = M_2$}}
             {\unique(\ov{S})}

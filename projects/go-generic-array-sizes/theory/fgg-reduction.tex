@@ -2,34 +2,56 @@
     \begin{mathpar}
         \inferrule
         {
-        (\type~t_A[\ov{\Phi}]~ [n]\tau) \in \ov{D}\\
-        \tau_A = t_A[\ov{\tau}]
+            (\ov{\alpha~\gamma}) = \ov{\Phi} \\
+            \eta = (\ov{\alpha \by \tau})
         }
-        { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \indexbounds(\tau_A)}
+        {(\ov{\Phi \by \tau}) = \eta}
+
+        \gray{
+            \inferrule
+            {
+                (\type~t_S\black{[\ov{\Phi}]}~\struct~\br{\ov{f~\black{\tau}}}) \in \ov{D} \\
+                \black{\eta = (\ov{\Phi \by \sigma})}
+            }
+            {\fields(t_S\black{[\ov{\sigma}]}) = (\ov{f~\black{\tau}})\black{[\eta]}}
+        }
+
+        \gray{
+            \inferrule
+            {
+                (\func~(x~t_V\black{[\ov{\alpha}]})~m(\ov{x~\black{\tau}})~\black{\tau}~\br{\return~e}) \in \ov{D} \\
+                \black{\theta = (\ov{\alpha \by \sigma})}
+            }
+            {\mbody(t_V\black{[\ov{\sigma}]}.m) = (x:t_V\black{[\ov{\sigma}]},\ov{x:\black{\tau}}).e\black{[\theta]}}
+        }
+
+        \gray{
+        \inferrule
+        {
+        (\type~t_A\black{[\ov{\Phi}]}~ [n]\black{\tau}) \in \ov{D}\\
+        \black{\tau_A = t_A[\ov{\tau}]}
+        }
+        { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \indexbounds(\black{\tau}_A)}
+        }
 
         \inferrule
         {
-        (\type~t_A[\alpha~\const, \ov{\Phi}]~ [\alpha]\tau) \in \ov{D}\\
-        \tau_A = t_A[n, \ov{\tau}]
+        (\type~t_A[\ov{\Phi}, \alpha~\const, \ov{\Phi}']~ [\alpha]\tau) \in \ov{D}\\
+        \tau_A = t_A[\ov{\tau}, n, \ov{\tau}']\\
+        |\ov{\Phi}| = |\ov{\tau}|\\
+        |\ov{\Phi}'| = |\ov{\tau}'|
         }
         { \{ i \in \mathbb{Z} \mid 0 \le i < n \} = \indexbounds(\tau_A)}
 
         \gray{
         \inferrule
         {
-        (\func~(x~\black{t_V[\ov{\alpha}]})~m(\ov{x~\tau})~\tau~\br{\return~e}) \in \ov{D} \\
-        \theta = (\ov{\Phi \by \sigma})
-        }
-        {\mbody(t_V[\ov{\sigma}].m) = (x:t_V[\ov{\sigma}],\ov{x:\tau}).e[\theta]}
-        }
-
-        \inferrule
-        {
-        (\func~(x~t_A[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau) ~t_A[\ov{\alpha}]~
+        (\func~(x~t_A\black{[\ov{\alpha}]}) ~m(x_1~\kw{int},~x_2~\black{\tau}) ~t_A\black{[\ov{\alpha}]}~
         \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}\\
-        \tau_A = t_A[\ov{\tau}]
+        \black{\tau_A = t_A[\ov{\tau}]}
         }
-        {\isarraysetmethod(\tau_A.m)}
+        {\isarraysetmethod(\black{\tau}_A.m)}
+        }
     \end{mathpar}
     \caption{FGG auxiliary functions for reduction with arrays}
 \end{figure}

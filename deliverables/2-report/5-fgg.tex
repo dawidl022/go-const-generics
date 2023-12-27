@@ -51,11 +51,41 @@ constructs are also omitted from FGGA.
 
 \input{../../projects/go-generic-array-sizes/theory/fgg-syntax}
 
-\subsection{FGG Reduction}
+\subsection{FGGA Reduction}
+
+The reduction rules for FGGA are nigh identical to the ones found in FGA, with
+the only notable difference being that type names $t$ are replaced with types
+$\tau$.
+
+More interesting differences occur in the auxiliary functions. In FGA,
+$\indexbounds$ took a type name and performed a simple lookup in the type
+declaration to extract the size of the array. In FGGA, there are two cases of
+the $\indexbounds$ function. When the size of the array type is an integer
+literal, then the bounds are calculated in the same way as in FGA, based on a
+lookup of the named type declaration of the array type. If however, the array
+type declaration has a type parameter in place of the array size, then the
+bounds are calculated from the integer literal type argument in the array type
+that corresponds to the type parameter used as the array size in the
+declaration. The correspondence is determined by matching on the same position
+in the sequence of type parameter constraints and the sequence of type
+arguments.
+
+The $\mbody$ auxiliary function has also been updated to perform substitution of
+method type parameters with the receiver's type arguments within the method
+expression. A map within a pair of brackets applied to a term (e.g. $e[\theta]$
+in the $\mbody$ function) denotes a substitution application in this and
+following rules. The type arguments are mapped to the type parameters based on
+their respective positions.
+
+Similarly, the $\fields$ auxiliary function has been updated to perform a type
+parameter substitution with type arguments on the resulting struct fields. This
+is performed analogously to how it's done in the $\mbody$ function, except that
+type parameters are extracted from the type parameter constraints in the struct
+type declaration.
 
 \input{../../projects/go-generic-array-sizes/theory/fgg-reduction}
 
-\subsection{FGG Typing}
+\subsection{FGGA Typing}
 
 $\Delta$ is defined as a typing environment mapping type parameters $\alpha$
 to their bounds $\gamma$. Type parameter constraint sequences $\ov{\Phi}$ may
