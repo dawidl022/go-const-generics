@@ -72,10 +72,10 @@ arguments.
 
 The $\mbody$ auxiliary function has also been updated to perform substitution of
 method type parameters with the receiver's type arguments within the method
-expression. A map within a pair of brackets applied to a term (e.g. $e[\theta]$
-in the $\mbody$ function) denotes a substitution application in this and
-following rules. The type arguments are mapped to the type parameters based on
-their respective positions.
+expression. A map within a pair of double square brackets applied to a term
+(e.g. $e\llbracket\theta\rrbracket$ in the $\mbody$ function) denotes a
+substitution application in this and following rules. The type arguments are
+mapped to the type parameters based on their respective positions.
 
 Similarly, the $\fields$ auxiliary function has been updated to perform a type
 parameter substitution with type arguments on the resulting struct fields. This

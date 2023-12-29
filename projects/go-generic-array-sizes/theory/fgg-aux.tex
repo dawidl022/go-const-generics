@@ -33,8 +33,8 @@
         {
             (\ov{\alpha~\gamma}) = \ov{\Phi} \\
             \eta = (\ov{\Phi \by \tau}) \\
-            \Delta \vdash (\ov{\alpha \imp \gamma})[\eta] \\
-            \ov{\isconst_\Delta(\alpha) = \isconst_\Delta(\gamma)}[\eta]
+            \Delta \vdash (\ov{\alpha \imp \gamma})\llbracket\eta\rrbracket \\
+            \ov{\isconst_\Delta(\alpha) = \isconst_\Delta(\gamma)}\llbracket\eta\rrbracket
         }
         {(\ov{\Phi \by_\Delta \tau}) = \eta}
 
@@ -52,7 +52,7 @@
         {}
         {
         \methods_\Delta(\black{t_V[\ov{\tau}]}) =
-        \{(mM)[\eta]
+        \{(mM)\llbracket\eta\rrbracket
         \mid (\func~(x~\black{t_V[\ov{\alpha}]})~mM~\br{\return~e}) \in \ov{D}
         \comma\\
         \eta = \black{
@@ -64,8 +64,8 @@
         \black{~\cup}
         \\
         \black{\{
-        m(x_1~\kw{int},~x_2~\tau[\eta]) \mid
-        (\func~(x~t_V[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau[\eta]) ~t_V~
+        m(x_1~\kw{int},~x_2~\tau\llbracket\eta\rrbracket) \mid
+        (\func~(x~t_V[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau\llbracket\eta\rrbracket) ~t_V~
         \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}
         \comma
         }
@@ -81,7 +81,7 @@
             \inferrule
             {\type~t_I\black{[\ov{\Phi}]}~\interface~\br{\ov{S}} \in \ov{D} \\
                 \eta = (\black{\ov{\Phi \by \tau}})}
-            {\methods_\Delta(t_I\black{[\ov{\tau}]}) = \ov{S}[\eta]}
+            {\methods_\Delta(t_I\black{[\ov{\tau}]}) = \ov{S}\llbracket\eta\rrbracket}
 
             \inferrule
             {(\alpha : \black{\gamma}) \in \Delta}
