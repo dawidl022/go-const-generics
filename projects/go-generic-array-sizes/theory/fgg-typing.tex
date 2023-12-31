@@ -60,23 +60,27 @@
         { n \ge 0 }
         { \Delta \vdash n \ok }
 
-        \inferrule[t-int-type]
-        {~}
-        { \Delta \vdash \kw{int} \ok }
+        \gray{
+            \inferrule[t-int-type]
+            {~}
+            { \Delta \vdash \kw{int} \ok }
+        }
 
         \inferrule[t-param]
         { (\alpha : \gamma) \in \Delta }
         { \Delta \vdash \alpha \ok }
 
-        \inferrule[t-named]
-        {
-            \Delta \vdash \ov{\tau \ok}
-            \and
-            (\type~t[\ov{\Phi}]~T) \in \ov{D}
-            \and
-            \eta = (\ov{\Phi \by_\Delta \tau})
+        \gray{
+            \inferrule[t-named]
+            {
+                \black{\Delta \vdash \ov{\tau \ok}}
+                \and
+                (\type~t\black{[\ov{\Phi}]}~T) \in \ov{D}
+                \and
+                \black{\eta = (\ov{\Phi \by_\Delta \tau})}
+            }
+            { \Delta \vdash t[\ov{\tau}] \ok }
         }
-        { \Delta \vdash t[\ov{\tau}] \ok }
     \end{mathpar}
 
     Well-formed type formals

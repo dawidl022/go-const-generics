@@ -136,5 +136,37 @@ All type parameters are subtypes of their bounds, but where the bounds are a
 regular interface (i.e. not \kw{const}), this can already be derived via the
 $\imp_I$ rule.
 
+The integer literal type can now appear in user programs, although with
+restrictions as to where they can be used. They can only be used as type
+arguments in a named type and as the size parameter of an array type literal but
+not e.g. as a standalone type of a variable or a return type. Const type
+parameters (i.e. those that are bound by \kw{const}) have the exact same
+restrictions as integer literal types. To distinguish between these two kinds of
+user-program types, the $\isconst_\Delta$ predicate was created, which simply
+checks if the type is a subtype of \kw{const}. Because both \kw{const} type
+arguments and array sizes must be non-negative, we can also restrict all integer
+literal types to be non-negative (rule T-N-Type).
+
+A type parameter $\alpha$ is considered well typed, if it appears in the typing
+environment $\Delta$ (rule T-Param). The rule T-Named has been updated to
+type-check each type argument in the named type, recursively applying one of
+``well-formed type'' rules ($\Delta \vdash \tau \ok$) on each argument, and
+checking whether each argument satisfies the type parameter bound via the
+$(\ov{\Phi \by_\Delta \tau})$ lookup. The lookup differs from the regular type
+substitution map lookup (denoted without the subscript $\Delta$), that it
+additionally checks the bounds of each type argument via the subtyping relation,
+which itself is done via a type substitution on the type parameters as well as
+the bounds, because bounds may refer to other type parameters in the type
+parameter constraints sequence. Not only must the type arguments implement the
+type-substituted bounds of their corresponding type parameters, but must have an
+equal ``\kw{const}-ness'', i.e. either both the argument and bound return true
+for $\isconst$, or they both return false. The need for this check can be
+illustrated with the following example: $2 \imp \texttt{any}$ holds, but 2
+cannot be used as a variable type, and so it cannot be used to instantiate a
+type parameter bound by \texttt{any}. This is enforced in the rule because
+$\isconst_\Delta(2) \neq \isconst_\Delta(\texttt{any})$. Both the type-checking
+and non type-checking lookups yield a map from type parameters to types, denoted
+by $\eta$.
+
 \input{../../projects/go-generic-array-sizes/theory/fgg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fgg-typing}
