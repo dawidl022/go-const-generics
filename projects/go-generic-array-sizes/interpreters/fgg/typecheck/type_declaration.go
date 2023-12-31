@@ -122,14 +122,21 @@ func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.Na
 	if err != nil {
 		return err
 	}
+	// to identify recursive type parameters, i.e. as part of a type parameters bounds,
+	// we need to create a typing environment that contains the type parameters in question
+	tRec := t.NewTypeEnvTypeCheckingVisitor(decl.TypeParameters)
 
 	for _, typeParam := range decl.TypeParameters {
 		typeArg := substitutor.substituteTypeParams(typeParam.TypeParameter).(ast.Type)
 
-		if err := t.checkConstEquivalence(typeArg, typeParam.Bound); err != nil {
+		// TODO remove duplicate identification once typeParam identification is done in separate pass
+		typeParamBound := tRec.identifyTypeParams(typeParam.Bound).(ast.Bound)
+		typeParamBound = substitutor.substituteTypeParams(typeParamBound).(ast.Bound)
+
+		if err := t.checkConstEquivalence(typeArg, typeParamBound); err != nil {
 			return err
 		}
-		if err := t.CheckIsSubtypeOf(typeArg, typeParam.Bound); err != nil {
+		if err := t.CheckIsSubtypeOf(typeArg, typeParamBound); err != nil {
 			return err
 		}
 	}

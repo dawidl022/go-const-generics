@@ -98,7 +98,21 @@ func newTypeParamSubstituter(
 }
 
 func (s typeParamSubstituter) substituteTypeParams(e ast.EnvVisitable) ast.EnvVisitable {
-	return e.AcceptEnvMapperVisitor(s)
+	switch e.(type) {
+	case ast.NamedType:
+		e := e.(ast.NamedType)
+		var substitutedTypeArgs []ast.Type
+
+		for _, typeArg := range e.TypeArguments {
+			substitutedTypeArgs = append(substitutedTypeArgs, s.substituteTypeParams(typeArg).(ast.Type))
+		}
+		return ast.NamedType{
+			TypeName:      e.TypeName,
+			TypeArguments: substitutedTypeArgs,
+		}
+	default:
+		return e.AcceptEnvMapperVisitor(s)
+	}
 }
 
 func (s typeParamSubstituter) VisitMapTypeParameter(t ast.TypeParameter) ast.EnvVisitable {
