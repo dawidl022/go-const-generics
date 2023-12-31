@@ -1,8 +1,10 @@
 \begin{figure}
     \begin{mathpar}
+        \gray{
         \inferrule
-        {(\type~t_A[\ov{\Phi}]~ [\tau_n]\tau) \in \ov{D}}
-        {\tau = \elementtype(t_A)}
+        {(\type~t_A\black{[\ov{\Phi}]}~ [\black{\tau_n}]\black{\tau}) \in \ov{D}}
+        {\black{\tau} = \elementtype(t_A)}
+        }
 
         \inferrule
         {
@@ -13,12 +15,14 @@
         {\tau_i = \len(\tau_A)}
 
 
+        \gray{
         \inferrule
         {
-        \tau_A = t_A[\ov{\tau}] \\
-        (\type~t_A[\ov{\Phi}]~ [n]\tau) \in \ov{D}
+        \black{\tau_A = t_A[\ov{\tau}]} \\
+        (\type~t_A\black{[\ov{\Phi}]}~ [n]\black{\tau}) \in \ov{D}
         }
-        {n = \len(\tau_A)}
+        {n = \len(\black{\tau}_A)}
+        }
 
 
         \inferrule
@@ -38,73 +42,78 @@
         }
         {(\ov{\Phi \by_\Delta \tau}) = \eta}
 
-        \\
-        \inferrule
-        {~}
-        {\methods_\Delta(\kw{int}) = \{\}}
-
-        \inferrule
-        {~}
-        {\methods_\Delta(n) = \{\}}
-
         \gray{
-        \inferrule
-        {}
-        {
-        \methods_\Delta(\black{t_V[\ov{\tau}]}) =
-        \{(mM)\llbracket\eta\rrbracket
-        \mid (\func~(x~\black{t_V[\ov{\alpha}]})~mM~\br{\return~e}) \in \ov{D}
-        \comma\\
-        \eta = \black{
-            (\ov{\Phi \by_\Delta \tau})
-            \comma
-            (\type~t_V[\ov{\Phi}]) \in \ov{D}
-        }
-        \}
-        \black{~\cup}
-        \\
-        \black{\{
-        m(x_1~\kw{int},~x_2~\tau\llbracket\eta\rrbracket) \mid
-        (\func~(x~t_V[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau\llbracket\eta\rrbracket) ~t_V~
-        \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}
-        \comma
-        }
-        \\
-        \black{
-            \eta = (\black{\ov{\Phi \by_\Delta \tau}})
-            \comma
-            (\type~t_V[\ov{\Phi}]) \in \ov{D}
-            \}}}
+            \inferrule
+            {~}
+            {\methods_\black{\Delta}(\kw{int}) = \{\}}
         }
 
         \gray{
             \inferrule
-            {\type~t_I\black{[\ov{\Phi}]}~\interface~\br{\ov{S}} \in \ov{D} \\
-                \eta = (\black{\ov{\Phi \by \tau}})}
-            {\methods_\Delta(t_I\black{[\ov{\tau}]}) = \ov{S}\llbracket\eta\rrbracket}
+            {~}
+            {\methods_\black{\Delta}(n) = \{\}}
+        }
 
+        \gray{
+            % negative spacing to more ovenly overflow margins on both sides
+            \mkern-24mu
             \inferrule
-            {(\alpha : \black{\gamma}) \in \Delta}
-            {\methods_\Delta(\alpha) = \methods_\Delta(\black{\gamma})}
+            {
+                \black{ \eta = (\ov{\Phi \by \tau}) }
+                \\
+                \black{ \ov{\Phi} = \typeparams(t_V) }
+            }
+            {
+                \methods_\black{\Delta}(t_V\black{[\ov{\tau}]}) =
+                \{(mM)\black{\llbracket\eta\rrbracket}
+                \mid (\func~(x~t_V\black{[\ov{\alpha}]})~mM~\br{\return~e}) \in \ov{D}
+                \}
+                \black{~\cup}
+                \\
+                \{
+                m(x_1~\kw{int},~x_2~\black{\tau\llbracket\eta\rrbracket})~t_V\black{[\ov{\tau}]} \mid
+                (\func~(x~t_V\black{[\ov{\alpha}]}) ~m(x_1~\kw{int},~x_2~\black{\tau}) ~t_V\black{[\ov{\alpha}]}~
+                \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}
+                \}
+            }
         }
 
         \gray{
             \inferrule
-            {\text{$mM_1, mM_2 \in \ov{S}$ implies $M_1 = M_2$}}
-            {\unique(\ov{S})}
+            {
+                \type~t_I\black{[\ov{\Phi}]}~\interface~\br{\ov{S}} \in \ov{D} \\
+                \black{ \eta = (\ov{\Phi \by \tau})}}
+            {
+                \methods_\black{\Delta}(t_I\black{[\ov{\tau}]}) =
+                \ov{S}\black{\llbracket\eta\rrbracket}
+            }
+        }
+
+        \inferrule
+        {(\alpha : \black{\gamma}) \in \Delta}
+        {\methods_\Delta(\alpha) = \methods_\Delta(\gamma)}
+
+        \gray{
+            \inferrule
+            {\distinct(\ov{m})}
+            {\unique(\ov{mM})}
+
+            \inferrule
+            {a_i \neq a_j~\forall a_i, a_j \in \ov{a},~i \neq j}
+            {\distinct(\ov{a})}
         }
 
         \gray{
             \inferrule
             {}
-            {\tdecls(\ov{D}) = \lst{\black{t_D} \mid (\type~\black{t_D[\ov{\Phi}]}~T) \in \ov{D}}}
+            {\tdecls(\ov{D}) = \lst{t_D \mid (\type~t_D\black{[\ov{\Phi}]}~T) \in \ov{D}}}
         }
 
         \gray{
-        \inferrule
-        {}
-        {\mdecls(\ov{D}) = \lst{\black{t_V}.m \mid
-        (\func~(x~\black{t_V[\ov{\Phi}]})~mM~\br{\return~e}) \in \ov{D}}}
+            \inferrule
+            {}
+            {\mdecls(\ov{D}) = \lst{t_V.m \mid
+                    (\func~(x~t_V\black{[\ov{\alpha}]})~mM~\br{\return~e}) \in \ov{D}}}
         }
     \end{mathpar}
     \caption{FGG auxiliary functions for typing with arrays}
