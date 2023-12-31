@@ -3,45 +3,52 @@
     Implements
     \hfill \fbox{$\Delta \vdash \tau \imp \sigma$}
     \begin{mathpar}
+
+        \inferrule[$\imp_{\text{Param}}$]
+        { ~ }
+        { \Delta \vdash \alpha \imp \alpha }
+
         \gray{
-            \inferrule[<:-param]
+            \inferrule[$\imp_V$]
             { ~ }
-            { \Delta \vdash \alpha \imp \alpha }
+            { \black{\Delta \vdash}~\tau_V \imp \tau_V }
         }
-
-        \inferrule[<:$_V$]
-        { ~ }
-        { \Delta \vdash \tau_V \imp \tau_V }
-
-        \inferrule[<:$_{int}$]
-        {~}
-        {\Delta \vdash \kw{int} <: \kw{int}}
-
-        \inferrule[<:$_{const}$]
-        {~}
-        {\Delta \vdash \const <: \const}
-
-        \inferrule[<:$_{n}$]
-        {~}
-        {\Delta \vdash n <: n}
 
         \gray{
-            \inferrule[<:$_I$]
-            {
-                \methods_\Delta(\tau) \supseteq \methods_\Delta(\tau_I) \\
-            }
-            { \Delta \vdash \tau \imp \tau_I }
+            \inferrule[$\imp_{int}$]
+            {~}
+            {\black{\Delta \vdash}~\kw{int} \imp \kw{int}}
         }
 
-        \inferrule[<:int-n]
-        { ~ }
-        { \Delta \vdash n \imp \kw{int} }
+        \inferrule[$\imp_{const}$]
+        {~}
+        {\Delta \vdash \const \imp \const}
 
-        \inferrule[<:const-n]
+        \gray{
+            \inferrule[$\imp_{n}$]
+            {~}
+            {\black{\Delta \vdash}~n \imp n}
+        }
+
+        \gray{
+            \inferrule[$\imp_{int-n}$]
+            { ~ }
+            { \black{\Delta \vdash}~n \imp \kw{int} }
+        }
+
+        \gray{
+            \inferrule[$\imp_I$]
+            {
+                \methods_\black{\Delta}(\black{\tau}) \supseteq \methods_\black{\Delta}(\black{\tau}_I) \\
+            }
+            { \black{\Delta \vdash}~\tau \imp \tau_I }
+        }
+
+        \inferrule[$\imp_{const-n}$]
         { n \ge 0 }
         { \Delta \vdash n \imp \const }
 
-        \inferrule[<:const-param]
+        \inferrule[$\imp_{const-\text{Param}}$]
         { (\alpha : \const) \in \Delta }
         { \Delta \vdash \alpha \imp \const }
     \end{mathpar}

@@ -89,7 +89,52 @@ type declaration.
 
 $\Delta$ is defined as a typing environment mapping type parameters $\alpha$
 to their bounds $\gamma$. Type parameter constraint sequences $\ov{\Phi}$ may
-implicitly coerce to type environments.
+implicitly coerce to type environments. As before in FGA, $\Gamma$ is defined as
+an environment mapping variables $x$ to types $\tau$.
+
+The ``implements'' relation now includes a typing environment $\Delta$. As
+before, all types implement themselves (rules $\imp_{\text{Param}}$, $\imp_V$,
+$\imp_{int}$, $\imp{const}$ and $\imp_n$), and integer literal types implement
+the \kw{int} type (rule $\imp_{int-n}$). Non-negative integer literals now also
+implement the \kw{const} type (rule $\imp_{const-n}$), so that they can be used
+as type arguments, where the bound of the type parameter is \kw{const}. Since
+the use case of numerical type parameters is to generically size arrays, and
+arrays cannot be of a negative size, negative integers do not implement
+\kw{const}.
+
+
+The $methods_\Delta$ auxiliary now also accepts a typing environment as input
+(denoted by a subscript $\Delta$), as a type parameter bound lookup may be
+necessary to retrieve the methods of a type. For a named value type
+$t_V[\ov{\tau}]$ $\methods_\Delta$ returns the set of method specifications of
+the base value type $t_V$, with type substitutions performed on them. E.g. if
+the declared value type \texttt{Foo} with a type parameter \texttt{T} has a
+method with the specification \texttt{f(x T) T}, then
+$\methods_\Delta(\texttt{Foo[int]})$, where $\Delta$ is any typing environment
+(as it is not relevant in the case of looking up methods of a named value type),
+would return \{(\texttt{f(x int) int})\}. The implication of this is that one
+instantiation of a generic type could implement a certain interface, while
+another could not, depending on the type arguments. A $\methods_\Delta$ lookup
+on an interface has similarly been updated to return a type-substituted method
+set. Additionally, the method set of a type parameter $\alpha$ is equal to the
+method set of its bound $\gamma$, as specified in the typing environment
+$\Delta$.
+
+The $\methods_\Delta$ auxiliary is now a partial function, not defined on the
+\kw{const} type. This is because there is currently never a context in which the
+$\methods_\Delta$ would need to be applied to \kw{const}. In a future extension,
+type parameters bounded by \kw{const} could be used as expressions (since they will
+be instantiated with integer values in user programs), in which case we could
+define $\methods_\Delta(\const) = \{\}$ so that they implement the empty
+interface. We could then additionally have a rule stating that type parameters
+bounded by \kw{const} implement \kw{int}.
+
+Because $\methods_\Delta$ is not defined on \kw{const}, there is an additional
+subtyping rule that specifies that type parameters which are bound by
+\kw{const}, are also subtypes of \kw{const} (rule $\imp_{const-\text{Param}}$).
+All type parameters are subtypes of their bounds, but where the bounds are a
+regular interface (i.e. not \kw{const}), this can already be derived via the
+$\imp_I$ rule.
 
 \input{../../projects/go-generic-array-sizes/theory/fgg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fgg-typing}
