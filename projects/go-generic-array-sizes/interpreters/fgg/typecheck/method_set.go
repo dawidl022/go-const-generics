@@ -1,7 +1,8 @@
 package typecheck
 
 import (
-	"reflect"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 )
@@ -108,7 +109,7 @@ func methodDifference(super MethodSet, sub MethodSet) MethodSet {
 
 func hasMethod(methodSet MethodSet, method ast.MethodSpecification) bool {
 	for _, m := range methodSet {
-		if reflect.DeepEqual(m, method) {
+		if cmp.Equal(m, method, cmpopts.EquateEmpty()) {
 			return true
 		}
 	}
