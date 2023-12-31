@@ -148,8 +148,7 @@ func (s typeParamSubstituter) VisitMapMethodSpecification(m ast.MethodSpecificat
 }
 
 func (s typeParamSubstituter) VisitMapConstType(c ast.ConstType) ast.EnvVisitable {
-	//TODO implement me
-	panic("implement me")
+	return c
 }
 
 // TODO will these ever be called? If not, a separate interface can be extracted

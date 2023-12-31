@@ -55,3 +55,10 @@ func TestTypeCheck_givenInvalidRecursiveTypeParameter_returnsError(t *testing.T)
 			`type "Str" is not a subtype of "Eq[Str]": `+
 			`missing methods: "equal(other Str) int"`)
 }
+
+//go:embed testdata/subtyping/two_level_recursive_type_param/two_level_recursive_type_param.go
+var subtypingTwoLevelRecursiveTypeParameterFgg []byte
+
+func TestTypeCheck_givenValidTwoLevelRecursiveTypeParameter_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, subtypingTwoLevelRecursiveTypeParameterFgg)
+}

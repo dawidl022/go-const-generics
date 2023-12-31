@@ -68,10 +68,15 @@ func (t typeCheckingVisitor) NewTypeEnvTypeCheckingVisitor(typeParams []ast.Type
 	for _, param := range typeParams {
 		env[param.TypeParameter] = param.Bound
 	}
-	return typeEnvTypeCheckingVisitor{
+	envChecker := typeEnvTypeCheckingVisitor{
 		typeCheckingVisitor: t,
 		typeEnv:             env,
 	}
+	// TODO remove duplicate identification once typeParam identification is done in separate pass
+	for typeParam := range env {
+		env[typeParam] = envChecker.identifyTypeParams(env[typeParam]).(ast.Bound)
+	}
+	return envChecker
 }
 
 func (t typeEnvTypeCheckingVisitor) typeOf(variableEnv map[string]ast.Type, expr ast.Expression) (ast.Type, error) {
