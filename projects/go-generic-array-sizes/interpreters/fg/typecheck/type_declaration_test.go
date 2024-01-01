@@ -75,3 +75,19 @@ func TestTypeCheck_givenInterfaceDeclarationWithDuplicateMethods_returnsError(t 
 	assertFailsTypeCheckWithError(t, declarationDuplicateInterfaceMethods,
 		`ill-typed declaration: type "xGetter": method name redeclared "getX"`)
 }
+
+//go:embed testdata/type_declaration/self_ref_field/self_ref_field.go
+var declarationSelfRefFieldGo []byte
+
+func TestTypeCheck_givenStructDeclarationWithSelfReferentialFieldType_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationSelfRefFieldGo,
+		``)
+}
+
+//go:embed testdata/type_declaration/indirect_self_ref_field/indirect_self_ref_field.go
+var declarationIndirectSelfRefFieldGo []byte
+
+func TestTypeCheck_givenStructDeclarationWithCircularFieldTypeReferences_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationIndirectSelfRefFieldGo,
+		``)
+}
