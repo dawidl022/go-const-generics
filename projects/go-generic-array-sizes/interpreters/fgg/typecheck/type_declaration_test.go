@@ -121,6 +121,15 @@ func TestTypeCheck_givenTypeParamDefinedInTermsOfItself_returnsError(t *testing.
 			`cannot use type "T" as bound: bound must be interface type or the keyword "const"`)
 }
 
+//go:embed testdata/type_declaration/type_param_as_bound/type_param_as_bound.go
+var typeDeclTypeParamAsBound []byte
+
+func TestTypeCheck_givenTypeParameterUsedAsBoundOfAnotherTypeParameter_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, typeDeclTypeParamAsBound,
+		`ill-typed declaration: type "Foo": `+
+			`cannot use type "T" as bound: bound must be interface type or the keyword "const"`)
+}
+
 //go:embed testdata/type_declaration/type_param_scope/type_param_scope.go
 var typeDeclTypeParamScopeFgg []byte
 
@@ -133,6 +142,16 @@ var typeDeclTypeParamFgg []byte
 
 func TestTypeCheck_givenTypeParameterUsedInDefinitionOfItself_returnsNoError(t *testing.T) {
 	assertPassesTypeCheck(t, typeDeclTypeParamFgg)
+}
+
+//go:embed testdata/type_declaration/type_param_recursive_uninstantiated/type_param_recursive_uninstantiated.go
+var typeDeclTypeParamRecursiveUninstantiatedFgg []byte
+
+func TestTypeCheck_givenUninstantiatedTypeParameter_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, typeDeclTypeParamRecursiveUninstantiatedFgg,
+		`ill-typed declaration: type "Arr": `+
+			`illegal bound of type parameter "T": type "Foo" badly instantiated: `+
+			`expected 1 type arguments but got 0`)
 }
 
 //go:embed testdata/type_declaration/type_param_non_distinct/type_param_non_distinct.go
@@ -159,4 +178,11 @@ func TestTypeCheck_givenNestedTypeArgumentsNotSatisfyingBounds_returnsError(t *t
 			`field "x": type "Foo" badly instantiated: `+
 			`type "fooer[int]" is not a subtype of "fooer[barer]": `+
 			`missing methods: "foo() barer"`)
+}
+
+//go:embed testdata/type_declaration/type_param_shadow_type_name/type_param_shadow_type_name.go
+var typeDeclTypeParamShadowTypeNameFgg []byte
+
+func TestTypeCheck_givenTypeDeclarationWithTypeNameShadowedByTypeParameter_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, typeDeclTypeParamShadowTypeNameFgg)
 }
