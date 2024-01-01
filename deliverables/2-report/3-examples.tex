@@ -1,5 +1,8 @@
 \section{Arrays by Example}
 
+Slices may be used for ..., this section intends to identify use cases, where
+using arrays in Go programs may be more beneficial than using slices.
+
 % Subsection 1: Gentle introduction
 
 % Example 1: `reversed` function
@@ -35,3 +38,15 @@
 
 % State machine used in benchmarks (potentially benchmark on amd64 as well as
 % arm64)
+
+% Subsection 6: Type-set interfaces and the \kw{const} interface
+
+% conceptually: type const interface { 0 | 1 | 2 | 3 | ... }
+% implementation: type const interface { const }, analogous to comparable interface
+
+% TODO compare with existing proposal
+
+% TODO explain in FGGA why const is not an interface - because FGGA only
+% considers classic interfaces, not type-set interfaces, introduced in the type
+% parameter proposal. Type-set interfaces have same restrictions as \kw{const},
+% i.e. they can only be used as type parameter bounds

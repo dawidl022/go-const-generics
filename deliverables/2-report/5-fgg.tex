@@ -168,5 +168,55 @@ $\isconst_\Delta(2) \neq \isconst_\Delta(\texttt{any})$. Both the type-checking
 and non type-checking lookups yield a map from type parameters to types, denoted
 by $\eta$.
 
+The rule T-Formal specifies what it means for type parameter constrain sequences
+(i.e. the formal type parameters found in a type declaration) to be well typed.
+All type parameters must be distinct, and their bounds must be well-typed, in
+the context of the typing environment that is created from the type parameter
+constraints that are being checked. This environment is necessary for
+recursively defined type parameter bounds, e.g. if \texttt{Eq} is an interface
+with one type parameter, then we can define another type \texttt{Foo} with a
+type parameter $\alpha$ bound by \texttt{Eq[$\alpha$]}, i.e. the type parameter
+is referenced within its own bound.
+
+There is a restriction in the current implementation of Go, that FGGA also
+adheres to, and that is that no type in any type parameter bound can refer to
+the type being declared (directly or indirectly). E.g. the interface type
+declaration \texttt{Eq} cannot have a type parameter $\alpha$ bound by
+\texttt{Eq[$\alpha$]} itself \autocite{spec}.
+% TODO Why not? Are there any use cases of permitting this?
+An example of how to get around the self-recursive bound limitation in practice
+can be found in the \hyperref[sec:self-ref-type-in-bound]{appendix}.
+% TODO what about indirectly recursive types? any use cases? if so, any
+% workarounds?
+The check for this restriction is performed via the $\notref$ auxiliary in the
+T-Type rule for each type parameter bound $\gamma$. $\notref$ is defined
+recursively, with the recursive case existing for named types $t[\ov{\tau}]$,
+and the base cases are the remaining type kinds; integer literals cannot be used
+as a type name, and neither can the keyword \kw{const}, so there is no
+possibility of a self-reference for those types. If a type is named the same as
+a type parameter, the type parameter will shadow the type name, and no
+self-reference occurs.
+% TODO verify this is the case in Go (shadowing of type name with type param,
+% both for self and non-self referential)
+When checking for self-reference in a named type, first we check whether the
+named-type type name $t$ is equal to any of the types we have already seen
+$\ov{t_r}$. Initially, the seen types sequence only contains the type we are
+type checking in T-Type. $\notref$ is performed recursively on all type
+arguments, as those could also be referencing one of the types from $\ov{t_r}$.
+To detect indirect self-references (i.e. circular references), $\notref$ is
+applied on all type parameter bounds of the named type's declaration, appending
+the type name $t$ to the sequence of seen type names $\ov{t_r}$ to check for
+self-references. While theoretically we could have just a single type $t_r$ to
+check for at a time, rather than a sequence, this would lead to problems when
+checking types that self-referential, but do not contain the initial type $t_r$
+in the cycle, as the rule would recurse indefinitely. Examples of the $\notref$
+auxiliary being used to type-check type declarations and a detailed illustration
+of the issue of checking a single type $t_r$ at a time can be found in the
+\hyperref[sec:fgg-self-ref-derivation-examples]{appendix}.
+
+The remainder of the T-Type rule checks that the type declaration's type
+parameters constraints $\ov{\Phi}$ are well-formed (via T-Formal), and that the
+type literal is well typed in the typing environment formed from $\ov{\Phi}$.
+
 \input{../../projects/go-generic-array-sizes/theory/fgg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fgg-typing}

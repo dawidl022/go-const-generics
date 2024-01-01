@@ -3,4 +3,17 @@
 \subsection{Generic programming in C using macros}
 \label{sec:generic-c}
 
+% TODO consider using newly introduced _Generic keyword (C11)
+% https://codereview.stackexchange.com/questions/274860/concept-of-implementing-generic-types-in-c-using-macros
+
 \lstinputlisting[language=C]{examples/macro-generics.c}
+
+\subsection{Type self-reference within type parameter constraints}
+\label{sec:self-ref-type-in-bound}
+
+% https://github.com/golang/go/issues/46461
+%
+% TODO Present code from fgg/typecheck/testdata/subtyping/recursive_bound_type/recursive_bound_type.go
+% and show workaround with fgg/typecheck/testdata/subtyping/interface_recursive_type_param/interface_recursive_type_param.go
+%
+% argue that the two forms are equivalent for practical use cases
