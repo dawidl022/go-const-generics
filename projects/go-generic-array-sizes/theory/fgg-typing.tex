@@ -153,7 +153,12 @@
     \begin{mathpar}
         \inferrule[t-type]
         {
-        \ov{\Phi \ok} \\
+        \ov{\Phi \ok}
+        \\
+        \ov{\Phi} = (\ov{\alpha~\gamma})
+        \\
+        \ov{\notref(t, \gamma)}
+        \\
         \ov{\Phi} \vdash T \ok
         }
         { \type~t[\ov{\Phi}]~T \ok }

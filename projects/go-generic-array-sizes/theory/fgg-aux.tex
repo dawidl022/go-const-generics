@@ -42,6 +42,35 @@
         }
         {(\ov{\Phi \by_\Delta \tau}) = \eta}
 
+        \axiomrule{
+            \notref(\ov{t_r},~n)
+        }
+
+        \axiomrule{
+            \notref(\ov{t_r},~\kw{const})
+        }
+
+        \axiomrule{
+            \notref(\ov{t_r},~\alpha)
+        }
+
+        \inferrule
+        {
+            \ov{\notref(\ov{t_r},~\tau)}
+            \\
+            \ov{t_r \neq t}
+            \\
+            (\ov{\alpha~\gamma}) = \typeparams(t)
+            \\
+            \ov{
+                \notref(\ov{t_r}, t, \gamma)
+            }
+        }
+        {
+            \notref(\ov{t_r},~t[\ov{\tau}])
+        }
+
+
         \gray{
             \inferrule
             {~}
