@@ -209,91 +209,99 @@
 \end{figure}
 
 \begin{figure}
-
-
     Expressions \hfill \fbox{$\Delta \stoup \Gamma \vdash e : \tau$}
     \begin{mathpar}
-        \inferrule[t-int-literal]
-        {~}
-        { \Delta;\Gamma \vdash n : n }
+        \gray{
+            \inferrule[t-int-literal]
+            {~}
+            { \black{\Delta;}~\Gamma \vdash n : n }
+        }
 
         \gray{
             \inferrule[t-var]
             {
-                (x : \tau) \in \Gamma
+                (x : \black{\tau}) \in \Gamma
             }
-            { \Delta \stoup \Gamma \vdash x : \tau }
+            { \black{\Delta \stoup}~\Gamma \vdash x : \black{\tau} }
         }
 
-        \inferrule[t-call]
-        {
-            (m(\ov{x~\sigma})~\sigma) \in \methods_\Delta(\tau)  \\
-            \Delta \stoup \Gamma \vdash e : \tau \\
-            \Delta \stoup \Gamma \vdash \ov{e : \tau} \\
-            \Delta \vdash (\ov{\tau \imp \sigma})
+        \gray{
+            \inferrule[t-call]
+            {
+                \black{\Delta \stoup}~\Gamma \vdash e : \black{\tau} \\
+                \black{\Delta \stoup}~\Gamma \vdash \ov{e : \black{\tau}} \\
+                (m(\ov{x~\black{\sigma}})~\black{\sigma}) \in \methods_\black{\Delta}(\black{\tau})  \\
+                \black{\Delta \vdash}~\ov{\black{\tau} \imp \black{\sigma}}
+            }
+            { \black{\Delta \stoup}~\Gamma \vdash e.m(\ov{e}) : \black{\sigma} }
         }
-        { \Delta \stoup \Gamma \vdash e.m(\ov{e}) : \sigma }
 
+        \gray{
         \inferrule[t-array-literal]
         {
-        \Delta \vdash \tau_A \ok \\
-        \ov{\Phi} = \typeparams(t_A)\\
-        \tau_A = t_A[\ov{\sigma}] \\
-        \eta = (\ov{\Phi \by \sigma})\\
-        \sigma = \elementtype(t_A)[\eta] \\
-        \len(\tau_A) \imp n_\tau \\
-        |\ov{e}| = \len(\tau_A)\\
-        \Delta ; \Gamma \vdash \ov{e : \tau} \\
-        \Delta \vdash \ov{\tau <: \sigma}
+        \black{\Delta \vdash \tau_A} \ok \\
+        \black{\ov{\Phi} = \typeparams(t_A)}\\
+        \black{\tau_A = t_A[\ov{\sigma}]} \\
+        \black{\eta = (\ov{\Phi \by \sigma})}\\
+        \black{\sigma} = \elementtype(t_A)\black{\llbracket\eta\rrbracket} \\
+        \black{\len(\tau_A) \imp n} \\
+        |\ov{e}| = \len(\black{\tau}_A)\\
+        \black{\Delta ;}~\Gamma \vdash \ov{e : \tau} \\
+        \black{\Delta \vdash}~\ov{\tau \imp \sigma}
         }
-        { \Delta;\Gamma \vdash \tau_A\br{\ov{e}} : \tau_A }
+        { \black{\Delta;}~\Gamma \vdash \black{\tau}_A\br{\ov{e}} : \black{\tau}_A }
+        }
 
+        \gray{
         \inferrule[t-array-index]
         {
-        \ov{\Phi} = \typeparams(t_A)\\
-        \tau_A = t_A[\ov{\tau}] \\
-        \eta = (\ov{\Phi \by \tau})\\
-        \tau = \elementtype(t_A)[\eta]\\
-        \Delta; \Gamma \vdash e_1 : \tau_A\\
-        \Delta; \Gamma \vdash ~e_2 : \kw{int} \\
+        \black{\ov{\Phi} = \typeparams(t_A)}\\
+        \black{\tau_A = t_A[\ov{\tau}]} \\
+        \black{\eta = (\ov{\Phi \by \tau})}\\
+        \black{\tau} = \elementtype(t_A)\black{\llbracket\eta\rrbracket}\\
+        \black{\Delta;}~\Gamma \vdash e_1 : \black{\tau}_A\\
+        \black{\Delta;}~\Gamma \vdash e_2 : \kw{int} \\
         }
-        { \Delta;\Gamma \vdash e_1[e_2] : \tau }
+        { \black{\Delta;}~\Gamma \vdash e_1[e_2] : \black{\tau} }
+        }
 
+        \gray{
         \inferrule[t-array-index-literal]
         {
-        \ov{\Phi} = \typeparams(t_A)\\
-        \tau_A = t_A[\ov{\tau}] \\
-        \eta = (\ov{\Phi \by \tau})\\
-        \tau = \elementtype(t_A)[\eta]\\
-        \Delta; \Gamma \vdash e_1 : \tau_A\\
-        \Delta; \Gamma \vdash ~e_2 : n \\
-        \len(\tau_A) \imp n_\tau \\
-        0 \le n < \len(\tau_A)
+        \black{\ov{\Phi} = \typeparams(t_A)}\\
+        \black{\tau_A = t_A[\ov{\tau}]} \\
+        \black{\eta = (\ov{\Phi \by \tau})}\\
+        \black{\tau} = \elementtype(t_A)\black{\llbracket\eta\rrbracket}\\
+        \black{\Delta;}~\Gamma \vdash e_1 : \black{\tau}_A\\
+        \black{\Delta;}~\Gamma \vdash e_2 : n \\
+        \black{\len(\tau_A) \imp n_\tau} \\
+        0 \le n < \len(\black{\tau}_A)
         }
-        { \Delta;\Gamma \vdash e_1[e_2] : \tau }
+        { \black{\Delta;}~\Gamma \vdash e_1[e_2] : \black{\tau} }
+        }
 
         \gray{
             \inferrule[t-struct-literal]
             {
-                \Delta \vdash \tau_S \ok
-                \quad
-                \Delta \stoup \Gamma \vdash \ov{e : \tau}
-                \quad
-                (\ov{f~\sigma}) = \fields(\tau_S)
-                \quad
-                \Delta \vdash \ov{\tau \imp \sigma}
+                \black{\Delta \vdash \tau}_S \ok
+                \\
+                \black{\Delta \stoup}~\Gamma \vdash \ov{e : \black{\tau}}
+                \\
+                (\ov{f~\black{\sigma}}) = \fields(\black{\tau}_S)
+                \\
+                \black{\Delta \vdash}~\ov{\black{\tau} \imp \black{\sigma}}
             }
-            { \Delta \stoup \Gamma \vdash \tau_S\br{\ov{e}} : \tau_S }
+            { \black{\Delta \stoup}~\Gamma \vdash \black{\tau}_S\br{\ov{e}} : \black{\tau}_S }
         }
 
         \gray{
             \inferrule[t-field]
             {
-                \Delta \stoup \Gamma \vdash e : \tau_S
-                \quad
-                (\ov{f~\tau}) = \fields(\tau_S)
+                \black{\Delta \stoup}~\Gamma \vdash e : \black{\tau}_S
+                \\
+                (\ov{f~\black{\tau}}) = \fields(\black{\tau}_S)
             }
-            { \Delta \stoup \Gamma \vdash e.f_i : \tau_i }
+            { \black{\Delta \stoup}~\Gamma \vdash e.f_i : \black{\tau}_i }
         }
     \end{mathpar}
 
@@ -302,10 +310,10 @@
         \gray{
             \inferrule[t-prog]
             {
-                \distinct(\tdecls(\ov{D})\black{, \kw{int}}) \\
+                \distinct(\tdecls(\ov{D}), \kw{int}) \\
                 \distinct(\mdecls(\ov{D})) \\
                 \ov{D \ok} \\
-                \emptyset \stoup \emptyset \vdash e : \tau
+                \black{\emptyset \stoup}~\emptyset \vdash e : \black{\tau}
             }
             { \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \ok }
         }

@@ -230,5 +230,35 @@ $\ov{\Phi}$. The T-Func and T-Func-Arrayset rules have been updated to look up
 the type parameter constraints based on the receiver type parameters to
 construct typing environments for the updated type-checking rules.
 
+Rules T-Int-Literal, T-Var, T-Call, T-Struct-Literal, T-Field and T-Program are
+all updated to use types $\tau$ and typing environments $\Delta$. The $\lentype$
+auxiliary now has two cases. One as before: when the array size is an integer
+literal (i.e. non-generic). The other is the generic case, where the array size
+is a type parameter, in which case $lentype$ returns the type argument that is
+used to instantiate the array size type parameter (by matching on the type
+parameter position). Array literals in FGGA can only be constructed when the
+$\lentype$ is an integer literal type --- either when the array length type is
+non-generic, or has been instantiated with an integer literal. When the array
+size is instantiated with a type parameter, the size is unknown, hence it is not
+safe to assume the array can hold any elements (e.g. it could be instantiated
+later with a size of 0). In practice, Go's zero values could be used to
+instantiate generically sized arrays, but since FGGA does not support them, even
+empty generic array initialisation is not allowed. The supertype of an array
+literal's elements is determined by type parameter substitution on the array's
+element type.
+
+As before, there are two rules for performing an array index operation, one
+where type of the index is \kw{int}, and one where the type is an integer
+literal. It is worth noting that generic, non-instantiated arrays (i.e. where
+$\lentype$ does not return an integer literal) can only be indexed using a non
+integer literal \kw{int} type. This is to stay consistent with current
+expectations: indexing into an array using an constant integer literal is only
+allowed to fail at compile-time. In-line with the Go spirit of type-checking
+generic code at the declaration site, as opposed to the call site, indexing
+into generic arrays using integer literals is not allowed in FGGA, even if the
+index would remain within bounds for all array instantiations in scope of the
+current program. The programmer may still achieve such a behaviour by explicitly
+assigning the integer literal to a non-const \kw{int} variable.
+
 \input{../../projects/go-generic-array-sizes/theory/fgg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fgg-typing}
