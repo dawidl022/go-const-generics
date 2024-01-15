@@ -63,7 +63,7 @@
         \gray{
             \inferrule[t-int-type]
             {~}
-            { \Delta \vdash \kw{int} \ok }
+            { \black{\Delta \vdash}~\kw{int} \ok }
         }
 
         \inferrule[t-param]
@@ -79,7 +79,7 @@
                 \and
                 \black{\eta = (\ov{\Phi \by_\Delta \tau})}
             }
-            { \Delta \vdash t[\ov{\tau}] \ok }
+            { \black{\Delta \vdash}~t\black{[\ov{\tau}]} \ok }
         }
     \end{mathpar}
 
@@ -105,43 +105,55 @@
     Well-formed method specifications and type literals
     \hfill \fbox{$\ov{\Phi} \vdash S \ok$} \qquad \fbox{$\ov{\Phi} \vdash T \ok$}
     \begin{mathpar}
-        \inferrule[t-specification]
-        {
-            \distinct(\ov{x}) \\
-            \ov{\Phi} \vdash \ov{\tau \ok}\\
-            \ov{\Phi} \vdash \tau \ok\\
-            \ov{
-                \neg \isconst_{\ov{\Phi}}(\tau)
-            }\\
-            \neg \isconst_{\ov{\Phi}}(\tau)
-        }
-        { \ov{\Phi} \vdash m(\ov{x~\tau})~\tau \ok }
-
-        \inferrule[t-struct]
-        {
-            \distinct(\ov{f}) \\
-            \ov{\Phi} \vdash \ov{\tau \ok}\\
-            \ov{
-                \neg \isconst_{\ov{\Phi}}(\tau)
+        \gray{
+            \inferrule[t-specification]
+            {
+                \distinct(\ov{x}) \\
+                \black{\ov{\Phi} \vdash \ov{\tau \ok}}\\
+                \black{\ov{\Phi} \vdash \tau \ok}\\
+                \black{\ov{
+                        \neg \isconst_{\ov{\Phi}}(\tau)
+                    }}\\
+                \black{\neg \isconst_{\ov{\Phi}}(\tau)}
             }
+            { \black{\ov{\Phi} \vdash}~m(\ov{x~\black{\tau}})~\black{\tau} \ok }
         }
-        { \ov{\Phi} \vdash \struct~\br{\ov{f~\tau}} \ok }
 
-        \inferrule[t-interface]
-        {
-            \unique(\ov{S}) \\
-            \ov{\Phi} \vdash \ov{S \ok}
+        \gray{
+            \inferrule[t-struct]
+            {
+                \distinct(\ov{f}) \\
+                \black{\ov{\Phi} \vdash \ov{\tau \ok}}\\
+                \black{
+                    \ov{
+                        \neg \isconst_{\ov{\Phi}}(\tau)
+                    }
+                }
+            }
+            { \black{\ov{\Phi} \vdash}~\struct~\br{\ov{f~\black{\tau}}} \ok }
         }
-        { \ov{\Phi} \vdash \interface~\br{\ov{S}} }
 
+        \gray{
+            \inferrule[t-interface]
+            {
+                \unique(\ov{S}) \\
+                \black{\ov{\Phi} \vdash}~\ov{S \ok}
+            }
+            { \black{\ov{\Phi} \vdash}~\interface~\br{\ov{S}} }
+        }
+
+        \gray{
         \inferrule[t-array]
         {
-            \ov{\Phi} \vdash \tau_n \ok\\
-            \isconst_{\ov{\Phi}}(\tau_n)\\
-            \ov{\Phi} \vdash \tau \ok\\
-            \neg \isconst_{\ov{\Phi}}(\tau)
+        \black{\ov{\Phi} \vdash \tau_n \ok}\\
+        \black{\isconst_{\ov{\Phi}}(\tau_n)}\\
+        \black{\ov{\Phi} \vdash \tau \ok}\\
+        \black{\neg \isconst_{\ov{\Phi}}(\tau)}
         }
-        {\ov{\Phi} \vdash [\tau_n]\tau \ok}
+        {
+        \black{\ov{\Phi} \vdash}~[\black{\tau_n}]\black{\tau} \ok
+        }
+        }
     \end{mathpar}
     \caption{FGG typing  with arrays (1 of 3)}
 \end{figure}

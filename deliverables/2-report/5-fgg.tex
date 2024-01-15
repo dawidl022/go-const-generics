@@ -94,7 +94,7 @@ an environment mapping variables $x$ to types $\tau$.
 
 The ``implements'' relation now includes a typing environment $\Delta$. As
 before, all types implement themselves (rules $\imp_{\text{Param}}$, $\imp_V$,
-$\imp_{int}$, $\imp{const}$ and $\imp_n$), and integer literal types implement
+$\imp_{int}$, $\imp_{const}$ and $\imp_n$), and integer literal types implement
 the \kw{int} type (rule $\imp_{int-n}$). Non-negative integer literals now also
 implement the \kw{const} type (rule $\imp_{const-n}$), so that they can be used
 as type arguments, where the bound of the type parameter is \kw{const}. Since
@@ -158,25 +158,25 @@ additionally checks the bounds of each type argument via the subtyping relation,
 which itself is done via a type substitution on the type parameters as well as
 the bounds, because bounds may refer to other type parameters in the type
 parameter constraints sequence. Not only must the type arguments implement the
-type-substituted bounds of their corresponding type parameters, but must have an
-equal ``\kw{const}-ness'', i.e. either both the argument and bound return true
-for $\isconst$, or they both return false. The need for this check can be
-illustrated with the following example: $2 \imp \texttt{any}$ holds, but 2
-cannot be used as a variable type, and so it cannot be used to instantiate a
+type-substituted bounds of their corresponding type parameters, but they must
+also have an equal ``\kw{const}-ness'', i.e. either both the argument and bound
+return true for $\isconst$, or they both return false. The need for this check
+can be illustrated with the following example: $2 \imp \texttt{any}$ holds, but
+2 cannot be used as a variable type, and so it cannot be used to instantiate a
 type parameter bound by \texttt{any}. This is enforced in the rule because
 $\isconst_\Delta(2) \neq \isconst_\Delta(\texttt{any})$. Both the type-checking
 and non type-checking lookups yield a map from type parameters to types, denoted
 by $\eta$.
 
-The rule T-Formal specifies what it means for type parameter constrain sequences
-(i.e. the formal type parameters found in a type declaration) to be well typed.
-All type parameters must be distinct, and their bounds must be well-typed, in
-the context of the typing environment that is created from the type parameter
-constraints that are being checked. This environment is necessary for
-recursively defined type parameter bounds, e.g. if \texttt{Eq} is an interface
-with one type parameter, then we can define another type \texttt{Foo} with a
-type parameter $\alpha$ bound by \texttt{Eq[$\alpha$]}, i.e. the type parameter
-is referenced within its own bound.
+The rule T-Formal specifies what it means for type parameter constraint
+sequences (i.e. the formal type parameters found in a type declaration) to be
+well typed. All type parameters must be distinct, and their bounds must be
+well-typed, in the context of the typing environment that is created from the
+type parameter constraints that are being checked. This environment is necessary
+for recursively defined type parameter bounds, e.g. if \texttt{Eq} is an
+interface with one type parameter, then we can define another type \texttt{Foo}
+with a type parameter $\alpha$ bound by \texttt{Eq[$\alpha$]}, i.e. the type
+parameter is referenced within its own bound.
 
 There is a restriction in the current implementation of Go, that FGGA also
 adheres to, and that is that no type in any type parameter bound can refer to
@@ -217,6 +217,16 @@ of the issue of checking a single type $t_r$ at a time can be found in the
 The remainder of the T-Type rule checks that the type declaration's type
 parameters constraints $\ov{\Phi}$ are well-formed (via T-Formal), and that the
 type literal is well typed in the typing environment formed from $\ov{\Phi}$.
+
+The rule T-Const asserts that \kw{const} type passes the bounds type check in
+the T-Formal rule in any environment $\Delta$. The T-Specification rule has been
+updated to type check the parameter and return types under the typing
+environment $\ov{\Phi}$. Additionally, neither the parameter nor return types
+may be \kw{const} types. T-Struct has similarly been updated to check the field
+types in the environment $\ov{\Phi}$, and to only permit non-\kw{const} field
+types. An array size can now be any valid \kw{const} type, and the element type
+must be a valid non-\kw{const} type, evaluated in the typing environment
+$\ov{\Phi}$.
 
 \input{../../projects/go-generic-array-sizes/theory/fgg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fgg-typing}
