@@ -226,7 +226,9 @@ may be \kw{const} types. T-Struct has similarly been updated to check the field
 types in the environment $\ov{\Phi}$, and to only permit non-\kw{const} field
 types. An array size can now be any valid \kw{const} type, and the element type
 must be a valid non-\kw{const} type, evaluated in the typing environment
-$\ov{\Phi}$.
+$\ov{\Phi}$. The T-Func and T-Func-Arrayset rules have been updated to look up
+the type parameter constraints based on the receiver type parameters to
+construct typing environments for the updated type-checking rules.
 
 \input{../../projects/go-generic-array-sizes/theory/fgg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fgg-typing}

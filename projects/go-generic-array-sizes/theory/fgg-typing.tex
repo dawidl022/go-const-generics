@@ -163,42 +163,46 @@
 
     Well-formed declarations \hfill \fbox{$D \ok$}
     \begin{mathpar}
-        \inferrule[t-type]
-        {
-        \ov{\Phi \ok}
-        \\
-        \ov{\Phi} = (\ov{\alpha~\gamma})
-        \\
-        \ov{\notref(t, \gamma)}
-        \\
-        \ov{\Phi} \vdash T \ok
+        \gray{
+            \inferrule[t-type]
+            {
+                \black{\ov{\Phi \ok}}
+                \\
+                \black{\ov{\Phi} = (\ov{\alpha~\gamma})}
+                \\
+                \black{\ov{\notref(t, \gamma)}}
+                \\
+                \black{\ov{\Phi} \vdash}~T \ok
+            }
+            { \type~t\black{[\ov{\Phi}]}~T \ok }
         }
-        { \type~t[\ov{\Phi}]~T \ok }
 
-        \inferrule[t-func]
-        {
-        \distinct(x, \ov{x}) \\
-        \ov{\Phi} = \typeparams(t_V)\\
-        (\ov{\alpha~\gamma}) = \ov{\Phi}\\
-        \ov{\Phi} \vdash m(\ov{x~\tau})~\sigma \ok \\
-        \ov{\Phi} \stoup
-        x : t_V[\ov{\alpha}] \comma \ov{x : \tau} \vdash e : \tau \\
-        \ov{\Phi} \vdash \tau \imp \sigma \\
+        \gray{
+            \inferrule[t-func]
+            {
+                \distinct(x, \ov{x}) \\
+                \black{\ov{\Phi} = \typeparams(t_V)}\\
+                \black{(\ov{\alpha~\gamma}) = \ov{\Phi}}\\
+                \black{\ov{\Phi} \vdash}~m(\ov{x~\black{\tau}})~\black{\sigma} \ok \\
+                \black{\ov{\Phi} \stoup}
+                x : t_V\black{[\ov{\alpha}]} \comma \ov{x : \black{\tau}} \vdash e : \black{\tau} \\
+                \black{\ov{\Phi} \vdash \tau} \imp \black{\sigma} \\
+            }
+            { \func~(x~t_V\black{[\ov{\alpha}]})~m(\ov{x~\black{\tau}})~\black{\sigma}~\br{\return~e} \ok }
         }
-        { \func~(x~t_V[\ov{\alpha}])~m(\ov{x~\tau})~\sigma~\br{\return~e} \ok }
-    \end{mathpar}
 
-    \begin{mathpar}
-        \inferrule[t-func-arrayset]
-        {
-        \sigma = \elementtype(t_A) \\
-        \ov{\Phi} = \typeparams(t_A)\\
-        (\ov{\alpha~\gamma}) = \ov{\Phi} \\
-        \ov{\Phi} \vdash \tau \imp \sigma
-        }
-        {
-        \func~(x~t_A[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau) ~t_A~
-        \br{ x[x_1] = x_2;~\return~x }
+        \gray{
+            \inferrule[t-func-arrayset]
+            {
+                \black{\sigma} = \elementtype(t_A) \\
+                \black{\ov{\Phi} = \typeparams(t_A)}\\
+                \black{(\ov{\alpha~\gamma}) = \ov{\Phi}} \\
+                \black{\ov{\Phi} \vdash \tau} \imp \black{\sigma}
+            }
+            {
+                \func~(x~t_A\black{[\ov{\alpha}]}) ~m(x_1~\kw{int},~x_2~\black{\tau}) ~t_A\black{[\ov{\alpha}]}~
+                \br{ x[x_1] = x_2;~\return~x }
+            }
         }
     \end{mathpar}
     \caption{FGG typing with arrays (2 of 3)}
