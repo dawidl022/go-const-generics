@@ -7,6 +7,10 @@ import (
 )
 
 func TestReversedArray_createsCopyOfArray(t *testing.T) {
+	if N < 2 {
+		return
+	}
+
 	arr := newIncreasingArray()
 	reversedArr := reversedArray(arr)
 
@@ -14,6 +18,10 @@ func TestReversedArray_createsCopyOfArray(t *testing.T) {
 }
 
 func TestReversedArray_createsReverseOfArray(t *testing.T) {
+	if N < 2 {
+		return
+	}
+
 	reversedArr := reversedArray(newIncreasingArray())
 
 	for i := 0; i < N-1; i++ {

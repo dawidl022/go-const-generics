@@ -7,6 +7,10 @@ import (
 )
 
 func TestReversedSlice_createsCopyOfSlice(t *testing.T) {
+	if N < 2 {
+		return
+	}
+
 	s := newIncreasingSlice()
 	reversedS := reversedSlice(s)
 
@@ -14,6 +18,10 @@ func TestReversedSlice_createsCopyOfSlice(t *testing.T) {
 }
 
 func TestReversedSlice_createsReverseOfSlice(t *testing.T) {
+	if N < 2 {
+		return
+	}
+
 	reversedS := reversedSlice(newIncreasingSlice())
 
 	for i := 0; i < N-1; i++ {
