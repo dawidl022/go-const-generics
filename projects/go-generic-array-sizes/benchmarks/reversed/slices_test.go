@@ -21,12 +21,10 @@ func TestReversedSlice_createsReverseOfSlice(t *testing.T) {
 	}
 }
 
-var sliceResult []int
-
 func BenchmarkReversedSlice(b *testing.B) {
 	arr := newIncreasingSlice()
 	for i := 0; i < b.N; i++ {
-		sliceResult = reversedSlice(arr)
+		reversedSlice(arr)
 	}
 }
 
