@@ -22,6 +22,8 @@ func TestReversedArray_createsReverseOfArray(t *testing.T) {
 }
 
 func BenchmarkReversedArray(b *testing.B) {
+	b.ReportAllocs()
+
 	arr := newIncreasingArray()
 	for i := 0; i < b.N; i++ {
 		reversedArray(arr)
