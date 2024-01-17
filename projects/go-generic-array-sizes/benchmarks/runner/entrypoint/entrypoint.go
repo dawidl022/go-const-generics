@@ -8,7 +8,7 @@ import (
 )
 
 func Run(packagePath string, output io.Writer) error {
-	results, err := runner.RunBenchmarks(packagePath)
+	results, err := runner.NewRunner(packagePath).RunBenchmarks()
 	if err != nil {
 		return err
 	}
