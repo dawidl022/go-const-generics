@@ -13,6 +13,8 @@ import (
 	"text/template"
 )
 
+const MaxSize = 1024 * 1014 * 32
+
 type Results struct {
 	PackageName string
 	Goos        string
@@ -66,8 +68,6 @@ func (r *Runner) RunBenchmarks() (Results, error) {
 
 	return r.performBenchmarks()
 }
-
-const MaxSize = 1024 * 1024 * 32
 
 func (r *Runner) performBenchmarks() (Results, error) {
 	results, err := r.runEmptyBenchmark()
