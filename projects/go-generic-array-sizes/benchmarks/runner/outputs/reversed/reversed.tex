@@ -1,12 +1,15 @@
 \begin{tikzpicture}
+    \pgfplotsset{set layers}
     \begin{loglogaxis}[
-            height=14cm,
+            scale only axis,
+            height=12cm,
             xlabel={Number of elements},
             ylabel={Runtime (ns/op)},
             legend pos=north west,
             legend entries={ReversedArray,ReversedSlice},
-            xmin=1,
-            xmax=16777216,
+            xmin=2,
+            xmax=33554432,
+            axis y line*=left,
             log basis x={2},
             log basis y={2},
             xmajorgrids=true,
@@ -17,4 +20,19 @@
         \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/BenchmarkReversedArray.dat};
         \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/BenchmarkReversedSlice.dat};
     \end{loglogaxis}
+    \begin{semilogxaxis}[
+            scale only axis,
+            xmin=2,
+            xmax=33554432,
+            height=12cm,
+            axis y line*=right,
+            axis x line=none,
+            ylabel=Relative speedup,
+            log basis x={2},
+            extra y ticks = 0,
+            extra y tick labels = ,
+            extra y tick style  = { grid = major },
+        ]
+        \addplot [gray] table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/speedup.dat};
+    \end{semilogxaxis}
 \end{tikzpicture}

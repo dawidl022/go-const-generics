@@ -27,3 +27,15 @@ func NewTable(results runner.BenchmarkResults) Table {
 	}
 	return table
 }
+
+func NewRelativeSpeedupTable(multipliers map[int]float64) Table {
+	table := Table{"size\trelativeSpeedup"}
+
+	sortedKeys := maps.Keys(multipliers)
+	slices.Sort(sortedKeys)
+
+	for _, key := range sortedKeys {
+		table = append(table, fmt.Sprintf("%d\t%f", key, multipliers[key]))
+	}
+	return table
+}

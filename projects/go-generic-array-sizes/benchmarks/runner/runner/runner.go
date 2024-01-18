@@ -13,7 +13,7 @@ import (
 	"text/template"
 )
 
-const MaxSize = 1024 * 1014 * 32
+const MaxSize = 1024 * 1024 * 32
 
 type Results struct {
 	PackageName string
