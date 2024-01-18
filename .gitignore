@@ -11,6 +11,10 @@
 *.blg
 *.run.xml
 *.toc
+*.md5
+*.dpth
+*.auxlock
+*.dep
 
 # ANTLR generated files:
 .antlr

@@ -12,6 +12,12 @@
 \usepackage{xcolor}
 \usepackage{array}
 \usepackage{stmaryrd}
+\usepackage{pgfplots}
+% Cache plots for compilation
+% https://www.overleaf.com/learn/latex/Pgfplots_package
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{external}
+\tikzexternalize
 
 % Referencing library setup
 \assignrefcontextentries[]{*}
