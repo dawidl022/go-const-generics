@@ -1,13 +1,50 @@
 \section{Arrays by Example}
 
-Slices may be used for ..., this section intends to identify use cases, where
-using arrays in Go programs may be more beneficial than using slices.
+Most of the time, Go programmers will use slices over arrays due to their
+dynamic nature. However, when the size of a collection of elements can be
+determined at compile time, there are certain benefits to using arrays. This
+section intends to identify use cases where using arrays in Go programs may be
+more beneficial than using slices, and what are the benefits and the performance
+implications.
 
-% TODO manually create plot from tables, then automate process
+A major drawback.
+
+\subsection{Gentle introduction}
+
+The first function we'll examine is one that creates a reversed copy of an
+array/slice. Below is a side-by-side view of the two functions: the first
+operating on arrays, and the second operating on slices.
+
+\lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/arrays.go}
+
+\lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/slices.go}
+
+% TODO describe program differences and reference to N constant
+
+The slice function is almost identical to the array function, except that we
+need to explicitly allocate a new slice for the result. Arrays are value types,
+so simply passing an array into a function (and similarly returning an array
+from a function) creates a copy. For relatively small arrays (8MB in size or
+less), the memory for the array copy is allocated on the stack. For slices
+however, even for the smallest slices (of length 1 or more), the
+\texttt{reversed} function allocates the new slice on the heap. This operation
+is more expensive, and so, as the benchmarks show, the array variant of the
+\texttt{reversed} functions performs on average 2-3 times faster for arrays of
+size 8MB or less. For very small arrays (16 \texttt{int}s or less), the
+performance benefits or arrays for this operation are even more apparent. Once
+the array reaches 16MB or more, the memory for the copy gets allocated onto the
+heap, and is in fact slower than using slices once we reach 256MB. The
+benchmarks are limited to 256MB, since at array sizes of 512MB the compiler
+rejects the program, since it could potentially use up more than 1GB of stack
+space (we need to multiply 512MB by two since we are creating a copy of the
+array). So if collections of such large sizes are necessary, slices are the only
+option. For smaller sizes, however, arrays perform better.
+
 \begin{figure}
     \input{../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/reversed}
+    \caption{Comparison of \texttt{reversed} function benchmarks captured on
+        Apple M1 Pro}
 \end{figure}
-
 
 % Subsection 1: Gentle introduction
 
