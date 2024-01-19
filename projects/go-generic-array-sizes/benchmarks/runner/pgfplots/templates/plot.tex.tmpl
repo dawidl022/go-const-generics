@@ -6,7 +6,7 @@
             xlabel={Number of elements},
             ylabel={Runtime (ns/op)},
             legend pos=north west,
-            legend entries={ BenchmarkReversedArray, BenchmarkReversedSlice },
+            legend entries={ {{ index .FuncNames 0 }}, {{ index .FuncNames 1 }} },
             xmin=2,
             xmax=33554432,
             axis y line*=left,
@@ -17,8 +17,8 @@
             grid style=dashed,
         ]
 
-        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/BenchmarkReversedArray.dat};
-        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/BenchmarkReversedSlice.dat};
+        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/{{ .PackageName }}/{{ index .FuncNames 0 }}.dat};
+        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/{{ .PackageName }}/{{ index .FuncNames 1 }}.dat};
     \end{loglogaxis}
     \begin{semilogxaxis}[
             scale only axis,
@@ -33,9 +33,9 @@
             extra y tick labels = ,
             extra y tick style  = { grid = major },
         ]
-        \addplot [gray] table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/speedup.dat};
+        \addplot [gray] table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/{{ .PackageName }}/speedup.dat};
     \end{semilogxaxis}
 \end{tikzpicture}
 
-% GOOS: darwin
-% GOARCH: arm64
+% GOOS: {{ .Goos }}
+% GOARCH: {{.Goarch}}

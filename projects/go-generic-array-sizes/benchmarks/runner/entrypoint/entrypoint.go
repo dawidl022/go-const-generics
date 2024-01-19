@@ -5,12 +5,10 @@ import (
 	"io"
 	"os"
 	"path"
-	"slices"
-
-	"golang.org/x/exp/maps"
 
 	"github.com/dawidl022/go-generic-array-sizes/benchmarks/runner/pgfplots"
 	"github.com/dawidl022/go-generic-array-sizes/benchmarks/runner/runner"
+	"github.com/dawidl022/go-generic-array-sizes/benchmarks/runner/stats"
 )
 
 func Run(packagePath string, output io.Writer) error {
@@ -19,7 +17,11 @@ func Run(packagePath string, output io.Writer) error {
 		return err
 	}
 
-	return writeTablesToOutputDir(results)
+	err = writeTablesToOutputDir(results)
+	if err != nil {
+		return err
+	}
+	return writePgfPlotsToOutputDir(results)
 }
 
 const outputDir = "outputs"
@@ -41,7 +43,7 @@ func writeTablesToOutputDir(results runner.Results) error {
 		}
 	}
 
-	diff := relativeSpeedup(results.Results[0], results.Results[1])
+	diff := stats.RelativeSpeedup(results.Results[0], results.Results[1])
 	diffTable := pgfplots.NewRelativeSpeedupTable(diff)
 	err = os.WriteFile(
 		path.Join(dirPath, "speedup.dat"),
@@ -52,18 +54,14 @@ func writeTablesToOutputDir(results runner.Results) error {
 	return nil
 }
 
-func relativeSpeedup(b1 runner.BenchmarkResults, b2 runner.BenchmarkResults) map[int]float64 {
-	sortedKeys := maps.Keys(b1.Metrics)
-	slices.Sort(sortedKeys)
+func writePgfPlotsToOutputDir(results runner.Results) error {
+	dirPath := path.Join(outputDir, results.PackageName)
 
-	res := make(map[int]float64)
-
-	for _, key := range sortedKeys {
-		if b1.Metrics[key].NsPerOp <= b2.Metrics[key].NsPerOp {
-			res[key] = (1/float64(b1.Metrics[key].NsPerOp))/(1/float64(b2.Metrics[key].NsPerOp)) - 1.0
-		} else {
-			res[key] = -((1/float64(b2.Metrics[key].NsPerOp))/(1/float64(b1.Metrics[key].NsPerOp)) - 1.0)
-		}
+	plotLatex, err := pgfplots.NewPgfPlot(results)
+	if err != nil {
+		return err
 	}
-	return res
+	return os.WriteFile(
+		path.Join(dirPath, fmt.Sprintf("%s.tex", results.PackageName)),
+		plotLatex.Bytes(), 0644)
 }

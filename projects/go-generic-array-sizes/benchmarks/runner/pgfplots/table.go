@@ -17,13 +17,13 @@ func (t Table) String() string {
 }
 
 func NewTable(results runner.BenchmarkResults) Table {
-	table := Table{"size\tnsPerOp"}
+	table := Table{"size\tnsPerOp\tallocsPerOp"}
 
 	sortedKeys := maps.Keys(results.Metrics)
 	slices.Sort(sortedKeys)
 
 	for _, key := range sortedKeys {
-		table = append(table, fmt.Sprintf("%d\t%f", key, results.Metrics[key].NsPerOp))
+		table = append(table, fmt.Sprintf("%d\t%f\t%d", key, results.Metrics[key].NsPerOp, results.Metrics[key].AllocsPerOp))
 	}
 	return table
 }
