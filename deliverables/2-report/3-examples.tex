@@ -29,16 +29,20 @@ less), the memory for the array copy is allocated on the stack. For slices
 however, even for the smallest slices (of length 1 or more), the
 \texttt{reversed} function allocates the new slice on the heap. This operation
 is more expensive, and so, as the benchmarks show, the array variant of the
-\texttt{reversed} functions performs on average 2-3 times faster for arrays of
-size 8MB or less. For very small arrays (16 \texttt{int}s or less), the
+\texttt{reversed} functions performs on average around 50\% faster for arrays of
+size 8MB or less. For very small arrays (64 \texttt{int}s or less), the
 performance benefits or arrays for this operation are even more apparent. Once
 the array reaches 16MB or more, the memory for the copy gets allocated onto the
-heap, and is in fact slower than using slices once we reach 256MB. The
-benchmarks are limited to 256MB, since at array sizes of 512MB the compiler
-rejects the program, since it could potentially use up more than 1GB of stack
-space (we need to multiply 512MB by two since we are creating a copy of the
-array). So if collections of such large sizes are necessary, slices are the only
-option. For smaller sizes, however, arrays perform better.
+heap, and in fact becomes slower than using slices. The benchmarks are limited
+to 256MB, since at array sizes of 512MB the compiler rejects the program, since
+it could potentially use up more than 1GB of stack space (we need to multiply
+512MB by two since we are creating a copy of the array). So if collections of
+such large sizes are necessary, slices are the only option. For smaller sizes,
+however, arrays perform better.
+
+The benchmarks were run on a single core, using \texttt{GOMAXPROCS=1}, and the
+results of the functions were written to global variables, in an attempt to
+prevent the compiler from eliminating the benchmarked code \autocite{benchPits}.
 
 \begin{figure}
     \input{../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/reversed}
