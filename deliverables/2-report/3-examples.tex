@@ -90,14 +90,59 @@ public API. There is no way of knowing ahead of time what array sizes a user may
 wish to use, and enumerating them all is infeasible. Ideally we'd want a way to
 abstract over arrays of any size.
 
-% Subsection 1: Gentle introduction
+% TODO benchmark reversing in place
 
-% Example 1: `reversed` function
+\subsection{Array semantics}
 
-% Show current workaround with "union-like" interfaces and discuss its
-% limitations
+We've looked at an example where using arrays is faster than slices. In general,
+it is difficult to reliably build array-based data structures that offer better
+performance than slices, since all the operations need to be handwritten and
+optimised. One rule of thumb, is that allocations (and therefore copies) are
+faster for arrays than slices.
 
-% Subsection 2: Data-structure examples
+\subsubsection{Value type}
+
+However, arrays offer other semantic differences, that may make it more
+appealing to build data structures from for certain use cases. We've seen that
+arrays are value types, and as such, copies can be easily made through simple
+assignment to a variable or passing into a function. While cloning a single
+slice is not much more difficult, if we have a large, nested data structure,
+that is slice based, performing a deep-copy is a verbose and manual process
+(there is no standard library deep-copy function as of Go 1.21). If instead the
+data structure was array based, with no internal pointers (only potentially a
+top-level pointer to the data structure), performing a deep-copy becomes
+trivial.
+
+\subsubsection{Comparison}
+
+Arrays are comparable, while slices are not. Again, for a simple example, one
+could define a function that compares the size and elements of a slices to
+determine if two slices are equal in value (not reference). It is slightly more
+difficult to do the same with a nested slice-based data structure (although this
+time around, the standard library does provide \texttt{reflect.DeepEqual} with
+some caveats),
+% TODO describe null vs empty slice in footnote
+a nested array-based data structure (with no internal pointers) can be simply
+compared with the \texttt{==} operator.
+
+This comparable attribute of arrays becomes extremely important when we wish to
+use a collection of elements as a key in a hash map. Only comparable data
+structures can be used as map keys, which means that arrays can be used as map
+keys, while slices cannot. This also applies recursively, so slice-based data
+structures cannot be used as map keys, while array-based ones can.
+
+\subsubsection{Limitations}
+
+The drawback of defining array-based data structures and operations on them, is
+that the array sizes must be fixed at compile time. By making array sizes
+generic, we can parameterize array-based data structures over many sizes known
+at compile time, making them much more versatile. The following subsection
+outlines some examples of array-based data structures, and then we proceed to
+describe how numerical type parameters can resolve this limitation, and a design
+for them.
+
+\subsection{Data structure examples}
+
 
 % Example 2: Array struct with static capacity and len field
 
