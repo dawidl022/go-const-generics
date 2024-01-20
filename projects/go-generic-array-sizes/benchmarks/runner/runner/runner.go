@@ -22,6 +22,15 @@ type Results struct {
 	Results     []BenchmarkResults
 }
 
+func (r Results) OfFunc(funcName string) BenchmarkResults {
+	for _, res := range r.Results {
+		if res.FuncName == funcName {
+			return res
+		}
+	}
+	panic("invalid funcName provided")
+}
+
 type BenchmarkResults struct {
 	FuncName string
 	Metrics  map[int]BenchmarkMetrics
@@ -39,18 +48,20 @@ const benchReExpr = `goos: (.*)\ngoarch: (.*)\npkg: .*\n(([A-Za-z0-9]+\W+[0-9]+\
 const resultReExpr = `([A-Za-z0-9]+)\W+([0-9]+)\W+([0-9\.]+) ns\/op\W+([0-9]+) B\/op\W+([0-9]+) allocs\/op`
 
 type Runner struct {
-	benchRe     *regexp.Regexp
-	resultRe    *regexp.Regexp
-	packagePath string
-	tmpl        *template.Template
+	benchRe      *regexp.Regexp
+	resultRe     *regexp.Regexp
+	packagePath  string
+	benchPattern string
+	tmpl         *template.Template
 }
 
-func NewRunner(packagePath string) *Runner {
+func NewRunner(packagePath, benchPattern string) *Runner {
 	return &Runner{
-		benchRe:     regexp.MustCompile(benchReExpr),
-		resultRe:    regexp.MustCompile(resultReExpr),
-		packagePath: packagePath,
-		tmpl:        newConfigTemplate(),
+		benchRe:      regexp.MustCompile(benchReExpr),
+		resultRe:     regexp.MustCompile(resultReExpr),
+		packagePath:  packagePath,
+		benchPattern: benchPattern,
+		tmpl:         newConfigTemplate(),
 	}
 }
 
@@ -123,7 +134,7 @@ func (r *Runner) writeConfigFile(size int) error {
 }
 
 func (r *Runner) executeGoTestBench() (*bytes.Buffer, error) {
-	cmd := exec.Command("go", "test", "-bench=.")
+	cmd := exec.Command("go", "test", fmt.Sprintf("-bench=%s", r.benchPattern))
 	cmd.Env = append(cmd.Env, "GOMAXPROCS=1")
 	cmd.Env = append(cmd.Env, fmt.Sprintf("HOME=%s", os.Getenv("HOME")))
 	cmd.Dir = r.packagePath

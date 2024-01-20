@@ -1,15 +1,18 @@
 \begin{tikzpicture}
+    {{ if .Comparison }}
     \pgfplotsset{set layers}
+    {{ end }}
     \begin{loglogaxis}[
             scale only axis,
             height=12cm,
             xlabel={Number of elements},
             ylabel={Runtime (ns/op)},
             legend pos=north west,
-            legend entries={ {{ index .FuncNames 0 }}, {{ index .FuncNames 1 }} },
+            legend entries={
+                {{ range $i, $funcName := .FuncNames }}{{ $funcName }},{{ end }}
+            },
             xmin=2,
-            xmax=33554432,
-            axis y line*=left,
+            xmax=33554432,{{ if .Comparison }} axis y line*=left,{{ end }}
             log basis x={2},
             log basis y={2},
             xmajorgrids=true,
@@ -17,9 +20,11 @@
             grid style=dashed,
         ]
 
-        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/{{ .PackageName }}/{{ index .FuncNames 0 }}.dat};
-        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/{{ .PackageName }}/{{ index .FuncNames 1 }}.dat};
+        {{ range $i, $funcName := .FuncNames }}
+        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/{{ $.PackageName }}/{{ $funcName }}.dat};
+        {{ end }}
     \end{loglogaxis}
+    {{ if .Comparison }}
     \begin{semilogxaxis}[
             scale only axis,
             xmin=2,
@@ -33,8 +38,9 @@
             extra y tick labels = ,
             extra y tick style  = { grid = major },
         ]
-        \addplot [gray] table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/{{ .PackageName }}/speedup.dat};
+        \addplot [gray] table {../../projects/go-generic-array-sizes/benchmarks/runner/{{ .OutputPath }}/speedup.dat};
     \end{semilogxaxis}
+    {{ end }}
 \end{tikzpicture}
 
 % GOOS: {{ .Goos }}

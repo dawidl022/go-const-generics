@@ -1,0 +1,35 @@
+\begin{tikzpicture}
+    
+    \begin{loglogaxis}[
+            scale only axis,
+            height=12cm,
+            xlabel={Number of elements},
+            ylabel={Runtime (ns/op)},
+            legend pos=north west,
+            legend entries={
+                BenchmarkReversedArray,BenchmarkReversedArrayGeneric,BenchmarkReversedSliceGeneric,BenchmarkReversedSlice,
+            },
+            xmin=2,
+            xmax=33554432,
+            log basis x={2},
+            log basis y={2},
+            xmajorgrids=true,
+            ymajorgrids=true,
+            grid style=dashed,
+        ]
+
+        
+        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/BenchmarkReversedArray.dat};
+        
+        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/BenchmarkReversedArrayGeneric.dat};
+        
+        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/BenchmarkReversedSliceGeneric.dat};
+        
+        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/BenchmarkReversedSlice.dat};
+        
+    \end{loglogaxis}
+    
+\end{tikzpicture}
+
+% GOOS: darwin
+% GOARCH: arm64

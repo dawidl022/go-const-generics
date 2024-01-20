@@ -11,24 +11,24 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/benchmarks/runner/stats"
 )
 
-func Run(packagePath string, output io.Writer) error {
-	results, err := runner.NewRunner(packagePath).RunBenchmarks()
+func Run(packagePath, benchPattern string, comparison *[2]string, output io.Writer) error {
+	results, err := runner.NewRunner(packagePath, benchPattern).RunBenchmarks()
 	if err != nil {
 		return err
 	}
 
-	err = writeTablesToOutputDir(results)
+	err = writeTablesToOutputDir(results, benchPattern, comparison)
 	if err != nil {
 		return err
 	}
-	return writePgfPlotsToOutputDir(results)
+	return writePgfPlotsToOutputDir(results, benchPattern, comparison)
 }
 
 const outputDir = "outputs"
 
-func writeTablesToOutputDir(results runner.Results) error {
+func writeTablesToOutputDir(results runner.Results, benchPattern string, comparison *[2]string) error {
 	dirPath := path.Join(outputDir, results.PackageName)
-	err := os.MkdirAll(dirPath, 0755)
+	err := os.MkdirAll(outputPath(results, benchPattern), 0755)
 	if err != nil {
 		return err
 	}
@@ -43,25 +43,43 @@ func writeTablesToOutputDir(results runner.Results) error {
 		}
 	}
 
-	diff := stats.RelativeSpeedup(results.Results[0], results.Results[1])
-	diffTable := pgfplots.NewRelativeSpeedupTable(diff)
-	err = os.WriteFile(
-		path.Join(dirPath, "speedup.dat"),
-		[]byte(diffTable.String()), 0644)
-	if err != nil {
-		return err
+	if comparison != nil {
+		diff := stats.RelativeSpeedup(results.OfFunc(comparison[0]), results.OfFunc(comparison[1]))
+		diffTable := pgfplots.NewRelativeSpeedupTable(diff)
+		err = os.WriteFile(
+			path.Join(outputPath(results, benchPattern), "speedup.dat"),
+			[]byte(diffTable.String()), 0644)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
-func writePgfPlotsToOutputDir(results runner.Results) error {
-	dirPath := path.Join(outputDir, results.PackageName)
-
-	plotLatex, err := pgfplots.NewPgfPlot(results)
+func writePgfPlotsToOutputDir(results runner.Results, benchPattern string, comparison *[2]string) error {
+	plotLatex, err := pgfplots.NewPgfPlot(results, outputPath(results, benchPattern), comparison != nil)
 	if err != nil {
 		return err
 	}
 	return os.WriteFile(
-		path.Join(dirPath, fmt.Sprintf("%s.tex", results.PackageName)),
+		path.Join(outputPath(results, benchPattern), fmt.Sprintf("%s.tex", results.PackageName)),
 		plotLatex.Bytes(), 0644)
+}
+
+func outputPath(results runner.Results, benchPattern string) string {
+	subDir := lettersOnly(benchPattern)
+	if subDir == "" {
+		return path.Join(outputDir, results.PackageName)
+	}
+	return path.Join(outputDir, results.PackageName, subDir)
+}
+
+func lettersOnly(s string) string {
+	res := ""
+	for _, char := range s {
+		if (char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z') {
+			res += string(char)
+		}
+	}
+	return res
 }
