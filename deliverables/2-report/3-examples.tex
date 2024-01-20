@@ -50,6 +50,25 @@ prevent the compiler from eliminating the benchmarked code \autocite{benchPits}.
         Apple M1 Pro}
 \end{figure}
 
+The literal \texttt{N} in the array type refers to a constant, defined elsewhere
+in the program. The function signature only accepts arrays of size \texttt{N},
+despite the function body being generic enough that it could work on arrays of
+any size. To illustrate the point, the next example will inline \texttt{N} with
+an integer literal. The function also happens to only accept \texttt{int}
+arrays, but this can easily be fixed using generic type parameters, introduced
+in Go 1.18 (unfortunately, at the cost of some performance, as seen in figure x):
+
+\lstinputlisting[language=Go, tabsize=4, firstline=3]{./examples/reversed/generic_type.go}
+
+
+The implication of this is that for each different array size we want
+to use the \texttt{reversed} operation on, we would have to write a new function
+with the exact same code, or use a code generation tool to do this for us.
+
+As of Go 1.18, there is a workaround that partially solves the above problem.
+% TODO discuss union-like interface
+
+
 % Subsection 1: Gentle introduction
 
 % Example 1: `reversed` function
