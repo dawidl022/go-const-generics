@@ -15,11 +15,13 @@ The first function we'll examine is one that creates a reversed copy of an
 array/slice. Below is a side-by-side view of the two functions: the first
 operating on arrays, and the second operating on slices.
 
-\lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/arrays.go}
+\noindent\begin{minipage}{\linewidth}
+    \lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/arrays.go}
+\end{minipage}
 
-\lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/slices.go}
-
-% TODO describe program differences and reference to N constant
+\noindent\begin{minipage}{\linewidth}
+    \lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/slices.go}
+\end{minipage}
 
 The slice function is almost identical to the array function, except that we
 need to explicitly allocate a new slice for the result. Arrays are value types,
@@ -45,7 +47,7 @@ results of the functions were written to global variables, in an attempt to
 prevent the compiler from eliminating the benchmarked code \autocite{benchPits}.
 
 \begin{figure}
-    \input{../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/reversed}
+    \input{../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/ArraySlice/reversed}
     \caption{Comparison of \texttt{reversed} function benchmarks captured on
         Apple M1 Pro}
 \end{figure}
@@ -56,18 +58,37 @@ despite the function body being generic enough that it could work on arrays of
 any size. To illustrate the point, the next example will inline \texttt{N} with
 an integer literal. The function also happens to only accept \texttt{int}
 arrays, but this can easily be fixed using generic type parameters, introduced
-in Go 1.18 (unfortunately, at the cost of some performance, as seen in figure x):
+in Go 1.18 (unfortunately, at the cost of some performance):
 
-\lstinputlisting[language=Go, tabsize=4, firstline=3]{./examples/reversed/generic_type.go}
+% TODO consider placing complete benchmarks in appendix
 
+\noindent\begin{minipage}{\linewidth}
+    \lstinputlisting[language=Go, tabsize=4, firstline=3]{./examples/reversed/generic_type.go}
+\end{minipage}
 
 The implication of this is that for each different array size we want
 to use the \texttt{reversed} operation on, we would have to write a new function
 with the exact same code, or use a code generation tool to do this for us.
 
 As of Go 1.18, there is a workaround that partially solves the above problem.
-% TODO discuss union-like interface
+Interface types are now defined in terms of the more general notion of type
+sets, as opposed to method sets pre Go 1.18 \autocites{spec}{specPre1.18}.
+"General interfaces" were introduced, that can only be (as of Go 1.21) used as
+type parameter constraints, and among its features is the ability to specify a
+union of types. With this, we can define an interface in terms of the union of
+differently sized array that we wish to use with our \texttt{reversed} function
+\autocite{goArrayProposal}:
 
+\noindent\begin{minipage}{\linewidth}
+    \lstinputlisting[language=Go, tabsize=4, firstline=3]{./examples/reversed/union_type.go}
+\end{minipage}
+
+This approach still has limitations. Apart from the obvious burden of having to
+update the \texttt{array} interface every time we use an array of a new size,
+this model breaks down as soon as we wish to expose such a function as part of a
+public API. There is no way of knowing ahead of time what array sizes a user may
+wish to use, and enumerating them all is infeasible. Ideally we'd want a way to
+abstract over arrays of any size.
 
 % Subsection 1: Gentle introduction
 
