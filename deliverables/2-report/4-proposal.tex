@@ -1,5 +1,10 @@
 \section{Generically sized arrays}
 
+This section details a minimal design for the addition of generically sized
+arrays and numerical type parameters to Go. We also compare this design against
+the existing proposal by \autocite{goArrayProposal}, and discuss future
+extensions to this feature.
+
 \subsection{Type-set interfaces and the \kw{const} interface}
 
 We've already looked at type set based interfaces introduced in Go 1.18. If we
@@ -15,17 +20,16 @@ interface type, just like the existing \texttt{comparable} that ``denotes the
 set of all non-interface types that are strictly comparable'' \autocite{spec}.
 Just like \texttt{comparable}, \kw{const} would be an interface that can only be
 used as a type parameter constraint, and not e.g. as the type of a variable,
-function parameter or return type.
-This \texttt{comparable} interface is not defined in terms of regular Go code,
-but rather exists on the level of the language itself. \kw{const} would follow
-the same pattern. The choice of the identifier \kw{const} is to ensure backwards
-compatibility with existing programs, as this keyword is currently not allowed
-to be used as a type name. Just like a union type set, \kw{const} can be
-instantiated with one of the elements of the union, i.e. a non-negative integer
-literal. This restricts numerical type arguments to strictly compile-time
-constant integers. Such a type parameter could then be used as the size of an
-array. With such an extension, we can express the \texttt{reversed} function from
-above as follows:
+function parameter or return type. This \texttt{comparable} interface is not
+defined in terms of regular Go code, but rather exists on the level of the
+language itself. \kw{const} would follow the same pattern. The choice of the
+identifier \kw{const} is to ensure backwards compatibility with existing
+programs, as this keyword is currently not allowed to be used as a type name.
+Just like a union type set, \kw{const} can be instantiated with one of the
+elements of the union, i.e. a non-negative integer literal. This restricts
+numerical type arguments to strictly compile-time constant integers. Such a type
+parameter could then be used as the size of an array. With such an extension, we
+can express the \texttt{reversed} function from the previous section as follows:
 
 \golisting{./examples/reversed/const_generic_type.go}
 
@@ -74,8 +78,8 @@ interface, the analogous code would be as follows:
 \golisting{./examples/werner/my_matrix.go}
 
 This approach mandates much less boilerplate than the current proposal, as the
-type user is not forced to create ``dummy'' type arguments, and the type author
-is not forced to retrieve an implicit numerical parameter through the
+type consumer is not forced to create ``dummy'' type arguments, and the type
+provider is not forced to retrieve an implicit numerical parameter through the
 \texttt{len} function. Explicit numerical type parameters would make generic
 arrays a first-class feature of Go, consistent with the rest of the language.
 All the existing compound data types in Go can already be fully type
@@ -108,18 +112,19 @@ omitted, where the compiler is able to infer what they are.
 
 Another shortcoming of the implicit \texttt{[...]} syntax to parameterise array
 sizes, is that it becomes unclear whether two type parameters of the same
-constraint \texttt{[...]T} have the same length. If yes, then how do we express
-two type parameters of the different lengths? If no, then how do we express that
-two type parameters must have the same length? How about when we use the
-shorthand syntax to collapse the bounds of multiple type parameters? Explicit
-numerical type parameters make this differentiation trivial, enhancing the
-readability of the code.
+constraint \texttt{[...]T} (as shown in figure \ref{fig:werner-ambiguity}) have
+the same length. If yes, then how do we express two type parameters of the
+different lengths? If no, then how do we express that two type parameters must
+have the same length? How about when we use the shorthand syntax to collapse the
+bounds of multiple type parameters? Explicit numerical type parameters make this
+differentiation trivial, enhancing the readability of the code.
 
 \begin{figure}
     \golisting{./examples/werner/array_pair.go}
     \golisting{./examples/werner/array_pair_collapsed.go}
     \caption{Examples of ambiguity when using \texttt{[...]T} to constrain
         multiple type parameters}
+    \label{fig:werner-ambiguity}
 \end{figure}
 
 The proposal mentions making \texttt{len} applicable to array \emph{types} in
@@ -192,7 +197,10 @@ call \texttt{len} if the array size could be made a constant, and referenced in
 multiple places? One justification comes to mind: when dealing with multiple
 arrays of various sizes, it may be easier to use the wrong type parameter (or
 constant in the non-generic case) than we intend to, whereas calling
-\texttt{len} is guaranteed to yield the actual length of the array.
+\texttt{len} is guaranteed to yield the actual length of the array. Note that
+making the \texttt{len} operation non-constant, does not automatically prevent
+using non-trivial constant expressions with type parameters as type arguments,
+since we can still make numerical type parameters evaluate to constants.
 
 % TODO think of a scenario of using len as opposed to the type parameter?
 
@@ -201,6 +209,9 @@ constant in the non-generic case) than we intend to, whereas calling
 
 \subsection{Allowed \texttt{const} type arguments}
 
+% TODO move this section above len section, since the len section references
+% points introduced in this section
+
 % Maybe we allow complex expressions for non-recursive structures? Go already
 % does recursion detection in the compiler
 
@@ -208,11 +219,48 @@ constant in the non-generic case) than we intend to, whereas calling
 
 % Discuss code bloat concerns
 
+% How do we handle overflow? (at call site? implicit upper bound, e.g. if 2N is
+% used internally, then maximum is MaxInt/2, i.e. the type parameter is a
+% subtype of the union of all integers, i.e. a subtype of const, despite being
+% bound by const). Compiler could report in error the
+% implicit upper bound.
+
+% language servers could show the upper bound to the programmer
+
+% an extension would be explicit bounds (both lower, permitting indexing, and
+% upper), although it's hard to say if this feature would be useful enough to
+% add to the language, given Go's idealogy of simplicity and minimalism.
+
+% if we don't allow complex expressions, then there is no overflow problem
+
 \subsection{Allowed operations on generic arrays}
 
 % casting length to a value other than int is forbidden, as it must statically
 % type check with any instantiation (of any size, including MaxInt), same
 % applies to casting type parameter
+
+% casting type param to value other than int is also forbidden
+% 
+% casting to an array using type parameter (or derived len) is also forbidden
+% 
+% indexing in an array using a type parameter is forbidden (unless it is
+% assigned to non-const int variable first) - this is backwards incompatible
+% with treating len([N]T) or N as int! rather than making it illegal, we can
+% make it an allowed, run-time checked operation to ensure backwards compatibility
+
+% i.e. we must differentiate between true-const, and generic-const values in the
+% compiler. One has restrictions, the other does not.
+
+% alternatively we perform casts at runtime on the generic-const values. The
+% compiler already does not treat len of calls to array returning function a
+% constant, so why should it perform casts of generic-const values at compile
+% time?
+
+% similar argument could be made for constant indexing into generic arrays, move
+% the check to runtime, however this is incosnsitent
+
+% if someone is smart enough to SAT solve at compile time, should we even worry
+% about them?
 
 % if len and type param evaluate to constant values, than that constant may only
 % be cast to int (avoids SAT problem:
@@ -220,3 +268,11 @@ constant in the non-generic case) than we intend to, whereas calling
 
 % indexing with constant is forbidden, as it must statically type with any
 % instantiation (of any size, including 0)
+% this is consistent with existing union type implementation
+
+\subsection{Summary of proposal}
+
+% Rust's conservative approach avoids many problems (which are not unsolvable,
+% but rather more work). We can always introduce the permissive approach later.
+
+% Coin the conservative and liberal terminology for numerical type parameters
