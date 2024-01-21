@@ -1,36 +1,36 @@
 package reversed
 
-type array interface {
-	[0]int |
-	[1]int |
-	[2]int |
-	[4]int |
-	[8]int |
-	[16]int |
-	[32]int |
-	[64]int |
-	[128]int |
-	[256]int |
-	[512]int |
-	[1024]int |
-	[2048]int |
-	[4096]int |
-	[8192]int |
-	[16384]int |
-	[32768]int |
-	[65536]int |
-	[131072]int |
-	[262144]int |
-	[524288]int |
-	[1048576]int |
-	[2097152]int |
-	[4194304]int |
-	[8388608]int |
-	[16777216]int |
-	[33554432]int
+type arrayGeneric[T any] interface {
+	[0]T |
+	[1]T |
+	[2]T |
+	[4]T |
+	[8]T |
+	[16]T |
+	[32]T |
+	[64]T |
+	[128]T |
+	[256]T |
+	[512]T |
+	[1024]T |
+	[2048]T |
+	[4096]T |
+	[8192]T |
+	[16384]T |
+	[32768]T |
+	[65536]T |
+	[131072]T |
+	[262144]T |
+	[524288]T |
+	[1048576]T |
+	[2097152]T |
+	[4194304]T |
+	[8388608]T |
+	[16777216]T |
+	[33554432]T
 }
 
-func reversedArrayUnion[A array](arr A) A {
+func reversedArrayGenericUnion[T any, A arrayGeneric[T]](arr A) A {
 	n := len(arr)
 	for i := 0; i < n/2; i++ {
 		arr[i], arr[n-i-1] = arr[n-i-1], arr[i]
