@@ -1,3 +1,3 @@
-package reversed
+package semidynamicarray
 
-const N = 8388608
+const N = 1024
