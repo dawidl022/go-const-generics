@@ -216,13 +216,79 @@ as type parameter bounds.
 
 Shortly after the Type Parameters proposal was published
 \autocite{genericsProposal}, a proposal to extend generics to array sizes was
-published \autocite{goArrayProposal}:
+published \autocite{goArrayProposal}. It would allow type set interfaces of the
+following form:
+
+\golisting{./examples/werner/array_interface.go}
+
+In this design, the parameterisation of the array size in implicit using
+\texttt{...}, and does not appear in the list of type parameters, meaning the
+numerical type parameter cannot be referenced directly. Instead, the proposal
+author suggests applying the feature as follows:
+
+\golisting{./examples/werner/matrix.go}
+
+The example can in fact be simplified slightly, by inlining the type set
+directly in into the type parameter constraint (allowed as of Go 1.18):
+
+\golisting{./examples/werner/matrix_inline.go}
+
+It could then be instantiated as follows:
+
+\golisting{./examples/werner/matrix_variable.go}
+
+Compare this with the proposal presented in this work. Using the \kw{const}
+interface, the analogous code would be as follows:
+
+\golisting{./examples/werner/my_matrix.go}
+
+This approach mandates much less boilerplate than the current proposal, as the
+type user is not forced to create ``dummy'' type arguments, and the type author
+is not forced to retrieve an implicit numerical parameter through the
+\texttt{len} function. Explicit numerical type parameters would make generic
+arrays a first-class feature of Go, consistent with the rest of the language.
+All the existing compound data types in Go can already be fully type
+parameterised (slices: \texttt{[]T}, maps: \texttt{map[K]V} and channels:
+\texttt{chan T}), except for arrays, so this work would bridge that gap
+(\texttt{[N]T}), without making the feature feel like a workaround. In addition,
+explicit numerical type parameters make the code more readable, as the
+programmer can immediately see when a type is parameterised on integers.
+
+Not only would arrays become first class, but so would numerical type
+parameters. Currently, arrays are the only type which accept a numerical type
+parameter, to parameterize the length of an array type. The \kw{const} interface
+would allow any type or function to accept a constant integer (or another
+\kw{const} bounded type parameter) as a type argument.
+
+The benefit of Werner's proposal, is that is uses existing syntax:
+\texttt{[...]T} can already be used to denote an array's type when constructing
+an array literal:
+
+\golisting{./examples/werner/array_literal.go}
+
+where \texttt{myArray} has an inferred type of \texttt{[3]int}. It's worth
+noting however, that this syntax is used for type inference, as opposed to
+denote the type of a value, similar to how in some cases type arguments can be
+omitted, where the compiler is able to infer what they are.
 
 % TODO describe pros and cons of existing proposal
-% pros: uses existing syntax \texttt{[...]}
-% cons: necessity to call use len() to get the length,
+% cons: 
 %       difficulty of implementing type arguments using expressions (e.g. len([...]T) + 1)
-%       inconsistent, something that varies should be an explicit parameter
-%       awkwardness of nested structures, using "dummy" arrays as types
 
-% TODO compare with existing proposal
+
+\subsubsection{The \texttt{len} function}
+
+Go's built-in \texttt{len} function is special in the sense that depending on
+the context, it may or may not be computed at compile time. If it is computed at
+compile time, we can assign the result to a \kw{const} variable, or use it in
+any other place that requires a compile-time constant non-negative integer
+value, such as for the length of an array.
+
+\subsubsection{Allowed \texttt{const} type arguments}
+
+% Maybe we allow complex expressions for non-recursive structures? Go already
+% does recursion detection in the compiler
+
+% Evaluate both conservative (Rust) and permissive (Werner) approaches
+
+\subsubsection{Community concerns}
