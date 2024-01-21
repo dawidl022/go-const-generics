@@ -15,13 +15,8 @@ The first function we'll examine is one that creates a reversed copy of an
 array/slice. Below is a side-by-side view of the two functions: the first
 operating on arrays, and the second operating on slices.
 
-\noindent\begin{minipage}{\linewidth}
-    \lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/arrays.go}
-\end{minipage}
-
-\noindent\begin{minipage}{\linewidth}
-    \lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/slices.go}
-\end{minipage}
+\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/arrays.go}
+\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/slices.go}
 
 The slice function is almost identical to the array function, except that we
 need to explicitly allocate a new slice for the result. Arrays are value types,
@@ -47,9 +42,9 @@ results of the functions were written to global variables, in an attempt to
 prevent the compiler from eliminating the benchmarked code \autocite{benchPits}.
 
 \begin{figure}
-    \input{../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/ArraySlice/reversed}
-    \caption{Comparison of \texttt{reversed} function benchmarks captured on
-        Apple M1 Pro}
+	\input{../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/ArraySlice/reversed}
+	\caption{Comparison of \texttt{reversed} function benchmarks captured on
+		Apple M1 Pro}
 \end{figure}
 
 The literal \texttt{N} in the array type refers to a constant, defined elsewhere
@@ -61,10 +56,14 @@ arrays, but this can easily be fixed using generic type parameters, introduced
 in Go 1.18 (unfortunately, at the cost of some performance):
 
 % TODO consider placing complete benchmarks in appendix
+% TODO suggest benchmarks for more use-cases as part of further work, mention
+% challenges of benchmarking in Go due to compiler optimisations of contrived
+% usages. It may make more sense to benchmark components in context of real
+% system, or be able to read Go's assembly code to see for oneself's whether
+% the compiler optimised away their benchmarked code, or why certain code is
+% faster than other code
 
-\noindent\begin{minipage}{\linewidth}
-    \lstinputlisting[language=Go, tabsize=4, firstline=3]{./examples/reversed/generic_type.go}
-\end{minipage}
+\golisting{./examples/reversed/generic_type.go}
 
 The implication of this is that for each different array size we want
 to use the \texttt{reversed} operation on, we would have to write a new function
@@ -79,9 +78,7 @@ union of types. With this, we can define an interface in terms of the union of
 differently sized array that we wish to use with our \texttt{reversed} function
 \autocite{goArrayProposal}:
 
-\noindent\begin{minipage}{\linewidth}
-    \lstinputlisting[language=Go, tabsize=4, firstline=3]{./examples/reversed/union_type.go}
-\end{minipage}
+\golisting{./examples/reversed/union_type.go}
 
 This approach still has limitations. Apart from the obvious burden of having to
 update the \texttt{array} interface every time we use an array of a new size,
@@ -93,6 +90,8 @@ abstract over arrays of any size.
 % TODO benchmark reversing in place
 
 \subsection{Array semantics}
+
+% TODO reword this section to make it flow better, and avoid repetition
 
 We've looked at an example where using arrays is faster than slices. In general,
 it is difficult to reliably build array-based data structures that offer better
@@ -143,7 +142,6 @@ for them.
 
 \subsection{Data structure examples}
 
-
 % Example 2: Array struct with static capacity and len field
 
 % Example 3: Ring buffer of static size
@@ -171,14 +169,60 @@ for them.
 % State machine used in benchmarks (potentially benchmark on amd64 as well as
 % arm64)
 
-% Subsection 6: Type-set interfaces and the \kw{const} interface
+\subsection{Type-set interfaces and the \kw{const} interface}
 
-% conceptually: type const interface { 0 | 1 | 2 | 3 | ... }
-% implementation: type const interface { const }, analogous to comparable interface
+We've already looked at type set based interfaces introduced in Go 1.18. If we
+treat array sizes as types, then we now have a conceptual set of types 0, 1, 2,
+3, etc. Similarly, we can conceptually define the \kw{const} type as the type
+set of all array sizes:
+
+\golisting{./examples/reversed/const_type.go}
+
+Where the \texttt{...} means the pattern repeats for all the non-negative
+integers. In practice, \kw{const} would be another ``special'' predeclared
+interface type, just like the existing \texttt{comparable} that ``denotes the
+set of all non-interface types that are strictly comparable'' \autocite{spec}.
+Just like \texttt{comparable}, \kw{const} would be an interface that can only be
+used as a type parameter constraint, and not e.g. as the type of a variable,
+function parameter or return type.
+This \texttt{comparable} interface is not defined in terms of regular Go code,
+but rather exists on the level of the language itself. \kw{const} would follow
+the same pattern. The choice of the identifier \kw{const} is to ensure backwards
+compatibility with existing programs, as this keyword is currently not allowed
+to be used as a type name. Just like a union type set, \kw{const} can be
+instantiated with one of the elements of the union, i.e. a non-negative integer
+literal. This restricts numerical type arguments to strictly compile-time
+constant integers. Such a type parameter could then be used as the size of an
+array. With such an extension, we can express the \texttt{reversed} function from
+above as follows:
+
+\golisting{./examples/reversed/const_generic_type.go}
+
+Note how once again, the body of the function remains unchanged. The only
+difference is that \texttt{N} is now a type parameter bound by the
+\texttt{const} interface. The above function can operate on any array of any
+size and any element type.
+
+The rest of this work looks at the theory and implementation of the \kw{const}
+type into the existing Go language. We will examine a language called
+Featherweight Generic Go With Arrays (FGGA), which is a subset of Go, modulo the
+addition of numerical type parameters. Since FGGA only considers ``classic''
+(method set) interfaces, \kw{const} will not be an interface type in FGGA, but
+rather in its own category. This category can be though of as non-method set
+interfaces, since the two have the same restrictions, i.e. they can only be used
+as type parameter bounds.
+
+\subsection{Comparison with existing proposal}
+
+Shortly after the Type Parameters proposal was published
+\autocite{genericsProposal}, a proposal to extend generics to array sizes was
+published \autocite{goArrayProposal}:
+
+% TODO describe pros and cons of existing proposal
+% pros: uses existing syntax \texttt{[...]}
+% cons: necessity to call use len() to get the length,
+%       difficulty of implementing type arguments using expressions (e.g. len([...]T) + 1)
+%       inconsistent, something that varies should be an explicit parameter
+%       awkwardness of nested structures, using "dummy" arrays as types
 
 % TODO compare with existing proposal
-
-% TODO explain in FGGA why const is not an interface - because FGGA only
-% considers classic interfaces, not type-set interfaces, introduced in the type
-% parameter proposal. Type-set interfaces have same restrictions as \kw{const},
-% i.e. they can only be used as type parameter bounds
