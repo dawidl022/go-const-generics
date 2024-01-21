@@ -1,0 +1,222 @@
+\section{Generically sized arrays}
+
+\subsection{Type-set interfaces and the \kw{const} interface}
+
+We've already looked at type set based interfaces introduced in Go 1.18. If we
+treat array sizes as types, then we now have a conceptual set of types 0, 1, 2,
+3, etc. Similarly, we can conceptually define the \kw{const} type as the type
+set of all array sizes:
+
+\golisting{./examples/reversed/const_type.go}
+
+Where the \texttt{...} means the pattern repeats for all the non-negative
+integers. In practice, \kw{const} would be another ``special'' predeclared
+interface type, just like the existing \texttt{comparable} that ``denotes the
+set of all non-interface types that are strictly comparable'' \autocite{spec}.
+Just like \texttt{comparable}, \kw{const} would be an interface that can only be
+used as a type parameter constraint, and not e.g. as the type of a variable,
+function parameter or return type.
+This \texttt{comparable} interface is not defined in terms of regular Go code,
+but rather exists on the level of the language itself. \kw{const} would follow
+the same pattern. The choice of the identifier \kw{const} is to ensure backwards
+compatibility with existing programs, as this keyword is currently not allowed
+to be used as a type name. Just like a union type set, \kw{const} can be
+instantiated with one of the elements of the union, i.e. a non-negative integer
+literal. This restricts numerical type arguments to strictly compile-time
+constant integers. Such a type parameter could then be used as the size of an
+array. With such an extension, we can express the \texttt{reversed} function from
+above as follows:
+
+\golisting{./examples/reversed/const_generic_type.go}
+
+Note how once again, the body of the function remains unchanged. The only
+difference is that \texttt{N} is now a type parameter bound by the
+\texttt{const} interface. The above function can operate on any array of any
+size and any element type.
+
+The rest of this work looks at the theory and implementation of the \kw{const}
+type into the existing Go language. We will examine a language called
+Featherweight Generic Go With Arrays (FGGA), which is a subset of Go, modulo the
+addition of numerical type parameters. Since FGGA only considers ``classic''
+(method set) interfaces, \kw{const} will not be an interface type in FGGA, but
+rather in its own category. This category can be though of as non-method set
+interfaces, since the two have the same restrictions, i.e. they can only be used
+as type parameter bounds.
+
+\subsection{Comparison with existing proposal}
+
+Shortly after the Type Parameters proposal was published
+\autocite{genericsProposal}, a proposal to extend generics to array sizes was
+published \autocite{goArrayProposal}. It would allow type set interfaces of the
+following form:
+
+\golisting{./examples/werner/array_interface.go}
+
+In this design, the parameterisation of the array size in implicit using
+\texttt{...}, and does not appear in the list of type parameters, meaning the
+numerical type parameter cannot be referenced directly. Instead, the proposal
+author suggests applying the feature as follows:
+
+\golisting{./examples/werner/matrix.go}
+
+The example can in fact be simplified slightly, by inlining the type set
+directly in into the type parameter constraint (allowed as of Go 1.18):
+
+\golisting{./examples/werner/matrix_inline.go}
+
+It could then be instantiated as follows:
+
+\golisting{./examples/werner/matrix_variable.go}
+
+Compare this with the proposal presented in this work. Using the \kw{const}
+interface, the analogous code would be as follows:
+
+\golisting{./examples/werner/my_matrix.go}
+
+This approach mandates much less boilerplate than the current proposal, as the
+type user is not forced to create ``dummy'' type arguments, and the type author
+is not forced to retrieve an implicit numerical parameter through the
+\texttt{len} function. Explicit numerical type parameters would make generic
+arrays a first-class feature of Go, consistent with the rest of the language.
+All the existing compound data types in Go can already be fully type
+parameterised (slices: \texttt{[]T}, maps: \texttt{map[K]V} and channels:
+\texttt{chan T}), except for arrays, so this work would bridge that gap
+(\texttt{[N]T}), without making the feature feel like a workaround. In addition,
+explicit numerical type parameters make the code more readable, as the
+programmer can immediately see when a type is parameterised on integers.
+
+Not only would arrays become first class, but so would numerical type
+parameters. Currently, arrays are the only type which accept a numerical type
+parameter, to parameterize the length of an array type. The \kw{const} interface
+would allow any type or function to accept a constant integer (or another
+\kw{const} bounded type parameter) as a type argument.
+
+The benefit of Werner's proposal, is that is uses existing syntax:
+\texttt{[...]T} can already be used to denote an array's type when constructing
+an array literal:
+
+\golisting{./examples/werner/array_literal.go}
+
+where \texttt{myArray} has an inferred type of \texttt{[3]int}. It's worth
+noting however, that this syntax is used for type inference, as opposed to
+denote the type of a value, similar to how in some cases type arguments can be
+omitted, where the compiler is able to infer what they are.
+
+% TODO describe pros and cons of existing proposal
+% cons: 
+%       difficulty of implementing type arguments using expressions (e.g. len([...]T) + 1)
+
+Another shortcoming of the implicit \texttt{[...]} syntax to parameterise array
+sizes, is that it becomes unclear whether two type parameters of the same
+constraint \texttt{[...]T} have the same length. If yes, then how do we express
+two type parameters of the different lengths? If no, then how do we express that
+two type parameters must have the same length? How about when we use the
+shorthand syntax to collapse the bounds of multiple type parameters? Explicit
+numerical type parameters make this differentiation trivial, enhancing the
+readability of the code.
+
+\begin{figure}
+    \golisting{./examples/werner/array_pair.go}
+    \golisting{./examples/werner/array_pair_collapsed.go}
+    \caption{Examples of ambiguity when using \texttt{[...]T} to constrain
+        multiple type parameters}
+\end{figure}
+
+The proposal mentions making \texttt{len} applicable to array \emph{types} in
+addition to array values (as seen in Werner's examples presented above),
+however, as pointed out in the GitHub
+issue\footnote{\url{https://github.com/golang/go/issues/44253\#issuecomment-820999513}},
+this is uneccessary as the desired behaviour can already be achieved by applying
+\texttt{len} to an instantiated value of an array type parameter.
+
+\subsection{The \texttt{len} function}
+
+Go's built-in \texttt{len} function is special in the sense that depending on
+the context, it may or may not be computed at compile time \autocite{spec}. If
+it is computed at compile time, we can assign the result to a \kw{const}
+variable, or use it in any other place that requires a compile-time constant
+non-negative integer value, such as for the length of an array.
+
+An example of a compile-time evaluation of \texttt{len} is when it is applied to
+an array value literal, and an example of a run-time evaluation of \texttt{len}
+is when it is applied to a slice value. The question arises, how should
+\texttt{len} treat generic arrays (specifically, ones that are parameterised on
+size)?
+
+Interestingly, there are already cases, where a value of array type does not
+have compile-time \texttt{len} semantics. In particular, the spec says
+\texttt{len} does not yield a constant for array type expressions that ``contain
+channel receives or (non-constant) function calls'' \autocite{spec}. While this
+is indeed the case as of Go 1.21, assigning the result of such a
+``non-constant'' expression to a variable, and then calling \texttt{len} on that
+variable, \emph{does} yield a constant. As such, this restriction appears to be
+a compiler limitation, as opposed to being inherent to the language.
+
+If we take Rust's approach of prohibiting the use of expressions that include
+constant type parameters (except when the expression is a lone type parameter)
+as type arguments, which include applying \texttt{len} to a generically sized
+array, then it becomes clear why \texttt{len} of a generically sized array
+should yield a non-constant integer (as indeed is the case in Rust). Without
+this restriction, the compiler would have to keep track of which constant was
+derived from an expression containing a type-parameter, to prevent the later
+usage of such a constant (or another const expression containing it) as a type
+argument.
+
+% TODO include code examples demonstrating the problem
+
+In fact, if we view the generally sized arrays as a countably infinite union of
+different array sizes (similar to the finite union we can already represent in
+code), then we can keep things as they are currently in Go. I.e. a generic type
+bound by a union of arrays has a non-constant \texttt{len}:
+
+\golisting{./examples/werner/const_len_of_interface.go}
+
+This is likely to avoid constraining the compiler implementation. With a full
+monomorphisation approach, the \kw{const} of the example above is not an issue,
+as each instantiation of the function has its own local \texttt{const n} with a
+distinct value. However, in the current GC Shape Stenciling approach used by the
+Go compiler as of Go 1.18 \autocite{generics1.18}, it is possible to construct a
+union of array types that are have the same GC shape, yet the length of the
+array type differs. In such cases, \kw{const}s within a generic function would
+be difficult or even impossible to handle correctly. A simpler explanation, is
+that type parameters simply always have non-constant lengths (given \texttt{len}
+is defined on all types of the type set), regardless of whether or not values
+of their constraint type could yield a constant length, \autocite{spec}.
+
+If we permit non-trivial constant expressions containing type parameters as type
+arguments, then the model is sound when \texttt{len} evaluates to a constant. As
+a side remark, why would we need to even call \texttt{len} on a generically
+sized array, since the numerical type parameter used to size it is in scope? The
+same could be asked for the existing semantics of \texttt{len} on arrays: why
+call \texttt{len} if the array size could be made a constant, and referenced in
+multiple places? One justification comes to mind: when dealing with multiple
+arrays of various sizes, it may be easier to use the wrong type parameter (or
+constant in the non-generic case) than we intend to, whereas calling
+\texttt{len} is guaranteed to yield the actual length of the array.
+
+% TODO think of a scenario of using len as opposed to the type parameter?
+
+% TODO why is len of a generic array not a constant in Rust?
+% probably because it cannot be used as a type parameter
+
+\subsection{Allowed \texttt{const} type arguments}
+
+% Maybe we allow complex expressions for non-recursive structures? Go already
+% does recursion detection in the compiler
+
+% Evaluate both conservative (Rust) and permissive (Werner) approaches
+
+% Discuss code bloat concerns
+
+\subsection{Allowed operations on generic arrays}
+
+% casting length to a value other than int is forbidden, as it must statically
+% type check with any instantiation (of any size, including MaxInt), same
+% applies to casting type parameter
+
+% if len and type param evaluate to constant values, than that constant may only
+% be cast to int (avoids SAT problem:
+% https://github.com/golang/go/issues/44253#issuecomment-821047754)
+
+% indexing with constant is forbidden, as it must statically type with any
+% instantiation (of any size, including 0)
