@@ -209,15 +209,112 @@ since we can still make numerical type parameters evaluate to constants.
 
 \subsection{Allowed \texttt{const} type arguments}
 
-% TODO move this section above len section, since the len section references
-% points introduced in this section
+We've already seen how constant non-negative integers can be used as numerical
+type arguments. Additionally, since a numerical type parameter stands in for a
+constant integer, it can itself be used as a type argument. This is consistent
+with how in Go type parameters satisfy their own bounds, and is the basis for
+creating nested generic structures. Arrays length parameters are generalized to
+accept a \kw{const} type parameter, as seen in the matrix example, to fit into
+this new definition.
 
-% Maybe we allow complex expressions for non-recursive structures? Go already
-% does recursion detection in the compiler
+How about an expression like \texttt{N + 1} or \texttt{2 * N}? Should we allow
+them as \kw{const} type arguments? The question can be phrased as: is an
+expression containing a \kw{const} type parameter and constant operations (i.e.
+ones that can be computed at compile time, if we substitute the type parameter
+for a concrete integer), a constant expression? Going forwards, when the answer
+to the above questions is ``no'', it will be referred to as the conservative
+approach, whereas a ``yes'' answer will be referred to as the liberal approach.
 
-% Evaluate both conservative (Rust) and permissive (Werner) approaches
+Constant expressions evaluate to constant integers, of which non-negative ones
+can be used as \kw{const} type arguments. This brings us to our first problem,
+not all constant expressions yield non-negative integers, and we cannot tell
+what the sign of a ``constant'' expression involving a type parameter will be
+until the use has instantiated a generic type or function. Go type checks
+generic functions/types at the declaration site, rather than the call site, so
+we need to ensure our approach fits that model.
 
-% Discuss code bloat concerns
+Consider the signature of a function that returns the head and tail of an array
+\autocite{rustConstBlog}:
+
+\golisting{./examples/expressions/headtail.go}
+
+Since an array length cannot be negative, it is only valid to pass arrays of
+size 1 or more to this function. If the argument array's length was 0, then
+\texttt{N - 1} would evaluate to \texttt{-1}, which is an invalid array size.
+Conceptually, we can think of this constraint as a new interface, a
+\emph{subtype} of \kw{const}:
+
+\golisting{./examples/expressions/constplus1.go}
+
+This leads us to at least three solutions to the above problem. The first would
+be to fail the type checking of such a function (at declaration site), since the
+operation is not valid on for all instantiations of the \kw{const} interface.
+This is compatible with both the conservative and liberal approaches. The
+liberal approach would however still permit expressions that are guaranteed to
+yield non-negative integers for all instantiations of the type parameter, such
+as the above mentioned \texttt{N + 1} or \texttt{2 * N}.
+
+The other 2 solutions revolve around constraining the type parameter bound more
+tightly (as shown in the \texttt{constPlus1} interface code). This could be done
+implicitly: the compiler could detect that the operation is only permitted for
+numerical type parameter instantiations greater than 0, and implicitly make the
+type parameter constraint bounds tighter. I.e. the function still type checks at
+the declaration site, however callers would only be able to pass in non-zero
+sized arrays, which can be checked at compile time. Tools such as language
+servers could show these tighter constraints to the programmer. The final
+solution is to require an explicit tighter constraint, through some sort of new
+syntax, e.g.:
+
+\golisting{./examples/expressions/headtailexplicit.go}
+
+Which places a lower bound of 1 on the \kw{const} interface using the well-known
+slicing notation. Investigating in detail the feasability and safety of such an
+approach is a topic for future work.
+
+What about when two distinct type parameters appear in a ``constant''
+expression, such as in the (somewhat contrived) example below:
+
+\golisting{./examples/expressions/difference.go}
+
+This code is only safe to execute when $N \ge M$. This adds additional
+complexity, as we need to extend our approach from before, if we wish to pursue
+the liberal approach. In the explicit model, the compiler would have to reject
+all instantiations of the function where $N < M$. In the explicit model, the
+slicing notation would be allowed to accept constant expressions, and since type
+parameters are constant expressions, they could be used to explicitly constrain
+the type parameters. Go already permits referencing other type parameters,
+including the one that is being constrained, in the constraint of a type
+parameter.
+
+\golisting{./examples/expressions/differenceexplicit.go}
+
+Just as underflow can occur when performing operations that can decrease the
+value of a numerical type parameter, overflow could occur if the instantiated
+type argument is large enough and a constant expression makes it overflow (i.e.
+fail to fit into an \texttt{int} type, whose size is platform dependant). Just
+as in the underflow case, both implicit and explicit upper bounds on a
+\kw{const} type parameter can resolve this problem.
+% TODO
+
+The downside of the implicit model, is that it makes the compiler implementation
+more complex, and can be shown that it could be used to perform computation at
+compile-time, e.g. to solve SAT formulas \autocite{goArraySAT}, which can
+undermine Go's promise of fast compile times, if the programmer (accidentally or
+deliberately) misuses the type system. As such, in practice, the most reasonably
+roadmap to implement numerical type parameters in Go would be to start with the
+conservative approach, then progress to an explicit liberal model, and finally,
+if there is demand for it, consider the implicit liberal model, as a type
+inference feature. Due to this, the following sections of this work only
+consider the conservative model.
+
+Another complexity of handling the liberal approach, is recursion, and its
+potential for code bloat...
+% TODO
+% approaches: forbid recursive calls with different numerical type params
+% compare with existing. Conservative approach does not have this problem.
+% Can explore the explicit liberal model? (i.e. that could bound the max
+% recursion depth, and hence the programmer explicitly controls the code bloat,
+% again language servers could report the number of instantiations of a function)
 
 % How do we handle overflow? (at call site? implicit upper bound, e.g. if 2N is
 % used internally, then maximum is MaxInt/2, i.e. the type parameter is a
@@ -232,6 +329,25 @@ since we can still make numerical type parameters evaluate to constants.
 % add to the language, given Go's idealogy of simplicity and minimalism.
 
 % if we don't allow complex expressions, then there is no overflow problem
+
+% TODO sizeof generic type? Is this const? If not, then Go already follows the
+% conservative approach.
+
+
+% N -> constant
+% N + 1 -> non-constant
+% op(Type(N)) -> non-constant, e.g. len([N]T)
+% (i.e. analogous to rust)
+
+% TODO move this section above len section, since the len section references
+% points introduced in this section
+
+% Maybe we allow complex expressions for non-recursive structures? Go already
+% does recursion detection in the compiler
+
+% Evaluate both conservative (Rust) and permissive (Werner) approaches
+
+% Discuss code bloat concerns
 
 \subsection{Allowed operations on generic arrays}
 
