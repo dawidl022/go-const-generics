@@ -334,44 +334,41 @@ their constraint type could yield a constant length, \autocite{spec}.
 
 \subsection{Allowed operations on generic arrays}
 
-% casting length to a value other than int is forbidden, as it must statically
-% type check with any instantiation (of any size, including MaxInt), same
-% applies to casting type parameter
+By the conservative approach, any operation on generic arrays must type check
+for all instantiations of the array. In particular, indexing an array with a
+constant is checked at compile time, and since the minimum array length that
+needs to be supported is 0, no constant is safe to index into a generic array.
+The programmer may wish to move this check to runtime, by first assigning the
+constant to a non-constant \kw{int} variable, and then performing the index
+operation. The liberal approach could be used to set a lower bound on an array
+length, to allow index bounds checks on generic arrays to be performed at
+compile time.
 
-% casting type param to value other than int is also forbidden
-% 
-% casting to an array using type parameter (or derived len) is also forbidden
-% 
-% indexing in an array using a type parameter is forbidden (unless it is
-% assigned to non-const int variable first) - this is backwards incompatible
-% with treating len([N]T) or N as int! rather than making it illegal, we can
-% make it an allowed, run-time checked operation to ensure backwards compatibility
+\begin{figure}
+    \golisting{./examples/index/constant.go}
+    \golisting{./examples/index/nonconstant.go}
+    \golisting{./examples/index/liberal.go}
+    \caption{Indexing operations on generic arrays}
+\end{figure}
 
-% i.e. we must differentiate between true-const, and generic-const values in the
-% compiler. One has restrictions, the other does not.
-
-% alternatively we perform casts at runtime on the generic-const values. The
-% compiler already does not treat len of calls to array returning function a
-% constant, so why should it perform casts of generic-const values at compile
-% time?
-
-% similar argument could be made for constant indexing into generic arrays, move
-% the check to runtime, however this is incosnsitent
-
-% if someone is smart enough to SAT solve at compile time, should we even worry
-% about them?
-
-% if len and type param evaluate to constant values, than that constant may only
-% be cast to int (avoids SAT problem:
-% https://github.com/golang/go/issues/44253#issuecomment-821047754)
-
-% indexing with constant is forbidden, as it must statically type with any
-% instantiation (of any size, including 0)
-% this is consistent with existing union type implementation
+A similar argument follows for the slicing operation on generic arrays. Since in
+the conservative model we have no guarantees about the array bounds, the only
+permitted slicing operation is \texttt{[:]}, which creates a slice of the entire
+array. Just as with the index operation, if the programmer wishes to move the
+bounds check to runtime, they can simply reslice the slice obtained from
+\texttt{[:]}. It is worth noting, that as of Go 1.21, slicing a generic variable
+that is constrained by a union of array types is forbidden (even \texttt{[:]} is
+not allowed). The liberal approach could be used to set lower bound on array
+lengths to allow compile-time safe generic array slicing, other than just
+\texttt{[:]}.
 
 \subsection{Summary of proposal}
 
 % Rust's conservative approach avoids many problems (which are not unsolvable,
 % but rather more work). We can always introduce the permissive approach later.
+
+% \kw{const} type parameters can be used as non-const \kw{int} type values.
+% Additionally lone \kw{const} type parameters (but not as part of a more
+% complex expression) can be used as \kw{const} type arguments
 
 % Coin the conservative and liberal terminology for numerical type parameters
