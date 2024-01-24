@@ -106,10 +106,6 @@ noting however, that this syntax is used for type inference, as opposed to
 denote the type of a value, similar to how in some cases type arguments can be
 omitted, where the compiler is able to infer what they are.
 
-% TODO describe pros and cons of existing proposal
-% cons: 
-%       difficulty of implementing type arguments using expressions (e.g. len([...]T) + 1)
-
 Another shortcoming of the implicit \texttt{[...]} syntax to parameterise array
 sizes, is that it becomes unclear whether two type parameters of the same
 constraint \texttt{[...]T} (as shown in figure \ref{fig:werner-ambiguity}) have
@@ -151,9 +147,6 @@ ones that can be computed at compile time, if we substitute the type parameter
 for a concrete integer), a constant expression? Going forwards, when the answer
 to the above questions is ``no'', it will be referred to as the conservative
 approach, whereas a ``yes'' answer will be referred to as the liberal approach.
-
-% TODO explain how conservative model prevents const variables from holding type
-% parameters (due to transitivity), but allow type arguments
 
 Constant expressions evaluate to constant integers, of which non-negative ones
 can be used as \kw{const} type arguments. This brings us to our first problem,
@@ -235,57 +228,36 @@ compile-time, e.g. to solve SAT formulas \autocite{goArraySAT}, which can
 undermine Go's promise of fast compile times, if the programmer (accidentally or
 deliberately) misuses the type system. As such, in practice, the most reasonable
 roadmap to implement numerical type parameters in Go would be to start with the
-conservative approach, then progress to an explicit liberal model, and finally,
-if there is demand for it, consider the implicit liberal model, as a type
-inference feature. Due to the complexity of the liberal model, Rust has also
-opted for the conservative approach for the time being \autocite{rustConstBlog}.
+conservative approach. Then, if its usefulness outweighs the complexity that
+would be introduced into a language that drives for simplicity, progress to an
+explicit liberal model. Finally, if there is demand for it, consider the
+implicit liberal model, as a type inference feature, and have tools such as
+language servers show the inferred bounds to the programmer. Due to the
+complexity of the liberal model, Rust has also opted for the conservative
+approach for the time being \autocite{rustConstBlog}.
+
+Another area of concern that may arise with the liberal approach are recursively
+defined functions or types, where the numerical type parameter differs in each
+recursive instantiation (as shown in figure \ref{fig:strange-arr-init}).
+Attempting to monomorphise such code would lead to extreme code bloat, and
+should not be allowed. In both the implicit and explicit models, this is a
+non-issue, as without knowing how the function or type will behave at runtime,
+there is no range of values \texttt{N} that would be guaranteed to not cause an
+underflow/overflow, so such a function cannot be defined. E.g. if in
+\texttt{newArrStrange} we give \texttt{N} an explicit upper bound of $x$, than
+the compiler would complain, since within the body of the function
+\texttt{newArrStrange} could be recursively called with a type argument of $x +
+    1$, which exceeds the type parameter's upper bound.
+
+\begin{figure}
+    \golisting{./examples/expressions/recursive.go}
+    \caption{Contrived recursively defined construction of array}
+    \label{fig:strange-arr-init}
+\end{figure}
 
 Investigating in detail the feasability and safety of the liberal approach
 is a topic for future work. The following sections of this work consider the
 conservative model only.
-
-% Another complexity of handling the liberal approach, is recursion, and its
-% potential for code bloat...
-% TODO
-% approaches: forbid recursive calls with different numerical type params
-% compare with existing. Conservative approach does not have this problem.
-% Can explore the explicit liberal model? (i.e. that could bound the max
-% recursion depth, and hence the programmer explicitly controls the code bloat,
-% again language servers could report the number of instantiations of a function)
-
-% How do we handle overflow? (at call site? implicit upper bound, e.g. if 2N is
-% used internally, then maximum is MaxInt/2, i.e. the type parameter is a
-% subtype of the union of all integers, i.e. a subtype of const, despite being
-% bound by const). Compiler could report in error the
-% implicit upper bound.
-
-% language servers could show the upper bound to the programmer
-
-% an extension would be explicit bounds (both lower, permitting indexing, and
-% upper), although it's hard to say if this feature would be useful enough to
-% add to the language, given Go's idealogy of simplicity and minimalism.
-
-% if we don't allow complex expressions, then there is no overflow problem
-
-% TODO sizeof generic type? Is this const? If not, then Go already follows the
-% conservative approach.
-
-
-% N -> constant
-% N + 1 -> non-constant
-% op(Type(N)) -> non-constant, e.g. len([N]T)
-% (i.e. analogous to rust)
-
-% TODO move this section above len section, since the len section references
-% points introduced in this section
-
-% Maybe we allow complex expressions for non-recursive structures? Go already
-% does recursion detection in the compiler
-
-% Evaluate both conservative (Rust) and permissive (Werner) approaches
-
-% Discuss code bloat concerns
-
 
 \subsection{The \texttt{len} function}
 
@@ -303,22 +275,35 @@ size)?
 
 If we take Rust's conservative approach of prohibiting the use of expressions
 that include constant type parameters (except when the expression is a lone type
-parameter) as type arguments, which include applying \texttt{len} to a
-generically sized array, then it becomes clear why \texttt{len} of a generically
-sized array should yield a non-constant integer (as indeed is the case in Rust).
-Without this restriction, the compiler would have to keep track of which
-constant was derived from an expression containing a type-parameter, to prevent
-the later usage of such a constant in another const expression used as a type
-argument.
+parameter) as type arguments \autocite{rustConstBlog}, which include applying
+\texttt{len} to a generically sized array, then it becomes clear why
+\texttt{len} of a generically sized array should yield a non-constant integer
+(as indeed is the case in Rust). Without this restriction, the compiler would
+have to keep track of which constant was derived from an expression containing a
+type-parameter, to prevent the later usage of such a constant in another const
+expression used as a type argument. The same logic applies to the numerical type
+parameters themselves: if they could be assigned to constant variables, then the
+constant variable could be used as part of a constant expression used to
+instantiate a \kw{const} type parameter, leading to the problems discussed in
+the previous section. And so, when \kw{const} type parameters are used as
+values, the resulting expression type should be a non-constant \kw{int} under
+the conservative model.
 
-% TODO include code examples demonstrating the problem
+\begin{figure}
+    \golisting{./examples/expressions/len.go}
+    \caption{Expression derived from a numerical type parameter are non-constant}
+\end{figure}
 
 In fact, if we view the generally sized arrays as the union of array types of
 all sizes (similar to the explicitly enumerated array type union we can already
 represent in code), then we can keep things as they are currently in Go. I.e. a
-generic type bound by a union of arrays has a non-constant \texttt{len}:
+generic type bound by a union of arrays has a non-constant \texttt{len}.
 
-\golisting{./examples/werner/const_len_of_interface.go}
+\begin{figure}
+    \golisting{./examples/werner/const_len_of_interface.go}
+    \caption{As of Go 1.18, \texttt{len} of an array union type set interface
+        value is non-constant}
+\end{figure}
 
 This is likely to avoid constraining the compiler implementation. With a full
 monomorphisation approach, the \kw{const} of the example above is not an issue,
@@ -330,7 +315,7 @@ array type differs. In such cases, \kw{const}s within a generic function would
 be difficult or even impossible to handle correctly. A simpler explanation, is
 that generic types simply always have non-constant lengths (given \texttt{len}
 is defined on all types of the type set), regardless of whether or not values of
-their constraint type could yield a constant length, \autocite{spec}.
+their constraint type could yield a constant length \autocite{spec}.
 
 \subsection{Allowed operations on generic arrays}
 
@@ -364,11 +349,17 @@ lengths to allow compile-time safe generic array slicing, other than just
 
 \subsection{Summary of proposal}
 
-% Rust's conservative approach avoids many problems (which are not unsolvable,
-% but rather more work). We can always introduce the permissive approach later.
+Rust's conservative approach avoids many problems, as such form a good starting
+point for introducing generically sized arrays and numerical type parameters in
+Go. The liberal approach is a topic for future work, as it has the potential to
+allow for more complex programs to be checked at compile time.
 
-% \kw{const} type parameters can be used as non-const \kw{int} type values.
-% Additionally lone \kw{const} type parameters (but not as part of a more
-% complex expression) can be used as \kw{const} type arguments
-
-% Coin the conservative and liberal terminology for numerical type parameters
+Constant expressions can be used to instantiate a \kw{const} type parameter and
+array lengths. Lone \kw{const} type parameters can be used to instantiate
+\kw{const} type parameters and array lengths. Additionally \kw{const} type
+parameters can be used as non-const \kw{int} type values. More complex
+expressions involving a combination of type parameters, constant expressions,
+and constant operations (such as \texttt{+} or \texttt{len}), yield a
+non-constant \kw{int} value, so they can be assigned to a variable of
+non-constant \kw{int} type, but not used to instantiate \kw{const} type
+parameters or array lengths.
