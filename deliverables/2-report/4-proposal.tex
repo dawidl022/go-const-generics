@@ -134,79 +134,6 @@ issue\footnote{\url{https://github.com/golang/go/issues/44253\#issuecomment-8209
 this is uneccessary as the desired behaviour can already be achieved by applying
 \texttt{len} to an instantiated value of an array type parameter.
 
-\subsection{The \texttt{len} function}
-
-Go's built-in \texttt{len} function is special in the sense that depending on
-the context, it may or may not be computed at compile time \autocite{spec}. If
-it is computed at compile time, we can assign the result to a \kw{const}
-variable, or use it in any other place that requires a compile-time constant
-non-negative integer value, such as for the length of an array.
-
-An example of a compile-time evaluation of \texttt{len} is when it is applied to
-an array value literal, and an example of a run-time evaluation of \texttt{len}
-is when it is applied to a slice value. The question arises, how should
-\texttt{len} treat generic arrays (specifically, ones that are parameterised on
-size)?
-
-Interestingly, there are already cases, where a value of array type does not
-have compile-time \texttt{len} semantics. In particular, the spec says
-\texttt{len} does not yield a constant for array type expressions that ``contain
-channel receives or (non-constant) function calls'' \autocite{spec}. While this
-is indeed the case as of Go 1.21, assigning the result of such a
-``non-constant'' expression to a variable, and then calling \texttt{len} on that
-variable, \emph{does} yield a constant. As such, this restriction appears to be
-a compiler limitation, as opposed to being inherent to the language.
-
-If we take Rust's approach of prohibiting the use of expressions that include
-constant type parameters (except when the expression is a lone type parameter)
-as type arguments, which include applying \texttt{len} to a generically sized
-array, then it becomes clear why \texttt{len} of a generically sized array
-should yield a non-constant integer (as indeed is the case in Rust). Without
-this restriction, the compiler would have to keep track of which constant was
-derived from an expression containing a type-parameter, to prevent the later
-usage of such a constant (or another const expression containing it) as a type
-argument.
-
-% TODO include code examples demonstrating the problem
-
-In fact, if we view the generally sized arrays as a countably infinite union of
-different array sizes (similar to the finite union we can already represent in
-code), then we can keep things as they are currently in Go. I.e. a generic type
-bound by a union of arrays has a non-constant \texttt{len}:
-
-\golisting{./examples/werner/const_len_of_interface.go}
-
-This is likely to avoid constraining the compiler implementation. With a full
-monomorphisation approach, the \kw{const} of the example above is not an issue,
-as each instantiation of the function has its own local \texttt{const n} with a
-distinct value. However, in the current GC Shape Stenciling approach used by the
-Go compiler as of Go 1.18 \autocite{generics1.18}, it is possible to construct a
-union of array types that are have the same GC shape, yet the length of the
-array type differs. In such cases, \kw{const}s within a generic function would
-be difficult or even impossible to handle correctly. A simpler explanation, is
-that type parameters simply always have non-constant lengths (given \texttt{len}
-is defined on all types of the type set), regardless of whether or not values
-of their constraint type could yield a constant length, \autocite{spec}.
-
-If we permit non-trivial constant expressions containing type parameters as type
-arguments, then the model is sound when \texttt{len} evaluates to a constant. As
-a side remark, why would we need to even call \texttt{len} on a generically
-sized array, since the numerical type parameter used to size it is in scope? The
-same could be asked for the existing semantics of \texttt{len} on arrays: why
-call \texttt{len} if the array size could be made a constant, and referenced in
-multiple places? One justification comes to mind: when dealing with multiple
-arrays of various sizes, it may be easier to use the wrong type parameter (or
-constant in the non-generic case) than we intend to, whereas calling
-\texttt{len} is guaranteed to yield the actual length of the array. Note that
-making the \texttt{len} operation non-constant, does not automatically prevent
-using non-trivial constant expressions with type parameters as type arguments,
-since we can still make numerical type parameters evaluate to constants.
-
-% TODO think of a scenario of using len as opposed to the type parameter?
-
-% TODO why is len of a generic array not a constant in Rust?
-% probably because it cannot be used as a type parameter
-
 \subsection{Allowed \texttt{const} type arguments}
 
 We've already seen how constant non-negative integers can be used as numerical
@@ -224,6 +151,9 @@ ones that can be computed at compile time, if we substitute the type parameter
 for a concrete integer), a constant expression? Going forwards, when the answer
 to the above questions is ``no'', it will be referred to as the conservative
 approach, whereas a ``yes'' answer will be referred to as the liberal approach.
+
+% TODO explain how conservative model prevents const variables from holding type
+% parameters (due to transitivity), but allow type arguments
 
 Constant expressions evaluate to constant integers, of which non-negative ones
 can be used as \kw{const} type arguments. This brings us to our first problem,
@@ -355,6 +285,52 @@ conservative model only.
 % Evaluate both conservative (Rust) and permissive (Werner) approaches
 
 % Discuss code bloat concerns
+
+
+\subsection{The \texttt{len} function}
+
+Go's built-in \texttt{len} function is special in the sense that depending on
+the context, it may or may not be computed at compile time \autocite{spec}. If
+it is computed at compile time, we can assign the result to a \kw{const}
+variable, or use it in any other place that requires a compile-time constant
+non-negative integer value, such as for the length of an array.
+
+An example of a compile-time evaluation of \texttt{len} is when it is applied to
+an array value literal, and an example of a run-time evaluation of \texttt{len}
+is when it is applied to a slice value. The question arises, how should
+\texttt{len} treat generic arrays (specifically, ones that are parameterised on
+size)?
+
+If we take Rust's conservative approach of prohibiting the use of expressions
+that include constant type parameters (except when the expression is a lone type
+parameter) as type arguments, which include applying \texttt{len} to a
+generically sized array, then it becomes clear why \texttt{len} of a generically
+sized array should yield a non-constant integer (as indeed is the case in Rust).
+Without this restriction, the compiler would have to keep track of which
+constant was derived from an expression containing a type-parameter, to prevent
+the later usage of such a constant in another const expression used as a type
+argument.
+
+% TODO include code examples demonstrating the problem
+
+In fact, if we view the generally sized arrays as the union of array types of
+all sizes (similar to the explicitly enumerated array type union we can already
+represent in code), then we can keep things as they are currently in Go. I.e. a
+generic type bound by a union of arrays has a non-constant \texttt{len}:
+
+\golisting{./examples/werner/const_len_of_interface.go}
+
+This is likely to avoid constraining the compiler implementation. With a full
+monomorphisation approach, the \kw{const} of the example above is not an issue,
+as each instantiation of the function has its own local \texttt{const n} with a
+distinct value. However, in the current GC Shape Stenciling approach used by the
+Go compiler as of Go 1.18 \autocite{generics1.18}, it is possible to construct a
+union of array types that are have the same GC shape, yet the length of the
+array type differs. In such cases, \kw{const}s within a generic function would
+be difficult or even impossible to handle correctly. A simpler explanation, is
+that generic types simply always have non-constant lengths (given \texttt{len}
+is defined on all types of the type set), regardless of whether or not values of
+their constraint type could yield a constant length, \autocite{spec}.
 
 \subsection{Allowed operations on generic arrays}
 
