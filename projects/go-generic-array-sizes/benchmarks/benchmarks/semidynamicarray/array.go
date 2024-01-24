@@ -5,18 +5,26 @@ type Array struct {
 	len int
 }
 
-func (a *Array) push(element int) {
+func (a *Array) Push(element int) {
+	if a.len >= N {
+		panic("array is full")
+	}
 	a.arr[a.len] = element
 	a.len++
 }
 
-func (a *Array) pop() {
+func (a *Array) Pop() int {
 	a.len--
+	return a.arr[a.len]
 }
 
-func (a *Array) get(i int) int {
+func (a *Array) Get(i int) int {
 	if i >= a.len {
 		panic("index out of bounds")
 	}
 	return a.arr[i]
+}
+
+func (a *Array) Len() int {
+	return a.len
 }

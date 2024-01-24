@@ -23,7 +23,7 @@ func BenchmarkArrayPush(b *testing.B) {
 		resultArr = Array{}
 
 		for j := 0; j < N; j++ {
-			resultArr.push(j)
+			resultArr.Push(j)
 		}
 	}
 }
@@ -43,11 +43,11 @@ func BenchmarkArrayPop(b *testing.B) {
 		resultArr = Array{}
 
 		for j := 0; j < N; j++ {
-			resultArr.push(j)
+			resultArr.Push(j)
 		}
 
 		for j := 0; j < N; j++ {
-			resultArr.pop()
+			resultArr.Pop()
 		}
 	}
 }
