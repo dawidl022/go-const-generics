@@ -89,14 +89,11 @@ abstract over arrays of any size.
 
 \subsection{Array semantics}
 
-% TODO reword this section to make it flow better, and avoid repetition
-
 We've looked at an example where using arrays is faster than slices. In general,
 it is difficult to reliably build array-based data structures that offer better
 performance than slices, since all the operations need to be handwritten and
 optimised. One rule of thumb, is that allocations (and therefore copies) are
 faster for arrays than slices.
-
 
 \begin{figure}
 	\golisting{./examples/semantics/arrays.go}
@@ -170,22 +167,6 @@ double ended queue.
 	\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/ringbuffer/array.go}
 	\caption{Double-ended queue (deque) with a fixed underlying buffer}
 \end{figure}
-
-% Subsection 3: Operation examples
-
-% Example 4: Usage of arrays and above data structures as map keys
-
-% Example 5: Comparison of deeply nested structure possible with array, but not
-% slices
-
-% Example 6: Trivial deep-copies (via assignment/dereferencing) of deeply nested
-% structures with arrays
-
-% Subsection 4: Real-world use-case examples
-
-% Any other examples from current issue and proposal
-
-% Subsection 5: Benchmarks
 
 % Benchmarks of all examples comparing arrays with slices, both using pointers
 % to and copies of arrays, both large and small array sizes. Use escape analysis

@@ -14,6 +14,9 @@ func (a *Array) Push(element int) {
 }
 
 func (a *Array) Pop() int {
+	if a.len == 0 {
+		panic("array is empty")
+	}
 	a.len--
 	return a.arr[a.len]
 }
