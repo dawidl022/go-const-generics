@@ -97,18 +97,28 @@ performance than slices, since all the operations need to be handwritten and
 optimised. One rule of thumb, is that allocations (and therefore copies) are
 faster for arrays than slices.
 
+
+\begin{figure}
+	\golisting{./examples/semantics/arrays.go}
+	\caption{Array semantics allow for trivial deep-copying and comparison}
+\end{figure}
+
+\begin{figure}
+	\golisting{./examples/semantics/slices.go}
+	\caption{Slices hold references to underyling data, and cannot be compared}
+\end{figure}
+
 \subsubsection{Value type}
 
-However, arrays offer other semantic differences, that may make it more
-appealing to build data structures from for certain use cases. We've seen that
-arrays are value types, and as such, copies can be easily made through simple
-assignment to a variable or passing into a function. While cloning a single
-slice is not much more difficult, if we have a large, nested data structure,
-that is slice based, performing a deep-copy is a verbose and manual process
-(there is no standard library deep-copy function as of Go 1.21). If instead the
-data structure was array based, with no internal pointers (only potentially a
-top-level pointer to the data structure), performing a deep-copy becomes
-trivial.
+Arrays offer other semantic differences, that may make it more appealing to
+build data structures from for certain use cases. We've seen that arrays are
+value types, and as such, copies can be easily made through simple assignment to
+a variable or passing into a function. While cloning a single slice is not much
+more difficult, if we have a large, nested data structure, that is slice based,
+performing a deep-copy is a verbose and manual process (there is no standard
+library deep-copy function as of Go 1.21). If instead the data structure was
+array based, with no internal pointers (only potentially a top-level pointer to
+the data structure), performing a deep-copy becomes trivial.
 
 \subsubsection{Comparison}
 
