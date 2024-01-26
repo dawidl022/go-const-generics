@@ -124,14 +124,14 @@ could define a function that compares the size and elements of a slices to
 determine if two slices are equal in value (not reference). It is slightly more
 difficult to do the same with a nested slice-based data structure (although this
 time around, the standard library does provide \texttt{reflect.DeepEqual} with
-some caveats\footnote{\texttt{reflect.DeepEqual} differentiates between a nil
+some caveats\footnote{\href{https://pkg.go.dev/reflect\#DeepEqual}{\texttt{reflect.DeepEqual}} differentiates between a nil
 	and an empty slice, despite them semantically being equivalent.
 	\href{https://pkg.go.dev/github.com/google/go-cmp/cmp\#Equal}{\texttt{cmp.Equal}}
 	with the
 	\href{https://pkg.go.dev/github.com/google/go-cmp/cmp/cmpopts\#EquateEmpty}{\texttt{cmpopts.EquateEmpty}}
-	option can be used instead to equate semantically empty slices.}),
-a nested array-based data structure (with no internal pointers) can be simply
-compared with the \texttt{==} operator.
+	option can be used instead to equate semantically empty slices
+	\autocite{deepEqual}.}), a nested array-based data structure (with no internal
+pointers) can be simply compared with the \texttt{==} operator.
 
 This comparable attribute of arrays becomes extremely important when we wish to
 use a collection of elements as a key in a hash map. Only comparable data
@@ -154,18 +154,18 @@ for them.
 Array-based data structures can enjoy the benefits of being easily copyable and
 comparable, even as part of nested data structures. The figures present two
 popular data types: a ``resizable'' array with a fixed maximum capacity, and a
-double ended queue.
+double ended queue with an underlying fixed size ring buffer (circular
+array)\footnote{The ``wasted'' slot strategy was used to differentiate between
+	``empty'' and ``full'' states \autocite{ringBuffer}}.
 
 \begin{figure}
 	\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/semidynamicarray/array.go}
-	\caption{``Semi-dynamic'' array with a fixed underlying buffer}
+	\caption{``Resizable'' array with a fixed underlying buffer}
 \end{figure}
 
-% Example 3: Ring buffer of static size
-
 \begin{figure}
-	\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/ringbuffer/array.go}
-	\caption{Double-ended queue (deque) with a fixed underlying buffer}
+	\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/ringbuffer/deque.go}
+	\caption{Double-ended queue (deque) with a fixed underlying ring buffer}
 \end{figure}
 
 % Benchmarks of all examples comparing arrays with slices, both using pointers
