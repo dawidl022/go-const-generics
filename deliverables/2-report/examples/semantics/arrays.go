@@ -16,7 +16,7 @@ func main() {
 	y := x                            // trivial deep-copy
 	fmt.Println(x == y)               // deep-comparison: prints "true"
 
-	myMap := map[Outer]int{x: 42}     // stricture can be used as map key
+	myMap := map[Outer]int{x: 42}     // structure can be used as map key
 	fmt.Println(myMap[x])             // prints: 42
 	fmt.Println(myMap[y])             // prints: 42 (y has same value as x)
 

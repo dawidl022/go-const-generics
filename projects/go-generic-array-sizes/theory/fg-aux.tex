@@ -50,13 +50,15 @@
             \inferrule
             {}
             {\tdecls(\ov{D}) = \lst{\black{t_D} \mid (\type~\black{t_D}~T) \in \ov{D}}}
+        }
 
+        \gray{
             \inferrule
             {}
             {\mdecls(\ov{D}) = \lst{\black{t_V}.m \mid
                     (\func~(x~\black{t_V})~mM~\br{\return~e}) \in \ov{D}}}
         }
     \end{mathpar}
-    \caption{FG auxiliary functions for typing with arrays}
+    \caption{FGA auxiliary functions for typing rules}
     \label{fig:fg-typing-aux}
 \end{figure}

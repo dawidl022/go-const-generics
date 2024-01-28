@@ -2,15 +2,15 @@
 
 This section details a minimal design for the addition of generically sized
 arrays and numerical type parameters to Go. We also compare this design against
-the existing proposal by \autocite{goArrayProposal}, and discuss future
+the existing proposal by \autocite{goArrayProposal} and discuss future
 extensions to this feature.
 
 \subsection{Type-set interfaces and the \kw{const} interface}
 
-We've already looked at type set based interfaces introduced in Go 1.18. If we
-treat array sizes as types, then we now have a conceptual set of types 0, 1, 2,
+We've already looked at type set-based interfaces introduced in Go 1.18. If we
+treat array lengths as types, then we now have a conceptual set of types 0, 1, 2,
 3, etc. Similarly, we can conceptually define the \kw{const} type as the type
-set of all array sizes:
+set of all array lengths:
 
 \golisting{./examples/reversed/const_type.go}
 
@@ -21,7 +21,7 @@ set of all non-interface types that are strictly comparable'' \autocite{spec}.
 Just like \texttt{comparable}, \kw{const} would be an interface that can only be
 used as a type parameter constraint, and not e.g. as the type of a variable,
 function parameter or return type. This \texttt{comparable} interface is not
-defined in terms of regular Go code, but rather exists on the level of the
+defined in terms of regular Go code but rather exists on the level of the
 language itself. \kw{const} would follow the same pattern. The choice of the
 identifier \kw{const} is to ensure backwards compatibility with existing
 programs, as this keyword is currently not allowed to be used as a type name.
@@ -43,7 +43,7 @@ type into the existing Go language. We will examine a language called
 Featherweight Generic Go With Arrays (FGGA), which is a subset of Go, modulo the
 addition of numerical type parameters. Since FGGA only considers ``classic''
 (method set) interfaces, \kw{const} will not be an interface type in FGGA, but
-rather in its own category. This category can be though of as non-method set
+rather in its own category. This category can be thought of as non-method set
 interfaces, since the two have the same restrictions, i.e. they can only be used
 as type parameter bounds.
 
@@ -56,14 +56,14 @@ following form:
 
 \golisting{./examples/werner/array_interface.go}
 
-In this design, the parameterisation of the array size in implicit using
-\texttt{...}, and does not appear in the list of type parameters, meaning the
+In this design, the parameterisation of the array size is implicit using
+\texttt{...} and does not appear in the list of type parameters, meaning the
 numerical type parameter cannot be referenced directly. Instead, the proposal
-author suggests applying the feature as follows:
+author suggests using the feature as follows:
 
 \golisting{./examples/werner/matrix.go}
 
-The example can in fact be simplified slightly, by inlining the type set
+The example can be simplified slightly, by inlining the type set
 directly in into the type parameter constraint (allowed as of Go 1.18):
 
 \golisting{./examples/werner/matrix_inline.go}
@@ -95,14 +95,14 @@ parameter, to parameterize the length of an array type. The \kw{const} interface
 would allow any type or function to accept a constant integer (or another
 \kw{const} bounded type parameter) as a type argument.
 
-The benefit of Werner's proposal, is that is uses existing syntax:
+The benefit of Werner's proposal is that it uses existing Go syntax:
 \texttt{[...]T} can already be used to denote an array's type when constructing
 an array literal:
 
 \golisting{./examples/werner/array_literal.go}
 
 where \texttt{myArray} has an inferred type of \texttt{[3]int}. It's worth
-noting however, that this syntax is used for type inference, as opposed to
+noting, however, that this syntax is used for type inference, as opposed to
 denote the type of a value, similar to how in some cases type arguments can be
 omitted, where the compiler is able to infer what they are.
 
@@ -110,7 +110,7 @@ Another shortcoming of the implicit \texttt{[...]} syntax to parameterise array
 sizes, is that it becomes unclear whether two type parameters of the same
 constraint \texttt{[...]T} (as shown in figure \ref{fig:werner-ambiguity}) have
 the same length. If yes, then how do we express two type parameters of the
-different lengths? If no, then how do we express that two type parameters must
+different lengths? If not, then how do we express that two type parameters must
 have the same length? How about when we use the shorthand syntax to collapse the
 bounds of multiple type parameters? Explicit numerical type parameters make this
 differentiation trivial, enhancing the readability of the code.
@@ -127,7 +127,7 @@ The proposal mentions making \texttt{len} applicable to array \emph{types} in
 addition to array values (as seen in Werner's examples presented above),
 however, as pointed out in the GitHub
 issue\footnote{\url{https://github.com/golang/go/issues/44253\#issuecomment-820999513}},
-this is uneccessary as the desired behaviour can already be achieved by applying
+this is unnecessary as the desired behaviour can already be achieved by applying
 \texttt{len} to an instantiated value of an array type parameter.
 
 \subsection{Allowed \texttt{const} type arguments}
@@ -136,9 +136,9 @@ We've already seen how constant non-negative integers can be used as numerical
 type arguments. Additionally, since a numerical type parameter stands in for a
 constant integer, it can itself be used as a type argument. This is consistent
 with how in Go type parameters satisfy their own bounds, and is the basis for
-creating nested generic structures. Arrays length parameters are generalized to
-accept a \kw{const} type parameter, as seen in the matrix example, to fit into
-this new definition.
+creating nested generic structures. Array type literal length parameters are
+generalized to accept a \kw{const} type parameter, as seen in the matrix
+example, to fit into this new definition.
 
 How about an expression like \texttt{N + 1} or \texttt{2 * N}? Should we allow
 them as \kw{const} type arguments? The question can be phrased as: is an
@@ -171,15 +171,15 @@ Conceptually, we can think of this constraint as a new interface, a
 
 This leads us to at least three potential solutions to the above problem. The
 first would be to fail the type checking of such a function (at declaration
-site), since the operation is not valid on for all instantiations of the
-\kw{const} interface. Just as underflow can occur when performing operations
-that can decrease the value of a numerical type parameter, overflow could occur
-if the instantiated type argument is large enough and a constant expression
-makes it overflow (i.e. fail to fit into an \texttt{int} type, whose size is
-platform dependant). The is where the first potential solution falls short,
-since overflow could occur with expressions such as \texttt{N + 1} or \texttt{2
-    * N}, those expressions would also not be allowed by same the argument of not
-being valid for all instantiations, and in effect we're back to the conservative
+site), since the operation is not valid for all instantiations of the \kw{const}
+interface. Just as underflow can occur when performing operations that can
+decrease the value of a numerical type parameter, overflow could occur if the
+instantiated type argument is large enough and a constant expression makes it
+overflow (i.e. fail to fit into an \texttt{int} type, whose size is platform
+dependant). This is where the first potential solution falls short, since
+overflow could occur with expressions such as \texttt{N + 1} or \texttt{2 * N},
+those expressions would also not be allowed by same the argument of not being
+valid for all instantiations, and in effect, we're back to the conservative
 approach.
 
 The other 2 solutions revolve around constraining the type parameter bound more
@@ -187,7 +187,7 @@ tightly (as shown in the \texttt{constPlus1} interface code). This could be done
 implicitly: the compiler could detect that the operation is only permitted for
 numerical type parameter instantiations greater than 0, and implicitly make the
 type parameter constraint bounds tighter. I.e. the function still type checks at
-the declaration site, however callers would only be able to pass in non-zero
+the declaration site, however, callers would only be able to pass in non-zero
 sized arrays, which can be checked at compile time. Tools such as language
 servers could show these tighter constraints to the programmer. The final
 solution is to require an explicit tighter constraint, through some sort of new
@@ -195,14 +195,14 @@ syntax, e.g.:
 
 \golisting{./examples/expressions/headtailexplicit.go}
 
-Which places a lower bound of 1 on the \kw{const} interface using the well-known
+which places a lower bound of 1 on the \kw{const} interface using the well-known
 slicing notation. What about when two distinct type parameters appear in a
 ``constant'' expression, such as in the (somewhat contrived) example below:
 
 \golisting{./examples/expressions/difference.go}
 
 This code is only safe to execute when $N \ge M$. This adds additional
-complexity, as we need to extend our approach from before, if we wish to pursue
+complexity, as we need to extend our approach from before if we wish to pursue
 the liberal approach. In the implicit model, the compiler would have to reject
 all instantiations of the function where $N < M$. In the explicit model, the
 slicing notation would be allowed to accept constant expressions, and since type
@@ -214,7 +214,7 @@ the programmer make the operation legal for all instantiations.
 
 \golisting{./examples/expressions/differenceexplicit.go}
 
-The downside of the liberal model, is that it makes the compiler implementation
+The downside of the liberal model is that it makes the compiler implementation
 significantly more complex, since it needs to determine what (if any)
 combination of numerical type parameter values/ranges will type-check, for every
 possible constant (compile-time) operation (e.g. plus, times, bitwise XOR, type
@@ -229,14 +229,14 @@ undermine Go's promise of fast compile times, if the programmer (accidentally or
 deliberately) misuses the type system. As such, in practice, the most reasonable
 roadmap to implement numerical type parameters in Go would be to start with the
 conservative approach. Then, if its usefulness outweighs the complexity that
-would be introduced into a language that drives for simplicity, progress to an
+would be introduced into a language that strives for simplicity, progress to an
 explicit liberal model. Finally, if there is demand for it, consider the
 implicit liberal model, as a type inference feature, and have tools such as
 language servers show the inferred bounds to the programmer. Due to the
 complexity of the liberal model, Rust has also opted for the conservative
 approach for the time being \autocite{rustConstBlog}.
 
-Another area of concern that may arise with the liberal approach are recursively
+Another area of concern that may arise with the liberal approach is recursively
 defined functions or types, where the numerical type parameter differs in each
 recursive instantiation (as shown in figure \ref{fig:strange-arr-init}).
 Attempting to monomorphise such code would lead to extreme code bloat, and
@@ -255,7 +255,7 @@ the compiler would complain, since within the body of the function
     \label{fig:strange-arr-init}
 \end{figure}
 
-Investigating in detail the feasability and safety of the liberal approach
+Investigating in detail the feasibility and safety of the liberal approach
 is a topic for future work. The following sections of this work consider the
 conservative model only.
 
@@ -280,24 +280,24 @@ parameter) as type arguments \autocite{rustConstBlog}, which include applying
 \texttt{len} of a generically sized array should yield a non-constant integer
 (as indeed is the case in Rust). Without this restriction, the compiler would
 have to keep track of which constant was derived from an expression containing a
-type-parameter, to prevent the later usage of such a constant in another const
-expression used as a type argument. The same logic applies to the numerical type
-parameters themselves: if they could be assigned to constant variables, then the
-constant variable could be used as part of a constant expression used to
-instantiate a \kw{const} type parameter, leading to the problems discussed in
-the previous section. And so, when \kw{const} type parameters are used as
-values, the resulting expression type should be a non-constant \kw{int} under
-the conservative model.
+type-parameter, to prevent the later usage of such a constant in another
+\kw{const} expression used as a type argument. The same logic applies to the
+numerical type parameters themselves: if they could be assigned to constant
+variables, then the constant variable could be used as part of a constant
+expression used to instantiate a \kw{const} type parameter, leading to the
+problems discussed in the previous section. And so, when \kw{const} type
+parameters are used as values, the resulting expression type should be a
+non-constant \kw{int} under the conservative model.
 
 \begin{figure}
     \golisting{./examples/expressions/len.go}
     \caption{Expression derived from a numerical type parameter are non-constant}
 \end{figure}
 
-In fact, if we view the generally sized arrays as the union of array types of
-all sizes (similar to the explicitly enumerated array type union we can already
-represent in code), then we can keep things as they are currently in Go. I.e. a
-generic type bound by a union of arrays has a non-constant \texttt{len}.
+If we view the generally sized arrays as the union of array types of all sizes
+(similar to the explicitly enumerated array type union we can already represent
+in code), then we can keep things as they are currently in Go. I.e. a generic
+type bound by a union of arrays has a non-constant \texttt{len}.
 
 \begin{figure}
     \golisting{./examples/werner/const_len_of_interface.go}
@@ -310,11 +310,11 @@ monomorphisation approach, the \kw{const} of the example above is not an issue,
 as each instantiation of the function has its own local \texttt{const n} with a
 distinct value. However, in the current GC Shape Stenciling approach used by the
 Go compiler as of Go 1.18 \autocite{generics1.18}, it is possible to construct a
-union of array types that are have the same GC shape, yet the length of the
-array type differs. In such cases, \kw{const}s within a generic function would
-be difficult or even impossible to handle correctly. A simpler explanation, is
-that generic types simply always have non-constant lengths (given \texttt{len}
-is defined on all types of the type set), regardless of whether or not values of
+union of array types that have the same GC shape, yet the length of the array
+type differs. In such cases, \kw{const}s within a generic function would be
+difficult or even impossible to handle correctly. A simpler explanation is that
+generic types simply always have non-constant lengths (given \texttt{len} is
+defined on all types of the type set), regardless of whether or not values of
 their constraint type could yield a constant length \autocite{spec}.
 
 \subsection{Allowed operations on generic arrays}
@@ -326,7 +326,7 @@ needs to be supported is 0, no constant is safe to index into a generic array.
 The programmer may wish to move this check to runtime, by first assigning the
 constant to a non-constant \kw{int} variable, and then performing the index
 operation. The liberal approach could be used to set a lower bound on an array
-length, to allow index bounds checks on generic arrays to be performed at
+length, to allow index bound checks on generic arrays to be performed at
 compile time.
 
 \begin{figure}
@@ -337,22 +337,22 @@ compile time.
 \end{figure}
 
 A similar argument follows for the slicing operation on generic arrays. Since in
-the conservative model we have no guarantees about the array bounds, the only
+the conservative model, we have no guarantees about the array bounds, the only
 permitted slicing operation is \texttt{[:]}, which creates a slice of the entire
 array. Just as with the index operation, if the programmer wishes to move the
 bounds check to runtime, they can simply reslice the slice obtained from
 \texttt{[:]}. It is worth noting, that as of Go 1.21, slicing a generic variable
 that is constrained by a union of array types is forbidden (even \texttt{[:]} is
-not allowed). The liberal approach could be used to set lower bound on array
+not allowed). The liberal approach could be used to set lower bounds on array
 lengths to allow compile-time safe generic array slicing, other than just
 \texttt{[:]}.
 
 \subsection{Summary of proposal}
 
-Rust's conservative approach avoids many problems, as such form a good starting
-point for introducing generically sized arrays and numerical type parameters in
-Go. The liberal approach is a topic for future work, as it has the potential to
-allow for more complex programs to be checked at compile time.
+Rust's conservative approach avoids many problems and, as such forms a good
+starting point for introducing generically sized arrays and numerical type
+parameters in Go. The liberal approach is a topic for future work, as it has the
+potential to allow for more complex programs to be checked at compile time.
 
 Constant expressions can be used to instantiate a \kw{const} type parameter and
 array lengths. Lone \kw{const} type parameters can be used to instantiate
