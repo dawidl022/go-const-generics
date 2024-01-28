@@ -1,5 +1,5 @@
 https://github.com/golang/go/issues/44253 proposes to introduce generic
-parameterization of array sizes. This issue has been open for 3 years, with
+parameterization of array sizes. The issue has been open for 3 years, with
 seemingly no recent progress.
 
 The new proposal differs in that it introduces an explicit numerical "const"
@@ -179,9 +179,9 @@ not required.)
 I am working on a paper in the style of [Featherweight
 Go](https://dl.acm.org/doi/10.1145/3428217), that formalises arrays and
 numerical type parameters, that would be implemented as part of this proposal.
-It will come with prototype interpreters for the new language feature in the
-style of https://github.com/rhu1/fgg (i.e. for a subset of Go). I hope to make
-this publicly available, sometime post May this year.
+It will come with prototype interpreters (with static type checking) for the new
+language feature in the style of https://github.com/rhu1/fgg (i.e. for a subset
+of Go). I hope to make this publicly available, sometime post May this year.
 
 Q: Would this change make Go easier or harder to learn, and why?
 
