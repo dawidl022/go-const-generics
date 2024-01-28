@@ -4,8 +4,9 @@ seemingly no recent progress.
 
 The new proposal differs in that it introduces an explicit numerical "const"
 type parameter, and restricts the kinds of expressions that can be used to
-instantiate a const type parameter to existing constant expressions, and lone
-"const" type parameters, in the [same fashion as
+instantiate a const type parameter to existing constant expressions evaluating
+to non-negative integers, and lone "const" type parameters, in the [same fashion
+as
 Rust](https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html#no-complex-generic-expressions-in-const-arguments).
 
 Having this restriction in place limits the problems const generics can solve,
