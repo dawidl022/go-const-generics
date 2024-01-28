@@ -6,11 +6,11 @@ type Eq[T any] interface {
 	equal(other T) int
 }
 
-type selfComparable[T Eq[T]] interface {
+type SelfEq[T Eq[T]] interface {
 	equal(other T) int
 }
 
-type comparableHolder[T selfComparable[T]] struct {
+type ComparableHolder[T SelfEq[T]] struct {
 	x T
 }
 
@@ -22,5 +22,5 @@ func (i Int) equal(other Int) int {
 }
 
 func main() {
-	_ = comparableHolder[Int]{Int{}}
+	_ = ComparableHolder[Int]{Int{}}
 }

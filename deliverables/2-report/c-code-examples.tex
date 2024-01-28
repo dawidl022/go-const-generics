@@ -26,15 +26,15 @@ define an interface for the bound as follows:
 A type \texttt{T} implements \texttt{Eq[T]} if it implements an \texttt{equal}
 method that takes a parameter of the same type as itself. However, the above
 interface does not compile, as type parameter bounds are not allowed to refer to
-the type that is being declared.
+the type that is being declared in Go \autocite{spec}.
 
-We can however, introduce another layer of indirection. The base interface
+We can, however, introduce another layer of indirection. The base interface
 \texttt{Eq} is implemented if a type implements the \texttt{equal} method with
 any type \texttt{T} as its argument. Then we define another interface
-\texttt{selfComparable}, whose type parameter \texttt{T} is now bound by
+\texttt{SelfEq}, whose type parameter \texttt{T} is now bound by
 \texttt{Eq[T]}, and requires the same method as \texttt{Eq}. This gives us the
 behaviour we were intending to express, and so we can use the
-\texttt{selfComaparable} interface as the type parameter bound. A complete
+\texttt{SelfEq} interface as the type parameter bound. A complete
 example including an instantiation can be found below.
 
 \golisting{../../projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/subtyping/interface_recursive_type_param/interface_recursive_type_param.go}
