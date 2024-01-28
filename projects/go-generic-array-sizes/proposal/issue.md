@@ -20,19 +20,98 @@ Detailed design document: (TODO)
 
 ## Proposal
 
-Please describe as precisely as possible the change to the language.
+The basis of this proposal is to introduce a new set of types that can be used
+as type arguments. This new type set would be made up of constant non-negative
+integers. Since interfaces represent type sets in Go, we can (conceptually)
+define such as type as:
 
+```go
+type const interface {
+    0 | 1 | 2 | 3 | ...
+}
+```
 
-<!-- TODO do we allow interfaces that are a union of expressions? -->
+where the `...` denotes that the pattern continues for all non-negative integers
+supported by Go. The `const` interface can be used to constrain a type
+parameter, and since it is a [non-basic
+interface](https://go.dev/ref/spec#Interface_types) it cannot be used as the
+type of a variable (we can already use `const` declarations to hold values, but
+they are broader than this proposed interface).
 
+Array types accept two "type" parameters - the length and the element type. The
+bound of the length parameter is exactly the `const` interface. This proposal
+generalises the `const` interface to be applicable to user-defined type
+parameters - those we know from generics.
 
-Please also describe the change informally, as in a class teaching Go.
+Since all type parameters also implement their own constraints (i.e. a type
+parameter constrained by `T` can be used as a type argument constrained by the
+same type, or a supertype of `T`), it means that `const` type parameters can be
+used to instantiate other `const` type parameters, including array lengths.
+
+Expressions involving type parameters, other than a lone `const`
+type parameter `N`, cannot be used as `const` type arguments. This approach is
+used by
+[Rust](https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html), and
+can make the implementation much more feasible (discussed in detail in the
+design document). E.g. the following would not be allowed:
+
+```go
+func foo[N const]() {
+    // compile-time error: the expression `N + 1` cannot be used as a type argument
+    foo[N + 1]()
+}
+```
+
+In addition, despite `const` type parameters implementing `const` themselves,
+when used as a value, as opposed to a type parameter, they would evaluate to a
+non-constant `int`. E.g. the following would not be allowed:
+
+```go
+func foo[N const]() {
+    // compile-time error: type parameter N cannot be used as constant value
+    const n = N
+}
+```
+
+This is to avoid `n` being used as part of another constant expression that is
+then used as a `const` type argument, in effect enforcing the previous
+limitation of no "no complex generic expressions in const arguments".
+
+The above restriction also resolves the issue that was heavily discussed in
+https://github.com/golang/go/issues/44253#issuecomment-821047754 of exploiting
+`const` type parameters to perform complex compile time computation, such as SAT
+solving.
+
+<!-- TODO Please describe as precisely as possible the change to the language. -->
+
+<!-- TODO Please also describe the change informally, as in a class teaching Go. -->
 
 ## Examples
 
-Show example code before and after the change.
+One of the simplest useful examples is declaring a square matrix type:
 
-<!-- TODO -->
+```go
+type Matrix[T any, N const] [N][N]T
+```
+
+which can then be instantiated as follows:
+
+```go
+myMatrix := Matrix[int, 2]{{1, 2}, {3, 4}}
+```
+
+Of course, `const` type parameters can also be used directly in functions:
+
+```go
+func reversed[T any, N const](arr [N]T) [N]T {
+    for i := 0; i < N/2; i++ {
+        arr[i], arr[n-i-1] = arr[n-i-1], arr[i]
+    }
+    return arr
+}
+```
+
+<!-- TODO Show example code before and after the change. -->
 
 ## Changes to language spec
 
@@ -58,6 +137,12 @@ types.
 ```
 TypeConstraint = TypeElem | "const" .
 ```
+
+<!-- ## Comparison with previous proposal
+
+This proposal introduces a cleaner, and more intuitive way of expressing that a
+type is parameterised by an integer. The `const` type parameter is explicit,
+which is consistent with the existing generics system in Go. -->
 
 ## Other questions from template
 
