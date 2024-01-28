@@ -2,13 +2,13 @@
 
 \emph{Featherweight Generic Go} (FGG) is an extension to \emph{Featherweight Go}
 that introduces generics via type parameters, formalised in \autocite{fg}. This
-sections adapts FGG with the syntax and restrictions introduced in the Type
+section adapts FGG with the syntax and restrictions introduced in the Type
 Parameters Proposal and ultimately implemented in Go v1.18
 \autocite{genericsProposal}, and extends it with arrays and numerical type
 parameters that can be used to create generic array types, referred to as FGGA
 going forwards.
 
-Rules or rule fragments that remain unchanged from FGA are shown in gray,
+Rules or rule fragments that remain unchanged from FGA are shown in grey,
 whereas new rules or rule modifications are shown in black.
 
 \subsection{FGGA Syntax}
@@ -21,11 +21,11 @@ zero or more type arguments enclosed in square brackets, following the type
 name. The type arguments are themselves types. While it's not explicitly stated
 in figure \ref{fig:fgg-syntax}, when there are no type arguments, the square
 brackets \emph{must} be omitted, to ensure compatibility with Go. The
-consequence of this, is that syntactically, there is no way to differentiate
-between a type parameter, and a named type with no type arguments. A value type
+consequence of this is that syntactically, there is no way to differentiate
+between a type parameter and a named type with no type arguments. A value type
 is a named type whose base type name (i.e. outermost type name) is a value type
 name. The situation is analogous for interface types. An interface-like type is
-either an interface type or a type parameter, which are used for interface-like
+either an interface type or a type parameter, which is used for interface-like
 type assertions. An integer-like type is either an integer literal, or a type
 parameter, and can be used as the size of an array type literal. A bound is used
 to restrict the set of type arguments that can be used in place of a type
@@ -41,8 +41,8 @@ no type parameters \emph{must} omit the square brackets.
 Unlike in FGG, method receivers are invariant, as such, there is no need to
 repeat the type parameter constraints on the receiver type parameters. Instead,
 a simple type parameter sequence is used. In Go, these type parameters can be
-named differently to type parameters in the type declaration, since the order of
-the parameters is sufficient to identify them, however, to keep the rules
+named differently from type parameters in the type declaration, since the order
+of the parameters is sufficient to identify them, however, to keep the rules
 simpler, in FGGA the type parameter names must match exactly with the ones
 specified in the type declaration. Another feature omitted from the current
 implementation of generics in Go, but present in FGG, are method-specific type
@@ -147,7 +147,7 @@ checks if the type is a subtype of \kw{const}. Because both \kw{const} type
 arguments and array sizes must be non-negative, we can also restrict all integer
 literal types to be non-negative (rule T-N-Type).
 
-A type parameter $\alpha$ is considered well typed, if it appears in the typing
+A type parameter $\alpha$ is considered well-typed if it appears in the typing
 environment $\Delta$ (rule T-Param). The rule T-Named has been updated to
 type-check each type argument in the named type, recursively applying one of
 ``well-formed type'' rules ($\Delta \vdash \tau \ok$) on each argument, and
@@ -198,24 +198,24 @@ self-reference occurs.
 % TODO verify this is the case in Go (shadowing of type name with type param,
 % both for self and non-self referential)
 When checking for self-reference in a named type, first we check whether the
-named-type type name $t$ is equal to any of the types we have already seen
+named-type's type name $t$ is equal to any of the types we have already seen
 $\ov{t_r}$. Initially, the seen types sequence only contains the type we are
 type checking in T-Type. $\notref$ is performed recursively on all type
 arguments, as those could also be referencing one of the types from $\ov{t_r}$.
 To detect indirect self-references (i.e. circular references), $\notref$ is
 applied on all type parameter bounds of the named type's declaration, appending
 the type name $t$ to the sequence of seen type names $\ov{t_r}$ to check for
-self-references. While theoretically we could have just a single type $t_r$ to
+self-references. While theoretically, we could have just a single type $t_r$ to
 check for at a time, rather than a sequence, this would lead to problems when
-checking types that self-referential, but do not contain the initial type $t_r$
-in the cycle, as the rule would recurse indefinitely. Examples of the $\notref$
-auxiliary being used to type-check type declarations and a detailed illustration
-of the issue of checking a single type $t_r$ at a time can be found in the
-\hyperref[sec:fgg-self-ref-derivation-examples]{appendix}.
+checking types that are self-referential, but do not contain the initial type
+$t_r$ in the cycle, as the rule would recurse indefinitely. Examples of the
+$\notref$ auxiliary being used to type-check type declarations and a detailed
+illustration of the issue of checking a single type $t_r$ at a time can be found
+in the \hyperref[sec:fgg-self-ref-derivation-examples]{appendix}.
 
 The remainder of the T-Type rule checks that the type declaration's type
 parameters constraints $\ov{\Phi}$ are well-formed (via T-Formal), and that the
-type literal is well typed in the typing environment formed from $\ov{\Phi}$.
+type literal is well-typed in the typing environment formed from $\ov{\Phi}$.
 
 The rule T-Const asserts that \kw{const} type passes the bounds type check in
 the T-Formal rule in any environment $\Delta$. The T-Specification rule has been
@@ -237,27 +237,28 @@ is a type parameter, in which case $lentype$ returns the type argument that is
 used to instantiate the array size type parameter (by matching on the type
 parameter position). Array literals in FGGA can only be constructed when the
 $\lentype$ is an integer literal type --- either when the array length type is
-non-generic, or has been instantiated with an integer literal. When the array
-size is instantiated with a type parameter, the size is unknown, hence it is not
-safe to assume the array can hold any elements (e.g. it could be instantiated
-later with a size of 0). In practice, Go's zero values could be used to
-instantiate generically sized arrays, but since FGGA does not support them, even
-empty generic array initialisation is not allowed. The supertype of an array
-literal's elements is determined by type parameter substitution on the array's
-element type.
+non-generic, or has been instantiated with an integer literal (rule
+T-Array-Literal). When the array size is instantiated with a type parameter, the
+size is unknown, hence it is not safe to assume the array can hold any elements
+(e.g. it could be instantiated later with a size of 0). In practice, Go's zero
+values could be used to instantiate generically sized arrays, but since FGGA
+does not support them, even empty generic array initialisation is not allowed.
+The supertype of an array literal's elements is determined by type parameter
+substitution on the array's element type.
 
 As before, there are two rules for performing an array index operation, one
-where type of the index is \kw{int}, and one where the type is an integer
-literal. It is worth noting that generic, non-instantiated arrays (i.e. where
-$\lentype$ does not return an integer literal) can only be indexed using a non
-integer literal \kw{int} type. This is to stay consistent with current
-expectations: indexing into an array using an constant integer literal is only
-allowed to fail at compile-time. In-line with the Go spirit of type-checking
-generic code at the declaration site, as opposed to the call site, indexing
-into generic arrays using integer literals is not allowed in FGGA, even if the
-index would remain within bounds for all array instantiations in scope of the
-current program. The programmer may still achieve such a behaviour by explicitly
-assigning the integer literal to a non-const \kw{int} variable.
+where the type of the index is \kw{int}, and one where the type is an integer
+literal (rules T-Array-Index and T-Array-Index-Literal). It is worth noting that
+generic, non-instantiated arrays (i.e. where $\lentype$ does not return an
+integer literal) can only be indexed using a non-constant integer of type
+\kw{int}. This is to stay consistent with current expectations: indexing into an
+array using a constant integer literal is only allowed to fail at compile-time.
+In line with the Go spirit of type-checking generic code at the declaration
+site, as opposed to the call site, indexing into generic arrays using integer
+literals is not allowed in FGGA, even if the index would remain within bounds
+for all array instantiations in the scope of the current program. The programmer
+may still achieve such behaviour by explicitly assigning the integer literal to
+a non-const \kw{int} variable and then performing an index operation.
 
 \input{../../projects/go-generic-array-sizes/theory/fgg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fgg-typing}

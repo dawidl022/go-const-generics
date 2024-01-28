@@ -17,7 +17,7 @@ construct, this is either a comma or a semicolon (interchangeable with a
 newline), but these details are omitted from the formal rules. The metavariables
 $e$ and $\ov{e}$ are considered distinct, i.e. unless stated explicitly, it is
 not automatically implied that $e \in \ov{e}$. A box around a syntactical term
-means it cannot appear in a normal user program, but can be used internally
+means it cannot appear in a normal user program but can be used internally
 during reduction. Rules or rule fragments appearing in grey have been taken
 directly from the original \emph{Featherweight Go} \autocite{fg} without any
 modification. The rules (or rule fragments) in black show the changes introduced
@@ -39,8 +39,8 @@ Two main types of declarations exist: a type declaration and a method
 declaration. The latter is subdivided further into a regular method declaration
 and an ``array set'' method declaration. The reason for having a special
 syntactical form for methods that set a particular element of an array (more
-precisely of a copy of an array, due to the value semantics of arrays), is that
-FGA is a functional subset of Go, and does not support variable assignment in
+precisely a copy of an array, due to the value semantics of arrays), is that
+FGA is a functional subset of Go and does not support variable assignment in
 the general sense. By encapsulating the operation of creating an array copy with
 a certain element taking on a new value, FGA is able to maintain its functional
 property. It also makes the rules simpler since there is no need to introduce
@@ -51,17 +51,18 @@ A type declaration is defined as the keyword \type, followed by a declared type
 name, followed by a type literal. A ``declared'' type name can be any identifier
 as defined by \autocite{spec}, except for the predeclared \kw{int}. In Go, it is
 actually legal to redefine predeclared type names, such as the built-in
-\kw{int}, however to keep things simple FGA does not permit this. That is to say,
-the only predeclared type name in FGA is \kw{int}, for values of integer type.
-No other primitive types (e.g. \kw{bool} or \kw{string}) are defined in FGA.
+\kw{int}, however, to keep things simple FGA does not permit this. That is to
+say, the only predeclared type name in FGA is \kw{int}, for values of integer
+type. No other primitive types (e.g. \kw{bool} or \kw{string}) are defined in
+FGA.
 
 A type literal can be one of 3 things: a struct literal, an interface literal,
 or an array literal. A struct type literal consists of the keyword \struct,
 followed by a sequence of fields inside curly braces. Each field is a pair of a
 field identifier and a type name, separated by a space. A type name can be
-either an aforementioned declared type name, or the predeclared type name
+either an aforementioned declared type name or the predeclared type name
 \kw{int}. The rules specify integer literals as valid type names. However, these
-are not allowed in user programs, and are only used internally by the reduction
+are not allowed in user programs and are only used internally by the reduction
 and typing rules.
 
 An interface type literal consists of the keyword \interface, followed by a
@@ -75,7 +76,7 @@ space.
 An array type literal consists of an integer literal within square brackets,
 denoting the length of the array followed by a type name, denoting the type of
 the array elements. This restricts array type literals to a single dimension,
-i.e. \texttt{[2][3]int} is not allowed. However, in practice this is not a
+i.e. \texttt{[2][3]int} is not allowed. However, in practice, this is not a
 concern, as one can define a nested array in two steps, i.e. declaring the inner
 array as a type and using that declared type name as the element type of the
 outer array.
@@ -84,7 +85,7 @@ A method declaration consists of the keyword \func, followed by the receiver in
 parentheses, followed by a method specification, followed by the method body.
 The method receiver is just a single parameter, where its type name refers to a
 declared value type name. A value type name is a type name defined in terms of
-either a struct type literal, or an array type literal. The method body consists
+either a struct type literal or an array type literal. The method body consists
 of the keyword \return, followed by an expression, all enclosed within curly
 braces.
 
@@ -132,7 +133,7 @@ subexpression).
 Figure \ref{fig:fg-reduction} describes the small-step operational semantics of
 FGA, with auxiliary functions defined in figure \ref{fig:fg-reduction-aux}. A
 value is a term that cannot be reduced further, i.e. is the final result of
-computation. In FGA, a value is either an integer literal, or a value literal
+computation. In FGA, a value is either an integer literal or a value literal
 (struct or array), whose elements are all values themselves. An expression $d$
 reduces to expression $e$ in a single step (denoted as $d \to e$), if one of the
 reduction rule templates can be instantiated with the metaexpression $d \to e$
@@ -146,7 +147,7 @@ corresponding to the same position in the struct literal as the field name is in
 the struct type declaration.
 
 The auxiliary function $\indexbounds$ returns a set of valid index indices of an
-array type, i.e. the set of indices that are within bounds of the array. The
+array type, i.e. the set of indices that are within the bounds of the array. The
 rule R-Index says an array index expression on an array literal \emph{value}
 with an integer literal $n$ as the index reduces to the element of the array at
 index $n$, if and only if $n$ is within bounds of the array.
@@ -167,8 +168,8 @@ expression, where the receiver is an array literal value, the first argument is
 an integer literal, and the second argument is a value, evaluates to an array
 value literal, with the same elements but for the $n$\textsuperscript{th} index
 which is replaced with the value in the second argument of the method call. This
-rule can be applied if and only of the method in question is an array set method
-and the integer literal $n$ is within bounds of the array.
+rule can be applied if and only if the method in question is an array set method
+and the integer literal $n$ is within the bounds of the array.
 
 Apart from the 4 computation rules described above, there is also a congruence
 rule defined in terms of evaluation contexts, which says that if $d$ evaluates
@@ -181,9 +182,9 @@ By the evaluation context rules, a method call must first reduce its receiver to
 a value, and subsequently reduce its arguments to values, one by one. A value
 literal has its elements reduced to values, one by one. A select expression must
 first reduce its receiver to a value. An array index must first reduce its
-receiver to an array literal value, then its index expression to a value.
+receiver to an array literal value, and then its index expression to a value.
 
-An example of the reduction rules being applied to a very FG simple program can
+An example of the reduction rules being applied to a very simple FGA program can
 be found in \hyperref[sec:fg-derivation-example]{the appendix}.
 
 % TODO explicitly capture panicking in reduction rules, in case indexBounds is
@@ -202,37 +203,38 @@ relation between two types. The metaexpression $\Gamma \vdash e : t$ denotes a
 3-tuple relation where an expression $e$ is of type $t$ in the environment
 $\Gamma$, which maps variables $x$ to types $t$.
 
-The first set of rules define the subtyping relation between types. A type is
+The first set of rules defines the subtyping relation between types. A type is
 said to be a subtype of another type in FGA when it \emph{implements} the latter
 type. Any type implements itself (rules $\imp_V$ $\imp_{int}$, $\imp_n$, and
 implicitly $\imp_I$). The $\methods$ helper function returns the set of method
-specifications (referred later as a ``method set'') defined on a given type
+specifications (later referred to as a ``method set'') defined on a given type
 (including array set methods). A type implements an interface if the type's
 method set is a superset of the interface's method set. By this definition,
 interfaces can also implement other interfaces (and themselves).
 
-A type, identified by its name, is considered well-formed, when it's either the
+A type, identified by its name, is considered well-formed when it's either the
 predeclared \kw{int} type (rule T-Int-Type), or it is the type name of one of
 the type declarations in the program (rule T-Named).
 
-A method specification is considered well typed if the parameter names are
+A method specification is considered well-typed if the parameter names are
 distinct (i.e. each parameter name is different) and the parameter and return
 types are themselves well-typed (rule T-Specification).
 
 A struct type literal is well-formed if all of its fields are distinct and the
-field types are themselves well-formed (rule T-Struct). An interface type literal is well-formed
-if all of its methods specifications are unique (i.e. each method specified in
-the interface has a different name) and well-formed (rule T-Interface). An array type literal is
-well-formed if the integer literal defining the size of the array is greater
-than or equal to zero, and the array element type if well-formed (rule T-Array).
+field types are themselves well-formed (rule T-Struct). An interface type
+literal is well-formed if all of its method specifications are unique (i.e.
+each method specified in the interface has a different name) and well-formed
+(rule T-Interface). An array type literal is well-formed if the integer literal
+defining the size of the array is greater than or equal to zero, and the array
+element type is well-formed (rule T-Array).
 
-A type declaration is well-formed, if its type literal is well-formed (rule
+A type declaration is well-formed if its type literal is well-formed (rule
 T-Type). A method declaration is well-formed if the parameters (including the
 receiver) are distinct, the receiver, parameter and return types are well-formed
 and the method expression's type is a subtype of the return type under the
 environment formed from the method parameters (and receiver) (rule T-Func). An
 array set method is well-formed if the 2nd parameter's type is a subtype of the
-receiver type's element type, and the receiver type is itself a well-formed
+receiver type's element type and the receiver type is itself a well-formed
 array type (rule T-Func-Arrayset).
 
 The rule T-Var formally defines what it means for a variable $x$ to be of type
@@ -245,7 +247,7 @@ expressions must be well-typed, and be subtypes of the formal parameter types
 that was instantiated, if the struct type is well-formed, and each element's
 type of the struct literal is a subtype of the corresponding field types in the
 struct type declaration (rule T-Struct-Literal). A field select expression is
-well-typed if the receiver is a well-typed and of struct type. The expression is
+well-typed if the receiver is well-typed and of struct type. The expression is
 of the same type as the field corresponding to the selected field name in the
 struct type declaration (rule T-Field). An array literal expression is
 well-formed and of the array type that was instantiated, if the array type is
@@ -263,7 +265,7 @@ in Go may be ``untyped'', which can be used as subtypes of other numerical types
 (e.g. \kw{int}, \kw{byte}, \kw{int16} etc.). In FGA, integer literals are
 treated similarly to untyped integer constants in Go \autocite{spec}.
 
-Because of the distinction between constant (literal) and non-constant integers
+Because of the distinction between constant (literal) and non-constant integer
 types, there are two typing rules for an array index expression. In both cases,
 the array expression must be well-typed and of an array type, and the array
 index expression's type is of the element type of the array. When the index
@@ -272,15 +274,16 @@ expression is of the non-constant \kw{int} type, no other checks are performed
 integer literal type, an index bounds check is also statically performed via the
 type system (rule T-Array-Index-Literal).
 
-Finally, a program is well-typed when all the type declarations names are
+Finally, a program is well-typed when all the type declaration names are
 distinct (and do not coincide with the predeclared \kw{int} type name). The
 auxiliary function $\tdecls$ returns all type names declared in the program. The
-method declarations must also be distinct, in the sense that no two methods on
-the same type may have the same name. The auxiliary function $\mdecls$ returns
-all pairs of $t_V.m$ (receiver type + method name) declared in the program. All
-declarations along with main expression must also be well-formed (rule T-Prog).
+method declarations must also be distinct, in the sense that no two methods
+declared on the same type may have the same name. The auxiliary function
+$\mdecls$ returns all pairs of $t_V.m$ (receiver type + method name) declared in
+the program. All declarations along with the main expression must also be
+well-formed (rule T-Prog).
 
-An example of the typing rules being applied to a very FG simple program can
+An example of the typing rules being applied to a very simple FGA program can
 be found in \hyperref[sec:fg-typing-derivation-example]{the appendix}.
 
 \input{../../projects/go-generic-array-sizes/theory/fg-aux}
