@@ -13,6 +13,9 @@
 \usepackage{array}
 \usepackage{stmaryrd}
 \usepackage{pgfplots}
+\usepackage{refcount}
+\usepackage{numname}
+
 % Cache plots for compilation
 % https://www.overleaf.com/learn/latex/Pgfplots_package
 \pgfplotsset{compat=1.18}
@@ -41,6 +44,8 @@
 \newlength{\lstcolumnwidth}
 \settowidth{\lstcolumnwidth}{\ttfamily M}
 \lstset{basicstyle=\ttfamily,basewidth=\lstcolumnwidth,columns=fixed, fontadjust=true, showstringspaces=false}
+
+\newtheorem{theorem}{Theorem}[section]
 
 \input{../../projects/go-generic-array-sizes/theory/macros}
 
@@ -86,6 +91,7 @@
 \clearpage
 
 \section{Interpreter Implementation}
+\label{ch:interpter-impl}
 \clearpage
 
 \addcontentsline{toc}{section}{References}

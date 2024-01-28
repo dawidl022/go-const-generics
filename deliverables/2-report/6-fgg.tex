@@ -1,4 +1,5 @@
 \section{Featherweight Generic Go with Arrays}
+\label{ch:fgg}
 
 \emph{Featherweight Generic Go} (FGG) is an extension to \emph{Featherweight Go}
 that introduces generics via type parameters, formalised in \autocite{fg}. This
@@ -262,3 +263,26 @@ a non-const \kw{int} variable and then performing an index operation.
 
 \input{../../projects/go-generic-array-sizes/theory/fgg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fgg-typing}
+
+\subsection{FGGA properties}
+
+As before, an array index expression or an array-set method call expression
+panics if they contain an array type $\tau_A$, and an array index $n$, where $n
+    \notin \indexbounds(\tau_A)$. An expression $e$ panics if $e = E[d]$, where $E$ is
+any evaluation context, and $d$ is an expression that panics.
+
+The progress and preservation properties covered in \emph{Featherweight Go}
+apply to FGGA and are defined as follows \autocite{fg}:
+
+\begin{theorem}[Preservation]
+    If\/ $\emptyset;\emptyset \vdash d : \sigma$ and $d \becomes e$
+    then\/ $\emptyset;\emptyset \vdash e : \tau$ for some $\tau$
+    with\/ $\tau \imp \sigma$.
+\end{theorem}
+
+\begin{theorem}[Progress]
+    If\/ $\emptyset;\emptyset \vdash d:\sigma$ then
+    either\/ $d$ is a value,
+    $d \becomes e$ for some $e$,
+    or\/ $d$ panics.
+\end{theorem}

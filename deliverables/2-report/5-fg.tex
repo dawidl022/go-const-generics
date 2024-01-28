@@ -1,4 +1,5 @@
 \section{Featherweight Go with Arrays}
+\label{ch:fg}
 
 \emph{Featherweight Go} is a small, functional, Turing-complete subset of the Go
 programming language, introduced by \citeauthor{fg} for the purpose of showing
@@ -289,4 +290,28 @@ be found in \hyperref[sec:fg-typing-derivation-example]{the appendix}.
 \input{../../projects/go-generic-array-sizes/theory/fg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fg-typing}
 
-% TODO progress + preservation formally stated
+\subsection{FGA properties}
+
+An array index expression or an array-set method call expression panics if they
+contain an array type $t_A$, and an array index $n$, where $n \notin
+    \indexbounds(t_A)$. An expression $e$ panics if $e = E[d]$, where $E$ is any
+evaluation context, and $d$ is an expression that panics.
+
+The progress and preservation properties covered in \emph{Featherweight Go}
+apply to FGA and are defined as follows \autocite{fg}:
+
+\begin{theorem}[Preservation]
+    If\/ $\emptyset \vdash d : u$ and $d \becomes e$
+    then\/ $\emptyset \vdash e : t$ for some $t$
+    with\/ $t \imp u$.
+\end{theorem}
+
+\begin{theorem}[Progress]
+    If\/ $\emptyset \vdash d:u$ then
+    either\/ $d$ is a value,
+    $d \becomes e$ for some $e$,
+    or\/ $d$ panics.
+\end{theorem}
+
+% The typing environment is the emtpy set because we always reduce in the empty
+% environment, i.e. in the top-level program expression
