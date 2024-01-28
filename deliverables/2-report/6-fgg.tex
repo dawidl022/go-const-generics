@@ -182,10 +182,9 @@ There is a restriction in the current implementation of Go, that FGGA also
 adheres to, and that is that no type in any type parameter bound can refer to
 the type being declared (directly or indirectly). E.g. the interface type
 declaration \texttt{Eq} cannot have a type parameter $\alpha$ bound by
-\texttt{Eq[$\alpha$]} itself \autocite{spec}.
-% TODO Why not? Are there any use cases of permitting this?
-An example of how to get around the self-recursive bound limitation in practice
-can be found in the \hyperref[sec:self-ref-type-in-bound]{appendix}.
+\texttt{Eq[$\alpha$]} itself \autocite{spec}. An example of how to get around
+the self-recursive bound limitation in practice can be found in the
+\hyperref[sec:self-ref-type-in-bound]{appendix}.
 % TODO what about indirectly recursive types? any use cases? if so, any
 % workarounds?
 The check for this restriction is performed via the $\notref$ auxiliary in the
