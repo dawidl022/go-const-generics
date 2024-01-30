@@ -17,8 +17,6 @@ If the community is happy to proceed with this proposal, I would like to have a
 go at implementing the feature. As such, any concerns regarding potential
 implementation difficulties would be appreciated!
 
-Detailed design document: (TODO)
-
 ## Proposal
 
 The basis of this proposal is to introduce a new set of types that can be used
@@ -40,8 +38,8 @@ type of a variable (we can already use `const` declarations to hold values, but
 they are broader than this proposed interface).
 
 Array types accept two "type" parameters - the length and the element type. The
-bound of the length parameter is exactly the `const` interface. This proposal
-generalises the `const` interface to be applicable to user-defined type
+constraint of the length parameter is exactly the `const` interface. This
+proposal generalises the `const` interface to be applicable to user-defined type
 parameters - those we know from generics.
 
 Since all type parameters also implement their own constraints (i.e. a type
@@ -49,12 +47,11 @@ parameter constrained by `T` can be used as a type argument constrained by the
 same type, or a supertype of `T`), it means that `const` type parameters can be
 used to instantiate other `const` type parameters, including array lengths.
 
-Expressions involving type parameters, other than a lone `const`
-type parameter `N`, cannot be used as `const` type arguments. This approach is
-used by
+Expressions involving type parameters, other than a lone `const` type parameter
+`N`, cannot be used as `const` type arguments. This approach is used by
 [Rust](https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html), and
-can make the implementation much more feasible (discussed in detail in the
-design document). E.g. the following would not be allowed:
+can make the implementation much more feasible. E.g. the following would not be
+allowed:
 
 ```go
 func foo[N const]() {
@@ -83,9 +80,20 @@ https://github.com/golang/go/issues/44253#issuecomment-821047754 of exploiting
 `const` type parameters to perform complex compile time computation, such as SAT
 solving.
 
-<!-- TODO Please describe as precisely as possible the change to the language. -->
+Expressions that are formed from a `const` type parameter, would follow the same
+rule, i.e. evaluate to a non-constant value, even if their non-generic
+counterparts would be computable at compile time. E.g. `len` of a generic array
+would evaluate to a non-constant integer.
 
-<!-- TODO Please also describe the change informally, as in a class teaching Go. -->
+```go
+func foo[N const]() {
+    // compile-time error: expression containing type parameter N cannot be used as constant value
+    const n = len([N]int{})
+}
+```
+
+The `const` interface would be a
+[predeclared](https://go.dev/ref/spec#Predeclared_identifiers) type.
 
 ## Examples
 
@@ -112,8 +120,6 @@ func reversed[T any, N const](arr [N]T) [N]T {
 }
 ```
 
-<!-- TODO Show example code before and after the change. -->
-
 ## Changes to language spec
 
 [Array types](https://go.dev/ref/spec#Array_types) would also accept
@@ -139,11 +145,11 @@ types.
 TypeConstraint = TypeElem | "const" .
 ```
 
-<!-- ## Comparison with previous proposal
+## Comparison with previous proposal
 
-This proposal introduces a cleaner, and more intuitive way of expressing that a
-type is parameterised by an integer. The `const` type parameter is explicit,
-which is consistent with the existing generics system in Go. -->
+In this proposal, the `const` type parameter is explicit, which is consistent
+with the existing generics system in Go, and makes it immediately obvious to the
+programmer when a type is parameterised on an integer value.
 
 ## Other questions from template
 
@@ -151,7 +157,8 @@ Q: Who does this proposal help, and why?
 
 This proposal is aimed at experienced Go users, who have justified use cases for
 using arrays over slices, and would enjoy the benefits of reduced code
-duplication with const generics.
+duplication with const generics, or would like to expose some generic
+functionality using underlying arrays as part of a library.
 
 Q: Is this change backward compatible?
 
