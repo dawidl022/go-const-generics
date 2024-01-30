@@ -2,16 +2,17 @@ https://github.com/golang/go/issues/44253 proposes to introduce generic
 parameterization of array sizes. The issue has been open for 3 years, with
 seemingly no recent progress.
 
-The new proposal differs in that it introduces an explicit numerical "const"
+The new proposal differs in that it introduces an explicit numerical `const`
 type parameter, and restricts the kinds of expressions that can be used to
-instantiate a const type parameter to existing constant expressions evaluating
-to non-negative integers, and lone "const" type parameters, in the [same fashion
+instantiate a `const` type parameter to existing constant expressions evaluating
+to non-negative integers, and lone `const` type parameters, in the [same fashion
 as
 Rust](https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html#no-complex-generic-expressions-in-const-arguments).
 
 Having this restriction in place limits the problems const generics can solve,
 but it also eliminates a lot of complexity associated with implementing const
-generics, that was discussed in the issue of the previous proposal.
+generics, that were discussed in the [issue of the previous
+proposal](https://github.com/golang/go/issues/44253).
 
 If the community is happy to proceed with this proposal, I would like to have a
 go at implementing the feature. As such, any concerns regarding potential
@@ -22,7 +23,7 @@ implementation difficulties would be appreciated!
 The basis of this proposal is to introduce a new set of types that can be used
 as type arguments. This new type set would be made up of constant non-negative
 integers. Since interfaces represent type sets in Go, we can (conceptually)
-define such as type as:
+define such a type as:
 
 ```go
 type const interface {
@@ -49,9 +50,9 @@ used to instantiate other `const` type parameters, including array lengths.
 
 Expressions involving type parameters, other than a lone `const` type parameter
 `N`, cannot be used as `const` type arguments. This approach is used by
-[Rust](https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html), and
-can make the implementation much more feasible. E.g. the following would not be
-allowed:
+[Rust](https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html#no-complex-generic-expressions-in-const-arguments)
+and can make the implementation much more feasible. E.g. the following would not
+be allowed:
 
 ```go
 func foo[N const]() {
@@ -77,7 +78,7 @@ limitation of no "no complex generic expressions in const arguments".
 
 The above restriction also resolves the issue that was heavily discussed in
 https://github.com/golang/go/issues/44253#issuecomment-821047754 of exploiting
-`const` type parameters to perform complex compile time computation, such as SAT
+`const` type parameters to perform complex compile-time computation, such as SAT
 solving.
 
 Expressions that are formed from a `const` type parameter, would follow the same
@@ -120,7 +121,7 @@ func reversed[T any, N const](arr [N]T) [N]T {
 }
 ```
 
-## Changes to language spec
+## Changes to the language spec
 
 [Array types](https://go.dev/ref/spec#Array_types) would also accept
 `TypeName`s, which (in my understanding) type parameters fall under.
@@ -145,7 +146,7 @@ types.
 TypeConstraint = TypeElem | "const" .
 ```
 
-## Comparison with previous proposal
+## Comparison with the previous proposal
 
 In this new proposal, the `const` type parameter is explicit, which is
 consistent with the existing generics system in Go, and makes it immediately
@@ -154,8 +155,8 @@ obvious to the programmer when a type is parameterised on an integer value.
 In addition, this new proposal places restrictions on how `const` type
 parameters can be used, in particular when used as values they evaluate to
 non-constant integers, and cannot be part of a more "complex" expression used as
-a type argument. This means that the example presented in the [previous proposal
-design
+a type argument. This means that the example presented in the [previous
+proposal's design
 document](https://github.com/golang/proposal/blob/master/design/44253-generic-array-sizes.md)
 cannot be implemented using const generics as presented in this new proposal.
 The feasibility of lifting some of the restrictions to make constructs as in the
@@ -190,21 +191,20 @@ arrays. Using the [GC shape
 stencilling](https://github.com/golang/proposal/blob/master/design/generics-implementation-dictionaries-go1.18.md)
 approach would likely have the same runtime cost as existing generic code.
 
-Q: Can you describe a possible implementation? Do you have a prototype? (This is
-not required.)
+Q: Can you describe a possible implementation? Do you have a prototype?
 
 I am working on a paper in the style of [Featherweight
 Go](https://dl.acm.org/doi/10.1145/3428217), that formalises arrays and
 numerical type parameters, that would be implemented as part of this proposal.
 It will come with prototype interpreters (with static type checking) for the new
 language feature in the style of https://github.com/rhu1/fgg (i.e. for a subset
-of Go). I hope to make this publicly available, sometime post May this year.
+of Go). I hope to make this publicly available, sometime post-May this year.
 
 Q: Would this change make Go easier or harder to learn, and why?
 
 Seeing that this is an additional language feature, it would make Go more
 difficult to learn simply because there is one feature more. The rest of the
-language will be unaffected in terms of easiness to learn.
+language will be unaffected in terms of easiness of learning.
 
 Q: Orthogonality: how does this change interact or overlap with existing
 features?
@@ -216,9 +216,9 @@ compound data types in Go can already be fully type parameterised (slices:
 feature would bridge that gap with `[N]T`.
 
 Numerical type parameters would also become first class. Currently, arrays are
-the only type which accept a numerical type parameter, to parameterize the
+the only types that accept a numerical type parameter, to parameterize the
 length of an array type. The `const` interface would allow any type or function
-to accept a constant integer (or another `const` bounded type parameter) as a
+to accept a constant integer (or another `const`-bounded type parameter) as a
 type argument.
 
 Q: Would you consider yourself a novice, intermediate, or experienced Go
