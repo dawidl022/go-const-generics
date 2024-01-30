@@ -147,9 +147,19 @@ TypeConstraint = TypeElem | "const" .
 
 ## Comparison with previous proposal
 
-In this proposal, the `const` type parameter is explicit, which is consistent
-with the existing generics system in Go, and makes it immediately obvious to the
-programmer when a type is parameterised on an integer value.
+In this new proposal, the `const` type parameter is explicit, which is
+consistent with the existing generics system in Go, and makes it immediately
+obvious to the programmer when a type is parameterised on an integer value.
+
+In addition, this new proposal places restrictions on how `const` type
+parameters can be used, in particular when used as values they evaluate to
+non-constant integers, and cannot be part of a more "complex" expression used as
+a type argument. This means that the example presented in the [previous proposal
+design
+document](https://github.com/golang/proposal/blob/master/design/44253-generic-array-sizes.md)
+cannot be implemented using const generics as presented in this new proposal.
+The feasibility of lifting some of the restrictions to make constructs as in the
+example possible is a topic for a potential future language extension.
 
 ## Other questions from template
 
