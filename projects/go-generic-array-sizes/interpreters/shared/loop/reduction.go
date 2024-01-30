@@ -23,11 +23,22 @@ type Observer[E Expression] interface {
 	Notify(expression E) error
 }
 
-func (p ProgramReducer[P, E]) ReduceToValue(program P) (E, error) {
+const UnboundedSteps = -1
+
+const MaxStepsHelp = "Maximum number of steps to execute input program for. Negative values cause unbounded execution."
+
+func (p ProgramReducer[P, E]) ReduceToValue(program P, maxSteps int) (E, error) {
 	var nilExpression E
 	seenTerms := make(map[string]struct{})
+	remainingSteps := maxSteps
 
 	for !program.Expression().IsValue() {
+		// if remainingSteps starts negative, then this condition will never be
+		// reached, which is intentional
+		if remainingSteps == 0 {
+			return nilExpression, newMaxStepsExceededErr(maxSteps)
+		}
+		remainingSteps--
 		if _, alreadySeen := seenTerms[program.Expression().String()]; alreadySeen {
 			return nilExpression, newInfiniteLoopErr(program.Expression())
 		}
@@ -71,4 +82,13 @@ type InfiniteLoopErr struct {
 
 func newInfiniteLoopErr(expr Expression) InfiniteLoopErr {
 	return InfiniteLoopErr{fmt.Errorf("infinite loop detected at term: %q", expr)}
+}
+
+type MaxStepsExceededErr struct {
+	error
+}
+
+func newMaxStepsExceededErr(maxSteps int) error {
+	return MaxStepsExceededErr{fmt.Errorf(
+		"program failed to terminate within the specified maximum number of steps: %d", maxSteps)}
 }

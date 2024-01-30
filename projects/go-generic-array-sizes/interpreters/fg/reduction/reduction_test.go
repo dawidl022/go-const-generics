@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
@@ -19,6 +20,8 @@ import (
 
 //go:embed testdata/acceptance/program.go
 var acceptanceProgramGo []byte
+
+// TODO repeat these tests for FGG interpreter
 
 func TestReduceToValue_givenValidProgram_completelyReducesProgram(t *testing.T) {
 	p := parseFGProgram(acceptanceProgramGo)
@@ -82,6 +85,21 @@ func TestReduceToValue_givenInfiniteLoop_terminatesReductionWithError(t *testing
 	require.Equal(t, []string{"Foo{}.recurse()"}, obs.steps)
 }
 
+//go:embed testdata/call/infinitely_growing_structure/infinitely_growing_structure.go
+var callInfinitelyGrowingStructureFg []byte
+
+func TestReduceToValue_givenInfinitelyGrowingTerm_stopsReducingAfterSpecifiedNumberOfSteps(t *testing.T) {
+	p := parseFGProgram(callInfinitelyGrowingStructureFg)
+
+	obs := &stringObserver{}
+	maxSteps := 100
+	_, err := newProgramReducer([]observer{obs}).ReduceToValueBounded(p, maxSteps)
+
+	require.Error(t, err)
+	assert.Equal(t, "program failed to terminate within the specified maximum number of steps: 100", err.Error())
+	assert.Equal(t, maxSteps, len(obs.steps))
+}
+
 func newProgramReducer(observers []observer) programReducer {
 	loopObservers := []loop.Observer[fgExpression]{}
 	for _, obs := range observers {
@@ -101,7 +119,11 @@ type programReducer struct {
 }
 
 func (r programReducer) ReduceToValue(p ast.Program) (fgExpression, error) {
-	return r.reducer.ReduceToValue(fgProgram{p})
+	return r.reducer.ReduceToValue(fgProgram{p}, loop.UnboundedSteps)
+}
+
+func (r programReducer) ReduceToValueBounded(p ast.Program, maxSteps int) (fgExpression, error) {
+	return r.reducer.ReduceToValue(fgProgram{p}, maxSteps)
 }
 
 type fgReducer struct {

@@ -28,7 +28,7 @@ type Interpreter[P Program[E], E Expression, T Type] interface {
 }
 
 func Interpret[P Program[E], E Expression, T Type](
-	program io.Reader, debugOutput io.Writer, interpreter Interpreter[P, E, T],
+	program io.Reader, debugOutput io.Writer, interpreter Interpreter[P, E, T], maxSteps int,
 ) (string, error) {
 	p, err := interpreter.ParseProgram(program)
 	if err != nil {
@@ -49,7 +49,7 @@ func Interpret[P Program[E], E Expression, T Type](
 
 	reducer := NewProgramReducer[P, E](interpreter, []Observer[E]{debugObserver, typeObserver})
 
-	val, err := reducer.ReduceToValue(p)
+	val, err := reducer.ReduceToValue(p, maxSteps)
 	if err != nil {
 		return "", err
 	}

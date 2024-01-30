@@ -12,8 +12,9 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/parse"
 )
 
-func Interpret(program io.Reader, debugOutput io.Writer) (string, error) {
-	return loop.Interpret[fggProgram, ast.Expression, ast.Type](program, debugOutput, fggInterpreter{})
+func Interpret(program io.Reader, debugOutput io.Writer, maxSteps int) (string, error) {
+
+	return loop.Interpret[fggProgram, ast.Expression, ast.Type](program, debugOutput, fggInterpreter{}, maxSteps)
 }
 
 type fggProgram struct {
