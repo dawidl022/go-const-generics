@@ -16,3 +16,8 @@ https://planetscale.com/blog/generics-can-make-your-go-code-slower
 https://www.youtube.com/watch?v=Pa_e9EeCdy8
 https://www.youtube.com/watch?v=Sw53HGyCGcU
 https://www.youtube.com/watch?v=TborQFPY2IM
+
+Type assertions:
+https://github.com/golang/go/issues/49206
+https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md#why-not-permit-type-assertions-on-values-whose-type-is-a-type-parameter
+https://stackoverflow.com/questions/71587996/cannot-use-type-assertion-on-type-parameter-value
