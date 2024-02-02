@@ -33,24 +33,23 @@
         \hspace{-0.5\textwidth}
         \begin{minipage}[t]{0.4\textwidth}
             \begin{tabular}[t]{ll}
-                \black{Type}                  & \black{$\tau, \sigma$ ::=}                         \\
-                \quad \black{Type parameter}  & \quad \black{$\alpha$}                             \\
-                \quad \black{Named type}      & \quad \black{$t[\ov{\tau}]$}                       \\
-                \quad \black{Integer literal} & \quad \black{$n$}                                  \\
-                \quad \black{Constant}        & \quad \black{\fbox{$\const$}}                      \\
-                \black{Value type}            & \black{$\tau_V,\sigma_V$ ::= $t_V[\ov{\tau}]$}     \\
-                \black{Interface type}        & \black{$\tau_I,\sigma_I$ ::= $t_I[\ov{\tau}]$}     \\
-                \black{Interface-like type}   & \black{$\tau_J,\sigma_J$ ::= $\alpha \mid \tau_I$} \\
-                \black{Integer-like type}     & \black{$\tau_n,\sigma_n$ ::= $\alpha \mid n$}      \\
-                \black{Bound}                 & \black{$\gamma$ ::= $\tau_I \mid \const$}          \\
-                \black{Type parameter }                                                            \\
-                \black{constraint}            & \black{$\Phi$ ::= $\alpha~\gamma$}                 \\
-                Expression                    & $e$ ::=                                            \\
-                \quad Integer literal         & \quad$n$                                           \\
-                \quad Variable                & \quad $x$                                          \\
-                \quad Method call             & \quad $e.m(\ov{e})$                                \\
-                \quad Value literal           & \quad $\black{\tau_V}\br{\ov{e}}$                  \\
-                \quad Select                  & \quad $e.f$                                        \\
+                \black{Type}                  & \black{$\tau, \sigma$ ::=}                     \\
+                \quad \black{Type parameter}  & \quad \black{$\alpha$}                         \\
+                \quad \black{Named type}      & \quad \black{$t[\ov{\tau}]$}                   \\
+                \quad \black{Integer literal} & \quad \black{$n$}                              \\
+                \quad \black{Constant}        & \quad \black{\fbox{$\const$}}                  \\
+                \black{Value type}            & \black{$\tau_V,\sigma_V$ ::= $t_V[\ov{\tau}]$} \\
+                \black{Interface type}        & \black{$\tau_I,\sigma_I$ ::= $t_I[\ov{\tau}]$} \\
+                \black{Integer-like type}     & \black{$\tau_n,\sigma_n$ ::= $\alpha \mid n$}  \\
+                \black{Bound}                 & \black{$\gamma$ ::= $\tau_I \mid \const$}      \\
+                \black{Type parameter }                                                        \\
+                \black{constraint}            & \black{$\Phi$ ::= $\alpha~\gamma$}             \\
+                Expression                    & $e$ ::=                                        \\
+                \quad Integer literal         & \quad$n$                                       \\
+                \quad Variable                & \quad $x$                                      \\
+                \quad Method call             & \quad $e.m(\ov{e})$                            \\
+                \quad Value literal           & \quad $\black{\tau_V}\br{\ov{e}}$              \\
+                \quad Select                  & \quad $e.f$                                    \\
                 \quad Array index             & \quad$e$[$e$]
             \end{tabular}
         \end{minipage}

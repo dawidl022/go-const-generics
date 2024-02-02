@@ -25,13 +25,11 @@ brackets \emph{must} be omitted, to ensure compatibility with Go. The
 consequence of this is that syntactically, there is no way to differentiate
 between a type parameter and a named type with no type arguments. A value type
 is a named type whose base type name (i.e. outermost type name) is a value type
-name. The situation is analogous for interface types. An interface-like type is
-either an interface type or a type parameter, which is used for interface-like
-type assertions. An integer-like type is either an integer literal, or a type
-parameter, and can be used as the size of an array type literal. A bound is used
-to restrict the set of type arguments that can be used in place of a type
-parameter. A type parameter constraint $\Phi$ is used to define a type parameter
-along with its constraint (bound).
+name. The situation is analogous for interface types. An integer-like type is
+either an integer literal, or a type parameter, and can be used as the size of
+an array type literal. A bound is used to restrict the set of type arguments
+that can be used in place of a type parameter. A type parameter constraint
+$\Phi$ is used to define a type parameter along with its constraint (bound).
 
 Method signatures, struct type literals, array type literals and value literals
 are updated to used types in the place of type names. Type declarations now have
