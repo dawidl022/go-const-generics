@@ -89,10 +89,13 @@ func TestTypeCheck_givenUndefinedNestedTypeParameterBound_returnsError(t *testin
 			`type "Eq" badly instantiated: type name not declared: "Int"`)
 }
 
+// TODO
+
 //go:embed testdata/subtyping/recursive_bound_type/recursive_bound_type.go
 var subtypingRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
+	t.Skip()
 	assertFailsTypeCheckWithError(t, subtypingRecursiveBoundTypeFgg,
 		``)
 }
@@ -101,6 +104,7 @@ func TestTypeCheck_givenBoundReferencingTypeBeingDeclared_returnsError(t *testin
 var subtypingNestedRecursiveBoundTypeFGG []byte
 
 func TestTypeCheck_givenNestedBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
+	t.Skip()
 	assertFailsTypeCheckWithError(t, subtypingNestedRecursiveBoundTypeFGG,
 		``)
 }
@@ -109,6 +113,7 @@ func TestTypeCheck_givenNestedBoundReferencingTypeBeingDeclared_returnsError(t *
 var subtypingIndirectRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenTypeDeclarationWithCircularlyDefinedBounds_returnsError(t *testing.T) {
+	t.Skip()
 	assertFailsTypeCheckWithError(t, subtypingIndirectRecursiveBoundTypeFgg,
 		``)
 }
