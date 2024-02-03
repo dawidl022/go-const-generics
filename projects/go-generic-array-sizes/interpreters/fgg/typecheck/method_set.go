@@ -54,8 +54,8 @@ func (v methodVisitor) VisitNamedType(n ast.NamedType) []ast.MethodSpecification
 	}
 	substitutedMethods := make([]ast.MethodSpecification, 0, len(baseMethods))
 	for _, method := range baseMethods {
-		envChecker := v.NewTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
-		subsitutedMethod := substituter.substituteTypeParams(envChecker.identifyTypeParams(method)).(ast.MethodSpecification)
+		//envChecker := v.NewTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
+		subsitutedMethod := substituter.substituteTypeParams(method).(ast.MethodSpecification)
 		substitutedMethods = append(substitutedMethods, subsitutedMethod)
 	}
 	return substitutedMethods

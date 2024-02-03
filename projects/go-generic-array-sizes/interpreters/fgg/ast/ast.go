@@ -11,6 +11,7 @@ type Program struct {
 
 type Declaration interface {
 	Visitable
+	MappingVisitable
 	declarationNode()
 }
 
@@ -23,6 +24,7 @@ type TypeDeclaration struct {
 type Type interface {
 	EnvVisitable
 	MethodVisitable
+	MappingVisitable
 	Equal(other Type) bool
 	typeNode()
 	fmt.Stringer
@@ -41,6 +43,7 @@ type ConstType struct{}
 
 type TypeLiteral interface {
 	EnvVisitable
+	MappingVisitable
 	typeLiteralNode()
 }
 
@@ -124,6 +127,7 @@ type Expression interface {
 	fmt.Stringer
 	ExpressionVisitable
 	TypeVisitable
+	MappingVisitable
 }
 
 type IntegerLiteral struct {

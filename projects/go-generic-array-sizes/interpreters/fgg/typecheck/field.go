@@ -25,17 +25,16 @@ func (t typeVisitor) VisitSelect(s ast.Select) (ast.Type, error) {
 	if err != nil {
 		return nil, err
 	}
-	envChecker := t.NewTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
 	for _, f := range fields {
 		if f.Name == s.FieldName {
-			return substituter.substituteTypeParams(envChecker.identifyTypeParams(f.Type)).(ast.Type), nil
+			return substituter.substituteTypeParams(f.Type).(ast.Type), nil
 		}
 	}
 	return nil, fmt.Errorf("no field named %q found on struct of type %q", s.FieldName, receiver)
 }
 
 func (t typeVisitor) receiverNamedType(s ast.Select, receiver ast.Type) (ast.NamedType, error) {
-	switch t.identifyTypeParams(receiver).(type) {
+	switch receiver.(type) {
 	case ast.NamedType:
 		return receiver.(ast.NamedType), nil
 	case ast.IntegerLiteral:

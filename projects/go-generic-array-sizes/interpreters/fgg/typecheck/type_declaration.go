@@ -72,10 +72,6 @@ func (t typeCheckingVisitor) NewTypeEnvTypeCheckingVisitor(typeParams []ast.Type
 		typeCheckingVisitor: t,
 		typeEnv:             env,
 	}
-	// TODO remove duplicate identification once typeParam identification is done in separate pass
-	for typeParam := range env {
-		env[typeParam] = envChecker.identifyTypeParams(env[typeParam]).(ast.Bound)
-	}
 	return envChecker
 }
 
@@ -84,14 +80,7 @@ func (t typeEnvTypeCheckingVisitor) typeOf(variableEnv map[string]ast.Type, expr
 }
 
 func (t typeEnvTypeCheckingVisitor) typeCheck(v ast.EnvVisitable) error {
-	return t.identifyTypeParams(v).AcceptEnvVisitor(t)
-}
-
-// since there is no way to syntactically distinguish between a type parameter
-// and a named type with 0 type parameters, before type checking, it is
-// necessary to identify all type parameters
-func (t typeEnvTypeCheckingVisitor) identifyTypeParams(v ast.EnvVisitable) ast.EnvVisitable {
-	return typeParamIdentifier{t}.identifyTypeParams(v)
+	return v.AcceptEnvVisitor(t)
 }
 
 func (t typeEnvTypeCheckingVisitor) VisitConstType(c ast.ConstType) error {
@@ -127,16 +116,11 @@ func (t typeEnvTypeCheckingVisitor) makeTypeSubstitutionsCheckingBounds(n ast.Na
 	if err != nil {
 		return err
 	}
-	// to identify recursive type parameters, i.e. as part of a type parameters bounds,
-	// we need to create a typing environment that contains the type parameters in question
-	tRec := t.NewTypeEnvTypeCheckingVisitor(decl.TypeParameters)
 
 	for _, typeParam := range decl.TypeParameters {
 		typeArg := substitutor.substituteTypeParams(typeParam.TypeParameter).(ast.Type)
 
-		// TODO remove duplicate identification once typeParam identification is done in separate pass
-		typeParamBound := tRec.identifyTypeParams(typeParam.Bound).(ast.Bound)
-		typeParamBound = substitutor.substituteTypeParams(typeParamBound).(ast.Bound)
+		typeParamBound := substitutor.substituteTypeParams(typeParam.Bound).(ast.Bound)
 
 		if err := t.checkConstEquivalence(typeArg, typeParamBound); err != nil {
 			return err
@@ -170,7 +154,7 @@ func (t typeEnvTypeCheckingVisitor) checkConstEquivalence(typeArg ast.Type, type
 }
 
 func (t typeEnvTypeCheckingVisitor) isValidBoundType(bound ast.Bound) bool {
-	switch t.identifyTypeParams(bound).(type) {
+	switch bound.(type) {
 	case ast.ConstType:
 		return true
 	case ast.NamedType:

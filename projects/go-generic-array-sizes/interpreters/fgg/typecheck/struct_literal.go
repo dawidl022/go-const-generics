@@ -25,14 +25,13 @@ func (t typeVisitor) typeCheckStructLiteral(v ast.ValueLiteral) error {
 		return fmt.Errorf("struct literal of type %q requires %d values, but got %d",
 			namedValueType.TypeName, len(fields), len(v.Values))
 	}
-	envChecker := t.NewTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
+	//envChecker := t.NewTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
 	for i, f := range fields {
 		fieldType, err := t.typeOf(v.Values[i])
 		if err != nil {
 			return err
 		}
-		expectedFieldType := envChecker.identifyTypeParams(f.Type).(ast.Type)
-		expectedFieldType = substituter.substituteTypeParams(expectedFieldType).(ast.Type)
+		expectedFieldType := substituter.substituteTypeParams(f.Type).(ast.Type)
 
 		err = t.CheckIsSubtypeOf(fieldType, expectedFieldType)
 		if err != nil {

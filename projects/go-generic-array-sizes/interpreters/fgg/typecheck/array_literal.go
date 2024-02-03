@@ -41,17 +41,14 @@ func (t typeVisitor) typeCheckArrayLiteral(v ast.ValueLiteral, namedType ast.Nam
 
 func (t typeVisitor) substitutedElementType(namedType ast.NamedType) (ast.Type, error) {
 	typeParams := t.typeParams(namedType.TypeName)
-	envChecker := t.NewTypeEnvTypeCheckingVisitor(typeParams)
-
 	elemType := t.elementType(namedType.TypeName)
-	elemTypeWithParams := envChecker.identifyTypeParams(elemType)
 
 	// TODO replace remaining calls to make makeTypeSubstitutions with newTypeParamSubstituter
 	substituter, err := newTypeParamSubstituter(namedType.TypeArguments, typeParams)
 	if err != nil {
 		return nil, err
 	}
-	return substituter.substituteTypeParams(elemTypeWithParams).(ast.Type), nil
+	return substituter.substituteTypeParams(elemType).(ast.Type), nil
 }
 
 func (t typeVisitor) typeParams(typeName ast.TypeName) []ast.TypeParameterConstraint {
@@ -67,9 +64,8 @@ func (t typeVisitor) typeCheckTypeArgument(typeArg ast.Type, param ast.TypeParam
 
 func (t typeCheckingVisitor) len(namedType ast.NamedType) ast.Type {
 	typeDecl := t.typeDeclarationOf(namedType.TypeName)
-	envChecker := t.NewTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
 
-	lenType := envChecker.identifyTypeParams(typeDecl.TypeLiteral.(ast.ArrayTypeLiteral).Length)
+	lenType := typeDecl.TypeLiteral.(ast.ArrayTypeLiteral).Length
 	if intLenType, isIntLenType := lenType.(ast.IntegerLiteral); isIntLenType {
 		return intLenType
 	}

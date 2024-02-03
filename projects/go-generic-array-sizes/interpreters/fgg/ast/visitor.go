@@ -72,3 +72,31 @@ type MethodVisitor interface {
 	VisitTypeParameter(t TypeParameter) []MethodSpecification
 	VisitConstType(c ConstType) []MethodSpecification
 }
+
+type MappingVisitable interface {
+	AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable
+}
+
+type MappingVisitor interface {
+	VisitMapProgram(p Program) MappingVisitable
+	VisitMapTypeDeclaration(t TypeDeclaration) MappingVisitable
+	VisitMapMethodDeclaration(m MethodDeclaration) MappingVisitable
+	VisitMapArraySetMethodDeclaration(a ArraySetMethodDeclaration) MappingVisitable
+	VisitMapTypeParameterConstraint(t TypeParameterConstraint) MappingVisitable
+	VisitMapStructTypeLiteral(s StructTypeLiteral) MappingVisitable
+	VisitMapInterfaceTypeLiteral(i InterfaceTypeLiteral) MappingVisitable
+	VisitMapArrayTypeLiteral(a ArrayTypeLiteral) MappingVisitable
+	VisitMapMethodSpecification(m MethodSpecification) MappingVisitable
+	VisitMapIntegerLiteral(i IntegerLiteral) MappingVisitable
+	VisitMapVariable(v Variable) MappingVisitable
+	VisitMapMethodCall(m MethodCall) MappingVisitable
+	VisitMapValueLiteral(v ValueLiteral) MappingVisitable
+	VisitMapSelect(s Select) MappingVisitable
+	VisitMapArrayIndex(a ArrayIndex) MappingVisitable
+	VisitMapMethodParameter(p MethodParameter) MappingVisitable
+	VisitMapConstType(c ConstType) MappingVisitable
+	VisitMapNamedType(n NamedType) MappingVisitable
+	VisitMapTypeParameter(t TypeParameter) MappingVisitable
+	VisitMapField(f Field) MappingVisitable
+	VisitMapMethodSignature(m MethodSignature) MappingVisitable
+}

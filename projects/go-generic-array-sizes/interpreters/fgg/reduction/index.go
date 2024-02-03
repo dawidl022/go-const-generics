@@ -77,20 +77,26 @@ func checkIndexBounds(n int, arrayType ast.NamedType, typeDecl ast.TypeDeclarati
 	switch arrayTypeLit.Length.(type) {
 	case ast.IntegerLiteral:
 		return n < arrayTypeLit.Length.(ast.IntegerLiteral).IntValue, nil
-	case ast.NamedType:
+	case ast.TypeParameter:
 		length, err := getGenericArrayLength(arrayType, typeDecl, arrayTypeLit)
 		return n < length, err
+	case ast.NamedType:
+		return false, fmt.Errorf("unexpected length type parameter %q in declaration of type %q; "+
+			"only integer literals and type parameters may be used as length types",
+			arrayTypeLit.Length, arrayType.TypeName)
 	default:
 		panic("unexpected Type type for Length")
 	}
 }
+
+// TODO unit test trying to use non-type parameter (named type) for array size
 
 func getGenericArrayLength(arrayType ast.NamedType, arrayTypeDecl ast.TypeDeclaration, arrayTypeLit ast.ArrayTypeLiteral) (int, error) {
 	err := checkTypeArgumentsCount(arrayType, arrayTypeDecl)
 	if err != nil {
 		return 0, err
 	}
-	lengthParam := ast.TypeParameter(arrayTypeLit.Length.(ast.NamedType).TypeName)
+	lengthParam := arrayTypeLit.Length.(ast.TypeParameter)
 
 	for i, param := range arrayTypeDecl.TypeParameters {
 		if param.TypeParameter == lengthParam {

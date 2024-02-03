@@ -221,3 +221,87 @@ func (a ArrayTypeLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVi
 func (m MethodSpecification) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
 	return visitor.VisitMapMethodSpecification(m)
 }
+
+func (p Program) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapProgram(p)
+}
+
+func (t TypeDeclaration) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapTypeDeclaration(t)
+}
+
+func (m MethodDeclaration) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapMethodDeclaration(m)
+}
+
+func (a ArraySetMethodDeclaration) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapArraySetMethodDeclaration(a)
+}
+
+func (t TypeParameterConstraint) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapTypeParameterConstraint(t)
+}
+
+func (s StructTypeLiteral) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapStructTypeLiteral(s)
+}
+
+func (i InterfaceTypeLiteral) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapInterfaceTypeLiteral(i)
+}
+
+func (a ArrayTypeLiteral) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapArrayTypeLiteral(a)
+}
+
+func (m MethodSpecification) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapMethodSpecification(m)
+}
+
+func (i IntegerLiteral) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapIntegerLiteral(i)
+}
+
+func (v Variable) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapVariable(v)
+}
+
+func (m MethodCall) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapMethodCall(m)
+}
+
+func (v ValueLiteral) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapValueLiteral(v)
+}
+
+func (s Select) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapSelect(s)
+}
+
+func (a ArrayIndex) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapArrayIndex(a)
+}
+
+func (p MethodParameter) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapMethodParameter(p)
+}
+
+func (c ConstType) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapConstType(c)
+}
+
+func (n NamedType) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapNamedType(n)
+}
+
+func (t TypeParameter) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapTypeParameter(t)
+}
+
+func (f Field) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapField(f)
+}
+
+func (m MethodSignature) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+	return visitor.VisitMapMethodSignature(m)
+}

@@ -6,11 +6,13 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/preprocessor"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
 )
 
 func parseFGGProgram(code []byte) ast.Program {
-	return testrunners.ParseProgram[ast.Program, *parser.FGGParser](code, parsetree.ParseFGGActions{})
+	p := testrunners.ParseProgram[ast.Program, *parser.FGGParser](code, parsetree.ParseFGGActions{})
+	return preprocessor.IdentifyTypeParams(p)
 }
 
 func parseAndTypeCheckFGG(program []byte) error {

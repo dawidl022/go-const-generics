@@ -25,8 +25,7 @@ func (t typeVisitor) VisitArrayIndex(a ast.ArrayIndex) (ast.Type, error) {
 		return nil, err
 	}
 	elementType := t.elementType(namedReceiverType.TypeName)
-	elementTypeWithParms := t.identifyTypeParams(elementType)
-	return substituter.substituteTypeParams(elementTypeWithParms).(ast.Type), nil
+	return substituter.substituteTypeParams(elementType).(ast.Type), nil
 }
 
 func (t typeVisitor) arrayIndexReceiverType(a ast.ArrayIndex) (ast.NamedType, error) {

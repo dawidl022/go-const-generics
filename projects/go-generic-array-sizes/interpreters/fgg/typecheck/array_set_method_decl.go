@@ -42,8 +42,7 @@ func (t typeCheckingVisitor) checkArraySetSignature(a ast.ArraySetMethodDeclarat
 	if err := envChecker.checkArraySetValueParam(a); err != nil {
 		return err
 	}
-	returnType := envChecker.identifyTypeParams(a.ReturnType).(ast.Type)
-	if !returnType.Equal(receiverType) {
+	if !a.ReturnType.Equal(receiverType) {
 		return fmt.Errorf("return type must be same as receiver type %q", receiverType)
 	}
 	return nil

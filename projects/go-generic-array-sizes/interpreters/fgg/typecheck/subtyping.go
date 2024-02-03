@@ -7,9 +7,6 @@ import (
 )
 
 func (t typeEnvTypeCheckingVisitor) CheckIsSubtypeOf(subtype, supertype ast.Type) error {
-	subtype = t.identifyTypeParams(subtype).(ast.Type)
-	supertype = t.identifyTypeParams(supertype).(ast.Type)
-
 	if subtype.Equal(supertype) {
 		return nil
 	}

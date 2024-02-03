@@ -6,6 +6,7 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/preprocessor"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/reduction"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/typecheck"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/loop"
@@ -13,7 +14,6 @@ import (
 )
 
 func Interpret(program io.Reader, debugOutput io.Writer, maxSteps int) (string, error) {
-
 	return loop.Interpret[fggProgram, ast.Expression, ast.Type](program, debugOutput, fggInterpreter{}, maxSteps)
 }
 
@@ -30,7 +30,11 @@ type fggInterpreter struct {
 
 func (f fggInterpreter) ParseProgram(program io.Reader) (fggProgram, error) {
 	parsedProgram, err := parse.Program[ast.Program, *parser.FGGParser](program, parsetree.ParseFGGActions{})
-	return fggProgram{parsedProgram}, err
+	if err != nil {
+		return fggProgram{}, err
+	}
+	preprocessedProgram := preprocessor.IdentifyTypeParams(parsedProgram)
+	return fggProgram{preprocessedProgram}, nil
 }
 
 func (f fggInterpreter) TypeCheck(program fggProgram) error {
