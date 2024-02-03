@@ -274,9 +274,6 @@ func (t typeParamVisitor) VisitMapConstType(c ast.ConstType) (ast.MappingVisitab
 }
 
 func (t typeParamVisitor) VisitMapNamedType(n ast.NamedType) (ast.MappingVisitable, error) {
-	// TODO if there are type arguments, then let the type checker fail this somehow
-	// how do we do this correctly if a type parameter hides a valid named type?
-	// might have to error here instead (is it a type or syntax error in actual Go?)
 	if _, isTypeParam := t.typeEnv[ast.TypeParameter(n.TypeName)]; isTypeParam {
 		if len(n.TypeArguments) > 0 {
 			return nil, fmt.Errorf("type parameter %q does not accept any type arguments", n.TypeName)

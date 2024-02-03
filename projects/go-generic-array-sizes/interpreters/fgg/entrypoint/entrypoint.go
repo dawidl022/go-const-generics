@@ -14,52 +14,52 @@ import (
 )
 
 func Interpret(program io.Reader, debugOutput io.Writer, maxSteps int) (string, error) {
-	return loop.Interpret[fggProgram, ast.Expression, ast.Type](program, debugOutput, fggInterpreter{}, maxSteps)
+	return loop.Interpret[FggProgram, ast.Expression, ast.Type](program, debugOutput, Interpreter{}, maxSteps)
 }
 
-type fggProgram struct {
-	program ast.Program
+type FggProgram struct {
+	Program ast.Program
 }
 
-func (f fggProgram) Expression() ast.Expression {
-	return f.program.Expression
+func (f FggProgram) Expression() ast.Expression {
+	return f.Program.Expression
 }
 
-type fggInterpreter struct {
+type Interpreter struct {
 }
 
-func (f fggInterpreter) ParseProgram(program io.Reader) (fggProgram, error) {
+func (f Interpreter) ParseProgram(program io.Reader) (FggProgram, error) {
 	parsedProgram, err := parse.Program[ast.Program, *parser.FGGParser](program, parsetree.ParseFGGActions{})
 	if err != nil {
-		return fggProgram{}, err
+		return FggProgram{}, err
 	}
 	preprocessedProgram, err := preprocessor.IdentifyTypeParams(parsedProgram)
-	return fggProgram{preprocessedProgram}, err
+	return FggProgram{preprocessedProgram}, err
 }
 
-func (f fggInterpreter) TypeCheck(program fggProgram) error {
-	return typecheck.TypeCheck(program.program)
+func (f Interpreter) TypeCheck(program FggProgram) error {
+	return typecheck.TypeCheck(program.Program)
 }
 
-func (f fggInterpreter) TypeOf(program fggProgram) (ast.Type, error) {
-	return typecheck.NewTypeCheckingVisitor(program.program.Declarations).
-		TypeOf(nil, nil, program.program.Expression)
+func (f Interpreter) TypeOf(program FggProgram) (ast.Type, error) {
+	return typecheck.NewTypeCheckingVisitor(program.Program.Declarations).
+		TypeOf(nil, nil, program.Program.Expression)
 }
 
-func (f fggInterpreter) CheckIsSubtypeOf(program fggProgram, subtype, supertype ast.Type) error {
-	return typecheck.NewTypeCheckingVisitor(program.program.Declarations).
+func (f Interpreter) CheckIsSubtypeOf(program FggProgram, subtype, supertype ast.Type) error {
+	return typecheck.NewTypeCheckingVisitor(program.Program.Declarations).
 		NewTypeEnvTypeCheckingVisitor(nil).
 		CheckIsSubtypeOf(subtype, supertype)
 }
 
-func (f fggInterpreter) Reduce(program fggProgram) (fggProgram, error) {
-	newProgram, err := reduction.NewProgramReducer().Reduce(program.program)
-	return fggProgram{newProgram}, err
+func (f Interpreter) Reduce(program FggProgram) (FggProgram, error) {
+	newProgram, err := reduction.NewProgramReducer().Reduce(program.Program)
+	return FggProgram{newProgram}, err
 }
 
-func (f fggInterpreter) ProgramWithExpression(program fggProgram, expression ast.Expression) fggProgram {
-	return fggProgram{program: ast.Program{
-		Declarations: program.program.Declarations,
+func (f Interpreter) ProgramWithExpression(program FggProgram, expression ast.Expression) FggProgram {
+	return FggProgram{Program: ast.Program{
+		Declarations: program.Program.Declarations,
 		Expression:   expression,
 	}}
 }

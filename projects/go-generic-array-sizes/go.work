@@ -1,0 +1,12 @@
+go 1.21.3
+
+use (
+	./interpreters/fg
+	./interpreters/fgg
+	./interpreters/shared
+	./monomorphisers/fgg2go
+)
+
+replace (
+	github.com/dawidl022/go-generic-array-sizes/interpreters/fgg v0.1.0 => ./interpreters/fgg
+)
