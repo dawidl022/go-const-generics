@@ -13,7 +13,11 @@ import (
 
 func parseFGGProgram(code []byte) ast.Program {
 	p := testrunners.ParseProgram[ast.Program, *parser.FGGParser](code, parsetree.ParseFGGActions{})
-	return preprocessor.IdentifyTypeParams(p)
+	p, err := preprocessor.IdentifyTypeParams(p)
+	if err != nil {
+		panic(err)
+	}
+	return p
 }
 
 func parseFGGAndReduceOneStep(program []byte) (ast.Program, error) {

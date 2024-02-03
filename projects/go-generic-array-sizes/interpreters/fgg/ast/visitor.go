@@ -74,29 +74,29 @@ type MethodVisitor interface {
 }
 
 type MappingVisitable interface {
-	AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable
+	AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error)
 }
 
 type MappingVisitor interface {
-	VisitMapProgram(p Program) MappingVisitable
-	VisitMapTypeDeclaration(t TypeDeclaration) MappingVisitable
-	VisitMapMethodDeclaration(m MethodDeclaration) MappingVisitable
-	VisitMapArraySetMethodDeclaration(a ArraySetMethodDeclaration) MappingVisitable
-	VisitMapTypeParameterConstraint(t TypeParameterConstraint) MappingVisitable
-	VisitMapStructTypeLiteral(s StructTypeLiteral) MappingVisitable
-	VisitMapInterfaceTypeLiteral(i InterfaceTypeLiteral) MappingVisitable
-	VisitMapArrayTypeLiteral(a ArrayTypeLiteral) MappingVisitable
-	VisitMapMethodSpecification(m MethodSpecification) MappingVisitable
-	VisitMapIntegerLiteral(i IntegerLiteral) MappingVisitable
-	VisitMapVariable(v Variable) MappingVisitable
-	VisitMapMethodCall(m MethodCall) MappingVisitable
-	VisitMapValueLiteral(v ValueLiteral) MappingVisitable
-	VisitMapSelect(s Select) MappingVisitable
-	VisitMapArrayIndex(a ArrayIndex) MappingVisitable
-	VisitMapMethodParameter(p MethodParameter) MappingVisitable
-	VisitMapConstType(c ConstType) MappingVisitable
-	VisitMapNamedType(n NamedType) MappingVisitable
-	VisitMapTypeParameter(t TypeParameter) MappingVisitable
-	VisitMapField(f Field) MappingVisitable
-	VisitMapMethodSignature(m MethodSignature) MappingVisitable
+	VisitMapProgram(p Program) (MappingVisitable, error)
+	VisitMapTypeDeclaration(t TypeDeclaration) (MappingVisitable, error)
+	VisitMapMethodDeclaration(m MethodDeclaration) (MappingVisitable, error)
+	VisitMapArraySetMethodDeclaration(a ArraySetMethodDeclaration) (MappingVisitable, error)
+	VisitMapTypeParameterConstraint(t TypeParameterConstraint) (MappingVisitable, error)
+	VisitMapStructTypeLiteral(s StructTypeLiteral) (MappingVisitable, error)
+	VisitMapInterfaceTypeLiteral(i InterfaceTypeLiteral) (MappingVisitable, error)
+	VisitMapArrayTypeLiteral(a ArrayTypeLiteral) (MappingVisitable, error)
+	VisitMapMethodSpecification(m MethodSpecification) (MappingVisitable, error)
+	VisitMapIntegerLiteral(i IntegerLiteral) (MappingVisitable, error)
+	VisitMapVariable(v Variable) (MappingVisitable, error)
+	VisitMapMethodCall(m MethodCall) (MappingVisitable, error)
+	VisitMapValueLiteral(v ValueLiteral) (MappingVisitable, error)
+	VisitMapSelect(s Select) (MappingVisitable, error)
+	VisitMapArrayIndex(a ArrayIndex) (MappingVisitable, error)
+	VisitMapMethodParameter(p MethodParameter) (MappingVisitable, error)
+	VisitMapConstType(c ConstType) (MappingVisitable, error)
+	VisitMapNamedType(n NamedType) (MappingVisitable, error)
+	VisitMapTypeParameter(t TypeParameter) (MappingVisitable, error)
+	VisitMapField(f Field) (MappingVisitable, error)
+	VisitMapMethodSignature(m MethodSignature) (MappingVisitable, error)
 }

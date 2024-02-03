@@ -135,3 +135,10 @@ func TestTypeCheck_givenMethodDeclarationWithExpressionCovariantToReturnTypeInTe
 		`ill-typed declaration: method "Foo.foo": `+
 			`return expression of type "Foo[int, R]" is not a subtype of "Foo[any, R]"`)
 }
+
+//go:embed testdata/method_declaration/shadowed_parameter_type/shadowed_parameter_type.go
+var methodDeclShadowedParameterType []byte
+
+func TestTypeCheck_givenMethodDeclarationWhereTypeParameterShadowsGenericType_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, methodDeclShadowedParameterType)
+}

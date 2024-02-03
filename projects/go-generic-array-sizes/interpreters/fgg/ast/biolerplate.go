@@ -222,86 +222,86 @@ func (m MethodSpecification) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) En
 	return visitor.VisitMapMethodSpecification(m)
 }
 
-func (p Program) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (p Program) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapProgram(p)
 }
 
-func (t TypeDeclaration) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (t TypeDeclaration) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapTypeDeclaration(t)
 }
 
-func (m MethodDeclaration) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (m MethodDeclaration) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapMethodDeclaration(m)
 }
 
-func (a ArraySetMethodDeclaration) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (a ArraySetMethodDeclaration) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapArraySetMethodDeclaration(a)
 }
 
-func (t TypeParameterConstraint) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (t TypeParameterConstraint) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapTypeParameterConstraint(t)
 }
 
-func (s StructTypeLiteral) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (s StructTypeLiteral) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapStructTypeLiteral(s)
 }
 
-func (i InterfaceTypeLiteral) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (i InterfaceTypeLiteral) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapInterfaceTypeLiteral(i)
 }
 
-func (a ArrayTypeLiteral) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (a ArrayTypeLiteral) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapArrayTypeLiteral(a)
 }
 
-func (m MethodSpecification) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (m MethodSpecification) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapMethodSpecification(m)
 }
 
-func (i IntegerLiteral) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (i IntegerLiteral) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapIntegerLiteral(i)
 }
 
-func (v Variable) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (v Variable) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapVariable(v)
 }
 
-func (m MethodCall) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (m MethodCall) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapMethodCall(m)
 }
 
-func (v ValueLiteral) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (v ValueLiteral) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapValueLiteral(v)
 }
 
-func (s Select) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (s Select) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapSelect(s)
 }
 
-func (a ArrayIndex) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (a ArrayIndex) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapArrayIndex(a)
 }
 
-func (p MethodParameter) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (p MethodParameter) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapMethodParameter(p)
 }
 
-func (c ConstType) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (c ConstType) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapConstType(c)
 }
 
-func (n NamedType) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (n NamedType) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapNamedType(n)
 }
 
-func (t TypeParameter) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (t TypeParameter) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapTypeParameter(t)
 }
 
-func (f Field) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (f Field) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapField(f)
 }
 
-func (m MethodSignature) AcceptMappingVisitor(visitor MappingVisitor) MappingVisitable {
+func (m MethodSignature) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapMethodSignature(m)
 }

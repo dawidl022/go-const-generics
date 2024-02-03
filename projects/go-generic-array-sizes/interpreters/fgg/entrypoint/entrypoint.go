@@ -33,8 +33,8 @@ func (f fggInterpreter) ParseProgram(program io.Reader) (fggProgram, error) {
 	if err != nil {
 		return fggProgram{}, err
 	}
-	preprocessedProgram := preprocessor.IdentifyTypeParams(parsedProgram)
-	return fggProgram{preprocessedProgram}, nil
+	preprocessedProgram, err := preprocessor.IdentifyTypeParams(parsedProgram)
+	return fggProgram{preprocessedProgram}, err
 }
 
 func (f fggInterpreter) TypeCheck(program fggProgram) error {
