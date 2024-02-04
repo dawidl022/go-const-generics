@@ -128,4 +128,5 @@ type MapVisitor interface {
 	MapTypeParameter(t TypeParameter) MapVisitable
 	MapField(f Field) MapVisitable
 	MapMethodSignature(m MethodSignature) MapVisitable
+	MapMethodReceiver(m MethodReceiver) MapVisitable
 }

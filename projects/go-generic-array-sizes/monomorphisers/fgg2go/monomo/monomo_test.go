@@ -32,6 +32,33 @@ func TestMonomorphise_eliminatesDeadTypeDeclarations(t *testing.T) {
 	assertMonomorphises(t, deadCodeTypeElimInput, deadCodeTypeElimOutput)
 }
 
+//go:embed testdata/dead_code_generic_type_elim/input/dead_code_generic_type_elim.go
+var deadCodeGenericTypeElimInput []byte
+
+//go:embed testdata/dead_code_generic_type_elim/output/dead_code_generic_type_elim.go
+var deadCodeGenericTypeElimOutput []byte
+
+func TestMonomorphise_eliminatesDeadGenericTypeDeclarations(t *testing.T) {
+	assertMonomorphises(t, deadCodeGenericTypeElimInput, deadCodeGenericTypeElimOutput)
+}
+
+//go:embed testdata/dead_code_method_elim/input/dead_code_method_elim.go
+var deadCodeMethodElimInput []byte
+
+//go:embed testdata/dead_code_method_elim/output/dead_code_method_elim.go
+var deadCodeMethodElimOutput []byte
+
+func TestMonomorphise_eliminatesMethodsForDeadTypes(t *testing.T) {
+	assertMonomorphises(t, deadCodeMethodElimInput, deadCodeMethodElimOutput)
+}
+
+//go:embed testdata/dead_code_methods_not_eliminated/dead_code_methods_not_eliminated.go
+var deadCodeMethodsNotEliminated []byte
+
+func TestMonomorphise_givenTypeIsInstantiated_allMethodsAreAlsoInstantiatedEvenIfUnused(t *testing.T) {
+	assertMonomorphises(t, deadCodeMethodsNotEliminated, deadCodeMethodsNotEliminated)
+}
+
 //go:embed testdata/non_generic_array/non_generic_array.go
 var nonGenericArrayIdentical []byte
 
@@ -103,7 +130,6 @@ var matrixBoundInput []byte
 var matrixBoundOutput []byte
 
 func TestMonomorphise_givenMatrixWithInnerArrayAsBound(t *testing.T) {
-	t.Skip() // TODO
 	assertMonomorphises(t, matrixBoundInput, matrixBoundOutput)
 }
 
@@ -155,6 +181,46 @@ var uselessConstrainOutput []byte
 
 func TestMonomorphise_givenConstGenericEmptyInterfaceAsConstraint(t *testing.T) {
 	assertMonomorphises(t, uselessConstraintInput, uselessConstrainOutput)
+}
+
+//go:embed testdata/non_generic_method_call/non_generic_method_call.go
+var nonGenericMethodCall []byte
+
+func TestMonomorphise_givenNonGenericMethodCall_doesNotChangeOutput(t *testing.T) {
+	assertMonomorphises(t, nonGenericMethodCall, nonGenericMethodCall)
+}
+
+//go:embed testdata/simple_method_call/input/simple_method_call.go
+var simpleMethodCallInput []byte
+
+//go:embed testdata/simple_method_call/output/simple_method_call.go
+var simpleMethodCallOutput []byte
+
+func TestMonomorphise_givenMethodCallOnGenericReceiver(t *testing.T) {
+	assertMonomorphises(t, simpleMethodCallInput, simpleMethodCallOutput)
+}
+
+//go:embed testdata/generic_method_call/input/generic_method_call.go
+var genericMethodCallInput []byte
+
+//go:embed testdata/generic_method_call/output/generic_method_call.go
+var genericMethodCallOutput []byte
+
+func TestMonomorphise_givenMethodOnCallOnGenericType(t *testing.T) {
+	assertMonomorphises(t, genericMethodCallInput, genericMethodCallOutput)
+}
+
+// TODO method calls instantiates some other type(s) e.g. one in return type
+// (an interface) and a different one in the body (a struct), and also parameters
+
+//go:embed testdata/method_instantiations/input/method_instantiations.go
+var methodInstantiationsInput []byte
+
+//go:embed testdata/method_instantiations/output/method_instantiations.go
+var methodInstantiationsOutput []byte
+
+func TestMonomorphise_instantiatesTypeFromMethodParamsReturnTypeAndBody(t *testing.T) {
+	assertMonomorphises(t, methodInstantiationsInput, methodInstantiationsOutput)
 }
 
 func assertMonomorphises(t *testing.T, input []byte, expected []byte) {

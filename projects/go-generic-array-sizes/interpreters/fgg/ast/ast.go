@@ -12,6 +12,7 @@ type Program struct {
 type Declaration interface {
 	Visitable
 	MappingVisitable
+	MapVisitable
 	declarationNode()
 	fmt.Stringer
 }

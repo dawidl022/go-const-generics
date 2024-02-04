@@ -306,7 +306,6 @@ func (m MethodSignature) AcceptMappingVisitor(visitor MappingVisitor) (MappingVi
 	return visitor.VisitMapMethodSignature(m)
 }
 
-
 func (p Program) AcceptMapVisitor(visitor MapVisitor) MapVisitable {
 	return visitor.MapProgram(p)
 }
@@ -389,4 +388,8 @@ func (f Field) AcceptMapVisitor(visitor MapVisitor) MapVisitable {
 
 func (m MethodSignature) AcceptMapVisitor(visitor MapVisitor) MapVisitable {
 	return visitor.MapMethodSignature(m)
+}
+
+func (m MethodReceiver) AcceptMapVisitor(visitor MapVisitor) MapVisitable {
+	return visitor.MapMethodReceiver(m)
 }

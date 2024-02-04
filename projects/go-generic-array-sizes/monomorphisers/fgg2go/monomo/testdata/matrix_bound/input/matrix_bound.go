@@ -3,7 +3,6 @@ package main
 type any interface {
 }
 
-
 type ArrFactory[T any, N const] interface {
 	new() Arr[T, N]
 }
