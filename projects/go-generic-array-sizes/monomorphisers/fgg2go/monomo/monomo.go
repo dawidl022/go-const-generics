@@ -107,6 +107,7 @@ func (v visitor) MapProgram(p ast.Program) ast.MapVisitable {
 				for !v.isEmpty(decl.TypeName) {
 					inst := v.dequeue(decl.TypeName)
 					// TODO what about methods? they all need to be monomorphised too
+					// use iteration specific queue
 					monoDecls[i] = append(monoDecls[i], v.newArgVisitor(inst).monomorphise(decl).(ast.Declaration))
 				}
 			}
@@ -127,9 +128,8 @@ func (v visitor) MapProgram(p ast.Program) ast.MapVisitable {
 }
 
 func (v visitor) MapTypeDeclaration(t ast.TypeDeclaration) ast.MapVisitable {
-	// TODO handle recursive type parameter bounds
 	numericalTypeParams := make(map[ast.TypeParameter]ast.IntegerLiteral)
-	var monoTypeParams []ast.TypeParameterConstraint
+	var monoNonConstTypeParams []ast.TypeParameterConstraint
 
 	numIndex := 0
 
@@ -137,15 +137,20 @@ func (v visitor) MapTypeDeclaration(t ast.TypeDeclaration) ast.MapVisitable {
 		if _, isConstParam := typeParam.Bound.(ast.ConstType); isConstParam {
 			numericalTypeParams[typeParam.TypeParameter] = v.numericalTypeArgs[numIndex]
 			numIndex++
-		} else {
-			monoTypeParams = append(monoTypeParams, v.monomorphise(typeParam).(ast.TypeParameterConstraint))
+		}
+	}
+	envVisitor := v.newEnvVisitor(numericalTypeParams)
+
+	for _, typeParam := range t.TypeParameters {
+		if _, isConstParam := typeParam.Bound.(ast.ConstType); !isConstParam {
+			monoNonConstTypeParams = append(monoNonConstTypeParams, envVisitor.monomorphise(typeParam).(ast.TypeParameterConstraint))
 		}
 	}
 
 	return ast.TypeDeclaration{
 		TypeName:       v.monoTypeName(t.TypeName, v.numericalTypeArgs),
-		TypeParameters: monoTypeParams,
-		TypeLiteral:    v.newEnvVisitor(numericalTypeParams).monomorphise(t.TypeLiteral).(ast.TypeLiteral),
+		TypeParameters: monoNonConstTypeParams,
+		TypeLiteral:    envVisitor.monomorphise(t.TypeLiteral).(ast.TypeLiteral),
 	}
 }
 
@@ -220,13 +225,17 @@ func (v visitor) MapValueLiteral(value ast.ValueLiteral) ast.MapVisitable {
 }
 
 func (v visitor) MapSelect(s ast.Select) ast.MapVisitable {
-	//TODO implement me
-	panic("implement me")
+	return ast.Select{
+		Receiver:  v.monomorphise(s.Receiver).(ast.Expression),
+		FieldName: s.FieldName,
+	}
 }
 
 func (v visitor) MapArrayIndex(a ast.ArrayIndex) ast.MapVisitable {
-	//TODO implement me
-	panic("implement me")
+	return ast.ArrayIndex{
+		Receiver: v.monomorphise(a.Receiver).(ast.Expression),
+		Index:    v.monomorphise(a.Index).(ast.Expression),
+	}
 }
 
 func (v visitor) MapMethodParameter(p ast.MethodParameter) ast.MapVisitable {
@@ -235,8 +244,7 @@ func (v visitor) MapMethodParameter(p ast.MethodParameter) ast.MapVisitable {
 }
 
 func (v visitor) MapConstType(c ast.ConstType) ast.MapVisitable {
-	//TODO implement me
-	panic("implement me")
+	panic("const type parameter should have been eliminated")
 }
 
 func (v visitor) MapNamedType(n ast.NamedType) ast.MapVisitable {

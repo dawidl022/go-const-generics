@@ -117,6 +117,46 @@ func TestMonomorphise_givenStructFieldOfConstGenericArrayType(t *testing.T) {
 	assertMonomorphises(t, structFieldInput, structFieldOutput)
 }
 
+//go:embed testdata/struct_field_select/input/struct_field.go
+var structFieldSelectInput []byte
+
+//go:embed testdata/struct_field_select/output/struct_field.go
+var structFieldSelectOutput []byte
+
+func TestMonomorphise_givenStructFieldSelectExpression(t *testing.T) {
+	assertMonomorphises(t, structFieldSelectInput, structFieldSelectOutput)
+}
+
+//go:embed testdata/array_index/input/array_index.go
+var arrayIndexInput []byte
+
+//go:embed testdata/array_index/output/array_index.go
+var arrayIndexOutput []byte
+
+func TestMonomorphise_givenArrayIndexExpression(t *testing.T) {
+	assertMonomorphises(t, arrayIndexInput, arrayIndexOutput)
+}
+
+//go:embed testdata/array_index_nested_expression/input/array_index.go
+var arrayIndexNestedExpressionInput []byte
+
+//go:embed testdata/array_index_nested_expression/output/array_index.go
+var arrayIndexNestedExpressionOutput []byte
+
+func TestMonomorphise_givenArrayIndexExpressionWithGenericArrayWithinIndex(t *testing.T) {
+	assertMonomorphises(t, arrayIndexNestedExpressionInput, arrayIndexNestedExpressionOutput)
+}
+
+//go:embed testdata/useless_constraint/input/useless_constraint.go
+var uselessConstraintInput []byte
+
+//go:embed testdata/useless_constraint/output/useless_constraint.go
+var uselessConstrainOutput []byte
+
+func TestMonomorphise_givenConstGenericEmptyInterfaceAsConstraint(t *testing.T) {
+	assertMonomorphises(t, uselessConstraintInput, uselessConstrainOutput)
+}
+
 func assertMonomorphises(t *testing.T, input []byte, expected []byte) {
 	p := parseProgram(input)
 	output := codegen.GenerateSourceCode(Monomorphise(p))
