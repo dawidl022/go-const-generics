@@ -223,6 +223,33 @@ func TestMonomorphise_instantiatesTypeFromMethodParamsReturnTypeAndBody(t *testi
 	assertMonomorphises(t, methodInstantiationsInput, methodInstantiationsOutput)
 }
 
+//go:embed testdata/non_generic_array_set_method/non_generic_array_set_method.go
+var nonGenericArraySetMethod []byte
+
+func TestMonomorphise_givenNonGenericArraySetMethod_doesNotChangeOutput(t *testing.T) {
+	assertMonomorphises(t, nonGenericArraySetMethod, nonGenericArraySetMethod)
+}
+
+//go:embed testdata/simple_array_set_method/input/simple_array_set_method.go
+var simpleArraySetMethodInput []byte
+
+//go:embed testdata/simple_array_set_method/output/simple_array_set_method.go
+var simpleArraySetMethodOutput []byte
+
+func TestMonomorphise_givenSimpleGenericArraySetMethod(t *testing.T) {
+	assertMonomorphises(t, simpleArraySetMethodInput, simpleArraySetMethodOutput)
+}
+
+//go:embed testdata/nested_array_set_method/input/nested_array_set_method.go
+var nestedArraySetMethodInput []byte
+
+//go:embed testdata/nested_array_set_method/output/nested_array_set_method.go
+var nestedArraySetMethodOutput []byte
+
+func TestMonomorphise_givenNestedArraySetMethod(t *testing.T) {
+	assertMonomorphises(t, nestedArraySetMethodInput, nestedArraySetMethodOutput)
+}
+
 func assertMonomorphises(t *testing.T, input []byte, expected []byte) {
 	p := parseProgram(input)
 	output := codegen.GenerateSourceCode(Monomorphise(p))

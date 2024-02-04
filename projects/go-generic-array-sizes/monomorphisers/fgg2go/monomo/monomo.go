@@ -196,8 +196,17 @@ func (v visitor) MapMethodDeclaration(m ast.MethodDeclaration) ast.MapVisitable 
 }
 
 func (v visitor) MapArraySetMethodDeclaration(a ast.ArraySetMethodDeclaration) ast.MapVisitable {
-	//TODO implement me
-	panic("implement me")
+	return ast.ArraySetMethodDeclaration{
+		MethodReceiver:        v.monomorphise(a.MethodReceiver).(ast.MethodReceiver),
+		MethodName:            a.MethodName,
+		IndexParameter:        a.IndexParameter, // should always be int, so no need to monomorphise
+		ValueParameter:        v.monomorphise(a.ValueParameter).(ast.MethodParameter),
+		ReturnType:            v.monomorphise(a.ReturnType).(ast.Type),
+		IndexReceiverVariable: a.IndexReceiverVariable,
+		IndexVariable:         a.IndexVariable,
+		NewValueVariable:      a.NewValueVariable,
+		ReturnVariable:        a.ReturnVariable,
+	}
 }
 
 func (v visitor) MapMethodReceiver(m ast.MethodReceiver) ast.MapVisitable {
