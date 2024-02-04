@@ -239,16 +239,21 @@ func (v visitor) MapConstType(c ast.ConstType) ast.MapVisitable {
 }
 
 func (v visitor) MapNamedType(n ast.NamedType) ast.MapVisitable {
-	// instantiate any numerical type args
-	var numericalTypeArgs []ast.IntegerLiteral
-	var monoTypeArgs []ast.Type
-
+	// instantiate any numerical type params
+	var monoTypeArgs = make([]ast.Type, 0, len(n.TypeArguments))
 	for _, arg := range n.TypeArguments {
-		// TODO recursively monomorphise
+		monoTypeArgs = append(monoTypeArgs, v.monomorphise(arg).(ast.Type))
+	}
+
+	// split numerical and non-numerical type args
+	var numericalTypeArgs []ast.IntegerLiteral
+	var monoNonNumericTypeArgs []ast.Type
+
+	for _, arg := range monoTypeArgs {
 		if numArg, isNumArg := arg.(ast.IntegerLiteral); isNumArg {
 			numericalTypeArgs = append(numericalTypeArgs, numArg)
 		} else {
-			monoTypeArgs = append(monoTypeArgs, arg)
+			monoNonNumericTypeArgs = append(monoNonNumericTypeArgs, arg)
 		}
 	}
 	// enqueue the instantiation
@@ -257,7 +262,7 @@ func (v visitor) MapNamedType(n ast.NamedType) ast.MapVisitable {
 	// monomorphise the instantation
 	return ast.NamedType{
 		TypeName:      v.monoTypeName(n.TypeName, numericalTypeArgs),
-		TypeArguments: monoTypeArgs,
+		TypeArguments: monoNonNumericTypeArgs,
 	}
 }
 

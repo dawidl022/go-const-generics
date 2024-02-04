@@ -66,6 +66,36 @@ func TestMonomorphise_givenStructWithConstTypeParam(t *testing.T) {
 	assertMonomorphises(t, uselessStructInput, uselessStructOutput)
 }
 
+//go:embed testdata/useless_array/input/useless_array.go
+var uselessArrayInput []byte
+
+//go:embed testdata/useless_array/output/useless_array.go
+var uselessArrayOutput []byte
+
+func TestMonomorphise_givenArrayWithUnusedConstTypeParam_MonomorphisesAnyways(t *testing.T) {
+	assertMonomorphises(t, uselessArrayInput, uselessArrayOutput)
+}
+
+//go:embed testdata/nested_array_literal/input/nested_array_literal.go
+var nestedArrayInput []byte
+
+//go:embed testdata/nested_array_literal/output/nested_array_literal.go
+var nestedArrayOutput []byte
+
+func TestMonomorphise_givenNestedArrayLiteral(t *testing.T) {
+	assertMonomorphises(t, nestedArrayInput, nestedArrayOutput)
+}
+
+//go:embed testdata/matrix/input/matrix.go
+var matrixInput []byte
+
+//go:embed testdata/matrix/output/matrix.go
+var matrixOutput []byte
+
+func TestMonomorphise_givenMatrixWithTwoConstParameters(t *testing.T) {
+	assertMonomorphises(t, matrixInput, matrixOutput)
+}
+
 func assertMonomorphises(t *testing.T, input []byte, expected []byte) {
 	p := parseProgram(input)
 	output := codegen.GenerateSourceCode(Monomorphise(p))
