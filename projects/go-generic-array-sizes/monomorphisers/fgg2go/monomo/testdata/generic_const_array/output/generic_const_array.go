@@ -1,5 +1,8 @@
 package main
 
+type any interface {
+}
+
 type Arr__2[T any] [2]T
 
 func main() {

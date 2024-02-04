@@ -56,6 +56,16 @@ func TestMonomorphise_givenGenericArrayWithConstParams_MonomorphisesOnlyConstPar
 	assertMonomorphises(t, genericConstArrayInput, genericConstArrayOutput)
 }
 
+//go:embed testdata/useless_struct/input/useless_struct.go
+var uselessStructInput []byte
+
+//go:embed testdata/useless_struct/output/useless_struct.go
+var uselessStructOutput []byte
+
+func TestMonomorphise_givenStructWithConstTypeParam(t *testing.T) {
+	assertMonomorphises(t, uselessStructInput, uselessStructOutput)
+}
+
 func assertMonomorphises(t *testing.T, input []byte, expected []byte) {
 	p := parseProgram(input)
 	output := codegen.GenerateSourceCode(Monomorphise(p))
@@ -65,6 +75,11 @@ func assertMonomorphises(t *testing.T, input []byte, expected []byte) {
 func parseProgram(code []byte) ast.Program {
 	parsedProgram, err := fgg.Interpreter{}.ParseProgram(bytes.NewBuffer(code))
 	if err != nil {
+		panic(err)
+	}
+	err = fgg.Interpreter{}.TypeCheck(parsedProgram)
+	if err != nil {
+		// ensure all tested programs are well-typed
 		panic(err)
 	}
 	return parsedProgram.Program

@@ -48,6 +48,9 @@ func (v visitor) monomorphise(m ast.MapVisitable) ast.MapVisitable {
 }
 
 func (v visitor) enqueue(typeName ast.TypeName, numericalTypeArgs []ast.IntegerLiteral) {
+	if typeName == ast.IntTypeName {
+		return
+	}
 	for _, instantiation := range v.seenInstantiations[typeName] {
 		if cmp.Equal(instantiation, numericalTypeArgs, cmpopts.EquateEmpty()) {
 			return
@@ -100,15 +103,16 @@ func (v visitor) MapProgram(p ast.Program) ast.MapVisitable {
 	// instantiations
 	monoDecls := make([][]ast.Declaration, len(p.Declarations))
 
-	// TODO loop while queue is not empty
-	for i, decl := range p.Declarations {
-		switch decl.(type) {
-		case ast.TypeDeclaration:
-			decl := decl.(ast.TypeDeclaration)
-			for !v.isEmpty(decl.TypeName) {
-				inst := v.dequeue(decl.TypeName)
-				// TODO what about methods? they all need to be monomorphised too
-				monoDecls[i] = append(monoDecls[i], v.newArgVisitor(inst).monomorphise(decl).(ast.Declaration))
+	for !v.isQueueEmpty() {
+		for i, decl := range p.Declarations {
+			switch decl.(type) {
+			case ast.TypeDeclaration:
+				decl := decl.(ast.TypeDeclaration)
+				for !v.isEmpty(decl.TypeName) {
+					inst := v.dequeue(decl.TypeName)
+					// TODO what about methods? they all need to be monomorphised too
+					monoDecls[i] = append(monoDecls[i], v.newArgVisitor(inst).monomorphise(decl).(ast.Declaration))
+				}
 			}
 		}
 	}
@@ -138,7 +142,7 @@ func (v visitor) MapTypeDeclaration(t ast.TypeDeclaration) ast.MapVisitable {
 			numericalTypeParams[typeParam.TypeParameter] = v.numericalTypeArgs[numIndex]
 			numIndex++
 		} else {
-			monoTypeParams = append(monoTypeParams, typeParam)
+			monoTypeParams = append(monoTypeParams, v.monomorphise(typeParam).(ast.TypeParameterConstraint))
 		}
 	}
 
@@ -160,18 +164,20 @@ func (v visitor) MapArraySetMethodDeclaration(a ast.ArraySetMethodDeclaration) a
 }
 
 func (v visitor) MapTypeParameterConstraint(t ast.TypeParameterConstraint) ast.MapVisitable {
-	//TODO implement me
-	panic("implement me")
+	return ast.TypeParameterConstraint{
+		TypeParameter: t.TypeParameter,
+		Bound:         v.monomorphise(t.Bound).(ast.Bound),
+	}
 }
 
 func (v visitor) MapStructTypeLiteral(s ast.StructTypeLiteral) ast.MapVisitable {
 	//TODO implement me
-	panic("implement me")
+	return s
 }
 
 func (v visitor) MapInterfaceTypeLiteral(i ast.InterfaceTypeLiteral) ast.MapVisitable {
 	//TODO implement me
-	panic("implement me")
+	return i
 }
 
 func (v visitor) MapArrayTypeLiteral(a ast.ArrayTypeLiteral) ast.MapVisitable {

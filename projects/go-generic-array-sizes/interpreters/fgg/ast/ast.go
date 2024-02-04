@@ -120,6 +120,8 @@ func (a ArraySetMethodDeclaration) MethodSpecification() MethodSpecification {
 	}
 }
 
+const IntTypeName TypeName = "int"
+
 type NamedType struct {
 	TypeName      TypeName
 	TypeArguments []Type
