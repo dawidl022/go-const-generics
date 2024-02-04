@@ -21,5 +21,5 @@ func Monomorphise(program io.Reader) (string, error) {
 	}
 
 	monomoP := monomo.Visitor{}.Monomorphise(p.Program)
-	return codegen.GenerateGoCode(monomoP), nil
+	return codegen.GenerateSourceCode(monomoP), nil
 }

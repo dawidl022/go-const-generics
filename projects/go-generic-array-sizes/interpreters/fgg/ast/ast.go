@@ -13,6 +13,7 @@ type Declaration interface {
 	Visitable
 	MappingVisitable
 	declarationNode()
+	fmt.Stringer
 }
 
 type TypeDeclaration struct {
@@ -45,6 +46,7 @@ type TypeLiteral interface {
 	EnvVisitable
 	MappingVisitable
 	typeLiteralNode()
+	fmt.Stringer
 }
 
 type StructTypeLiteral struct {
