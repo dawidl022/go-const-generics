@@ -20,6 +20,6 @@ func Monomorphise(program io.Reader) (string, error) {
 		return "", fmt.Errorf("type error: %w", err)
 	}
 
-	monomoP := monomo.Visitor{}.Monomorphise(p.Program)
+	monomoP := monomo.Monomorphise(p.Program)
 	return codegen.GenerateSourceCode(monomoP), nil
 }

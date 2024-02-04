@@ -26,6 +26,7 @@ type Type interface {
 	EnvVisitable
 	MethodVisitable
 	MappingVisitable
+	MapVisitable
 	Equal(other Type) bool
 	typeNode()
 	fmt.Stringer
@@ -45,6 +46,7 @@ type ConstType struct{}
 type TypeLiteral interface {
 	EnvVisitable
 	MappingVisitable
+	MapVisitable
 	typeLiteralNode()
 	fmt.Stringer
 }
@@ -130,6 +132,7 @@ type Expression interface {
 	ExpressionVisitable
 	TypeVisitable
 	MappingVisitable
+	MapVisitable
 }
 
 type IntegerLiteral struct {

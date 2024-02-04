@@ -100,3 +100,32 @@ type MappingVisitor interface {
 	VisitMapField(f Field) (MappingVisitable, error)
 	VisitMapMethodSignature(m MethodSignature) (MappingVisitable, error)
 }
+
+// MapVisitable is the same as MappingVisitable above, but does not return error
+type MapVisitable interface {
+	AcceptMapVisitor(visitor MapVisitor) MapVisitable
+}
+
+type MapVisitor interface {
+	MapProgram(p Program) MapVisitable
+	MapTypeDeclaration(t TypeDeclaration) MapVisitable
+	MapMethodDeclaration(m MethodDeclaration) MapVisitable
+	MapArraySetMethodDeclaration(a ArraySetMethodDeclaration) MapVisitable
+	MapTypeParameterConstraint(t TypeParameterConstraint) MapVisitable
+	MapStructTypeLiteral(s StructTypeLiteral) MapVisitable
+	MapInterfaceTypeLiteral(i InterfaceTypeLiteral) MapVisitable
+	MapArrayTypeLiteral(a ArrayTypeLiteral) MapVisitable
+	MapMethodSpecification(m MethodSpecification) MapVisitable
+	MapIntegerLiteral(i IntegerLiteral) MapVisitable
+	MapVariable(v Variable) MapVisitable
+	MapMethodCall(m MethodCall) MapVisitable
+	MapValueLiteral(v ValueLiteral) MapVisitable
+	MapSelect(s Select) MapVisitable
+	MapArrayIndex(a ArrayIndex) MapVisitable
+	MapMethodParameter(p MethodParameter) MapVisitable
+	MapConstType(c ConstType) MapVisitable
+	MapNamedType(n NamedType) MapVisitable
+	MapTypeParameter(t TypeParameter) MapVisitable
+	MapField(f Field) MapVisitable
+	MapMethodSignature(m MethodSignature) MapVisitable
+}
