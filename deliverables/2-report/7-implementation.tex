@@ -21,7 +21,19 @@
 % code, however, IDEs make it easy to generate, and we can shove it all away
 % into ``biolerplate.go'' and only worry about the actual functionality.
 
+% Another downside is the proliferation of type casts (assertions).
+
 % TDD allows for fearless refactoring, as all written "features" are covered by
 % tests from the start - such a refactoring was undertaken - moving the type
 % parameter substitution from an ad hoc basis to a separate preprocessing step
 % before any type checking started
+
+% Some snippet of testing (TestMonomorphise_givenStructFieldOfConstGenericArrayType):
+% Diff:
+% --- Expected
+% +++ Actual
+% @@ -8,3 +8,3 @@
+% type Foo__2 struct {
+% -	x Arr__2[int]
+% +	x Arr[N, int]
+% }
