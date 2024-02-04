@@ -107,6 +107,7 @@ func (v visitor) MapProgram(p ast.Program) ast.MapVisitable {
 			decl := decl.(ast.TypeDeclaration)
 			for !v.isEmpty(decl.TypeName) {
 				inst := v.dequeue(decl.TypeName)
+				// TODO what about methods? they all need to be monomorphised too
 				monoDecls[i] = append(monoDecls[i], v.newArgVisitor(inst).monomorphise(decl).(ast.Declaration))
 			}
 		}
