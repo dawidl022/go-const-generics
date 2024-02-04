@@ -61,17 +61,13 @@ func (v visitor) enqueue(typeName ast.TypeName, numericalTypeArgs []ast.IntegerL
 }
 
 func (v visitor) dequeue(typeName ast.TypeName) []ast.IntegerLiteral {
-	instantiations, isDeclared := v.queue[typeName]
-	// TODO refactor
-	if !isDeclared || len(instantiations) == 0 {
-		panic("no instantiations left")
-	}
-	curr := instantiations[0]
+	instantiations := v.queue[typeName]
 	v.queue[typeName] = instantiations[1:]
+
 	if len(instantiations) == 1 {
 		delete(v.queue, typeName)
 	}
-	return curr
+	return instantiations[0]
 }
 
 func (v visitor) isEmpty(typeName ast.TypeName) bool {
@@ -171,12 +167,17 @@ func (v visitor) MapTypeParameterConstraint(t ast.TypeParameterConstraint) ast.M
 }
 
 func (v visitor) MapStructTypeLiteral(s ast.StructTypeLiteral) ast.MapVisitable {
-	//TODO implement me
-	return s
+	monoFields := make([]ast.Field, 0, len(s.Fields))
+	for _, field := range s.Fields {
+		monoFields = append(monoFields, v.monomorphise(field).(ast.Field))
+	}
+	return ast.StructTypeLiteral{
+		Fields: monoFields,
+	}
 }
 
 func (v visitor) MapInterfaceTypeLiteral(i ast.InterfaceTypeLiteral) ast.MapVisitable {
-	//TODO implement me
+	// TODO implement me
 	return i
 }
 
@@ -274,8 +275,10 @@ func (v visitor) MapTypeParameter(t ast.TypeParameter) ast.MapVisitable {
 }
 
 func (v visitor) MapField(f ast.Field) ast.MapVisitable {
-	//TODO implement me
-	panic("implement me")
+	return ast.Field{
+		Name: f.Name,
+		Type: v.monomorphise(f.Type).(ast.Type),
+	}
 }
 
 func (v visitor) MapMethodSignature(m ast.MethodSignature) ast.MapVisitable {

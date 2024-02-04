@@ -96,6 +96,27 @@ func TestMonomorphise_givenMatrixWithTwoConstParameters(t *testing.T) {
 	assertMonomorphises(t, matrixInput, matrixOutput)
 }
 
+//go:embed testdata/matrix_bound/input/matrix_bound.go
+var matrixBoundInput []byte
+
+//go:embed testdata/matrix_bound/output/matrix_bound.go
+var matrixBoundOutput []byte
+
+func TestMonomorphise_givenMatrixWithInnerArrayAsBound(t *testing.T) {
+	t.Skip() // TODO
+	assertMonomorphises(t, matrixBoundInput, matrixBoundOutput)
+}
+
+//go:embed testdata/struct_field/input/struct_field.go
+var structFieldInput []byte
+
+//go:embed testdata/struct_field/output/struct_field.go
+var structFieldOutput []byte
+
+func TestMonomorphise_givenStructFieldOfConstGenericArrayType(t *testing.T) {
+	assertMonomorphises(t, structFieldInput, structFieldOutput)
+}
+
 func assertMonomorphises(t *testing.T, input []byte, expected []byte) {
 	p := parseProgram(input)
 	output := codegen.GenerateSourceCode(Monomorphise(p))
