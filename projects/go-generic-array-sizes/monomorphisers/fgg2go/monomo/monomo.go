@@ -39,6 +39,7 @@ func (v visitor) newEnvVisitor(typeEnv map[ast.TypeParameter]ast.IntegerLiteral)
 	return visitor{
 		queue:              v.queue,
 		seenInstantiations: v.seenInstantiations,
+		numericalTypeArgs:  v.numericalTypeArgs,
 		typeEnv:            typeEnv,
 	}
 }
@@ -89,7 +90,6 @@ func (v visitor) monoTypeName(typeName ast.TypeName, numericalTypeArgs []ast.Int
 
 func (v visitor) newTypeEnvVisitor(t ast.TypeDeclaration) visitor {
 	numericalTypeParams := make(map[ast.TypeParameter]ast.IntegerLiteral)
-
 	numIndex := 0
 
 	for _, typeParam := range t.TypeParameters {
@@ -98,14 +98,7 @@ func (v visitor) newTypeEnvVisitor(t ast.TypeDeclaration) visitor {
 			numIndex++
 		}
 	}
-	envVisitor := v.newEnvVisitor(numericalTypeParams)
-	envVisitor.numericalTypeArgs = v.numericalTypeArgs
-	return envVisitor
-}
-
-type typeInstantiation struct {
-	typeName          ast.TypeName
-	numericalTypeArgs []ast.IntegerLiteral
+	return v.newEnvVisitor(numericalTypeParams)
 }
 
 type indexedTypeDeclaration struct {
@@ -119,6 +112,7 @@ type callableDeclaration interface {
 }
 
 func (v visitor) MapProgram(p ast.Program) ast.MapVisitable {
+	// monomorphising main expression kickstarts process (enqueues referenced types)
 	monoExpr := v.monomorphise(p.Expression).(ast.Expression)
 
 	var typeDecls []indexedTypeDeclaration
@@ -134,7 +128,7 @@ func (v visitor) MapProgram(p ast.Program) ast.MapVisitable {
 		}
 	}
 
-	// each declaration in original FGG program gets bucket for 0 or more
+	// each declaration in original FGG program gets a bucket for 0 or more
 	// instantiations
 	monoDecls := make([][]ast.Declaration, len(p.Declarations))
 
@@ -145,8 +139,7 @@ func (v visitor) MapProgram(p ast.Program) ast.MapVisitable {
 
 			for !v.isEmpty(decl.TypeName) {
 				inst := v.dequeue(decl.TypeName)
-				argVisitor := v.newArgVisitor(inst)
-				envVisitor := argVisitor.newTypeEnvVisitor(decl)
+				envVisitor := v.newArgVisitor(inst).newTypeEnvVisitor(decl)
 
 				monoDecls[i] = append(monoDecls[i], envVisitor.monomorphise(decl).(ast.Declaration))
 
@@ -216,7 +209,6 @@ func (v visitor) MapMethodReceiver(m ast.MethodReceiver) ast.MapVisitable {
 			monoTypeParams = append(monoTypeParams, typeParam)
 		}
 	}
-
 	return ast.MethodReceiver{
 		ParameterName:  m.ParameterName,
 		TypeName:       v.monoTypeName(m.TypeName, v.numericalTypeArgs),
@@ -278,7 +270,6 @@ func (v visitor) MapMethodCall(m ast.MethodCall) ast.MapVisitable {
 	for _, arg := range m.Arguments {
 		monoArgs = append(monoArgs, v.monomorphise(arg).(ast.Expression))
 	}
-
 	return ast.MethodCall{
 		Receiver:   v.monomorphise(m.Receiver).(ast.Expression),
 		MethodName: m.MethodName,
@@ -287,13 +278,12 @@ func (v visitor) MapMethodCall(m ast.MethodCall) ast.MapVisitable {
 }
 
 func (v visitor) MapValueLiteral(value ast.ValueLiteral) ast.MapVisitable {
-	monoType := v.monomorphise(value.Type).(ast.Type)
 	monoValues := make([]ast.Expression, 0, len(value.Values))
 	for _, val := range value.Values {
 		monoValues = append(monoValues, v.monomorphise(val).(ast.Expression))
 	}
 	return ast.ValueLiteral{
-		Type:   monoType,
+		Type:   v.monomorphise(value.Type).(ast.Type),
 		Values: monoValues,
 	}
 }
@@ -370,7 +360,6 @@ func (v visitor) MapMethodSignature(m ast.MethodSignature) ast.MapVisitable {
 	for _, param := range m.MethodParameters {
 		monoParams = append(monoParams, v.monomorphise(param).(ast.MethodParameter))
 	}
-
 	return ast.MethodSignature{
 		MethodParameters: monoParams,
 		ReturnType:       v.monomorphise(m.ReturnType).(ast.Type),
