@@ -15,7 +15,9 @@
 % It is extensible, e.g. multiple different operations can implement the same
 % visitor interface, provided the return types align. Because often they don't
 % align (e.g. some operations can error, while other cannot), in practice
-% multiple visitor interface variants were created
+% multiple visitor interface variants were created. Additionally, in some cases,
+% it was only desired to traverse a subtree, hence not all ast node types needed
+% to be visited, and so special purpose subtree visitors were also created.
 
 % The downside of the visitor pattern is that it produces a bit of boilerplate
 % code, however, IDEs make it easy to generate, and we can shove it all away

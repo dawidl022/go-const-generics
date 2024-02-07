@@ -37,3 +37,13 @@ type MethodVisitor interface {
 	VisitTypeName(t TypeName) []MethodSpecification
 	VisitIntegerLiteral(i IntegerLiteral) []MethodSpecification
 }
+
+type RefVisitable interface {
+	AcceptRef(visitor RefVisitor) error
+}
+
+type RefVisitor interface {
+	VisitStructTypeLiteral(s StructTypeLiteral) error
+	VisitArrayTypeLiteral(a ArrayTypeLiteral) error
+	VisitInterfaceTypeLiteral(i InterfaceTypeLiteral) error
+}

@@ -1,6 +1,7 @@
 package main
 
 type Foo struct {
+	x   int
 	foo Foo
 }
 

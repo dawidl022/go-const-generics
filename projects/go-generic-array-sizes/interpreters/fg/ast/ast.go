@@ -21,6 +21,7 @@ type TypeDeclaration struct {
 
 type TypeLiteral interface {
 	Visitable
+	RefVisitable
 	typeLiteralNode()
 }
 

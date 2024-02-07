@@ -114,5 +114,9 @@ func (t TypeCheckingVisitor) VisitTypeDeclaration(d ast.TypeDeclaration) error {
 	if err != nil {
 		return fmt.Errorf("type %q: %w", d.TypeName, err)
 	}
+	err = newRefCheckingVisitor(d.TypeName, t.declarations).checkSelfRef(d.TypeLiteral)
+	if err != nil {
+		return fmt.Errorf("type %q: circular reference: %w", d.TypeName, err)
+	}
 	return nil
 }
