@@ -44,8 +44,6 @@
         {a_i \neq a_j~\forall a_i, a_j \in \ov{a},~i \neq j}
         {\distinct(\ov{a})}
 
-        % TODO update unique and distinct rules in FGG aux
-
         \gray{
             \inferrule
             {}
@@ -57,6 +55,46 @@
             {}
             {\mdecls(\ov{D}) = \lst{\black{t_V}.m \mid
                     (\func~(x~\black{t_V})~mM~\br{\return~e}) \in \ov{D}}}
+        }
+        \\
+        \inferrule
+        {~}
+        {
+            \notref(\ov{t_r}, \kw{int})
+        }
+
+        \inferrule
+        {~}
+        {
+            \notref(\ov{t_r},~\interface~\br{\ov{S}})
+        }
+
+        \inferrule
+        {
+            \ov{t_r \neq t} \\
+            \notref(\ov{t_r}, t)
+        }
+        {
+            \notref(\ov{t_r},~[n]t)
+        }
+
+        \inferrule
+        {
+            \ov{t_r \neq t} \\
+            \ov{\notref(\ov{t_r}, t)}
+        }
+        {
+            \notref(\ov{t_r},~\struct \br{\ov{f~t}})
+        }
+
+        \inferrule
+        {
+            (\type~\black{t_D}~T) \in \ov{D}
+            \\
+            \notref(\ov{t_r}, t_D, T)
+        }
+        {
+            \notref(\ov{t_r}, t_D)
         }
     \end{mathpar}
     \caption{FGA auxiliary functions for typing rules}
