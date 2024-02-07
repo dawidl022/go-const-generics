@@ -76,13 +76,10 @@ func TestTypeCheck_givenInterfaceDeclarationWithDuplicateMethods_returnsError(t 
 		`ill-typed declaration: type "xGetter": method name redeclared "getX"`)
 }
 
-// TODO
-
 //go:embed testdata/type_declaration/self_ref_field/self_ref_field.go
 var declarationSelfRefFieldGo []byte
 
 func TestTypeCheck_givenStructDeclarationWithSelfReferentialFieldType_returnsError(t *testing.T) {
-	t.Skip()
 	assertFailsTypeCheckWithError(t, declarationSelfRefFieldGo,
 		``)
 }
@@ -91,8 +88,32 @@ func TestTypeCheck_givenStructDeclarationWithSelfReferentialFieldType_returnsErr
 var declarationIndirectSelfRefFieldGo []byte
 
 func TestTypeCheck_givenStructDeclarationWithCircularFieldTypeReferences_returnsError(t *testing.T) {
-	t.Skip()
 	assertFailsTypeCheckWithError(t, declarationIndirectSelfRefFieldGo,
+		``)
+}
+
+//go:embed testdata/type_declaration/double_indirect_self_ref_field/double_indirect_self_ref_field.go
+var declarationDoubleIndirectSelfRefFieldGo []byte
+
+func TestTypeCheck_givenStructDeclarationWithDoublyIndirectCircularFieldTypeReferences_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationDoubleIndirectSelfRefFieldGo,
+		``)
+}
+
+//go:embed testdata/type_declaration/nested_self_ref_field/nested_self_ref_field.go
+var declarationNestedSelfRefFieldGo []byte
+
+func TestTypeCheck_givenStructDeclarationWhoseFieldReferencesSelfReferentialStructType_returnsError(t *testing.T) {
+	// naive approach could lead to infinite loop, hence the need for this test case
+	assertFailsTypeCheckWithError(t, declarationNestedSelfRefFieldGo,
+		``)
+}
+
+//go:embed testdata/type_declaration/nested_indirect_self_ref_field/nested_indirect_self_ref_field.go
+var declarationNestedIndirectSelfRefFieldGo []byte
+
+func TestTypeCheck_givenStructDeclarationWhoseFieldReferencesStructWithCircularFieldType_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationNestedIndirectSelfRefFieldGo,
 		``)
 }
 
