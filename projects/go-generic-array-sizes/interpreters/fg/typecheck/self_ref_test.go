@@ -56,5 +56,34 @@ func TestTypeCheck_givenStructDeclarationWhoseFieldReferencesStructWithCircularF
 			`field "bar" of type "Bar"`)
 }
 
-// TODO self ref (direct and indirect) array types
+//go:embed testdata/type_declaration/self_ref_array/self_ref_array.go
+var declarationSelfRefArrayGo []byte
+
+func TestTypeCheck_givenArrayDeclarationWhoseElementTypeReferencesItself_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationSelfRefArrayGo,
+		`ill-typed declaration: type "Arr": circular reference: `+
+			`array element type "Arr"`)
+}
+
+//go:embed testdata/type_declaration/indirect_self_ref_array/indirect_self_ref_array.go
+var declarationIndirectSelfRefArrayGo []byte
+
+func TestTypeCheck_givenArrayDeclarationWithCircularElementType_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationIndirectSelfRefArrayGo,
+		`ill-typed declaration: type "ArrFirst": circular reference: `+
+			`array element type "ArrSecond", which has: `+
+			`array element type "ArrFirst"`)
+}
+
+//go:embed testdata/type_declaration/nested_self_ref_array/nested_self_ref_array.go
+var declarationNestedSelfRefArrayGo []byte
+
+func TestTypeCheck_givenArrayDeclarationReferencingCircularType(t *testing.T) {
+	assertFailsTypeCheckWithError(t, declarationNestedSelfRefArrayGo,
+		`ill-typed declaration: type "ArrFirst": circular reference: `+
+			`array element type "ArrSecond", which has: `+
+			`array element type "ArrSecond"`)
+}
+
 // TODO self ref interfaces (direct and indirect) - should be allowed
+// TODO when type arg references tupe

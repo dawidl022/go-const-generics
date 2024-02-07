@@ -66,7 +66,12 @@ func (s selfRefCheckingVisitor) VisitStructTypeLiteral(st ast.StructTypeLiteral)
 
 func (s selfRefCheckingVisitor) VisitArrayTypeLiteral(a ast.ArrayTypeLiteral) error {
 	if _, isSelfRef := s.refTypes[a.ElementTypeName]; isSelfRef {
-		return fmt.Errorf("boom!")
+		return fmt.Errorf("array element type %q", a.ElementTypeName)
+	}
+	err := s.checkSelfRefOfType(a.ElementTypeName)
+	if err != nil {
+		return fmt.Errorf("array element type %q, which has: %w",
+			a.ElementTypeName, err)
 	}
 	return nil
 }
