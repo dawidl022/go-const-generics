@@ -85,5 +85,16 @@ func TestTypeCheck_givenArrayDeclarationReferencingCircularType(t *testing.T) {
 			`array element type "ArrSecond"`)
 }
 
-// TODO self ref interfaces (direct and indirect) - should be allowed
-// TODO when type arg references tupe
+//go:embed testdata/type_declaration/self_ref_interface/self_ref_interface.go
+var declarationSelfRefInterfaceGo []byte
+
+func TestTypeCheck_givenSelfReferentialInterface_passesTypeCheck(t *testing.T) {
+	assertPassesTypeCheck(t, declarationSelfRefInterfaceGo)
+}
+
+//go:embed testdata/type_declaration/indirect_interface_self_ref/indirect_interface_self_ref.go
+var declarationsIndirectInterfaceSelfRefGo []byte
+
+func TestTypeCheck_givenInterfaceReferencesTypeWhichReferencesThatInterface_passesTypeCheck(t *testing.T) {
+	assertPassesTypeCheck(t, declarationsIndirectInterfaceSelfRefGo)
+}

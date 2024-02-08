@@ -77,5 +77,6 @@ func (s selfRefCheckingVisitor) VisitArrayTypeLiteral(a ast.ArrayTypeLiteral) er
 }
 
 func (s selfRefCheckingVisitor) VisitInterfaceTypeLiteral(i ast.InterfaceTypeLiteral) error {
+	// interface type literals are allowed to refer to themselves
 	return nil
 }
