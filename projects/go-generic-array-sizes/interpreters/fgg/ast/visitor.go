@@ -130,3 +130,13 @@ type MapVisitor interface {
 	MapMethodSignature(m MethodSignature) MapVisitable
 	MapMethodReceiver(m MethodReceiver) MapVisitable
 }
+
+type RefVisitable interface {
+	AcceptRef(visitor RefVisitor) error
+}
+
+type RefVisitor interface {
+	VisitStructTypeLiteral(s StructTypeLiteral) error
+	VisitArrayTypeLiteral(a ArrayTypeLiteral) error
+	VisitInterfaceTypeLiteral(i InterfaceTypeLiteral) error
+}

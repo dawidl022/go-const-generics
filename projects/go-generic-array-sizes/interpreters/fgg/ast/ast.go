@@ -48,6 +48,7 @@ type TypeLiteral interface {
 	EnvVisitable
 	MappingVisitable
 	MapVisitable
+	RefVisitable
 	typeLiteralNode()
 	fmt.Stringer
 }

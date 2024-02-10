@@ -20,9 +20,13 @@ func (t typeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDe
 	panic(fmt.Sprintf("could not find declaration for typename %q", typeName))
 }
 
-func (t typeCheckingVisitor) VisitTypeDeclaration(tdecl ast.TypeDeclaration) error {
-	if err := t.typeCheckTypeDeclaration(tdecl); err != nil {
-		return fmt.Errorf("type %q: %w", tdecl.TypeName, err)
+func (t typeCheckingVisitor) VisitTypeDeclaration(d ast.TypeDeclaration) error {
+	if err := t.typeCheckTypeDeclaration(d); err != nil {
+		return fmt.Errorf("type %q: %w", d.TypeName, err)
+	}
+	err := newRefCheckingVisitor(d.TypeName, t.declarations).checkSelfRef(d.TypeLiteral)
+	if err != nil {
+		return fmt.Errorf("type %q: circular reference: %w", d.TypeName, err)
 	}
 	return nil
 }

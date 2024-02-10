@@ -393,3 +393,15 @@ func (m MethodSignature) AcceptMapVisitor(visitor MapVisitor) MapVisitable {
 func (m MethodReceiver) AcceptMapVisitor(visitor MapVisitor) MapVisitable {
 	return visitor.MapMethodReceiver(m)
 }
+
+func (s StructTypeLiteral) AcceptRef(visitor RefVisitor) error {
+	return visitor.VisitStructTypeLiteral(s)
+}
+
+func (i InterfaceTypeLiteral) AcceptRef(visitor RefVisitor) error {
+	return visitor.VisitInterfaceTypeLiteral(i)
+}
+
+func (a ArrayTypeLiteral) AcceptRef(visitor RefVisitor) error {
+	return visitor.VisitArrayTypeLiteral(a)
+}
