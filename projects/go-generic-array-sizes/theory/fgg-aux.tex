@@ -43,33 +43,85 @@
         {(\ov{\Phi \by_\Delta \tau}) = \eta}
 
         \axiomrule{
-            \notref(\ov{t_r},~n)
+            \notref_\alpha(\ov{t_r},~n)
         }
 
         \axiomrule{
-            \notref(\ov{t_r},~\kw{const})
+            \notref_\alpha(\ov{t_r},~\kw{const})
         }
 
         \axiomrule{
-            \notref(\ov{t_r},~\alpha)
+            \notref_\alpha(\ov{t_r},~\alpha)
         }
 
         \inferrule
         {
-            \ov{\notref(\ov{t_r},~\tau)}
+            \ov{\notref_\alpha(\ov{t_r},~\tau)}
             \\
             \ov{t_r \neq t}
             \\
             (\ov{\alpha~\gamma}) = \typeparams(t)
             \\
             \ov{
-                \notref(\ov{t_r}, t, \gamma)
+                \notref_\alpha(\ov{t_r}, t, \gamma)
             }
         }
         {
-            \notref(\ov{t_r},~t[\ov{\tau}])
+            \notref_\alpha(\ov{t_r},~t[\ov{\tau}])
         }
 
+        \inferrule
+        {~}
+        {
+            \notref(\ov{t_r}, \alpha)
+        }
+
+        \gray{
+            \inferrule
+            {~}
+            {
+                \notref(\ov{t_r}, \kw{int})
+            }
+
+            \inferrule
+            {~}
+            {
+                \notref(\ov{t_r},~\interface~\br{\ov{S}})
+            }
+        }
+        \\
+        \gray{
+            \inferrule
+            {
+                \notref(\ov{t_r}, \black{\tau})
+            }
+            {
+                \notref(\ov{t_r},~[\black{\tau_n}]\black{\tau})
+            }
+
+            \inferrule
+            {
+                \ov{\notref(\ov{t_r}, \black{\tau})}
+            }
+            {
+                \notref(\ov{t_r},~\struct \br{\ov{f~\black{\tau}}})
+            }
+        }
+
+        \gray{
+            \inferrule
+            {
+                (\type~t_D\black{[\ov{\Phi}]}~T) \in \ov{D}
+                \\
+                \ov{t_r \neq t_D} \\
+                \\
+                \notref(\ov{t_r}, t_D, T)
+            }
+            {
+                \notref(\ov{t_r}, t_D\black{[\ov{\tau}]})
+            }
+
+        }
 
         \gray{
             \inferrule

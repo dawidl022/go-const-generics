@@ -68,10 +68,9 @@
         {
             \notref(\ov{t_r},~\interface~\br{\ov{S}})
         }
-
+        \\
         \inferrule
         {
-            \ov{t_r \neq t} \\
             \notref(\ov{t_r}, t)
         }
         {
@@ -80,7 +79,6 @@
 
         \inferrule
         {
-            \ov{t_r \neq t} \\
             \ov{\notref(\ov{t_r}, t)}
         }
         {
@@ -90,6 +88,8 @@
         \inferrule
         {
             (\type~\black{t_D}~T) \in \ov{D}
+            \\
+            \ov{t_r \neq t_D}
             \\
             \notref(\ov{t_r}, t_D, T)
         }
