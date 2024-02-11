@@ -56,6 +56,103 @@ func TestTypeCheck_givenIndirectSelfReferentialType_returnsError(t *testing.T) {
 			`field "baz" of type "Baz"`)
 }
 
+//go:embed testdata/self_ref/self_ref_generic_array/self_ref_generic_array.go
+var selfRefGenericArrayFgg []byte
+
+func TestTypeCheck_givenSelfReferentialGenericArrayType_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, selfRefGenericArrayFgg,
+		`ill-typed declaration: type "Arr": circular reference: `+
+			`array element type "Arr"`)
+}
+
+//go:embed testdata/self_ref/self_ref_generic_const_array/self_ref_generic_const_array.go
+var selfRefGenericConstArrayFgg []byte
+
+func TestTypeCheck_givenSelfReferentialConstGenericArrayType_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, selfRefGenericConstArrayFgg,
+		`ill-typed declaration: type "Arr": circular reference: `+
+			`array element type "Arr"`)
+}
+
+//go:embed testdata/self_ref/self_ref_in_type_arg_array/self_ref_in_type_arg_array.go
+var selfRefInTypeArgArrayFgg []byte
+
+func TestTypeCheck_givenGenericArraySelfReferenceViaTypeArgument_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, selfRefInTypeArgArrayFgg,
+		`ill-typed declaration: type "Bar": circular reference: `+
+			`array element type "Foo", which has: `+
+			`array element type "Bar"`)
+}
+
+//go:embed testdata/self_ref/self_ref_in_type_arg_const_array/self_ref_in_type_arg_const_array.go
+var selfRefInTypeArgConstArrayFgg []byte
+
+func TestTypeCheck_givenConstGenericArraySelfReferenceViaTypeArgument_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, selfRefInTypeArgArrayFgg,
+		`ill-typed declaration: type "Bar": circular reference: `+
+			`array element type "Foo", which has: `+
+			`array element type "Bar"`)
+}
+
+//go:embed testdata/self_ref/self_ref_indirect_array/self_ref_indirect_array.go
+var selfRefIndirectArrayFgg []byte
+
+// this program also crashes the Go compiler
+func TestTypeCheck_givenIndirectSelfReferentialGenericArray_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, selfRefIndirectArrayFgg,
+		`ill-typed declaration: type "Baz": circular reference: `+
+			`array element type "Bar", which has: `+
+			`array element type "Foo", which has: `+
+			`array element type "Baz"`)
+}
+
+//go:embed testdata/self_ref/self_ref_indirect_const_array/self_ref_indirect_const_array.go
+var selfRefIndirectConstArrayFgg []byte
+
+func TestTypeCheck_givenIndirectSelfReferentialConstGenericArray(t *testing.T) {
+	assertFailsTypeCheckWithError(t, selfRefIndirectArrayFgg,
+		`ill-typed declaration: type "Baz": circular reference: `+
+			`array element type "Bar", which has: `+
+			`array element type "Foo", which has: `+
+			`array element type "Baz"`)
+}
+
+//go:embed testdata/self_ref/self_ref_instantiation_array/self_ref_instantiation_array.go
+var selfRefInstantiationArrayFgg []byte
+
+func TestTypeCheck_givenGenericArrayInstantiatedWithSameTypeAsItself_passesTypeCheck(t *testing.T) {
+	assertPassesTypeCheck(t, selfRefInstantiationArrayFgg)
+}
+
+//go:embed testdata/self_ref/self_ref_instantiation_const_array/self_ref_instantiation_const_array.go
+var selfRefInstantiationConstArrayFgg []byte
+
+func TestTypeCheck_givenConstGenericArrayInstantiatedWithSameTypeAsItself_passesTypeCheck(t *testing.T) {
+	assertPassesTypeCheck(t, selfRefInstantiationConstArrayFgg)
+}
+
+//go:embed testdata/self_ref/self_ref_nested_array/self_ref_nested_array.go
+var selfRefNestedArrayFgg []byte
+
+func TestTypeCheck_givenGenericArrayWithNestedCircularReference_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, selfRefNestedArrayFgg,
+		`ill-typed declaration: type "Baz": circular reference: `+
+			`array element type "Foo", which has: `+
+			`array element type "Bar", which has: `+
+			`array element type "Baz"`)
+}
+
+//go:embed testdata/self_ref/self_ref_nested_const_array/self_ref_nested_const_array.go
+var selfRefNestedConstArray []byte
+
+func TestTypeCheck_givenConstGenericArrayWithNestedCircularReference_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, selfRefNestedConstArray,
+		`ill-typed declaration: type "Baz": circular reference: `+
+			`array element type "Foo", which has: `+
+			`array element type "Bar", which has: `+
+			`array element type "Baz"`)
+}
+
 // TODO try to cause infinite loop in type param substitutions while self-ref
 // check is occurring
 //

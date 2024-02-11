@@ -82,8 +82,10 @@ func (s typeParamSubstituter) VisitMapStructTypeLiteral(st ast.StructTypeLiteral
 }
 
 func (s typeParamSubstituter) VisitMapArrayTypeLiteral(a ast.ArrayTypeLiteral) ast.EnvVisitable {
-	//TODO implement me
-	panic("implement me")
+	return ast.ArrayTypeLiteral{
+		Length:      a.Length,
+		ElementType: s.substituteTypeParams(a.ElementType).(ast.Type),
+	}
 }
 
 func (s typeParamSubstituter) VisitMapInterfaceTypeLiteral(i ast.InterfaceTypeLiteral) ast.EnvVisitable {

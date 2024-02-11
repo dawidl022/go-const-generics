@@ -55,8 +55,6 @@ func (s selfRefCheckingVisitor) checkSelfRefOfType(t ast.Type) error {
 		if _, isSelfRef := s.refTypes[typeName]; isSelfRef {
 			return fmt.Errorf("type %q", typeName)
 		}
-		// TODO need to instantiate the type literal with type args
-		// how is eta substitution done in other places?
 		substituter, err := newTypeParamSubstituter(typ.TypeArguments, s.declarations[typ.TypeName].TypeParameters)
 		if err != nil {
 			return err
