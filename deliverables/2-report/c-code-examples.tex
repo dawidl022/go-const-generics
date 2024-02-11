@@ -20,7 +20,7 @@ container's type parameter, so we need to define an interface. We can try to
 define an interface for the bound as follows:
 
 \noindent\begin{minipage}{\linewidth}
-    \lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=5]{../../projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/subtyping/recursive_bound_type/recursive_bound_type.go}
+    \lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=5]{../../projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/self_ref_type_param/recursive_bound_type/recursive_bound_type.go}
 \end{minipage}
 
 A type \texttt{T} implements \texttt{Eq[T]} if it implements an \texttt{equal}
