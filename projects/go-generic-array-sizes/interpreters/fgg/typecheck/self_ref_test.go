@@ -167,30 +167,77 @@ func TestTypeCheck_givenGenericInterfaceReferencingItself_passesTypeCheck(t *tes
 	assertPassesTypeCheck(t, selfRefInterfaceInterfaceFgg)
 }
 
-//go:embed testdata/subtyping/recursive_bound_type/recursive_bound_type.go
-var subtypingRecursiveBoundTypeFgg []byte
+//go:embed testdata/self_ref_type_param/recursive_bound_type/recursive_bound_type.go
+var selfRefRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, subtypingRecursiveBoundTypeFgg,
+	assertFailsTypeCheckWithError(t, selfRefRecursiveBoundTypeFgg,
 		`ill-typed declaration: type "Eq": circular reference via type parameter: `+
 			`bound of "T" references "Eq"`)
 }
 
-//go:embed testdata/subtyping/nested_recursive_bound_type/recursive_bound_type.go
-var subtypingNestedRecursiveBoundTypeFGG []byte
+//go:embed testdata/self_ref_type_param/nested_recursive_bound_type/nested_recursive_bound_type.go
+var selfRefNestedRecursiveBoundTypeFGG []byte
 
 func TestTypeCheck_givenNestedBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, subtypingNestedRecursiveBoundTypeFGG,
+	assertFailsTypeCheckWithError(t, selfRefNestedRecursiveBoundTypeFGG,
 		`ill-typed declaration: type "Eq": circular reference via type parameter: `+
 			`bound of "T" references "Eq"`)
 }
 
-//go:embed testdata/subtyping/indirect_recursive_bound_type/indirect_recursive_bound_type.go
-var subtypingIndirectRecursiveBoundTypeFgg []byte
+//go:embed testdata/self_ref_type_param/indirect_recursive_bound_type/indirect_recursive_bound_type.go
+var selfRefIndirectRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenTypeDeclarationWithCircularlyDefinedBounds_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, subtypingIndirectRecursiveBoundTypeFgg,
+	assertFailsTypeCheckWithError(t, selfRefIndirectRecursiveBoundTypeFgg,
 		`ill-typed declaration: type "Foo": circular reference via type parameter: `+
 			`bound of "T" references "Bar", where: `+
 			`bound of "T" references "Foo"`)
+}
+
+//go:embed testdata/self_ref_type_param/method_recursive_bound_type/method_recursive_bound_type.go
+var selfRefMethodRecursiveBoundTypeFgg []byte
+
+// TODO figure this out
+//
+// Interestingly, this program passes the Go type checker, whereas the next program
+// (which differs only in type declaration order) does not. This inconsistency
+// seems to me like a compiler bug. From, the spec, it is unclear to me, which is
+// the desired behaviour.
+//
+// If we inline the Bar constraint, then the Go type checker DOES reject the program,
+// which is shown in the Go spec.
+func TestTypeCheck_givenTypeDeclarationWithCircularDefinedBoundsViaInterfaceMethod_returnsError(t *testing.T) {
+	t.Skip()
+	assertFailsTypeCheckWithError(t, selfRefMethodRecursiveBoundTypeFgg,
+		``)
+}
+
+//go:embed testdata/self_ref_type_param/method_rejected_recursive_bound_type/method_rejected_recursive_bound_type.go
+var selfRefMethodRejectedRecursiveBoundTypeFgg []byte
+
+func TestTypeCheck_givenTypeDeclarationWithCircularDefinedBoundsViaInterfaceMethodInAnotherOrder_returnsError(t *testing.T) {
+	t.Skip()
+	assertFailsTypeCheckWithError(t, selfRefMethodRejectedRecursiveBoundTypeFgg,
+		``)
+}
+
+//go:embed testdata/self_ref_type_param/method_indirect_recursive_bound_type/method_indirect_recursive_bound_type.go
+var selfRefMethodIndirectRecursiveBoundTypeFgg []byte
+
+// situation is analogous: this program passes the Go type checker, whereas a different
+// permutation of type declarations (e.g. the next test program) does not
+func TestTypeCheck_givenTypeDeclarationWithIndirectlyCircularDefinedBoundsViaInterfaceMethod_returnsError(t *testing.T) {
+	t.Skip()
+	assertFailsTypeCheckWithError(t, selfRefMethodIndirectRecursiveBoundTypeFgg,
+		``)
+}
+
+//go:embed testdata/self_ref_type_param/method_rejected_indirect_recursive_bound_type/method_rejected_indirect_recursive_bound_type.go
+var selfRefMethodRejectedIndirectRecursiveBoundTypeFgg []byte
+
+func TestTypeCheck_givenTypeDeclarationWithIndirectlyCircularDefinedBoundsViaInterfaceMethodInAnotherOrder_returnsError(t *testing.T) {
+	t.Skip()
+	assertFailsTypeCheckWithError(t, selfRefMethodIndirectRecursiveBoundTypeFgg,
+		``)
 }
