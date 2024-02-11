@@ -88,32 +88,3 @@ func TestTypeCheck_givenUndefinedNestedTypeParameterBound_returnsError(t *testin
 			`illegal bound of type parameter "T": `+
 			`type "Eq" badly instantiated: type name not declared: "Int"`)
 }
-
-// TODO
-
-//go:embed testdata/subtyping/recursive_bound_type/recursive_bound_type.go
-var subtypingRecursiveBoundTypeFgg []byte
-
-func TestTypeCheck_givenBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
-	t.Skip()
-	assertFailsTypeCheckWithError(t, subtypingRecursiveBoundTypeFgg,
-		``)
-}
-
-//go:embed testdata/subtyping/nested_recursive_bound_type/recursive_bound_type.go
-var subtypingNestedRecursiveBoundTypeFGG []byte
-
-func TestTypeCheck_givenNestedBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
-	t.Skip()
-	assertFailsTypeCheckWithError(t, subtypingNestedRecursiveBoundTypeFGG,
-		``)
-}
-
-//go:embed testdata/subtyping/indirect_recursive_bound_type/indirect_recursive_bound_type.go
-var subtypingIndirectRecursiveBoundTypeFgg []byte
-
-func TestTypeCheck_givenTypeDeclarationWithCircularlyDefinedBounds_returnsError(t *testing.T) {
-	t.Skip()
-	assertFailsTypeCheckWithError(t, subtypingIndirectRecursiveBoundTypeFgg,
-		``)
-}

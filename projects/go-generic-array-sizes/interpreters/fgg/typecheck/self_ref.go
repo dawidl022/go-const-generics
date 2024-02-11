@@ -7,14 +7,20 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 )
 
-// TODO test with generic types
-
-type selfRefCheckingVisitor struct {
+type selfRefTracker struct {
 	declarations map[ast.TypeName]ast.TypeDeclaration
 	refTypes     map[ast.TypeName]struct{}
 }
 
+type selfRefCheckingVisitor struct {
+	selfRefTracker
+}
+
 func newRefCheckingVisitor(initialRefType ast.TypeName, declarations []ast.Declaration) selfRefCheckingVisitor {
+	return selfRefCheckingVisitor{newSelfRefTracker(initialRefType, declarations)}
+}
+
+func newSelfRefTracker(initialRefType ast.TypeName, declarations []ast.Declaration) selfRefTracker {
 	typeDecls := make(map[ast.TypeName]ast.TypeDeclaration)
 
 	for _, decl := range declarations {
@@ -23,7 +29,7 @@ func newRefCheckingVisitor(initialRefType ast.TypeName, declarations []ast.Decla
 		}
 	}
 
-	return selfRefCheckingVisitor{
+	return selfRefTracker{
 		declarations: typeDecls,
 		refTypes:     map[ast.TypeName]struct{}{initialRefType: {}},
 	}
@@ -34,8 +40,10 @@ func (s selfRefCheckingVisitor) withRefType(refType ast.TypeName) selfRefCheckin
 	newRefTypes[refType] = struct{}{}
 
 	return selfRefCheckingVisitor{
-		declarations: s.declarations,
-		refTypes:     newRefTypes,
+		selfRefTracker{
+			declarations: s.declarations,
+			refTypes:     newRefTypes,
+		},
 	}
 }
 
@@ -87,5 +95,70 @@ func (s selfRefCheckingVisitor) VisitArrayTypeLiteral(a ast.ArrayTypeLiteral) er
 
 func (s selfRefCheckingVisitor) VisitInterfaceTypeLiteral(i ast.InterfaceTypeLiteral) error {
 	// interface type literals are allowed to refer to themselves
+	return nil
+}
+
+type typeParamSelfRefCheckingVisitor struct {
+	selfRefTracker
+}
+
+func newTypeParamRefCheckingVisitor(
+	initialRefType ast.TypeName, declarations []ast.Declaration,
+) typeParamSelfRefCheckingVisitor {
+	return typeParamSelfRefCheckingVisitor{newSelfRefTracker(initialRefType, declarations)}
+}
+
+func (t typeParamSelfRefCheckingVisitor) withRefType(refType ast.TypeName) typeParamSelfRefCheckingVisitor {
+	newRefTypes := maps.Clone(t.refTypes)
+	newRefTypes[refType] = struct{}{}
+
+	return typeParamSelfRefCheckingVisitor{
+		selfRefTracker{
+			declarations: t.declarations,
+			refTypes:     newRefTypes,
+		},
+	}
+}
+
+func (t typeParamSelfRefCheckingVisitor) checkSelfRef(visitable ast.TypeRefVisitable) error {
+	return visitable.AcceptRefVisitor(t)
+}
+
+func (t typeParamSelfRefCheckingVisitor) checkSelfRefOfNamedType(n ast.TypeName) error {
+	decl := t.declarations[n]
+	for _, typeParamConstraint := range decl.TypeParameters {
+		err := t.checkSelfRef(typeParamConstraint.Bound)
+		if err != nil {
+			return fmt.Errorf("bound of %q references %w", typeParamConstraint.TypeParameter, err)
+		}
+	}
+	return nil
+}
+
+func (t typeParamSelfRefCheckingVisitor) VisitMapTypeNamedType(n ast.NamedType) error {
+	if _, isSelfRef := t.refTypes[n.TypeName]; isSelfRef {
+		return fmt.Errorf("%q", n.TypeName)
+	}
+	for _, typeArg := range n.TypeArguments {
+		if err := t.checkSelfRef(typeArg); err != nil {
+			return err
+		}
+	}
+	err := t.withRefType(n.TypeName).checkSelfRefOfNamedType(n.TypeName)
+	if err != nil {
+		return fmt.Errorf("%q, where: %w", n.TypeName, err)
+	}
+	return nil
+}
+
+func (t typeParamSelfRefCheckingVisitor) VisitMapTypeConstType(c ast.ConstType) error {
+	return nil
+}
+
+func (t typeParamSelfRefCheckingVisitor) VisitMapTypeTypeParameter(tp ast.TypeParameter) error {
+	return nil
+}
+
+func (t typeParamSelfRefCheckingVisitor) VisitMapTypeIntegerLiteral(i ast.IntegerLiteral) error {
 	return nil
 }

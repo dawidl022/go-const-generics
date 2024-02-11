@@ -88,7 +88,7 @@ func TestTypeCheck_givenGenericArraySelfReferenceViaTypeArgument_returnsError(t 
 var selfRefInTypeArgConstArrayFgg []byte
 
 func TestTypeCheck_givenConstGenericArraySelfReferenceViaTypeArgument_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, selfRefInTypeArgArrayFgg,
+	assertFailsTypeCheckWithError(t, selfRefInTypeArgConstArrayFgg,
 		`ill-typed declaration: type "Bar": circular reference: `+
 			`array element type "Foo", which has: `+
 			`array element type "Bar"`)
@@ -110,7 +110,7 @@ func TestTypeCheck_givenIndirectSelfReferentialGenericArray_returnsError(t *test
 var selfRefIndirectConstArrayFgg []byte
 
 func TestTypeCheck_givenIndirectSelfReferentialConstGenericArray(t *testing.T) {
-	assertFailsTypeCheckWithError(t, selfRefIndirectArrayFgg,
+	assertFailsTypeCheckWithError(t, selfRefIndirectConstArrayFgg,
 		`ill-typed declaration: type "Baz": circular reference: `+
 			`array element type "Bar", which has: `+
 			`array element type "Foo", which has: `+
@@ -165,4 +165,32 @@ var selfRefInterfaceInterfaceFgg []byte
 
 func TestTypeCheck_givenGenericInterfaceReferencingItself_passesTypeCheck(t *testing.T) {
 	assertPassesTypeCheck(t, selfRefInterfaceInterfaceFgg)
+}
+
+//go:embed testdata/subtyping/recursive_bound_type/recursive_bound_type.go
+var subtypingRecursiveBoundTypeFgg []byte
+
+func TestTypeCheck_givenBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, subtypingRecursiveBoundTypeFgg,
+		`ill-typed declaration: type "Eq": circular reference via type parameter: `+
+			`bound of "T" references "Eq"`)
+}
+
+//go:embed testdata/subtyping/nested_recursive_bound_type/recursive_bound_type.go
+var subtypingNestedRecursiveBoundTypeFGG []byte
+
+func TestTypeCheck_givenNestedBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, subtypingNestedRecursiveBoundTypeFGG,
+		`ill-typed declaration: type "Eq": circular reference via type parameter: `+
+			`bound of "T" references "Eq"`)
+}
+
+//go:embed testdata/subtyping/indirect_recursive_bound_type/indirect_recursive_bound_type.go
+var subtypingIndirectRecursiveBoundTypeFgg []byte
+
+func TestTypeCheck_givenTypeDeclarationWithCircularlyDefinedBounds_returnsError(t *testing.T) {
+	assertFailsTypeCheckWithError(t, subtypingIndirectRecursiveBoundTypeFgg,
+		`ill-typed declaration: type "Foo": circular reference via type parameter: `+
+			`bound of "T" references "Bar", where: `+
+			`bound of "T" references "Foo"`)
 }

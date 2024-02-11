@@ -61,6 +61,7 @@ type EnvMapperVisitor interface {
 	VisitMapInterfaceTypeLiteral(i InterfaceTypeLiteral) EnvVisitable
 	VisitMapMethodSpecification(m MethodSpecification) EnvVisitable
 	VisitMapTypeParameter(t TypeParameter) EnvVisitable
+	VisitMapIntegerLiteral(i IntegerLiteral) EnvVisitable
 }
 
 type MethodVisitable interface {
@@ -140,4 +141,15 @@ type RefVisitor interface {
 	VisitStructTypeLiteral(s StructTypeLiteral) error
 	VisitArrayTypeLiteral(a ArrayTypeLiteral) error
 	VisitInterfaceTypeLiteral(i InterfaceTypeLiteral) error
+}
+
+type TypeRefVisitable interface {
+	AcceptRefVisitor(visitor TypeRefVisitor) error
+}
+
+type TypeRefVisitor interface {
+	VisitMapTypeNamedType(n NamedType) error
+	VisitMapTypeConstType(c ConstType) error
+	VisitMapTypeTypeParameter(t TypeParameter) error
+	VisitMapTypeIntegerLiteral(i IntegerLiteral) error
 }

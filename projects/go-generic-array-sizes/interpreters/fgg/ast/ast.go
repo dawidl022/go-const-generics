@@ -28,6 +28,7 @@ type Type interface {
 	MethodVisitable
 	MappingVisitable
 	MapVisitable
+	TypeRefVisitable
 	Equal(other Type) bool
 	typeNode()
 	fmt.Stringer

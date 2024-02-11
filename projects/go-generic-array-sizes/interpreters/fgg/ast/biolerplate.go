@@ -201,8 +201,7 @@ func (n NamedType) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable
 }
 
 func (i IntegerLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
-	//TODO implement me
-	return i
+	return visitor.VisitMapIntegerLiteral(i)
 }
 
 func (s StructTypeLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
@@ -403,4 +402,20 @@ func (i InterfaceTypeLiteral) AcceptRef(visitor RefVisitor) error {
 
 func (a ArrayTypeLiteral) AcceptRef(visitor RefVisitor) error {
 	return visitor.VisitArrayTypeLiteral(a)
+}
+
+func (t TypeParameter) AcceptRefVisitor(visitor TypeRefVisitor) error {
+	return visitor.VisitMapTypeTypeParameter(t)
+}
+
+func (c ConstType) AcceptRefVisitor(visitor TypeRefVisitor) error {
+	return visitor.VisitMapTypeConstType(c)
+}
+
+func (n NamedType) AcceptRefVisitor(visitor TypeRefVisitor) error {
+	return visitor.VisitMapTypeNamedType(n)
+}
+
+func (i IntegerLiteral) AcceptRefVisitor(visitor TypeRefVisitor) error {
+	return visitor.VisitMapTypeIntegerLiteral(i)
 }

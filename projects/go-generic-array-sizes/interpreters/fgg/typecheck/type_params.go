@@ -70,6 +70,10 @@ func (s typeParamSubstituter) VisitMapConstType(c ast.ConstType) ast.EnvVisitabl
 	return c
 }
 
+func (s typeParamSubstituter) VisitMapIntegerLiteral(i ast.IntegerLiteral) ast.EnvVisitable {
+	return i
+}
+
 func (s typeParamSubstituter) VisitMapStructTypeLiteral(st ast.StructTypeLiteral) ast.EnvVisitable {
 	substitutedFields := []ast.Field{}
 	for _, field := range st.Fields {
