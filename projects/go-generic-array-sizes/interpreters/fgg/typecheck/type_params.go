@@ -89,6 +89,9 @@ func (s typeParamSubstituter) VisitMapArrayTypeLiteral(a ast.ArrayTypeLiteral) a
 }
 
 func (s typeParamSubstituter) VisitMapInterfaceTypeLiteral(i ast.InterfaceTypeLiteral) ast.EnvVisitable {
-	//TODO implement me
-	panic("implement me")
+	substitutedSpecs := []ast.MethodSpecification{}
+	for _, spec := range i.MethodSpecifications {
+		substitutedSpecs = append(substitutedSpecs, s.substituteTypeParams(spec).(ast.MethodSpecification))
+	}
+	return ast.InterfaceTypeLiteral{MethodSpecifications: substitutedSpecs}
 }

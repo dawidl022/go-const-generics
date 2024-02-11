@@ -143,17 +143,26 @@ func TestTypeCheck_givenGenericArrayWithNestedCircularReference_returnsError(t *
 }
 
 //go:embed testdata/self_ref/self_ref_nested_const_array/self_ref_nested_const_array.go
-var selfRefNestedConstArray []byte
+var selfRefNestedConstArrayFgg []byte
 
 func TestTypeCheck_givenConstGenericArrayWithNestedCircularReference_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, selfRefNestedConstArray,
+	assertFailsTypeCheckWithError(t, selfRefNestedConstArrayFgg,
 		`ill-typed declaration: type "Baz": circular reference: `+
 			`array element type "Foo", which has: `+
 			`array element type "Bar", which has: `+
 			`array element type "Baz"`)
 }
 
-// TODO try to cause infinite loop in type param substitutions while self-ref
-// check is occurring
-//
-// e.g. when T is a type argument of a field type
+//go:embed testdata/self_ref/self_ref_interface_struct/self_ref_interface_struct.go
+var selfRefInterfaceStructFgg []byte
+
+func TestTypeCheck_givenGenericInterfaceReferencingStruct_passesTypeCheck(t *testing.T) {
+	assertPassesTypeCheck(t, selfRefInterfaceStructFgg)
+}
+
+//go:embed testdata/self_ref/self_ref_interface_interface/self_ref_interface_struct.go
+var selfRefInterfaceInterfaceFgg []byte
+
+func TestTypeCheck_givenGenericInterfaceReferencingItself_passesTypeCheck(t *testing.T) {
+	assertPassesTypeCheck(t, selfRefInterfaceInterfaceFgg)
+}
