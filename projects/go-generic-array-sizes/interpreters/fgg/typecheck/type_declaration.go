@@ -28,14 +28,9 @@ func (t typeCheckingVisitor) VisitTypeDeclaration(d ast.TypeDeclaration) error {
 	if err != nil {
 		return fmt.Errorf("type %q: circular reference: %w", d.TypeName, err)
 	}
-	typeParamRefChecker := newTypeParamRefCheckingVisitor(d.TypeName, t.declarations)
-	for _, typeParamConstraint := range d.TypeParameters {
-		err := typeParamRefChecker.checkSelfRef(typeParamConstraint.Bound)
-		if err != nil {
-			return fmt.Errorf(
-				"type %q: circular reference via type parameter: bound of %q references %w",
-				d.TypeName, typeParamConstraint.TypeParameter, err)
-		}
+	err = newTypeParamRefCheckingVisitor(d.TypeName, t.declarations).checkSelfRefOfNamedType(d.TypeName)
+	if err != nil {
+		return fmt.Errorf("type %q: circular reference via type parameter: %w", d.TypeName, err)
 	}
 	return nil
 }
