@@ -47,8 +47,13 @@ func TestTypeCheck_givenNestedSelfReferentialType_returnsError(t *testing.T) {
 var selfRefIndirectFgg []byte
 
 // this test program crashes the official Go compiler as of version 1.21.3
+// TODO report compiler bug (check if still occurs in pre-release version)
 func TestTypeCheck_givenIndirectSelfReferentialType_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, selfRefIndirectFgg, ``)
+	assertFailsTypeCheckWithError(t, selfRefIndirectFgg,
+		`ill-typed declaration: type "Baz": circular reference: `+
+			`field "bar" of type "Bar", which has: `+
+			`field "foo" of type "Foo", which has: `+
+			`field "baz" of type "Baz"`)
 }
 
 // TODO try to cause infinite loop in type param substitutions while self-ref

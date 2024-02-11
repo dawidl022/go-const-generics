@@ -73,14 +73,10 @@ func (s typeParamSubstituter) VisitMapConstType(c ast.ConstType) ast.EnvVisitabl
 func (s typeParamSubstituter) VisitMapStructTypeLiteral(st ast.StructTypeLiteral) ast.EnvVisitable {
 	substitutedFields := []ast.Field{}
 	for _, field := range st.Fields {
-		if typeParam, isTypeParam := field.Type.(ast.TypeParameter); isTypeParam {
-			substitutedFields = append(substitutedFields, ast.Field{
-				Name: field.Name,
-				Type: s.substitutions[typeParam],
-			})
-		} else {
-			substitutedFields = append(substitutedFields, field)
-		}
+		substitutedFields = append(substitutedFields, ast.Field{
+			Name: field.Name,
+			Type: s.substituteTypeParams(field.Type).(ast.Type),
+		})
 	}
 	return ast.StructTypeLiteral{Fields: substitutedFields}
 }

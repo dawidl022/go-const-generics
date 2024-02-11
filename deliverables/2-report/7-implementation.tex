@@ -38,6 +38,11 @@
 
 % projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/self_ref/self_ref_in_type_arg
 
+% In fact, following this process a bug in the official Go compiler (as of Go
+% 1.21.3) was caught, which caused the compiler to crash due to stack overflow.
+
+% projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/self_ref/self_ref_indirect/self_ref_indirect.go
+
 % Some snippet of testing (TestMonomorphise_givenStructFieldOfConstGenericArrayType):
 % Diff:
 % --- Expected

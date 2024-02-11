@@ -4,15 +4,15 @@ type any interface {
 }
 
 type Foo[T any] struct {
-	b T
+	baz T
 }
 
 type Bar[T any] struct {
-	f Foo[T]
+	foo Foo[T]
 }
 
 type Baz struct {
-	f Bar[Baz]
+	bar Bar[Baz]
 }
 
 func main() {
