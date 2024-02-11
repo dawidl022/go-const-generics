@@ -70,7 +70,20 @@ func (s typeParamSubstituter) VisitMapConstType(c ast.ConstType) ast.EnvVisitabl
 	return c
 }
 
-// TODO will these ever be called? If not, a separate interface can be extracted
+func (s typeParamSubstituter) VisitMapStructTypeLiteral(st ast.StructTypeLiteral) ast.EnvVisitable {
+	substitutedFields := []ast.Field{}
+	for _, field := range st.Fields {
+		if typeParam, isTypeParam := field.Type.(ast.TypeParameter); isTypeParam {
+			substitutedFields = append(substitutedFields, ast.Field{
+				Name: field.Name,
+				Type: s.substitutions[typeParam],
+			})
+		} else {
+			substitutedFields = append(substitutedFields, field)
+		}
+	}
+	return ast.StructTypeLiteral{Fields: substitutedFields}
+}
 
 func (s typeParamSubstituter) VisitMapArrayTypeLiteral(a ast.ArrayTypeLiteral) ast.EnvVisitable {
 	//TODO implement me

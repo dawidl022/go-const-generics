@@ -206,8 +206,7 @@ func (i IntegerLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisi
 }
 
 func (s StructTypeLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {
-	//TODO implement me
-	return s
+	return visitor.VisitMapStructTypeLiteral(s)
 }
 
 func (i InterfaceTypeLiteral) AcceptEnvMapperVisitor(visitor EnvMapperVisitor) EnvVisitable {

@@ -7,6 +7,8 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 )
 
+// TODO test with generic types
+
 type selfRefCheckingVisitor struct {
 	declarations map[ast.TypeName]ast.TypeDeclaration
 	refTypes     map[ast.TypeName]struct{}
@@ -53,7 +55,14 @@ func (s selfRefCheckingVisitor) checkSelfRefOfType(t ast.Type) error {
 		if _, isSelfRef := s.refTypes[typeName]; isSelfRef {
 			return fmt.Errorf("type %q", typeName)
 		}
-		err := s.withRefType(typeName).checkSelfRef(s.declarations[typeName].TypeLiteral)
+		// TODO need to instantiate the type literal with type args
+		// how is eta substitution done in other places?
+		substituter, err := newTypeParamSubstituter(typ.TypeArguments, s.declarations[typ.TypeName].TypeParameters)
+		if err != nil {
+			return err
+		}
+		substitutedLiteral := substituter.substituteTypeParams(s.declarations[typeName].TypeLiteral).(ast.TypeLiteral)
+		err = s.withRefType(typeName).checkSelfRef(substitutedLiteral)
 		if err != nil {
 			return fmt.Errorf("type %q, which has: %w", typeName, err)
 		}
