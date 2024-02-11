@@ -30,6 +30,14 @@
 % parameter substitution from an ad hoc basis to a separate preprocessing step
 % before any type checking started
 
+% Another core part of the implementation was coming up with edge cases, writing
+% tests to check how the interpreter behaved, and if necessary updating the
+% formal rules to cover the edge case. E.g in FGGA the `notReferenced' auxiliary
+% had to be updated to instantiate the type literals it recursively checks
+% checks, as a result of the described process.
+
+% projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/self_ref/self_ref_in_type_arg
+
 % Some snippet of testing (TestMonomorphise_givenStructFieldOfConstGenericArrayType):
 % Diff:
 % --- Expected
