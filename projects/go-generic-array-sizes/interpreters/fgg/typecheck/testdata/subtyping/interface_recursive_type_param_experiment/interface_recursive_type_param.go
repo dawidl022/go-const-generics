@@ -10,6 +10,7 @@ type SelfEq[T Eq[T]] interface {
 	equal(other T) int
 }
 
+// the simple Eq constraint seems sufficient to specify the self-eq property
 type ComparableHolder[T Eq[T]] struct {
 	x T
 }
@@ -30,6 +31,7 @@ func (i String) equal(other Int) int {
 
 func main() {
 	_ = ComparableHolder[Int]{Int{}}       // compiles
+	_ = ComparableHolder[Int]{String{}}    // does not compile
 	_ = ComparableHolder[String]{String{}} // does not compile
 	var _ SelfEq[Int] = String{}           // compiles
 	var _ SelfEq[String] = String{}        // does mot compile

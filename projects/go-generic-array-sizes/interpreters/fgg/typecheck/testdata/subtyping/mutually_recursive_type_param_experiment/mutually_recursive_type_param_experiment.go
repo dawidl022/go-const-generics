@@ -17,7 +17,7 @@ type Vertex2[E Edge[E, V], V Vertex[E, V]] interface {
 	Vertex[E, V]
 }
 
-type graphHolder[E Edge[E, V], V Vertex[E, V]] struct {
+type graph[E Edge[E, V], V Vertex[E, V]] struct {
 	edges    []E
 	vertices []V
 }
