@@ -88,3 +88,36 @@ parameter, we have a couple of options (or we can use all of them):
    done at compile time. This avoids the problem of determining whether a type
    conversion can be allowed at compile time, discussed in
    https://github.com/golang/go/issues/44253#issuecomment-821047754.
+
+## Value-set types
+
+> If I am not misunderstanding, is the goal to be able to parameterize an
+> instantiation by a (const) value instead of a type?
+
+Yes, the goal is to parameterise an instantiation of a type parameter by a const
+value, instead of a type.
+
+> In which case, the more general handling could also be to consider a value as
+> a subtype (where the set of values for this type is a singleton).
+
+Indeed, when writing this proposal and the formal work on the topic, I did view
+the values used to instantiate `const` type parameters as subtypes of the
+`const` constraint.
+
+As briefly mentioned in my previous comments, we could extend interface types to
+include value sets (or use an entirely different construct altogether), and
+allow constructs like the following:
+
+```go
+type myAlgorithmParameters interface {
+    time.Second | time.Minute | 15 * time.Minute
+}
+```
+
+And then use `myAlgorithmParameters` as a type parameter constraint that can
+be instantiated with one of the three constant values.
+
+I think the specifics of such constructs and their usefulness could be a topic
+for a future discussion (e.g. whether the value-set typed should be wrapped in
+`const` when used as a constraint, whether it can be used as types of regular
+variables to express the enum concept, etc.).
