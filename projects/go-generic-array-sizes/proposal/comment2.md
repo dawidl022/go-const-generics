@@ -17,19 +17,19 @@ Syntactically, we have a number of options, e.g.:
 
 2.  `map[K]V` style postfix: `const[T]`
     ```go
-    func foo[N const[int]] {
+    func foo[N const[int]]() {
         // some code
     }
     ```
 
 3. Rust style: `const N T`
    ```go
-   func foo[const N int] {
+   func foo[const N int]() {
         // some code
    }
    ```
 
-My preference is for 1 or 2, because it plays better with using a single
+My preference is for 1 or 2 because it plays better with using a single
 constraint for multiple type parameters:
 
 ```go
@@ -53,9 +53,9 @@ According to the spec, the length of an array type:
 > must evaluate to a non-negative constant representable by a value of type
 > `int` 
 
-This means that neither `int` not `uint` captures the valid values for array
+This means that neither `int` nor `uint` captures the valid values for array
 lengths, and so in theory neither `const[int]` nor `const[uint]` could be used
-to constrain a numerical type parameter used to size an array, since the
+to constrain a numerical type parameter used to size an array since the
 programmer could instantiate such a type parameter with:
 
 1. a negative value for `const[int]`
@@ -65,9 +65,9 @@ We could either loosen the restrictions and allow arrays to be sized by `uint`
 (not sure how this would affect things internally), or introduce a new way of
 expressing such a type, e.g. `aint` (array int).
 
-Then `const[aint]` could be used to denote the type parameter can be used to
-size an array. Alternatively (or in addition to), we could have a lone `const`
-be the shorthand constraint for `const[aint]`.
+Then `const[aint]` could be used to denote the type parameter that can be used
+to size an array. Alternatively (or in addition to), we could have a lone
+`const` be the shorthand constraint for `const[aint]`.
 
 ## Types with underlying `const` types
 
@@ -118,6 +118,6 @@ And then use `myAlgorithmParameters` as a type parameter constraint that can
 be instantiated with one of the three constant values.
 
 I think the specifics of such constructs and their usefulness could be a topic
-for a future discussion (e.g. whether the value-set typed should be wrapped in
-`const` when used as a constraint, whether it can be used as types of regular
+for a future discussion (e.g. whether value-set types should be wrapped in
+`const` when used as a constraint, whether they can be used as types of regular
 variables to express the enum concept, etc.).
