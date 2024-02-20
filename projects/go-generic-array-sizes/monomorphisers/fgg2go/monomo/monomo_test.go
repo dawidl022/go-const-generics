@@ -250,6 +250,18 @@ func TestMonomorphise_givenNestedArraySetMethod(t *testing.T) {
 	assertMonomorphises(t, nestedArraySetMethodInput, nestedArraySetMethodOutput)
 }
 
+//go:embed testdata/generic_interface/input/generic_interface.go
+var genericInterfaceInput []byte
+
+//go:embed testdata/generic_interface/output/generic_interface.go
+var genericInterfaceOutput []byte
+
+func TestMonomorphise_givenGenericInterface(t *testing.T) {
+	assertMonomorphises(t, genericInterfaceInput, genericInterfaceOutput)
+}
+
+// TODO test nested instantiation within type parameter constraints
+
 func assertMonomorphises(t *testing.T, input []byte, expected []byte) {
 	p := parseProgram(input)
 	output := codegen.GenerateSourceCode(Monomorphise(p))
