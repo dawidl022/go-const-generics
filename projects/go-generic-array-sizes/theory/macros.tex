@@ -19,6 +19,7 @@
 \newcommand{\bounds}{\meta{bounds}}
 \newcommand{\indexbounds}{\meta{indexBounds}}
 \newcommand{\len}{\meta{lenType}}
+\newcommand{\instance}{\meta{instance}}
 \newcommand{\notref}{\meta{notReferenced}}
 \newcommand{\isconst}{\meta{isConst}}
 \newcommand{\isarraysetmethod}{\meta{isArraySetMethod}}
@@ -58,6 +59,20 @@
 \newcommand{\bodies}{\meta{bodies}}
 \newcommand{\fix}{\kw{fix}}
 \newcommand{\lam}[1]{\lambda #1.\,}
+
+\newcommand{\yields}{\blacktriangleright}
+\newcommand{\extensionkw}{closure}
+\newcommand{\Sclo}{\textit{S-\extensionkw}}
+\newcommand{\Iclo}{\textit{I-\extensionkw}}
+\newcommand{\Fclo}{\textit{F-\extensionkw}}
+\newcommand{\Mclo}{\textit{M-\extensionkw}}
+\newcommand{\Pclo}{\textit{P-\extensionkw}}
+
+\newcommand{\SExtensionD}[2]{\Sclo_{#2}(#1)}
+\newcommand{\IExtensionD}[2]{\Iclo_{#2}(#1)}
+\newcommand{\FExtensionD}[2]{\Fclo(#1)}
+\newcommand{\MExtensionD}[2]{\Mclo_{#2}(#1)}
+
 \newcommand{\derivrule}[3][]{
     \inferrule*[right=#1]
     {#2}

@@ -1,0 +1,124 @@
+$\Delta$ is an environment mapping numerical type parameters $\alpha_n$ to
+integer literals $n$
+
+\begin{figure}
+    Type-instance sets \hfill \fbox{$\omega, \Omega$}
+    \begin{mathpar}
+        \omega, \Omega
+        \text{ range over sets containing elements of the form }
+        t[\ov{n}]
+    \end{mathpar}
+
+    Expressions and programs \hfill \fbox{$ \Delta \vdash e
+            \yields \omega$} \quad \fbox{$P \yields \Omega$}
+
+    \begin{mathpar}
+        \inferrule[I-int-literal]{~}
+        {\Delta \vdash n \yields \emptyset}
+
+        \inferrule[I-var]
+        {
+            ~
+        }
+        {
+            \Delta \vdash x \yields \emptyset
+        }
+
+        \inferrule[I-literal]
+        {
+        \Delta \vdash t_V[\ov{\tau}] \yields \omega_\tau
+        \\
+        \Delta \vdash \ov{e \yields \omega}
+        }
+        {
+        \Delta \vdash  t_V[\ov{\tau}]\br{\ov{e}}\yields
+        \ov{\omega_\tau}~
+        \cup~\ov{\omega}
+        }
+
+        \inferrule[I-field]
+        {
+            \Delta \vdash e \yields \omega
+        }
+        {
+            \Delta \vdash e.f_i \yields \omega
+        }
+
+        \inferrule[I-call]
+        {
+            \Delta \vdash e \yields \omega\\
+            \Delta \vdash \ov{e \yields \omega}
+        }
+        {
+            \Delta \vdash e.m(\ov{e}) \yields
+            \omega \cup \ov{\omega}
+        }
+
+        \inferrule[I-prog]
+        {
+            \emptyset \vdash e \yields \omega \\
+            \Omega = \lim_{n \rightarrow \infty}  G_{\emptyset}^{n}(\omega)
+        }
+        {
+            \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \yields \Omega
+        }
+    \end{mathpar}
+
+    Types \hfill \fbox{$\Delta \vdash \tau \yields \omega $}
+
+    \begin{mathpar}
+        \inferrule[I-int]{~}{
+            \Delta \vdash \kw{int} \yields \emptyset
+        }
+
+        \inferrule[I-n]{~}{
+            \Delta \vdash n \yields \emptyset
+        }
+
+        \inferrule[I-$\alpha$]{~}{
+            \Delta \vdash \alpha \yields \emptyset
+        }
+
+        \inferrule[I-const]{~}{
+            \Delta \vdash \kw{const} \yields \emptyset
+        }
+
+        \inferrule[I-named]{
+            \black{\ov{\tau \yields \omega_\tau}}
+        }{
+            \Delta \vdash t[\ov{\tau}] \yields
+            \set{\instance(t[\ov{\tau}]\llbracket\Delta\rrbracket)}
+            \cup \ov{\omega_\tau}
+        }
+    \end{mathpar}
+
+    Auxiliary functions
+
+    \begin{mathpar}
+        \inferrule
+        {
+            \ov{n} = \ov{n : n \in \ov{\tau}}
+        }
+        {
+            \instance(t[\ov{\tau}]) = t[\ov{n}]
+        }
+
+        \inferrule
+        {
+            \ov{\alpha_n} = \ov{\alpha: \alpha~\kw{const} \in \ov{\Phi}}
+        }
+        {
+            (\ov{\Phi} \by \ov{n}) = (\ov{\alpha_n \by n})
+        }
+
+        \FExtensionD{\omega}{\Delta} = \bigcup\left\{\Strut
+        \ov{\omega'}
+        \;\middle|\;
+        t_S[\ov{n}] \in \omega \comma
+        (\type~t_S\black{[\ov{\Phi}]}~\struct~\br{\ov{f~\black{\tau}}}) \in \ov{D}
+        \comma
+        \ov{(\ov{\Phi} \by \ov{n}) \vdash \tau \yields \omega'}
+        \right\}
+    \end{mathpar}
+
+\end{figure}
