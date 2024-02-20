@@ -1,5 +1,8 @@
-$\Delta$ is an environment mapping numerical type parameters $\alpha_n$ to
-integer literals $n$
+$\Delta$ is an environment mapping numerical type parameters $\alpha_n$ (i.e.
+those bound by \kw{const}) to integer literals $n$.
+
+% Formal rules describe process in two distinct stages, whereas implementation
+% does both in a single stage.
 
 \begin{figure}
     Type-instance sets \hfill \fbox{$\omega, \Omega$}
@@ -44,6 +47,16 @@ integer literals $n$
             \Delta \vdash e.f_i \yields \omega
         }
 
+        \inferrule[I-index]
+        {
+            \Delta \vdash e \yields \omega
+            \\
+            \Delta \vdash e' \yields \omega'
+        }
+        {
+            \Delta \vdash e[e'] \yields \omega~\cup~\omega'
+        }
+
         \inferrule[I-call]
         {
             \Delta \vdash e \yields \omega\\
@@ -51,7 +64,7 @@ integer literals $n$
         }
         {
             \Delta \vdash e.m(\ov{e}) \yields
-            \omega \cup \ov{\omega}
+            \omega~\cup~\ov{\omega}
         }
 
         \inferrule[I-prog]
@@ -61,6 +74,18 @@ integer literals $n$
         }
         {
             \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \yields \Omega
+        }
+    \end{mathpar}
+
+    Method specifications \hfill \fbox{$\Delta \vdash S \yields \omega $}
+
+    \begin{mathpar}
+        \inferrule[I-specification]{
+            \Delta \vdash \ov{\tau \yields \omega}
+            \\
+            \Delta \vdash \tau \yields \omega
+        }{
+            \Delta \vdash m(\ov{x~\tau})~\tau \yields \omega~\cup~\ov{\omega}
         }
     \end{mathpar}
 
@@ -92,6 +117,10 @@ integer literals $n$
         }
     \end{mathpar}
 
+\end{figure}
+
+\begin{figure}
+
     Auxiliary functions
 
     \begin{mathpar}
@@ -110,15 +139,50 @@ integer literals $n$
         {
             (\ov{\Phi} \by \ov{n}) = (\ov{\alpha_n \by n})
         }
+    \end{mathpar}
 
-        \FExtensionD{\omega}{\Delta} = \bigcup\left\{\Strut
+    \begin{align*}
+        % TODO collapse 3 aux into one and use regular rules for type literals
+        \FExtensionD{\omega}{\Delta} & = \bigcup\left\{\Strut
         \ov{\omega'}
         \;\middle|\;
         t_S[\ov{n}] \in \omega \comma
-        (\type~t_S\black{[\ov{\Phi}]}~\struct~\br{\ov{f~\black{\tau}}}) \in \ov{D}
+        (\type~t_S[\ov{\Phi}]~\struct~\br{\ov{f~\black{\tau}}}) \in \ov{D}
         \comma
         \ov{(\ov{\Phi} \by \ov{n}) \vdash \tau \yields \omega'}
         \right\}
-    \end{mathpar}
+        \\
+        \EExtensionD{\omega}{\Delta} & = \bigcup\left\{
+        \omega'
+        \;\middle|\;
+        t_A[\ov{n}] \in \omega
+        \comma
+        (\type~t_A[\ov{\Phi}]~[\tau_n]\tau) \in \ov{D}
+        \comma
+        (\ov{\Phi} \by \ov{n}) \vdash \tau \yields \omega'
+        \right\}
+        \\
+        \SExtensionD{\omega}{\Delta} & = \bigcup\left\{
+        \ov{\omega'}
+        \;\middle|\;
+        t_I[\ov{n}] \in \omega
+        \comma
+        (\type~t_I[\ov{\Phi}]~\interface~\br{\ov{S}}) \in \ov{D}
+        \comma
+        \ov{(\ov{\Phi} \by \ov{n}) \vdash S \yields \omega' }
+        \right\}
+        \\
+        \PExtensionD{\omega}{\Delta} & =  \bigcup\left\{
+        \ov{\omega'}
+        \;\middle|\;
+        t[\ov{n}] \in \omega
+        \comma
+        (\type~t[\ov{\Phi}]~T) \in \ov{D}
+        \comma
+        \ov{\Phi} = (\ov{\alpha~\gamma})
+        \comma
+        \ov{(\ov{\Phi} \by \ov{n}) \vdash \gamma \yields \omega' }
+        \right\}
+    \end{align*}
 
 \end{figure}
