@@ -260,7 +260,15 @@ func TestMonomorphise_givenGenericInterface(t *testing.T) {
 	assertMonomorphises(t, genericInterfaceInput, genericInterfaceOutput)
 }
 
-// TODO test nested instantiation within type parameter constraints
+//go:embed testdata/nested_type_param_constraint/input/nested_type_param_constraint.go
+var nestedTypeParamConstraintInput []byte
+
+//go:embed testdata/nested_type_param_constraint/output/nested_type_param_constraint.go
+var nestedTypeParamConstraintOutput []byte
+
+func TestMonomorphise_givenNestedTypeParameterConstraint(t *testing.T) {
+	assertMonomorphises(t, nestedTypeParamConstraintInput, nestedTypeParamConstraintOutput)
+}
 
 func assertMonomorphises(t *testing.T, input []byte, expected []byte) {
 	p := parseProgram(input)
