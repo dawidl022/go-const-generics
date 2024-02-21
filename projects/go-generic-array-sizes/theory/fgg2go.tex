@@ -143,7 +143,7 @@ those bound by \kw{const}) to integer literals $n$.
 
     \begin{align*}
         % TODO collapse 3 aux into one and use regular rules for type literals
-        \FExtensionD{\omega}{\Delta} & = \bigcup\left\{\Strut
+        \FExtensionD{\omega}{\Delta}   & = \bigcup\left\{\Strut
         \ov{\omega'}
         \;\middle|\;
         t_S[\ov{n}] \in \omega \comma
@@ -152,7 +152,7 @@ those bound by \kw{const}) to integer literals $n$.
         \ov{(\ov{\Phi} \by \ov{n}) \vdash \tau \yields \omega'}
         \right\}
         \\
-        \EExtensionD{\omega}{\Delta} & = \bigcup\left\{
+        \EExtensionD{\omega}{\Delta}   & = \bigcup\left\{
         \omega'
         \;\middle|\;
         t_A[\ov{n}] \in \omega
@@ -162,7 +162,7 @@ those bound by \kw{const}) to integer literals $n$.
         (\ov{\Phi} \by \ov{n}) \vdash \tau \yields \omega'
         \right\}
         \\
-        \SExtensionD{\omega}{\Delta} & = \bigcup\left\{
+        \SExtensionD{\omega}{\Delta}   & = \bigcup\left\{
         \ov{\omega'}
         \;\middle|\;
         t_I[\ov{n}] \in \omega
@@ -172,7 +172,7 @@ those bound by \kw{const}) to integer literals $n$.
         \ov{(\ov{\Phi} \by \ov{n}) \vdash S \yields \omega' }
         \right\}
         \\
-        \PExtensionD{\omega}{\Delta} & =  \bigcup\left\{
+        \PExtensionD{\omega}{\Delta}   & = \bigcup\left\{
         \ov{\omega'}
         \;\middle|\;
         t[\ov{n}] \in \omega
@@ -183,6 +183,38 @@ those bound by \kw{const}) to integer literals $n$.
         \comma
         \ov{(\ov{\Phi} \by \ov{n}) \vdash \gamma \yields \omega' }
         \right\}
+        \\
+        \MExtensionD{\omega}{\Delta}   & = \bigcup\left\{
+        \omega'\cup\omega''
+        \;\middle|\;
+        \begin{array}{c}
+            t_V[\ov{n}] \in \omega
+            \comma
+            (\func~(x~t_V\black{[\ov{\alpha}]})~mM~\br{\return~e}) \in \ov{D}
+            \comma
+            \\
+            \ov{\Phi} = \typeparams(t_V)
+            \comma
+            (\ov{\Phi} \by \ov{n}) \vdash mM \yields \omega'
+            \comma
+            (\ov{\Phi} \by \ov{n}) \vdash e \yields \omega''
+        \end{array}
+        \right\}
+        \\
+        \ASMExtensionD{\omega}{\Delta} & = \bigcup\left\{
+        \omega'
+        \;\middle|\;
+        \begin{array}{c}
+            t_V[\ov{n}] \in \omega
+            \comma
+            \ov{\Phi} = \typeparams(t_V)
+            \comma
+            (\ov{\Phi} \by \ov{n}) \vdash \tau \yields \omega'
+            \comma
+            \\
+            (\func~(x~t_V\black{[\ov{\alpha}]}) ~m(x_1~\kw{int},~x_2~\black{\tau}) ~t_V\black{[\ov{\alpha}]}~
+            \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}
+        \end{array}
+        \right\}
     \end{align*}
-
 \end{figure}
