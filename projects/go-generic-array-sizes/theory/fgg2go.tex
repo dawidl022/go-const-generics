@@ -70,14 +70,16 @@ those bound by \kw{const}) to integer literals $n$.
         \inferrule[I-prog]
         {
             \emptyset \vdash e \yields \omega \\
-            \Omega = \lim_{n \rightarrow \infty}  G_{\emptyset}^{n}(\omega)
+            \Omega = \lim_{n \rightarrow \infty}  G^{n}(\omega)
         }
         {
             \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \yields \Omega
         }
     \end{mathpar}
 
-    Method specifications \hfill \fbox{$\Delta \vdash S \yields \omega $}
+    Method specifications and type literals
+    \hfill \fbox{$\Delta \vdash S \yields \omega $}
+    \quad \fbox{$\Delta \vdash T \yields \omega $}
 
     \begin{mathpar}
         \inferrule[I-specification]{
@@ -86,6 +88,24 @@ those bound by \kw{const}) to integer literals $n$.
             \Delta \vdash \tau \yields \omega
         }{
             \Delta \vdash m(\ov{x~\tau})~\tau \yields \omega~\cup~\ov{\omega}
+        }
+
+        \inferrule[I-struct]{
+            \Delta \vdash \ov{\tau \yields \omega}
+        }{
+            \Delta \vdash \struct~\br{\ov{f~\tau}} \yields \ov{\omega}
+        }
+
+        \inferrule[I-array]{
+            \Delta \vdash \tau \yields \omega
+        }{
+            \Delta \vdash [\tau_n]\tau \yields \omega
+        }
+
+        \inferrule[I-interface]{
+            \Delta \vdash \ov{S \yields \omega}
+        }{
+            \Delta \vdash \interface~\br{\ov{S}} \yields \ov{\omega}
         }
     \end{mathpar}
 
@@ -141,50 +161,28 @@ those bound by \kw{const}) to integer literals $n$.
         }
     \end{mathpar}
 
-    \begin{align*}
-        % TODO collapse 3 aux into one and use regular rules for type literals
-        \FExtensionD{\omega}{\Delta}   & = \bigcup\left\{\Strut
-        \ov{\omega'}
+    \begin{mathpar}
+        G(\omega) = \TExtensionD{\omega}{\Delta} \cup
+        \MExtensionD{\omega}{\Delta} \cup \ASMExtensionD{\omega}{\Delta}
+
+        \TExtensionD{\omega}{\Delta}   = \bigcup\left\{
+        \ov{\omega'}\cup\omega''
         \;\middle|\;
-        t_S[\ov{n}] \in \omega \comma
-        (\type~t_S[\ov{\Phi}]~\struct~\br{\ov{f~\black{\tau}}}) \in \ov{D}
-        \comma
-        \ov{(\ov{\Phi} \by \ov{n}) \vdash \tau \yields \omega'}
+        \begin{array}{c}
+            t[\ov{n}] \in \omega
+            \comma
+            (\type~t[\ov{\Phi}]~T) \in \ov{D}
+            \comma
+            \ov{\Phi} = (\ov{\alpha~\gamma})
+            \comma
+            \\
+            \ov{(\ov{\Phi} \by \ov{n}) \vdash \gamma \yields \omega' }
+            \comma
+            (\ov{\Phi} \by \ov{n}) \vdash T \yields \omega''
+        \end{array}
         \right\}
         \\
-        \EExtensionD{\omega}{\Delta}   & = \bigcup\left\{
-        \omega'
-        \;\middle|\;
-        t_A[\ov{n}] \in \omega
-        \comma
-        (\type~t_A[\ov{\Phi}]~[\tau_n]\tau) \in \ov{D}
-        \comma
-        (\ov{\Phi} \by \ov{n}) \vdash \tau \yields \omega'
-        \right\}
-        \\
-        \SExtensionD{\omega}{\Delta}   & = \bigcup\left\{
-        \ov{\omega'}
-        \;\middle|\;
-        t_I[\ov{n}] \in \omega
-        \comma
-        (\type~t_I[\ov{\Phi}]~\interface~\br{\ov{S}}) \in \ov{D}
-        \comma
-        \ov{(\ov{\Phi} \by \ov{n}) \vdash S \yields \omega' }
-        \right\}
-        \\
-        \PExtensionD{\omega}{\Delta}   & = \bigcup\left\{
-        \ov{\omega'}
-        \;\middle|\;
-        t[\ov{n}] \in \omega
-        \comma
-        (\type~t[\ov{\Phi}]~T) \in \ov{D}
-        \comma
-        \ov{\Phi} = (\ov{\alpha~\gamma})
-        \comma
-        \ov{(\ov{\Phi} \by \ov{n}) \vdash \gamma \yields \omega' }
-        \right\}
-        \\
-        \MExtensionD{\omega}{\Delta}   & = \bigcup\left\{
+        \MExtensionD{\omega}{\Delta}   = \bigcup\left\{
         \omega'\cup\omega''
         \;\middle|\;
         \begin{array}{c}
@@ -201,7 +199,7 @@ those bound by \kw{const}) to integer literals $n$.
         \end{array}
         \right\}
         \\
-        \ASMExtensionD{\omega}{\Delta} & = \bigcup\left\{
+        \ASMExtensionD{\omega}{\Delta}  = \bigcup\left\{
         \omega'
         \;\middle|\;
         \begin{array}{c}
@@ -216,5 +214,5 @@ those bound by \kw{const}) to integer literals $n$.
             \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}
         \end{array}
         \right\}
-    \end{align*}
+    \end{mathpar}
 \end{figure}
