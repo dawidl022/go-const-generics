@@ -2,7 +2,10 @@ $\Delta$ is an environment mapping numerical type parameters $\alpha_n$ (i.e.
 those bound by \kw{const}) to integer literals $n$.
 
 % Formal rules describe process in two distinct stages, whereas implementation
-% does both in a single stage.
+% does both in a single stage (translates as it collects types).
+
+% From the symmetry of the formal rules of the two phases it is clear how this
+% can naturally be implemented in a single phase.
 
 \begin{figure}
     Type-instance sets \hfill \fbox{$\omega, \Omega$}
@@ -12,8 +15,7 @@ those bound by \kw{const}) to integer literals $n$.
         t[\ov{n}]
     \end{mathpar}
 
-    Expressions and programs \hfill \fbox{$ \Delta \vdash e
-            \yields \omega$} \quad \fbox{$P \yields \Omega$}
+    Expressions \hfill \fbox{$ \Delta \vdash e \yields \omega$}
 
     \begin{mathpar}
         \inferrule[I-int-literal]{~}
@@ -44,7 +46,7 @@ those bound by \kw{const}) to integer literals $n$.
             \Delta \vdash e \yields \omega
         }
         {
-            \Delta \vdash e.f_i \yields \omega
+            \Delta \vdash e.f \yields \omega
         }
 
         \inferrule[I-index]
@@ -65,15 +67,6 @@ those bound by \kw{const}) to integer literals $n$.
         {
             \Delta \vdash e.m(\ov{e}) \yields
             \omega~\cup~\ov{\omega}
-        }
-
-        \inferrule[I-prog]
-        {
-            \emptyset \vdash e \yields \omega \\
-            \Omega = \lim_{n \rightarrow \infty}  G^{n}(\omega)
-        }
-        {
-            \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \yields \Omega
         }
     \end{mathpar}
 
@@ -134,6 +127,19 @@ those bound by \kw{const}) to integer literals $n$.
             \Delta \vdash t[\ov{\tau}] \yields
             \set{\instance(t[\ov{\tau}]\llbracket\Delta\rrbracket)}
             \cup \ov{\omega_\tau}
+        }
+    \end{mathpar}
+
+    Programs  \hfill \fbox{$P \yields \Omega$}
+
+    \begin{mathpar}
+        \inferrule[I-prog]
+        {
+            \emptyset \vdash e \yields \omega \\
+            \Omega = \lim_{n \rightarrow \infty}  G^{n}(\omega)
+        }
+        {
+            \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \yields \Omega
         }
     \end{mathpar}
 
@@ -220,6 +226,165 @@ those bound by \kw{const}) to integer literals $n$.
 \end{figure}
 
 \begin{figure}
+
+    Expressions \hfill \fbox{$ \Delta \vdash e \mapsto e^\dagger $}
+
+    \begin{mathpar}
+        \inferrule[m-int-literal]
+        {~}
+        {
+            \Delta \vdash n \mapsto n
+        }
+
+        \inferrule[m-var]
+        {~}
+        {
+            \Delta \vdash x \mapsto x
+        }
+
+        \inferrule[m-literal]
+        {
+            \Delta \vdash \tau_V \mapsto \tau_V^\dagger
+            \\
+            \Delta \vdash \ov{e \mapsto e^\dagger}
+        }
+        {
+            \Delta \vdash  \tau_V\br{\ov{e}}
+            \mapsto
+            \tau_V^\dagger\br{\ov{e^\dagger}}
+        }
+
+        \inferrule[m-field]
+        {
+            \Delta \vdash e \mapsto e^\dagger
+        }
+        {
+            \Delta \vdash e.f \mapsto e^\dagger.f
+        }
+
+        \inferrule[m-index]
+        {
+            \Delta \vdash e \mapsto e^\dagger
+            \\
+            \Delta \vdash e' \mapsto e'^\dagger
+        }
+        {
+            \Delta \vdash e[e'] \mapsto e^\dagger[e'^\dagger]
+        }
+
+        \inferrule[m-call]
+        {
+            \Delta \vdash e \mapsto e^\dagger
+            \\
+            \Delta \vdash \ov{e \mapsto e^\dagger}
+        }
+        {
+            \Delta \vdash e.m(\ov{e}) \mapsto
+            e^\dagger.m(\ov{e^\dagger})
+        }
+    \end{mathpar}
+
+    Method signatures and type literals
+    \hfill \fbox{$\Delta \vdash M \mapsto M^\dagger $}
+    \quad \fbox{$\Delta \vdash T \mapsto T^\dagger $}
+
+    \begin{mathpar}
+        \inferrule[m-signature]{
+            \Delta \vdash \ov{\tau \mapsto \tau^\dagger}
+            \\
+            \Delta \vdash \tau \mapsto \tau^\dagger
+        }{
+            \Delta \vdash (\ov{x~\tau})~\tau \mapsto
+            (\ov{x~\tau^\dagger})~\tau^\dagger
+        }
+
+        \inferrule[m-struct]{
+            \Delta \vdash \ov{\tau \mapsto \tau^\dagger}
+        }{
+            \Delta \vdash \struct~\br{\ov{f~\tau}} \mapsto
+            \struct~\br{\ov{f~\tau^\dagger}}
+        }
+
+        \inferrule[m-array]{
+            \Delta \vdash \tau_n \mapsto \tau_n^\dagger
+            \\
+            \Delta \vdash \tau \mapsto \tau^\dagger
+        }{
+            \Delta \vdash [\tau_n]\tau \mapsto [\tau^\dagger_n]\tau^\dagger
+        }
+
+        \inferrule[m-interface]{
+            \Delta \vdash \ov{M \mapsto M^\dagger}
+        }{
+            \Delta \vdash \interface~\br{\ov{mM}} \mapsto
+            \interface~\br{\ov{mM^\dagger}}
+        }
+    \end{mathpar}
+
+    Types \hfill \fbox{$\Delta \vdash \tau \mapsto \tau^\dagger $}
+
+    \begin{mathpar}
+        \inferrule[m-int]{~}{
+            \Delta \vdash \kw{int} \mapsto \kw{int}
+        }
+
+        \inferrule[m-n]{~}{
+            \Delta \vdash n \mapsto n
+        }
+
+        \inferrule[m-$\alpha$]{
+            ~
+        }{
+            \Delta \vdash \alpha \mapsto \alpha\llbracket\Delta\rrbracket
+        }
+
+        \inferrule[m-named]{
+            \Delta \vdash \ov{\tau \mapsto \tau^\dagger}
+            \\
+            \ov{n} = \ov{n: n \in \ov{\tau^\dagger}}
+            \\
+            \ov{\tau_c^\dagger} = \ov{
+                \tau: (\tau \in \ov{\tau^\dagger}) \wedge (\tau \notin \ov{n})
+            }
+        }{
+            \Delta \vdash t[\ov{\tau}] \mapsto
+            \an{t, \ov{n}}[\ov{\tau_c^\dagger}]
+        }
+    \end{mathpar}
+
+    Type parameter constraints \hfill \fbox{$\Delta \vdash \ov{\Phi} \mapsto \ov{\Phi}^\dagger $}
+
+    \begin{mathpar}
+        \inferrule[m-constraints]
+        {
+            \Delta \vdash \ov{\gamma \mapsto \gamma^\dagger}
+            \\
+            \ov{\Phi}^\dagger = \ov{(\alpha~\gamma^\dagger):
+                ((\alpha~\gamma) \in \ov{\Phi}) \wedge (\gamma \neq \const)}
+        }
+        {
+            \Delta \vdash \ov{\Phi} \mapsto \ov{\Phi}^\dagger
+        }
+    \end{mathpar}
+
+\end{figure}
+
+\begin{figure}
+
+    Program \hfill \fbox{$P \mapsto P^\dagger$}
+
+    \begin{mathpar}
+        \inferrule[m-program]{
+            \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \yields \Omega
+            \\
+            \emptyset \vdash e \mapsto e^\dagger
+        }
+        {
+            \package~\main;~\ov{D}~\func~\main()~\br{\un=e}
+            \mapsto
+            \package~\main;~\calD(\Omega)~\func~\main()~\br{\un=e^\dagger}
+        }
+    \end{mathpar}
 
     Auxiliary functions
 
