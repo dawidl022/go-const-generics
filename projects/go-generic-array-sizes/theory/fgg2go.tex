@@ -129,7 +129,7 @@ those bound by \kw{const}) to integer literals $n$.
         }
 
         \inferrule[I-named]{
-            \black{\ov{\tau \yields \omega_\tau}}
+            \ov{\tau \yields \omega_\tau}
         }{
             \Delta \vdash t[\ov{\tau}] \yields
             \set{\instance(t[\ov{\tau}]\llbracket\Delta\rrbracket)}
@@ -188,7 +188,7 @@ those bound by \kw{const}) to integer literals $n$.
         \begin{array}{c}
             t_V[\ov{n}] \in \omega
             \comma
-            (\func~(x~t_V\black{[\ov{\alpha}]})~mM~\br{\return~e}) \in \ov{D}
+            (\func~(x~t_V[\ov{\alpha}])~mM~\br{\return~e}) \in \ov{D}
             \comma
             \\
             \ov{\Phi} = \typeparams(t_V)
@@ -210,9 +210,82 @@ those bound by \kw{const}) to integer literals $n$.
             (\ov{\Phi} \by \ov{n}) \vdash \tau \yields \omega'
             \comma
             \\
-            (\func~(x~t_V\black{[\ov{\alpha}]}) ~m(x_1~\kw{int},~x_2~\black{\tau}) ~t_V\black{[\ov{\alpha}]}~
+            (\func~(x~t_V[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau) ~t_V[\ov{\alpha}]~
             \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}
         \end{array}
         \right\}
     \end{mathpar}
+
+    \caption{Type collection phase of FGGA to Go monormorphisation}
+\end{figure}
+
+\begin{figure}
+
+    Auxiliary functions
+
+    \begin{mathpar}
+        \inferrule{
+            \ov{\Phi} = (\ov{\alpha~\gamma})
+            \\
+            \ov{\alpha_c} = \ov{\alpha: (\alpha \in \ov{\alpha}) \wedge
+                ((\alpha~\const) \notin \ov{\Phi})}
+        }{
+            \ov{\Phi} \by \ov{\alpha_c}
+        }
+        \\
+        \calD(\Omega) = \calD_T(\Omega) \cup \calD_M(\Omega) \cup \calD_A(\Omega)
+        \\
+        \calD_T(\Omega) = \left\{
+        \inferrule[]{
+        t[\ov{n}] \in \Omega
+        \\
+        (\type~t[\ov{\Phi}]~T) \in \ov{D}
+        \\
+        (\ov{\Phi} \by \ov{n}) \vdash \ov{\Phi} \mapsto \ov{\Phi}^\dagger
+        \\
+        (\ov{\Phi} \by \ov{n}) \vdash T \mapsto T^\dagger
+        }{
+        \type~\an{t, \ov{n}}[\ov{\Phi}^\dagger]~T^\dagger
+        }
+        \right\}
+
+        \calD_M(\Omega) = \left\{
+        \inferrule[]{
+        t_V[\ov{n}] \in \Omega
+        \\
+        (\func~(x~t_V[\ov{\alpha}])~mM~\br{\return~e}) \in \ov{D}
+        \\
+        \ov{\Phi} = \typeparams(t_V)
+        \\
+        \ov{\Phi} \by \ov{\alpha_c}
+        \\
+        (\ov{\Phi} \by \ov{n}) \vdash M \mapsto M^\dagger
+        \\
+        (\ov{\Phi} \by \ov{n}) \vdash e \mapsto e^\dagger
+        }{
+        \func (x~ \an{t_V, \ov{n}}[\ov{\alpha_c}])~mM^\dagger~\br{ \return~e^\dagger }
+        }
+        \right\}
+
+        \calD_A(\Omega) = \left\{
+        \inferrule[]{
+        t_V[\ov{n}] \in \Omega
+        \\
+        (\func~(x~t_V[\ov{\alpha}]) ~m(x_1~\kw{int},~x_2~\tau) ~t_V[\ov{\alpha}]~
+        \br{ x[x_1] = x_2;~\return~x }) \in \ov{D}
+        \\
+        \ov{\Phi} = \typeparams(t_V)
+        \\
+        \ov{\Phi} \by \ov{\alpha_c}
+        \\
+        (\ov{\Phi} \by \ov{n}) \vdash \tau \mapsto \tau^\dagger
+        }{
+        \func~(x~\an{t_V, \ov{n}}[\ov{\alpha_c}])~m(x_1~\kw{int}, x_2~\tau^\dagger)
+        ~\an{t_V, \ov{n}}[\ov{\alpha_c}]~
+        \br{ x[x_1] = x_2;~\return~x }
+        }
+        \right\}
+    \end{mathpar}
+
+    \caption{Translation phase of FGGA to Go monormorphisation}
 \end{figure}
