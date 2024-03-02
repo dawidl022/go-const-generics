@@ -46,21 +46,36 @@ same package the type is declared), limiting the code organisation flexibility.
 
 % Another downside is the proliferation of type casts (assertions).
 
-% TDD allows for fearless refactoring, as all written "features" are covered by
-% tests from the start - such a refactoring was undertaken - moving the type
-% parameter substitution from an ad hoc basis to a separate preprocessing step
-% before any type checking started
+\subsection{Testing}
 
-% Another core part of the implementation was coming up with edge cases, writing
-% tests to check how the interpreter behaved, and if necessary updating the
-% formal rules to cover the edge case. E.g in FGGA the `notReferenced' auxiliary
-% had to be updated to instantiate the type literals it recursively checks
-% checks, as a result of the described process.
+The programs were written using test-driven development (TDD), where the test
+inputs for most components were small example programs, aimed at testing a
+single feature or case.
+
+Since under TDD no feature may be implemented without an accompanying test, all
+developed features are covered by tests. TDD allows for fearless refactoring,
+since all features are fully covered by tests. Using example program as test
+inputs allows for arbitrary refactoring of the implementation. During
+development, such a major refactoring was undertaken - moving the type parameter
+substitution (the need for which arising from the grammar ambiguity) from an ad
+hoc basis to a separate preprocessing step (i.e. a separate pass of the AST)
+before any type checking started.
+
+A core part of the implementation was coming up with edge cases, writing tests
+to check how the interpreter behaved, and if necessary updating both the formal
+rules and implementation to cover the edge case. E.g in FGGA the $\notref$
+auxiliary had to be updated to instantiate the type literals it recursively
+checks, as a result of the described process.
 
 % projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/self_ref/self_ref_in_type_arg
 
-% In fact, following this process a bug in the official Go compiler (as of Go
-% 1.21.3) was caught, which caused the compiler to crash due to stack overflow.
+In fact, following this process, at least once bug in the official Go compiler
+(as of Go 1.22) was caught, causing the compiler to either crash due to stack
+overflow, or incorrectly type check a program (behaviour dependent on input)
+The two errors were subsequently reported as issues on Go's GitHub repo, where
+exact details can be
+found\footnote{\href{https://github.com/golang/go/issues/65711}{issue 65711} and
+    \href{https://github.com/golang/go/issues/65714}{65714}}.
 
 % projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/self_ref/self_ref_indirect/self_ref_indirect.go
 
@@ -73,3 +88,10 @@ same package the type is declared), limiting the code organisation flexibility.
 % -	x Arr__2[int]
 % +	x Arr[N, int]
 % }
+
+% TODO include table with test statistics (i.e. number of tests for each
+% component of relevance and maybe code coverage). Make this table generated
+% automatically from running test suites.
+%
+% 100% code coverage does not occur due to some parts of the code being
+% unreachable, yet necessary due to the language's type system.
