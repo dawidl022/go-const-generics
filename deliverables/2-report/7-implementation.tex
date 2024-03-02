@@ -34,21 +34,10 @@ ambiguity resulting from the grammar (as discussed in section
 other auxiliary operations. The pattern makes it easy to recursively traverse
 the AST and apply the desired operation.
 
-% The operation is applied at certain base cases, and the visitor can keep track
-% of the parent's context, which is passed along (with potentially more data) at
-% each level of recursion
-
 It allows for the separation of concerns, i.e. each operation can live in its
 own package. Simply defining methods on the AST would force all operations to be
 defined in a single package (in Go, methods on a type can only be defined in the
 same package the type is declared), limiting the code organisation flexibility.
-
-% It is extensible, e.g. multiple different operations can implement the same
-% visitor interface, provided the return types align. Because often they don't
-% align (e.g. some operations can error, while other cannot), in practice
-% multiple visitor interface variants were created. Additionally, in some cases,
-% it was only desired to traverse a subtree, hence not all ast node types needed
-% to be visited, and so special purpose subtree visitors were also created.
 
 The downside of the visitor pattern is that it produces additional boilerplate
 code, however, IDEs make it easy to generate, and we can place all of it into
@@ -66,9 +55,9 @@ single feature or case.
 
 Since under TDD no feature may be implemented without an accompanying test, all
 developed features are covered by tests. TDD allows for fearless refactoring,
-since all features are fully covered by tests. Using example program as test
+since all features are fully covered by tests. Using example programs as test
 inputs allows for arbitrary refactoring of the implementation. During
-development, such a major refactoring was undertaken - moving the type parameter
+development, such a major refactoring was undertaken --- namely moving the type parameter
 substitution (the need for which arising from the grammar ambiguity) from an ad
 hoc basis to a separate preprocessing step (i.e. a separate pass of the AST)
 before any type checking started.
@@ -79,27 +68,13 @@ rules and implementation to cover the edge case. E.g in FGGA the $\notref$
 auxiliary had to be updated to instantiate the type literals it recursively
 checks, as a result of the described process.
 
-% projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/self_ref/self_ref_in_type_arg
-
 In fact, following this process, at least once bug in the official Go compiler
 (as of Go 1.22) was caught, causing the compiler to either crash due to stack
-overflow, or incorrectly type check a program (behaviour dependent on input)
-The two errors were subsequently reported as issues on Go's GitHub repo, where
+overflow, or incorrectly type check a program (behaviour dependent on input) The
+two errors were subsequently reported as issues on Go's GitHub repository, where
 exact details can be
 found\footnote{\href{https://github.com/golang/go/issues/65711}{issue 65711} and
     \href{https://github.com/golang/go/issues/65714}{65714}}.
-
-% projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/self_ref/self_ref_indirect/self_ref_indirect.go
-
-% Some snippet of testing (TestMonomorphise_givenStructFieldOfConstGenericArrayType):
-% Diff:
-% --- Expected
-% +++ Actual
-% @@ -8,3 +8,3 @@
-% type Foo__2 struct {
-% -	x Arr__2[int]
-% +	x Arr[N, int]
-% }
 
 % TODO include table with test statistics (i.e. number of tests for each
 % component of relevance and maybe code coverage). Make this table generated
