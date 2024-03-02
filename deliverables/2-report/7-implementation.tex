@@ -14,7 +14,11 @@ is a useful first step to actually introducing this feature into the mainstream
 compiler. One could also extend the monomorphiser to support a proper superset
 of Go, which would allow developers to use generically sized arrays in their
 source code, and use the monomorphiser as the first step of the compilation
-process, the result of which could be fed directly into the Go compiler.
+process, the result of which could be fed directly into the Go compiler. The
+interpreters also support dynamic (run-time) checking of the progress and
+preservation properties as the input program is executed, and terminate upon
+reaching a state that was previously seen (i.e. some forms of infinite loops are
+detected at run-time).
 
 A similar set of programs were found in the set of artifacts in Featherweight Go
 \autocite{fg} --- interpreters for the two languages formalised, and a
