@@ -6,6 +6,16 @@ FGGA. In addition, a monomorphiser was implemented translating FGGA to Go. The
 output of the monomorphiser is a valid subset of FGGA, so it can be interpreted
 by the FGGA interpreter as well as compiled by the official Go compiler.
 
+One of the aims of building the interpreters, was to test the formal syntax,
+reduction and typing rules defined in sections \ref{ch:fg} and \ref{ch:fgg}, and
+amend them when inconsistencies or issue arose. The aim of the monomorphiser was
+to prototype a translation from const-generic Go code, to regular Go code, which
+is a useful first step to actually introducing this feature into the mainstream
+compiler. One could also extend the monomorphiser to support a proper superset
+of Go, which would allow developers to use generically sized arrays in their
+source code, and use the monomorphiser as the first step of the compilation
+process, the result of which could be fed directly into the Go compiler.
+
 A similar set of programs were found in the set of artifacts in Featherweight Go
 \autocite{fg} - interpreters for the two languages formalised, and a
 monomorphiser translating generics (the feature introduced by Featherweight Go)
