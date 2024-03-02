@@ -17,7 +17,7 @@ source code, and use the monomorphiser as the first step of the compilation
 process, the result of which could be fed directly into the Go compiler.
 
 A similar set of programs were found in the set of artifacts in Featherweight Go
-\autocite{fg} - interpreters for the two languages formalised, and a
+\autocite{fg} --- interpreters for the two languages formalised, and a
 monomorphiser translating generics (the feature introduced by Featherweight Go)
 into code that the official Go compiler at the time could handle.
 
@@ -50,11 +50,13 @@ same package the type is declared), limiting the code organisation flexibility.
 % it was only desired to traverse a subtree, hence not all ast node types needed
 % to be visited, and so special purpose subtree visitors were also created.
 
-% The downside of the visitor pattern is that it produces a bit of boilerplate
-% code, however, IDEs make it easy to generate, and we can shove it all away
-% into ``biolerplate.go'' and only worry about the actual functionality.
-
-% Another downside is the proliferation of type casts (assertions).
+The downside of the visitor pattern is that it produces additional boilerplate
+code, however, IDEs make it easy to generate, and we can place all of it into
+some separate file so it doesn't interfere with writing logic. Another downside
+is the proliferation of type casts (assertions), since the visitor interface
+needs to be generic enough to work with all nodes of the AST, even though we
+know that only a more specific type should be returned from a particular visit
+invocation.
 
 \subsection{Testing}
 
