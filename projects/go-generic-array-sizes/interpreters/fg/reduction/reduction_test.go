@@ -10,6 +10,7 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parsetree"
+	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/testconf"
 	fggAst "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
 	fggParser "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
 	fggParsetree "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
@@ -24,6 +25,7 @@ var acceptanceProgramGo []byte
 // TODO repeat these tests for FGG interpreter
 
 func TestReduceToValue_givenValidProgram_completelyReducesProgram(t *testing.T) {
+	skipIfNotFG(t)
 	p := parseFGProgram(acceptanceProgramGo)
 
 	val, err := newProgramReducer(nil).ReduceToValue(p)
@@ -33,6 +35,7 @@ func TestReduceToValue_givenValidProgram_completelyReducesProgram(t *testing.T) 
 }
 
 func TestReduceToValue_givenValidProgram_notifiesObserversOfAllReductions(t *testing.T) {
+	skipIfNotFG(t)
 	p := parseFGProgram(acceptanceProgramGo)
 
 	obs := &stringObserver{}
@@ -54,6 +57,7 @@ func expectedAcceptanceProgramReductionSteps() []string {
 }
 
 func TestReduceToValue_givenValidProgram_doesNotMutateExpressionsGivenToObservers(t *testing.T) {
+	skipIfNotFG(t)
 	p := parseFGProgram(acceptanceProgramGo)
 
 	observer1 := &savingObserver{}
@@ -66,6 +70,7 @@ func TestReduceToValue_givenValidProgram_doesNotMutateExpressionsGivenToObserver
 }
 
 func TestReduceToValue_givenInvalidProgram_returnsError(t *testing.T) {
+	skipIfNotFG(t)
 	p := parseFGProgram(fieldInvalidFieldGo)
 
 	_, err := newProgramReducer(nil).ReduceToValue(p)
@@ -75,6 +80,7 @@ func TestReduceToValue_givenInvalidProgram_returnsError(t *testing.T) {
 }
 
 func TestReduceToValue_givenInfiniteLoop_terminatesReductionWithError(t *testing.T) {
+	skipIfNotFG(t)
 	p := parseFGProgram(callRecursiveGo)
 
 	obs := &stringObserver{}
@@ -89,6 +95,7 @@ func TestReduceToValue_givenInfiniteLoop_terminatesReductionWithError(t *testing
 var callInfinitelyGrowingStructureFg []byte
 
 func TestReduceToValue_givenInfinitelyGrowingTerm_stopsReducingAfterSpecifiedNumberOfSteps(t *testing.T) {
+	skipIfNotFG(t)
 	p := parseFGProgram(callInfinitelyGrowingStructureFg)
 
 	obs := &stringObserver{}
@@ -98,6 +105,13 @@ func TestReduceToValue_givenInfinitelyGrowingTerm_stopsReducingAfterSpecifiedNum
 	require.Error(t, err)
 	assert.Equal(t, "program failed to terminate within the specified maximum number of steps: 100", err.Error())
 	assert.Equal(t, maxSteps, len(obs.steps))
+}
+
+func skipIfNotFG(t *testing.T) {
+	conf := testconf.ParseTestConf()
+	if !conf.EnabledFG() {
+		t.SkipNow()
+	}
 }
 
 func newProgramReducer(observers []observer) programReducer {

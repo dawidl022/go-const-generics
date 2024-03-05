@@ -13,6 +13,7 @@ import (
 var fieldBasicGo []byte
 
 func TestReduceField_givenBasicValidExpression_returnsValueOfField(t *testing.T) {
+	skipIfNotFG(t)
 	p, err := parseFGAndReduceOneStep(fieldBasicGo)
 
 	require.NoError(t, err)
