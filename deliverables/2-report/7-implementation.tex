@@ -86,3 +86,39 @@ found\footnote{\href{https://github.com/golang/go/issues/65711}{issue 65711} and
 %
 % 100% code coverage does not occur due to some parts of the code being
 % unreachable, yet necessary due to the language's type system.
+
+% https://tex.stackexchange.com/questions/146716/importing-csv-file-into-latex-as-a-table
+
+\begin{figure}
+    \begin{center}
+        \csvreader[
+            tabular=l|c|c,
+            head to column names,
+            table head=\bfseries Package & \bfseries No. of tests & \bfseries Coverage (\%) \\
+            \hline,
+        ]{fg-tests.csv}{}{\package & \testcount & \coverage}
+    \end{center}
+    \caption{Test statistics per package for FGA interpreter\protect\footnotemark}
+\end{figure}
+
+\footnotetext{Package
+    test coverage was calculated using a modified
+    \href{https://pkg.go.dev/cmd/cover}{cover command from the Go standard
+        library}. The modified code can be found at
+    \href{https://github.com/dawidl022/go/tree/package-coverage}{https://github.com/dawidl022/go/tree/package-coverage}.
+    The coverage is calculated based on all tests, not just ones found in the
+    same package.
+}
+
+
+\begin{figure}
+    \begin{center}
+        \csvreader[
+            tabular=l|c|c,
+            head to column names,
+            table head=\bfseries Package & \bfseries No. of tests & \bfseries Coverage (\%) \\
+            \hline,
+        ]{fgg-tests.csv}{}{\package & \testcount & \coverage}
+    \end{center}
+    \caption{Test statistics per package for FGGA interpreter and FGGA to Go monomorphiser}
+\end{figure}
