@@ -7,34 +7,3 @@
 % https://codereview.stackexchange.com/questions/274860/concept-of-implementing-generic-types-in-c-using-macros
 
 \lstinputlisting[language=C]{examples/macro-generics.c}
-
-\subsection{Type self-reference within type parameter constraints}
-\label{sec:self-ref-type-in-bound}
-
-% https://github.com/golang/go/issues/46461
-
-Suppose we want to create a container for (or a function that takes as a
-parameter) an instance of a type that can be compared against other instances of
-the same type. We need a way to express that property as a bound of the
-container's type parameter, so we need to define an interface. We can try to
-define an interface for the bound as follows:
-
-\noindent\begin{minipage}{\linewidth}
-    \lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=5]{../../projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/self_ref_type_param/recursive_bound_type/recursive_bound_type.go}
-\end{minipage}
-
-A type \texttt{T} implements \texttt{Eq[T]} if it implements an \texttt{equal}
-method that takes a parameter of the same type as itself. However, the above
-interface does not compile, as type parameter bounds are not allowed to refer to
-the type that is being declared in Go \autocite{spec}.
-
-We can, however, introduce another layer of indirection. The base interface
-\texttt{Eq} is implemented if a type implements the \texttt{equal} method with
-any type \texttt{T} as its argument. Then we define another interface
-\texttt{SelfEq}, whose type parameter \texttt{T} is now bound by
-\texttt{Eq[T]}, and requires the same method as \texttt{Eq}. This gives us the
-behaviour we were intending to express, and so we can use the
-\texttt{SelfEq} interface as the type parameter bound. A complete
-example including an instantiation can be found below.
-
-\golisting{../../projects/go-generic-array-sizes/interpreters/fgg/typecheck/testdata/subtyping/interface_recursive_type_param/interface_recursive_type_param.go}
