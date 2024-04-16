@@ -11,18 +11,18 @@ and syntax that are allowed in Go, are disallowed in FGA to keep the rules
 simpler.
 
 A couple of notes on formal notation: a bar above a term or group of terms
-denotes a sequence or a rule to be applied to each element in the sequence. A
-sequence may contain 0 or more instances of the terms. In actual programs,
-various delimiters are required between terms in a sequence. Depending on the
-construct, this is either a comma or a semicolon (interchangeable with a
-newline), but these details are omitted from the formal rules. The metavariables
-$e$ and $\ov{e}$ are considered distinct, i.e. unless stated explicitly, it is
-not automatically implied that $e \in \ov{e}$. A box around a syntactical term
-means it cannot appear in a normal user program but can be used internally
-during reduction. Rules or rule fragments appearing in grey have been taken
-directly from the original \emph{Featherweight Go} \autocite{fg} without any
-modification. The rules (or rule fragments) in black show the changes introduced
-when extending the rules to include arrays.
+denotes a sequence or a rule to be applied to each element in the sequence
+\autocite{newOldLang}. A sequence may contain 0 or more instances of the terms.
+In actual programs, various delimiters are required between terms in a sequence.
+Depending on the construct, this is either a comma or a semicolon
+(interchangeable with a newline), but these details are omitted from the formal
+rules. The metavariables $e$ and $\ov{e}$ are considered distinct, i.e. unless
+stated explicitly, it is not automatically implied that $e \in \ov{e}$. A box
+around a syntactical term means it cannot appear in a normal user program but
+can be used internally during reduction. Rules or rule fragments appearing in
+grey have been taken directly from the original \emph{Featherweight Go}
+\autocite{fg} without any modification. The rules (or rule fragments) in black
+show the changes introduced when extending the rules to include arrays.
 
 \subsection{FGA Syntax}
 
