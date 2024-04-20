@@ -135,6 +135,7 @@ this is unnecessary as the desired behaviour can already be achieved by applying
 \texttt{len} to an instantiated value of an array type parameter.
 
 \subsection{Allowed \texttt{const} type arguments}
+\label{sec:allowed-const-type-arguments}
 
 We've already seen how constant non-negative integers can be used as numerical
 type arguments. Additionally, since a numerical type parameter stands in for a
@@ -195,7 +196,7 @@ the declaration site, however, callers would only be able to pass in non-zero
 sized arrays, which can be checked at compile time. Tools such as language
 servers could show these tighter constraints to the programmer. The final
 solution is to require an explicit tighter constraint, through some sort of new
-syntax, e.g.:
+refinement syntax, e.g.:
 
 \golisting{./examples/expressions/headtailexplicit.go}
 

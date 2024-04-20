@@ -102,6 +102,57 @@ called \emph{structural induction}. Structural induction is analogous to
 induction on natural numbers, except that it works on recursively defined
 structures, such as those found in the formal rules of programming languages.
 
+\subsection{Dependent and refinement types}
+
+Both dependent and refinement types have the goal of being able to assign more
+precise types in programs, meaning more invariants can be checked at compile
+time, leading to more bugs being caught early in software development
+\autocites{dependentPractical}{refinement}.
+
+A dependent type is a type depending on a \emph{value}, i.e. an element of
+another type. The most basic example, and the one we are most concerned with in
+this work, is the type ``array of size $n$'' where n is an element of the
+integer type. When $n$ is a parameter as opposed to a concrete value, this is
+known as a family of types. This form of dependent typing can be traced as far
+back as FORTRAN. Dependent types can be more complex than simple array sizes,
+e.g. we can express balanced trees (by depending on the values of their heights)
+or sorted lists \autocite{dependentAtWork}.
+
+Dependent typing can be found is research functional languages such as Idris and
+Agda \autocites{idris}{agda}. Dependent types need not depend on constants (i.e.
+concrete values known at compile time, such as the literal \texttt{1}) --- they
+may depend on arbitrary terms (e.g. variables). Mainstream languages including
+C++ and Rust, as well as the Go extension proposed in this work, do restrict the
+dependency to constants only.
+
+% What are the drawbacks of depending on arbitrary (non-const) terms?
+
+% TODO include paragraph relating proof and dependent types
+
+% Dependent types allow for computation within the type system (i.e. at compile
+% time), such as for performing proofs about the program. This may be desirable at
+% times, while undesirable at other times due to undecidability in general. This
+% means it is possible for the compiler to never terminate. (Dependent ML ---
+% verify citation)
+
+Dependent types are the more general form, whereas refinement types impose a
+restriction that the type must depend on a \emph{predicate} (which itself
+involves values). These predicates are said to refine (narrow down) the set of
+values described by the base type \autocite{refinement}. Moreover, unlike
+dependent types, these predicates cannot be arbitrary expressions, but are
+rather formed from a more restricted language (than the language they are used
+in). The exact restrictions depend on the specifics of the refinement type
+system. One concrete example are liquid types which enforce decidability of the
+predicates. Liquid types have been implemented for several major languages,
+including recently for Java, which shows active development in this area of
+research. \autocites{liquidTypesBlog}{liquidJava}.
+
+Since this work intends to lay the foundation for generically sized arrays, we
+are not directly concerned with refinement types. However, in section
+\ref{sec:allowed-const-type-arguments} we explore how in the
+future we can make the usage of generically sized arrays more expressive through
+refinements of the array length, e.g. from arbitrary to a specific range.
+
 \subsection{Featherweight Go}
 
 For many years, the biggest criticism against the Go language was the lack of

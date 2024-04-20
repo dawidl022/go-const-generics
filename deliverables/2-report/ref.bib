@@ -285,8 +285,113 @@
   doi        = {10.1145/3155284.3018773},
   abstract   = {The most popular programming language in computer science has no compiler or interpreter. Its definition is not written down in any one place. It has changed a lot over the decades, and those changes have introduced ambiguities and inconsistencies. Today, dozens of variations are in use, and its complexity has reached the point where it needs to be re-explained, at least in part, every time it is used. Much effort has been spent in hand-translating between this language and other languages that do have compilers. The language is quite amenable to parallel computation, but this fact has gone unexploited.In this talk we will summarize the history of the language, highlight the variations and some of the problems that have arisen, and propose specific solutions. We suggest that it is high time that this language be given a complete formal specification, and that compilers, IDEs, and proof-checkers be created to support it, so that all the best tools and techniques of our trade may be applied to it also.},
   journal    = {SIGPLAN Not.},
-  month      = {jan},
+  month      = {1},
   pages      = {1},
   numpages   = {1},
   keywords   = {compilers, programming languages, specifications}
+}
+@inproceedings{dependentPractical,
+  author    = {Xi, Hongwei and Pfenning, Frank},
+  title     = {Dependent types in practical programming},
+  year      = {1999},
+  isbn      = {1581130953},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/292540.292560},
+  doi       = {10.1145/292540.292560},
+  abstract  = {We present an approach to enriching the type system of ML with a restricted form of dependent types, where type index objects are drawn from a constraint domain C, leading to the DML(C) language schema. This allows specification and inference of significantly more precise type information, facilitating program error detection and compiler optimization. A major complication resulting from introducing dependent types is that pure type inference for the enriched system is no longer possible, but we show that type-checking a sufficiently annotated program in DML(C) can be reduced to constraint satisfaction in the constraint domain C. We exhibit the unobtrusiveness of our approach through practical examples and prove that DML(C) is conservative over ML. The main contribution of the paper lies in our language design, including the formulation of type-checking rules which makes the approach practical. To our knowledge, no previous type system for a general purpose programming language such as ML has combined dependent types with features including datatype declarations, higher-order functions, general recursions, let-polymorphism, mutable references, and exceptions. In addition, we have finished a prototype implementation of DML(C) for an integer constraint domain C, where constraints are linear inequalities (Xi and Pfenning 1998).},
+  booktitle = {Proceedings of the 26th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
+  pages     = {214-227},
+  numpages  = {14},
+  location  = {San Antonio, Texas, USA},
+  series    = {POPL '99}
+}
+
+@article{refinement,
+  url     = {http://dx.doi.org/10.1561/2500000032},
+  year    = {2021},
+  volume  = {6},
+  journal = {Foundations and Trends® in Programming Languages},
+  title   = {Refinement Types: A Tutorial},
+  doi     = {10.1561/2500000032},
+  issn    = {2325-1107},
+  number  = {3-4},
+  pages   = {159-317},
+  author  = {Ranjit Jhala and Niki Vazou}
+}
+
+@inbook{dependentAtWork,
+  author    = {Bove, Ana
+               and Dybjer, Peter},
+  editor    = {Bove, Ana
+               and Barbosa, Lu{\'i}s Soares
+               and Pardo, Alberto
+               and Pinto, Jorge Sousa},
+  title     = {Dependent Types at Work},
+  booktitle = {Language Engineering and Rigorous Software Development: International LerNet ALFA Summer School 2008, Piriapolis, Uruguay, February 24 - March 1, 2008, Revised Tutorial Lectures},
+  year      = {2009},
+  publisher = {Springer Berlin Heidelberg},
+  address   = {Berlin, Heidelberg},
+  pages     = {57--99},
+  abstract  = {In these lecture notes we give an introduction to functional programming with dependent types. We use the dependently typed programming language Agda which is an extension of Martin-L{\"o}f type theory. First we show how to do simply typed functional programming in the style of Haskell and ML. Some differences between Agda's type system and the Hindley-Milner type system of Haskell and ML are also discussed. Then we show how to use dependent types for programming and we explain the basic ideas behind type-checking dependent types. We go on to explain the Curry-Howard identification of propositions and types. This is what makes Agda a programming logic and not only a programming language. According to Curry-Howard, we identify programs and proofs, something which is possible only by requiring that all program terminate. However, at the end of these notes we present a method for encoding partial and general recursive functions as total functions using dependent types.},
+  isbn      = {978-3-642-03153-3},
+  doi       = {10.1007/978-3-642-03153-3_2},
+  url       = {https://doi.org/10.1007/978-3-642-03153-3_2}
+}
+
+@online{liquidTypesBlog,
+  author       = {Niki Vazou},
+  title        = {A Gentle Introduction to Liquid Types},
+  organization = {University of California San Diego},
+  url          = {https://goto.ucsd.edu/~ucsdpl-blog/liquidtypes/2015/09/19/liquid-types/},
+  year         = {2015},
+  month        = {9},
+  day          = {19},
+  urldate      = {2024-04-20}
+}
+
+@inproceedings{liquidJava,
+  author    = {Gamboa, Catarina and Canelas, Paulo and Timperley, Christopher and Fonseca, Alcides},
+  title     = {Usability-Oriented Design of Liquid Types for Java},
+  year      = {2023},
+  isbn      = {9781665457019},
+  publisher = {IEEE Press},
+  url       = {https://doi.org/10.1109/ICSE48619.2023.00132},
+  doi       = {10.1109/ICSE48619.2023.00132},
+  abstract  = {Developers want to detect bugs as early in the development lifecycle as possible, as the effort and cost to fix them increases with the incremental development of features. Ultimately, bugs that are only found in production can have catastrophic consequences.Type systems are effective at detecting many classes of bugs during development, often providing immediate feedback both at compile-time and while typing due to editor integration. Unfortunately, more powerful static and dynamic analysis tools do not have the same success due to providing false positives, not being immediate, or not being integrated into the language.Liquid Types extend the language type system with predicates, augmenting the classes of bugs that the compiler or IDE can catch compared to the simpler type systems available in mainstream programming languages. However, previous implementations of Liquid Types have not used human-centered methods for designing or evaluating their extensions. Therefore, this paper investigates how Liquid Types can be integrated into a mainstream programming language, Java, by proposing a new design that aims to lower the barriers to entry and adapts to problems that Java developers commonly encounter at runtime. Following a participatory design methodology, we conducted a developer survey to design the syntax of LiquidJava, our prototype.To evaluate if the added effort to writing Liquid Types in Java would convince users to adopt them, we conducted a user study with 30 Java developers. The results show that LiquidJava helped users detect and fix more bugs and that Liquid Types are easy to interpret and learn with few resources. At the end of the study, all users reported interest in adopting LiquidJava for their projects.},
+  booktitle = {Proceedings of the 45th International Conference on Software Engineering},
+  pages     = {1520-1532},
+  numpages  = {13},
+  keywords  = {liquid types, refinement types, java, usability},
+  location  = {Melbourne, Victoria, Australia},
+  series    = {ICSE '23}
+}
+
+@inproceedings{idris,
+  author    = {Brady, Edwin C.},
+  title     = {IDRIS ---: systems programming meets full dependent types},
+  year      = {2011},
+  isbn      = {9781450304870},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/1929529.1929536},
+  doi       = {10.1145/1929529.1929536},
+  abstract  = {Dependent types have emerged in recent years as a promising approach to ensuring program correctness. However, existing dependently typed languages such as Agda and Coq work at a very high level of abstraction, making it difficult to map verified programs to suitably efficient executable code. This is particularly problematic for programs which work with bit level data, e.g. network packet processing, binary file formats or operating system services. Such programs, being fundamental to the operation of computers in general, may stand to benefit significantly from program verification techniques. This paper describes the use of a dependently typed programming language, Idris, for specifying and verifying properties of low-level systems programs, taking network packet processing as an extended example. We give an overview of the distinctive features of Idris which allow it to interact with external systems code, with precise types. Furthermore, we show how to integrate tactic scripts and plugin decision procedures to reduce the burden of proof on application developers. The ideas we present are readily adaptable to languages with related type systems.},
+  booktitle = {Proceedings of the 5th ACM Workshop on Programming Languages Meets Program Verification},
+  pages     = {43–54},
+  numpages  = {12},
+  keywords  = {data description, dependent types},
+  location  = {Austin, Texas, USA},
+  series    = {PLPV '11}
+}
+
+@phdthesis{agda,
+  author  = {Ulf Norell},
+  title   = {Towards a practical programming language based on dependent type
+             theory},
+  school  = {Department of Computer Science and Engineering, Chalmers University of Technology},
+  year    = 2007,
+  month   = {9},
+  address = {SE-412 96 G\"{o}teborg, Sweden},
+  url     = {https://www.cse.chalmers.se/~ulfn/papers/thesis.pdf}
 }
