@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+texcount -total $(ls [1-9]*)
