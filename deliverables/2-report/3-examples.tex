@@ -160,9 +160,26 @@ double-ended queue with an underlying fixed-size ring buffer (circular
 array)\footnote{The ``wasted'' slot strategy was used to differentiate between
 	``empty'' and ``full'' states \autocite{ringBuffer}}.
 
+The two example data structures can be fully implemented in FGA, with minor
+adjustments. Most notably, FGA does not support mutation via pointers (or
+pointers at all), so functions that ``mutate'' the data structure return updated
+copies in FGA instead. Additionally, user-raised panics (via calls to the Go
+\texttt{panic}) function are not supported, so instead some fallback (such as
+returning the zero-value, or performing a no-op) is chosen instead.
+
 \begin{figure}
-	\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/semidynamicarray/array.go}
-	\caption{``Resizable'' array with a fixed underlying buffer}
+	\noindent\begin{minipage}[t]{.45\linewidth}
+		\lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/benchmarks/benchmarks/semidynamicarray/array.go}
+	\end{minipage}
+	\hfill
+	\noindent\begin{minipage}[t]{.45\linewidth}
+		\lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=35]{../../projects/go-generic-array-sizes/interpreters/fg/examples/semidynamicarray/array.go}
+	\end{minipage}
+	\caption{ ``Resizeable'' array with a fixed underlying buffer. Left-hand side
+		show idiomatic Go implementation, while right-hand side shows FGA
+		compatible implementation. Full code definitions (including
+		\texttt{Nat}) can be found in \hyperref[sec:fg-resizable-array-code]{the
+			appendix}.}
 \end{figure}
 
 \begin{figure}

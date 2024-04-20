@@ -7,3 +7,23 @@
 % https://codereview.stackexchange.com/questions/274860/concept-of-implementing-generic-types-in-c-using-macros
 
 \lstinputlisting[language=C]{examples/macro-generics.c}
+
+\subsection{Full FGA implementation of resizeable arrays}
+\label{sec:fg-resizable-array-code}
+
+In this particular example, the capacity of the resizeable array is hard-coded
+to 5. This can of course be any value, but must be hard-coded without
+generically sized arrays. Because FGA (unlike FGGA) does not support generics at
+all, some structs are monomorphised ``by hand'' to work with all the types
+required for the example, e.g. \texttt{Func} and \texttt{FuncA}.
+
+One may notice that this implementation is much more verbose than the idiomatic
+Go example. This is due to a design decision to keep FGA simple and not
+introduce ``unnecessary'' constructs such as boolean and subtraction (and
+therefore negative integers). Church-like encoding is used for booleans and
+conditional logic \autocite{lambdaCalculus}, whereas natural numbers (that can
+be incremented and decremented for the length of the \texttt{Array}) use
+\texttt{succ}, \texttt{pred} and \texttt{isZero} similarly to how they're found
+in \textcite{tapl}'s calculus of booleans and numbers.
+
+\lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/interpreters/fg/examples/semidynamicarray/array.go}
