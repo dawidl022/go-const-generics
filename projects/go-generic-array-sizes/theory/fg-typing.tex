@@ -186,6 +186,28 @@
         }
         { \Gamma \vdash e_1[e_2] : t }
 
+        \inferrule[t-int-literal-addition]
+        {
+            \Gamma \vdash e_1 : n_1 \\
+            \Gamma \vdash e_2 : n_2 \\
+            n_1 + n_2 = n
+        }
+        {
+            \Gamma \vdash e_1 + e_2 : n
+        }
+
+        \inferrule[t-int-addition]
+        {
+            \Gamma \vdash e_1 : t_1 \\
+            \Gamma \vdash e_2 : t_2 \\
+            t_1 \imp \kw{int} \\
+            t_2 \imp \kw{int} \\
+            \kw{int} \in \{ t_1, t_2 \}
+        }
+        {
+            \Gamma \vdash e_1 + e_2 : \kw{int}
+        }
+
     \end{mathpar}
 
     Programs \hfill \fbox{$P \ok$}
