@@ -1,114 +1,113 @@
 package main
 
-type ResizableArray struct {
-	arr Array
+type Array struct {
+	arr Arr
 	len Nat
 }
 
-func (a ResizableArray) Push(element int) ResizableArray {
-	return a.Capacity().ifLessEqR(a.len,
-		ResizableArrayFunction{a},
-		PushFunction{a, element})
+func (a Array) Push(el int) Array {
+	return a.Cap().ifLessEqA(a.len,
+		ArrayFunc{a},
+		PushFunc{a, el})
+}
+func (f PushFunc) call() Array {
+	return Array{
+		f.a.arr.set(
+			f.a.len.val(), f.el),
+		Succ{f.a.len}}
 }
 
-func (g PushFunction) call() ResizableArray {
-	return ResizableArray{
-		g.a.arr.set(g.a.len.value(), g.element),
-		Succ{g.a.len}}
+func (a Array) Pop() Array {
+	return Array{a.arr, a.len.pred()}
 }
 
-func (a ResizableArray) Pop() ResizableArray {
-	return ResizableArray{a.arr, a.len.pred()}
-}
-
-func (a ResizableArray) Get(i Nat) int {
+func (a Array) Get(i Nat) int {
 	return a.len.ifLessEq(i,
-		IntLiteralFunction{0},
-		ArrGetFunction{a.arr, i.value()})
+		IntFunc{0},
+		ArrGetFunc{a.arr, i.val()})
+}
+func (f ArrGetFunc) call() int {
+	return f.arr[f.i]
 }
 
-func (a ArrGetFunction) call() int {
-	return a.arr[a.i]
-}
-
-func (a ResizableArray) Len() Nat {
+func (a Array) Len() Nat {
 	return a.len
 }
 
-func (a ResizableArray) Capacity() Nat {
+func (a Array) Cap() Nat {
 	return Succ{Succ{Succ{Succ{Succ{Zero{}}}}}}
 }
 
-type EmptyResizableArrFunction struct {
+type EmptyArrayFunc struct {
 }
 
-func (e EmptyResizableArrFunction) call() ResizableArray {
-	return ResizableArray{Array{0, 0, 0, 0, 0}, Zero{}}
+func (e EmptyArrayFunc) call() Array {
+	return Array{Arr{0, 0, 0, 0, 0}, Zero{}}
 }
 
-type Array [5]int
+type Arr [5]int
 
-func (a Array) set(i int, val int) Array {
+func (a Arr) set(i int, val int) Arr {
 	a[i] = val
 	return a
 }
 
 type Nat interface {
-	value() int
+	val() int
 	pred() Nat
-	ifLessEq(other Nat, ifTrue Function, ifFalse Function) int
-	ifLessEqR(other Nat, ifTrue FunctionR, ifFalse FunctionR) ResizableArray
-	isZero() Boolean
-	isZeroR() BooleanR
+	ifLessEq(other Nat, ifTrue Func, ifFalse Func) int
+	ifLessEqA(other Nat, ifTrue FuncA, ifFalse FuncA) Array
+	isZero() Bool
+	isZeroA() BoolA
 }
 
-type Boolean interface {
-	eval(ifTrue Function, ifFalse Function) int
+type Bool interface {
+	eval(ifTrue Func, ifFalse Func) int
 }
 
-type BooleanR interface {
-	eval(ifTrue FunctionR, ifFalse FunctionR) ResizableArray
+type BoolA interface {
+	eval(ifTrue FuncA, ifFalse FuncA) Array
 }
 
-type Function interface {
+type Func interface {
 	call() int
 }
 
-type FunctionR interface {
-	call() ResizableArray
+type FuncA interface {
+	call() Array
 }
 
 type True struct {
 }
 
-type TrueR struct {
+type TrueA struct {
 }
 
-func (t True) eval(ifTrue Function, ifFalse Function) int {
+func (t True) eval(ifTrue Func, ifFalse Func) int {
 	return ifTrue.call()
 }
 
-func (t TrueR) eval(ifTrue FunctionR, ifFalse FunctionR) ResizableArray {
+func (t TrueA) eval(ifTrue FuncA, ifFalse FuncA) Array {
 	return ifTrue.call()
 }
 
 type False struct {
 }
 
-type FalseR struct {
+type FalseA struct {
 }
 
-func (f False) eval(ifTrue Function, ifFalse Function) int {
+func (f False) eval(ifTrue Func, ifFalse Func) int {
 	return ifFalse.call()
 }
 
-func (f FalseR) eval(ifTrue FunctionR, ifFalse FunctionR) ResizableArray {
+func (f FalseA) eval(ifTrue FuncA, ifFalse FuncA) Array {
 	return ifFalse.call()
 }
 
 type Zero struct{}
 
-func (z Zero) value() int {
+func (z Zero) val() int {
 	return 0
 }
 
@@ -116,19 +115,19 @@ func (z Zero) pred() Nat {
 	return z
 }
 
-func (z Zero) isZero() Boolean {
+func (z Zero) isZero() Bool {
 	return True{}
 }
 
-func (z Zero) isZeroR() BooleanR {
-	return TrueR{}
+func (z Zero) isZeroA() BoolA {
+	return TrueA{}
 }
 
-func (z Zero) ifLessEq(other Nat, ifTrue Function, ifFalse Function) int {
+func (z Zero) ifLessEq(other Nat, ifTrue Func, ifFalse Func) int {
 	return ifTrue.call()
 }
 
-func (z Zero) ifLessEqR(other Nat, ifTrue FunctionR, ifFalse FunctionR) ResizableArray {
+func (z Zero) ifLessEqA(other Nat, ifTrue FuncA, ifFalse FuncA) Array {
 	return ifTrue.call()
 }
 
@@ -136,74 +135,76 @@ type Succ struct {
 	predF Nat
 }
 
-func (s Succ) value() int {
-	return s.predF.value() + 1
+func (s Succ) val() int {
+	return s.predF.val() + 1
 }
 
 func (s Succ) pred() Nat {
 	return s.predF
 }
 
-func (s Succ) isZero() Boolean {
+func (s Succ) isZero() Bool {
 	return False{}
 }
 
-func (s Succ) isZeroR() BooleanR {
-	return FalseR{}
+func (s Succ) isZeroA() BoolA {
+	return FalseA{}
 }
 
-func (s Succ) ifLessEq(other Nat, ifTrue Function, ifFalse Function) int {
-	return other.isZero().eval(ifFalse, IfLessEq{s.pred(), other.pred(), ifTrue, ifFalse})
+func (s Succ) ifLessEq(other Nat, ifTrue Func, ifFalse Func) int {
+	return other.isZero().eval(
+		ifFalse, IfLessEq{s.pred(), other.pred(), ifTrue, ifFalse})
 }
 
-func (s Succ) ifLessEqR(other Nat, ifTrue FunctionR, ifFalse FunctionR) ResizableArray {
-	return other.isZeroR().eval(ifFalse, IfLessEqR{s.pred(), other.pred(), ifTrue, ifFalse})
+func (s Succ) ifLessEqA(other Nat, ifTrue FuncA, ifFalse FuncA) Array {
+	return other.isZeroA().eval(
+		ifFalse, IfLessEqR{s.pred(), other.pred(), ifTrue, ifFalse})
 }
 
 type IfLessEq struct {
 	a       Nat
 	b       Nat
-	ifTrue  Function
-	ifFalse Function
+	ifTrue  Func
+	ifFalse Func
 }
 
 type IfLessEqR struct {
 	a       Nat
 	b       Nat
-	ifTrue  FunctionR
-	ifFalse FunctionR
+	ifTrue  FuncA
+	ifFalse FuncA
 }
 
 func (i IfLessEq) call() int {
 	return i.a.ifLessEq(i.b, i.ifTrue, i.ifFalse)
 }
 
-func (i IfLessEqR) call() ResizableArray {
-	return i.a.ifLessEqR(i.b, i.ifTrue, i.ifFalse)
+func (i IfLessEqR) call() Array {
+	return i.a.ifLessEqA(i.b, i.ifTrue, i.ifFalse)
 }
 
-type ResizableArrayFunction struct {
-	a ResizableArray
+type ArrayFunc struct {
+	a Array
 }
 
-func (r ResizableArrayFunction) call() ResizableArray {
+func (r ArrayFunc) call() Array {
 	return r.a
 }
 
-type PushFunction struct {
-	a       ResizableArray
-	element int
+type PushFunc struct {
+	a  Array
+	el int
 }
 
-type ArrGetFunction struct {
-	arr Array
+type ArrGetFunc struct {
+	arr Arr
 	i   int
 }
 
-type IntLiteralFunction struct {
+type IntFunc struct {
 	i int
 }
 
-func (i IntLiteralFunction) call() int {
+func (i IntFunc) call() int {
 	return i.i
 }
