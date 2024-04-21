@@ -59,6 +59,15 @@
             \Delta \vdash e.m(\ov{e}) \yields
             \omega~\cup~\ov{\omega}
         }
+
+        \inferrule[I-add]
+        {
+            \Delta \vdash e \yields \omega \\
+            \Delta \vdash e' \yields \omega' \\
+        }
+        {
+            \Delta \vdash e + e' \yields \omega~\cup~\omega'
+        }
     \end{mathpar}
 
     Method specifications and type literals
@@ -272,6 +281,16 @@
         {
             \Delta \vdash e.m(\ov{e}) \mapsto
             e^\dagger.m(\ov{e^\dagger})
+        }
+
+        \inferrule[m-add]
+        {
+            \Delta \vdash e \mapsto e^\dagger
+            \\
+            \Delta \vdash e' \mapsto e'^\dagger
+        }
+        {
+            \Delta \vdash e + e' \mapsto e^\dagger + e'^\dagger
         }
     \end{mathpar}
 
