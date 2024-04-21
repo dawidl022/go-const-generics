@@ -168,3 +168,37 @@ type ArrayIndex struct {
 	Receiver Expression
 	Index    Expression
 }
+
+type Add struct {
+	Left  Expression
+	Right Expression
+}
+
+func (a Add) IsValue() bool {
+	return false
+}
+
+func (a Add) expressionNode() {
+}
+
+func (a Add) String() string {
+	return fmt.Sprintf("%s + %s", a.Left, a.Right)
+}
+
+func (a Add) Accept(visitor ExpressionVisitor) (Expression, error) {
+	return visitor.VisitAdd(a)
+}
+
+func (a Add) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
+	return visitor.VisitAdd(a)
+}
+
+func (a Add) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (a Add) AcceptMapVisitor(visitor MapVisitor) MapVisitable {
+	//TODO implement me
+	panic("implement me")
+}

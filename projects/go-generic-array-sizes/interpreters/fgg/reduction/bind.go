@@ -74,3 +74,15 @@ func (b BindingVisitor) VisitArrayIndex(a ast.ArrayIndex) (ast.Expression, error
 	boundIndex, err := b.bind(a.Index)
 	return ast.ArrayIndex{Receiver: boundReceiver, Index: boundIndex}, err
 }
+
+func (b BindingVisitor) VisitAdd(a ast.Add) (ast.Expression, error) {
+	left, err := b.bind(a.Left)
+	if err != nil {
+		return nil, err
+	}
+	right, err := b.bind(a.Right)
+	if err != nil {
+		return nil, err
+	}
+	return ast.Add{left, right}, nil
+}

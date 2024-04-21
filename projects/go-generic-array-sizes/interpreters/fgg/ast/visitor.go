@@ -22,6 +22,7 @@ type ExpressionVisitor interface {
 	VisitValueLiteral(v ValueLiteral) (Expression, error)
 	VisitSelect(s Select) (Expression, error)
 	VisitArrayIndex(a ArrayIndex) (Expression, error)
+	VisitAdd(a Add) (Expression, error)
 }
 
 type TypeVisitable interface {
@@ -35,6 +36,7 @@ type TypeVisitor interface {
 	VisitSelect(s Select) (Type, error)
 	VisitArrayIndex(a ArrayIndex) (Type, error)
 	VisitMethodCall(m MethodCall) (Type, error)
+	VisitAdd(a Add) (Type, error)
 }
 
 type EnvVisitable interface {

@@ -285,6 +285,13 @@ func (a *AntlrASTBuilder) VisitTypeParameter(ctx *parser.TypeParameterContext) i
 	return ast.TypeParameter(ctx.ID().GetText())
 }
 
+func (a *AntlrASTBuilder) VisitAdd(ctx *parser.AddContext) interface{} {
+	return ast.Add{
+		Left:  a.Visit(ctx.Expression(0)).(ast.Expression),
+		Right: a.Visit(ctx.Expression(1)).(ast.Expression),
+	}
+}
+
 func (a *AntlrASTBuilder) BuildAST() ast.Program {
 	return a.Visit(a.parseTree).(ast.Program)
 }
