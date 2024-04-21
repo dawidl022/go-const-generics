@@ -69,7 +69,7 @@ func TestArrayDeque_givenElementIsPushedFront_poppingBackReturnsThatElement(t *t
 func TestArrayDeque_givenElementIsPushedBack_poppingFrontReturnsThatElement(t *testing.T) {
 	deque := ArrayDeque{}
 	deque.PushBack(1)
-	assert.Equal(t, 1, deque.PopBack())
+	assert.Equal(t, 1, deque.PopFront())
 }
 
 func TestArrayDeque_givenTwoElementsArePushedFront_arePoppedBackInSameOrder(t *testing.T) {
@@ -144,7 +144,6 @@ func TestArrayDeque_givenAlternatingTwoPushesAndPopsOfOppositeDirections(t *test
 	assert.Equal(t, 10, deque.PopBack())
 	deque.PushFront(20)
 	assert.Equal(t, 20, deque.PopBack())
-	deque.PushBack(30)
 }
 
 func TestArrayDeque_givenDequeIsEmptiedAtMiddle_panicsWhenTryingToPopFront(t *testing.T) {
@@ -211,7 +210,7 @@ func TestArrayDeque_givenDequeFullInMiddle_pushBackPanics(t *testing.T) {
 	for i := 0; i < N; i++ {
 		deque.PushFront(i)
 	}
-	assert.PanicsWithValue(t, "deque is full", func() { deque.PushFront(0) })
+	assert.PanicsWithValue(t, "deque is full", func() { deque.PushBack(0) })
 }
 
 func TestArrayDeque_givenDequeFullInMiddle_pushFrontPanics(t *testing.T) {
