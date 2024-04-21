@@ -112,6 +112,10 @@ func (a ArrayIndex) Accept(visitor TypeVisitor) (Type, error) {
 	return visitor.VisitArrayIndex(a)
 }
 
+func (a Add) Accept(visitor TypeVisitor) (Type, error) {
+	return visitor.VisitAdd(a)
+}
+
 func (t TypeName) AcceptMethodVisitor(visitor MethodVisitor) []MethodSpecification {
 	return visitor.VisitTypeName(t)
 }

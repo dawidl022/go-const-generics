@@ -122,3 +122,8 @@ type ArrayIndex struct {
 	Receiver Expression
 	Index    Expression
 }
+
+type Add struct {
+	Left  Expression
+	Right Expression
+}

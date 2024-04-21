@@ -40,7 +40,8 @@ expression:
 	| expression '.' methodName '(' expressionList ')'	# methodCall
 	| typeName '{' expressionList '}'					# valueLiteral
 	| expression '.' fieldName							# fieldSelect
-	| expression '[' expression ']'						# arrIndex;
+	| expression '[' expression ']'						# arrIndex
+	| expression '+' expression                         # add;
 
 expressionList: expression? (',' expression)*;
 

@@ -27,6 +27,7 @@ type TypeVisitor interface {
 	VisitIntLiteral(i IntegerLiteral) (Type, error)
 	VisitMethodCall(m MethodCall) (Type, error)
 	VisitArrayIndex(a ArrayIndex) (Type, error)
+	VisitAdd(a Add) (Type, error)
 }
 
 type MethodVisitable interface {

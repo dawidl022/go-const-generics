@@ -73,3 +73,7 @@ func (m MethodSignature) String() string {
 func (p MethodParameter) String() string {
 	return fmt.Sprintf("%s %s", p.ParameterName, p.TypeName)
 }
+
+func (a Add) String() string {
+	return fmt.Sprintf("%s + %s", a.Left, a.Right)
+}

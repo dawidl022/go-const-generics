@@ -58,3 +58,15 @@ func (a ArrayIndex) bind(variables map[string]Expression) (Expression, error) {
 	boundIndex, err := a.Index.bind(variables)
 	return ArrayIndex{Receiver: boundReceiver, Index: boundIndex}, err
 }
+
+func (a Add) bind(variables map[string]Expression) (Expression, error) {
+	left, err := a.Left.bind(variables)
+	if err != nil {
+		return nil, err
+	}
+	right, err := a.Right.bind(variables)
+	if err != nil {
+		return nil, err
+	}
+	return Add{left, right}, nil
+}
