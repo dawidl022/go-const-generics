@@ -63,7 +63,7 @@ type EmptyDequeFunc struct {
 }
 
 func (e EmptyDequeFunc) call() Deque {
-	return Deque{Arr{0, 0, 0, 0, 0}, Zero{}, Zero{}}
+	return Deque{Arr{0, 0, 0, 0, 0, 0}, Zero{}, Zero{}}
 }
 
 type CapFunc struct {
@@ -97,10 +97,10 @@ func (f SuccFunc) call() Nat {
 	return Succ{f.n}
 }
 
-type Arr [5 + 1]int
+type Arr [6]int
 
 func (a Arr) set(i int, val int) Arr {
-	a[i] = val
+	a[i] = val;
 	return a
 }
 
