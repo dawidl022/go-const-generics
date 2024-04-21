@@ -5,11 +5,11 @@ type Array struct {
 	len int
 }
 
-func (a *Array) Push(element int) {
+func (a *Array) Push(el int) {
 	if a.len >= N {
 		panic("array is full")
 	}
-	a.arr[a.len] = element
+	a.arr[a.len] = el
 	a.len++
 }
 

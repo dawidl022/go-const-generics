@@ -7,30 +7,30 @@ import (
 )
 
 func TestArrayDeque_givenEmptyDeque_popFrontPanics(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	assert.PanicsWithValue(t, "deque is empty", func() { deque.PopFront() })
 }
 
 func TestArrayDeque_givenEmptyDeque_popBackPanics(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	assert.PanicsWithValue(t, "deque is empty", func() { deque.PopBack() })
 }
 
 func TestArrayDeque_givenElementIsPushedFront_poppingFrontReturnsThatElement(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushFront(1)
 	assert.Equal(t, 1, deque.PopFront())
 }
 
 func TestArrayDeque_givenSoleElementIsPoppedFront_cannotBePoppedAgain(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushFront(1)
 	deque.PopFront()
 	assert.PanicsWithValue(t, "deque is empty", func() { deque.PopFront() })
 }
 
 func TestArrayDeque_givenTwoElementsPushedFront_arePoppedFromFrontInReverseOrder(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushFront(1)
 	deque.PushFront(10)
 	assert.Equal(t, 10, deque.PopFront())
@@ -39,20 +39,20 @@ func TestArrayDeque_givenTwoElementsPushedFront_arePoppedFromFrontInReverseOrder
 }
 
 func TestArrayDeque_givenElementIsPushedBack_poppingBackReturnsThatElement(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	assert.Equal(t, 1, deque.PopBack())
 }
 
 func TestArrayDeque_givenSoleElementIsPoppedBack_cannotBePoppedAgain(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	deque.PopBack()
 	assert.PanicsWithValue(t, "deque is empty", func() { deque.PopBack() })
 }
 
 func TestArrayDeque_givenTwoElementsPushedBack_arePoppedFromBackInReverseOrder(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	deque.PushBack(10)
 	assert.Equal(t, 10, deque.PopBack())
@@ -61,19 +61,19 @@ func TestArrayDeque_givenTwoElementsPushedBack_arePoppedFromBackInReverseOrder(t
 }
 
 func TestArrayDeque_givenElementIsPushedFront_poppingBackReturnsThatElement(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushFront(1)
 	assert.Equal(t, 1, deque.PopBack())
 }
 
 func TestArrayDeque_givenElementIsPushedBack_poppingFrontReturnsThatElement(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	assert.Equal(t, 1, deque.PopFront())
 }
 
 func TestArrayDeque_givenTwoElementsArePushedFront_arePoppedBackInSameOrder(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushFront(1)
 	deque.PushFront(10)
 	assert.Equal(t, 1, deque.PopBack())
@@ -81,7 +81,7 @@ func TestArrayDeque_givenTwoElementsArePushedFront_arePoppedBackInSameOrder(t *t
 }
 
 func TestArrayDeque_givenTwoElementsArePushedBack_arePoppedFrontInSameOrder(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	deque.PushBack(10)
 	assert.Equal(t, 1, deque.PopFront())
@@ -89,7 +89,7 @@ func TestArrayDeque_givenTwoElementsArePushedBack_arePoppedFrontInSameOrder(t *t
 }
 
 func TestArrayDeque_givenAlternatingFrontPushesAndBackPops_popsPushedElements(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushFront(1)
 	assert.Equal(t, 1, deque.PopBack())
 	deque.PushFront(10)
@@ -97,7 +97,7 @@ func TestArrayDeque_givenAlternatingFrontPushesAndBackPops_popsPushedElements(t 
 }
 
 func TestArrayDeque_givenAlternatingBackPushesAndFrontPops_popsPushedElements(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	assert.Equal(t, 1, deque.PopFront())
 	deque.PushBack(10)
@@ -105,7 +105,7 @@ func TestArrayDeque_givenAlternatingBackPushesAndFrontPops_popsPushedElements(t 
 }
 
 func TestArrayDeque_givenAlternatingPushedAndPops_startingWithFront(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushFront(1)
 	assert.Equal(t, 1, deque.PopFront())
 	deque.PushBack(10)
@@ -113,7 +113,7 @@ func TestArrayDeque_givenAlternatingPushedAndPops_startingWithFront(t *testing.T
 }
 
 func TestArrayDeque_givenAlternatingPushedAndPops_startingWithBack(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	assert.Equal(t, 1, deque.PopBack())
 	deque.PushFront(10)
@@ -121,7 +121,7 @@ func TestArrayDeque_givenAlternatingPushedAndPops_startingWithBack(t *testing.T)
 }
 
 func TestArrayDeque_givenAlternatingPushesAndPopsOfOppositeDirections_startingWithFront(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushFront(1)
 	assert.Equal(t, 1, deque.PopBack())
 	deque.PushBack(10)
@@ -129,7 +129,7 @@ func TestArrayDeque_givenAlternatingPushesAndPopsOfOppositeDirections_startingWi
 }
 
 func TestArrayDeque_givenAlternatingPushesAndPopsOfOppositeDirections_startingWithBack(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	assert.Equal(t, 1, deque.PopFront())
 	deque.PushFront(10)
@@ -137,7 +137,7 @@ func TestArrayDeque_givenAlternatingPushesAndPopsOfOppositeDirections_startingWi
 }
 
 func TestArrayDeque_givenAlternatingTwoPushesAndPopsOfOppositeDirections(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	assert.Equal(t, 1, deque.PopFront())
 	deque.PushFront(10)
@@ -147,7 +147,7 @@ func TestArrayDeque_givenAlternatingTwoPushesAndPopsOfOppositeDirections(t *test
 }
 
 func TestArrayDeque_givenDequeIsEmptiedAtMiddle_panicsWhenTryingToPopFront(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	deque.PushBack(2)
 	deque.PopFront()
@@ -156,7 +156,7 @@ func TestArrayDeque_givenDequeIsEmptiedAtMiddle_panicsWhenTryingToPopFront(t *te
 }
 
 func TestArrayDeque_givenDequeIsEmptiedAtMiddle_panicsWhenTryingToPopBack(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushFront(1)
 	deque.PushFront(2)
 	deque.PopBack()
@@ -165,7 +165,7 @@ func TestArrayDeque_givenDequeIsEmptiedAtMiddle_panicsWhenTryingToPopBack(t *tes
 }
 
 func TestArrayDeque_givenDequeFullFromFront_pushFrontPanics(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 
 	for i := 0; i < N; i++ {
 		deque.PushFront(i)
@@ -174,7 +174,7 @@ func TestArrayDeque_givenDequeFullFromFront_pushFrontPanics(t *testing.T) {
 }
 
 func TestArrayDeque_givenDequeFullFromFront_pushBackPanics(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 
 	for i := 0; i < N; i++ {
 		deque.PushFront(i)
@@ -183,7 +183,7 @@ func TestArrayDeque_givenDequeFullFromFront_pushBackPanics(t *testing.T) {
 }
 
 func TestArrayDeque_givenDequeFullFromBack_pushBackPanics(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 
 	for i := 0; i < N; i++ {
 		deque.PushBack(i)
@@ -192,7 +192,7 @@ func TestArrayDeque_givenDequeFullFromBack_pushBackPanics(t *testing.T) {
 }
 
 func TestArrayDeque_givenDequeFullFromBack_pushFrontPanics(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 
 	for i := 0; i < N; i++ {
 		deque.PushBack(i)
@@ -201,7 +201,7 @@ func TestArrayDeque_givenDequeFullFromBack_pushFrontPanics(t *testing.T) {
 }
 
 func TestArrayDeque_givenDequeFullInMiddle_pushBackPanics(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushBack(1)
 	deque.PushBack(2)
 	deque.PopFront()
@@ -214,7 +214,7 @@ func TestArrayDeque_givenDequeFullInMiddle_pushBackPanics(t *testing.T) {
 }
 
 func TestArrayDeque_givenDequeFullInMiddle_pushFrontPanics(t *testing.T) {
-	deque := ArrayDeque{}
+	deque := Deque{}
 	deque.PushFront(1)
 	deque.PushFront(2)
 	deque.PopBack()

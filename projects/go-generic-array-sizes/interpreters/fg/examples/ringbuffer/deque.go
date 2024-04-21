@@ -7,65 +7,44 @@ type Deque struct {
 }
 
 func (d Deque) PushFront(el int) Deque {
-	return d.succ(d.front).ifEqD(d.back,
-		DequeFunc{d},
-		PushFrontFunc{d, el})
+	return d.succ(d.front).ifEqD(d.back, DequeFunc{d}, PushFrontFunc{d, el})
 }
 func (f PushFrontFunc) call() Deque {
 	return Deque{
 		f.d.arr.set(f.d.front.val(), f.el),
-		f.d.succ(f.d.front),
-		f.d.back}
+		f.d.succ(f.d.front), f.d.back}
 }
 
 func (d Deque) PopFront() Deque {
-	return d.front.ifEqD(d.back,
-		DequeFunc{d},
-		PopFrontFunc{d})
+	return d.front.ifEqD(d.back, DequeFunc{d}, PopFrontFunc{d})
 }
 func (f PopFrontFunc) call() Deque {
-	return Deque{
-		f.d.arr,
-		f.d.pred(f.d.front),
-		f.d.back}
+	return Deque{f.d.arr, f.d.pred(f.d.front), f.d.back}
 }
 
 func (d Deque) GetFront() int {
 	return d.front.ifEq(d.back,
-		IntFunc{0},
-		ArrGetFunc{d.arr, d.pred(d.front).val()})
+		IntFunc{0}, ArrGetFunc{d.arr, d.pred(d.front).val()})
 }
 
 func (d Deque) PushBack(el int) Deque {
-	return d.front.ifEqD(d.pred(d.back),
-		DequeFunc{d},
-		PushBackFunc{d, el})
+	return d.front.ifEqD(d.pred(d.back), DequeFunc{d}, PushBackFunc{d, el})
 }
 func (f PushBackFunc) call() Deque {
 	return Deque{
 		f.d.arr.set(f.d.pred(f.d.back).val(), f.el),
-		f.d.front,
-		f.d.pred(f.d.back),
-	}
+		f.d.front, f.d.pred(f.d.back)}
 }
 
 func (d Deque) PopBack() Deque {
-	return d.front.ifEqD(d.back,
-		DequeFunc{d},
-		PopBackFunc{d})
+	return d.front.ifEqD(d.back, DequeFunc{d}, PopBackFunc{d})
 }
 func (f PopBackFunc) call() Deque {
-	return Deque{
-		f.d.arr,
-		f.d.front,
-		f.d.succ(f.d.back),
-	}
+	return Deque{f.d.arr, f.d.front, f.d.succ(f.d.back)}
 }
 
 func (d Deque) GetBack() int {
-	return d.front.ifEq(d.back,
-		IntFunc{0},
-		ArrGetFunc{d.arr, d.back.val()})
+	return d.front.ifEq(d.back, IntFunc{0}, ArrGetFunc{d.arr, d.back.val()})
 }
 
 func (d Deque) pred(n Nat) Nat {

@@ -169,11 +169,13 @@ returning the zero-value, or performing a no-op) is chosen instead.
 
 \begin{figure}
 	\noindent\begin{minipage}[t]{.45\linewidth}
-		\lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/benchmarks/benchmarks/semidynamicarray/array.go}
+		\lstinputlisting[language=Go, tabsize=4, firstline=3]
+		{../../projects/go-generic-array-sizes/benchmarks/benchmarks/semidynamicarray/array.go}
 	\end{minipage}
 	\hfill
 	\noindent\begin{minipage}[t]{.45\linewidth}
-		\lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=35]{../../projects/go-generic-array-sizes/interpreters/fg/examples/semidynamicarray/array.go}
+		\lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=35]
+		{../../projects/go-generic-array-sizes/interpreters/fg/examples/semidynamicarray/array.go}
 	\end{minipage}
 	\caption{ ``Resizeable'' array with a fixed underlying buffer. Left-hand side
 		shows idiomatic Go implementation, while right-hand side shows FGA
@@ -184,5 +186,13 @@ returning the zero-value, or performing a no-op) is chosen instead.
 
 \begin{figure}
 	\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/ringbuffer/deque.go}
-	\caption{Double-ended queue (deque) with a fixed underlying ring buffer}
+	\caption{Double-ended queue (deque) with a fixed underlying ring buffer implemented in idiomatic Go}
+\end{figure}
+
+\begin{figure}
+	\lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=48, basicstyle=\small\ttfamily, emptylines=0]
+	{../../projects/go-generic-array-sizes/interpreters/fg/examples/ringbuffer/deque.go}
+	\caption{Double-ended queue (deque) with a fixed underlying ring buffer
+		implemented in FGA. Full code definitions can be
+		found in \hyperref[sec:fg-deque-code]{the appendix}.}
 \end{figure}

@@ -1,37 +1,37 @@
 package ringbuffer
 
-type ArrayDeque struct {
+type Deque struct {
 	arr   [N + 1]int // "waste" a slot to detect fullness
 	front int
 	back  int
 }
 
-func (a *ArrayDeque) PushFront(element int) {
-	if a.wrapped(a.front+1) == a.back { panic("deque is full") }
-	a.arr[a.front] = element
-	a.front = a.wrapped(a.front + 1)
+func (d *Deque) PushFront(el int) {
+	if d.wrapped(d.front+1) == d.back { panic("deque is full") }
+	d.arr[d.front] = el
+	d.front = d.wrapped(d.front + 1)
 }
 
-func (a *ArrayDeque) PopFront() int {
-	if a.front == a.back { panic("deque is empty") }
-	a.front = a.wrapped(a.front - 1)
-	return a.arr[a.front]
+func (d *Deque) PopFront() int {
+	if d.front == d.back { panic("deque is empty") }
+	d.front = d.wrapped(d.front - 1)
+	return d.arr[d.front]
 }
 
-func (a *ArrayDeque) PushBack(element int) {
-	if a.front == a.wrapped(a.back-1) { panic("deque is full") }
-	a.back = a.wrapped(a.back - 1)
-	a.arr[a.back] = element
+func (d *Deque) PushBack(element int) {
+	if d.front == d.wrapped(d.back-1) { panic("deque is full") }
+	d.back = d.wrapped(d.back - 1)
+	d.arr[d.back] = element
 }
 
-func (a *ArrayDeque) PopBack() int {
-	if a.front == a.back { panic("deque is empty") }
-	el := a.arr[a.back]
-	a.back = a.wrapped(a.back + 1)
+func (d *Deque) PopBack() int {
+	if d.front == d.back { panic("deque is empty") }
+	el := d.arr[d.back]
+	d.back = d.wrapped(d.back + 1)
 	return el
 }
 
-func (a *ArrayDeque) wrapped(n int) int {
+func (d *Deque) wrapped(n int) int {
 	if n < 0 { return N }
 	if n > N { return 0 }
 	return n
