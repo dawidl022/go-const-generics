@@ -305,6 +305,32 @@
             }
             { \black{\Delta \stoup}~\Gamma \vdash e.f_i : \black{\tau}_i }
         }
+
+        \gray{
+            \inferrule[t-int-literal-addition]
+            {
+                \black{\Delta \stoup}~\Gamma \vdash e_2 : n_2 \\
+                \black{\Delta \stoup}~\Gamma \vdash e_1 : n_1 \\
+                n_1 + n_2 = n
+            }
+            {
+                \black{\Delta \stoup}~\Gamma \vdash e_1 + e_2 : n
+            }
+        }
+
+        \gray{
+            \inferrule[t-int-addition]
+            {
+                \black{\Delta \stoup}~\Gamma \vdash e_1 : \black{\tau}_1 \\
+                \black{\Delta \stoup}~\Gamma \vdash e_2 : \black{\tau}_2 \\
+                \black{\tau}_1 \imp \kw{int} \\
+                \black{\tau}_2 \imp \kw{int} \\
+                \kw{int} \in \{ \black{\tau}_1, \black{\tau}_2 \}
+            }
+            {
+                \black{\Delta \stoup}~\Gamma \vdash e_1 + e_2 : \kw{int}
+            }
+        }
     \end{mathpar}
 
     Programs  \hfill \fbox{$P \ok$}

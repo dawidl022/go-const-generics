@@ -69,7 +69,9 @@
                     Evaluation context          & $E$ ::=                      \\
                     \quad Hole                  & \quad $\Hole$                \\
                     \quad Method call receiver  & \quad $E.m(\ov{e})$          \\
-                    \quad Method call arguments & \quad $v.m(\ov{v},E,\ov{e})$
+                    \quad Method call arguments & \quad $v.m(\ov{v},E,\ov{e})$ \\
+                    \quad Addition LHS          & \quad $E + e$                \\
+                    \quad Addition RHS          & \quad $n + E$
                 \end{tabular}
             \end{minipage}
             \begin{minipage}{0.4\textwidth}
@@ -111,7 +113,15 @@
                 n \in \indexbounds(\black{\tau_A}) \\
                 \isarraysetmethod(\black{\tau_A}.m) \\
             }
-            { \black{\tau_A}\br{\ov{v}}.m(n, v) \becomes \black{\tau_A}\br{\ov{v}}[n := v]}
+            { \black{\tau_A}\br{\ov{v}}.m(n, v) \becomes
+                \black{\tau_A}\br{\ov{v}}[n := v]}
+
+            \inferrule[r-addition]
+            {
+                n_1 + n_2 = n
+            }{
+                n_1 + n_2 \becomes n
+            }
 
             \inferrule[r-context]
             { d \becomes e }
