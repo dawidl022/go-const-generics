@@ -48,7 +48,7 @@ func (e EmptyArrayFunc) call() Array {
 type Arr [5]int
 
 func (a Arr) set(i int, val int) Arr {
-	a[i] = val
+	a[i] = val;
 	return a
 }
 
