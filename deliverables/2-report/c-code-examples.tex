@@ -24,6 +24,11 @@ therefore negative integers). Church-like encoding is used for booleans and
 conditional logic \autocite{lambdaCalculus}, whereas natural numbers (that can
 be incremented and decremented for the length of the \texttt{Array}) use
 \texttt{succ}, \texttt{pred} and \texttt{isZero} similarly to how they're found
-in \textcite{tapl}'s calculus of booleans and numbers.
+in \textcite{tapl}'s calculus of booleans and numbers. Functions have been
+encoded in a similar way as in \emph{Featherweight Go} \autocite{fg} --- structs
+are created to hold arguments, which implement the \texttt{Func} interface with
+a single \texttt{call} method that takes no arguments. This way we can create
+arbitrary closures (callbacks) for conditional selection.
 
+\clearpage
 \lstinputlisting[language=Go, tabsize=4, firstline=3]{../../projects/go-generic-array-sizes/interpreters/fg/examples/semidynamicarray/array.go}
