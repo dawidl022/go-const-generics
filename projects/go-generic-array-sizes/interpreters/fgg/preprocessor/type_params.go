@@ -328,3 +328,15 @@ func (t typeParamVisitor) VisitMapMethodSignature(m ast.MethodSignature) (ast.Ma
 		ReturnType:       identifiedReturn.(ast.Type),
 	}, nil
 }
+
+func (t typeParamVisitor) VisitMapAdd(a ast.Add) (ast.MappingVisitable, error) {
+	left, err := t.identifyTypeParams(a.Left)
+	if err != nil {
+		return nil, err
+	}
+	right, err := t.identifyTypeParams(a.Right)
+	if err != nil {
+		return nil, err
+	}
+	return ast.Add{left.(ast.Expression), right.(ast.Expression)}, nil
+}

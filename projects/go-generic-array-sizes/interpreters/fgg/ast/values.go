@@ -28,3 +28,7 @@ func (s Select) IsValue() bool {
 func (a ArrayIndex) IsValue() bool {
 	return false
 }
+
+func (a Add) IsValue() bool {
+	return false
+}

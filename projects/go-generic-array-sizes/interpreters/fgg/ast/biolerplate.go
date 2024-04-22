@@ -57,6 +57,9 @@ func (s Select) expressionNode() {
 func (a ArrayIndex) expressionNode() {
 }
 
+func (a Add) expressionNode() {
+}
+
 func (c ConstType) typeNode() {
 }
 
@@ -100,6 +103,10 @@ func (a ArrayIndex) Accept(visitor ExpressionVisitor) (Expression, error) {
 	return visitor.VisitArrayIndex(a)
 }
 
+func (a Add) Accept(visitor ExpressionVisitor) (Expression, error) {
+	return visitor.VisitAdd(a)
+}
+
 func (p Program) Accept(visitor Visitor) error {
 	return visitor.VisitProgram(p)
 }
@@ -126,6 +133,10 @@ func (s Select) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 
 func (a ArrayIndex) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
 	return visitor.VisitArrayIndex(a)
+}
+
+func (a Add) AcceptTypeVisitor(visitor TypeVisitor) (Type, error) {
+	return visitor.VisitAdd(a)
 }
 
 func (t TypeDeclaration) Accept(visitor Visitor) error {
@@ -284,6 +295,10 @@ func (p MethodParameter) AcceptMappingVisitor(visitor MappingVisitor) (MappingVi
 	return visitor.VisitMapMethodParameter(p)
 }
 
+func (a Add) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
+	return visitor.VisitMapAdd(a)
+}
+
 func (c ConstType) AcceptMappingVisitor(visitor MappingVisitor) (MappingVisitable, error) {
 	return visitor.VisitMapConstType(c)
 }
@@ -362,6 +377,10 @@ func (s Select) AcceptMapVisitor(visitor MapVisitor) MapVisitable {
 
 func (a ArrayIndex) AcceptMapVisitor(visitor MapVisitor) MapVisitable {
 	return visitor.MapArrayIndex(a)
+}
+
+func (a Add) AcceptMapVisitor(visitor MapVisitor) MapVisitable {
+	return visitor.MapAdd(a)
 }
 
 func (p MethodParameter) AcceptMapVisitor(visitor MapVisitor) MapVisitable {

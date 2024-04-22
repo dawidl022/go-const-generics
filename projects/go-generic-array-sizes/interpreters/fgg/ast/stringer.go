@@ -186,3 +186,7 @@ func (m MethodReceiver) String() string {
 		TypeArguments: typeParams,
 	})
 }
+
+func (a Add) String() string {
+	return fmt.Sprintf("%s + %s", a.Left, a.Right)
+}

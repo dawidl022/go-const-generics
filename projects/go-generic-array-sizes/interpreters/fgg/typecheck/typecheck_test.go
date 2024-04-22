@@ -10,17 +10,16 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
 )
 
-func parseFGGProgram(code []byte) ast.Program {
+func parseFGGProgram(code []byte) (ast.Program, error) {
 	p := testrunners.ParseProgram[ast.Program, *parser.FGGParser](code, parsetree.ParseFGGActions{})
-	p, err := preprocessor.IdentifyTypeParams(p)
-	if err != nil {
-		panic(err)
-	}
-	return p
+	return preprocessor.IdentifyTypeParams(p)
 }
 
 func parseAndTypeCheckFGG(program []byte) error {
-	p := parseFGGProgram(program)
+	p, err := parseFGGProgram(program)
+	if err != nil {
+		return err
+	}
 	return TypeCheck(p)
 }
 

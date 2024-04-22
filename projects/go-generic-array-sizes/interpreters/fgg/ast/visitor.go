@@ -103,6 +103,7 @@ type MappingVisitor interface {
 	VisitMapTypeParameter(t TypeParameter) (MappingVisitable, error)
 	VisitMapField(f Field) (MappingVisitable, error)
 	VisitMapMethodSignature(m MethodSignature) (MappingVisitable, error)
+	VisitMapAdd(a Add) (MappingVisitable, error)
 }
 
 // MapVisitable is the same as MappingVisitable above, but does not return error
@@ -133,6 +134,7 @@ type MapVisitor interface {
 	MapField(f Field) MapVisitable
 	MapMethodSignature(m MethodSignature) MapVisitable
 	MapMethodReceiver(m MethodReceiver) MapVisitable
+	MapAdd(a Add) MapVisitable
 }
 
 type RefVisitable interface {
