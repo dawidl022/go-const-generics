@@ -270,6 +270,16 @@ func TestMonomorphise_givenNestedTypeParameterConstraint(t *testing.T) {
 	assertMonomorphises(t, nestedTypeParamConstraintInput, nestedTypeParamConstraintOutput)
 }
 
+//go:embed testdata/addition/input/addition.go
+var additionInput []byte
+
+//go:embed testdata/addition/output/addition.go
+var additionOutput []byte
+
+func TestMonomorphise_givenAdditionExpression(t *testing.T) {
+	assertMonomorphises(t, additionInput, additionOutput)
+}
+
 func assertMonomorphises(t *testing.T, input []byte, expected []byte) {
 	p := parseProgram(input)
 	output := codegen.GenerateSourceCode(Monomorphise(p))

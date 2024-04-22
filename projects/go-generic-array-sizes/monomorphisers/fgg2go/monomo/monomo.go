@@ -365,3 +365,10 @@ func (v visitor) MapMethodSignature(m ast.MethodSignature) ast.MapVisitable {
 		ReturnType:       v.monomorphise(m.ReturnType).(ast.Type),
 	}
 }
+
+func (v visitor) MapAdd(a ast.Add) ast.MapVisitable {
+	return ast.Add{
+		Left:  v.monomorphise(a.Left).(ast.Expression),
+		Right: v.monomorphise(a.Right).(ast.Expression),
+	}
+}
