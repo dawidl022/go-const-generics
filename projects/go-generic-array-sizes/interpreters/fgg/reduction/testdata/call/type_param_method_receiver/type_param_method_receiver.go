@@ -1,0 +1,1 @@
+package type_param_method_receiver

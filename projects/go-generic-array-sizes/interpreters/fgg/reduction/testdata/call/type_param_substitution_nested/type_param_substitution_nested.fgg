@@ -1,0 +1,20 @@
+package main
+
+type any interface {}
+
+type Foo [N const, T1 any, T2 any] struct {
+	a Bar[N, T1, T2]
+	b Bar[N, T2, T1]
+}
+
+type Bar [N const, T1 any, T2 any] struct {
+}
+
+
+func (a Foo[N, T1, T2]) new() Foo[N, T1, T2] {
+	return Foo[N, T1, T2]{Bar[N, T1, T2]{}, Bar[N, T2, T1]{}}
+}
+
+func main() {
+	_ = Foo[2, int, any]{Bar[2, int, any]{}, Bar[2, any, int]{}}.new()
+}
