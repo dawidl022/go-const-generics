@@ -13,7 +13,7 @@ import (
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/loop"
 )
 
-//go:embed testdata/array.go
+//go:embed testdata/array.fgg
 var arrayLibGo string
 
 const mainTemplate = `func main() {

@@ -8,24 +8,20 @@ import (
 )
 
 func (t typeVisitor) typeCheckStructLiteral(v ast.ValueLiteral) error {
-	namedValueType, isNamedValueType := v.Type.(ast.NamedType)
-	if !isNamedValueType {
-		panic("untested branch")
-	}
-	fields, err := auxiliary.Fields(t.declarations, namedValueType)
+	fields, err := auxiliary.Fields(t.declarations, v.Type)
 	if err != nil {
 		panic("type checker should not call fields on non-struct type literal")
 	}
-	typeDecl := t.typeDeclarationOf(namedValueType.TypeName)
-	substituter, err := newTypeParamSubstituter(namedValueType.TypeArguments, typeDecl.TypeParameters)
+	typeDecl := t.typeDeclarationOf(v.Type.TypeName)
+	substituter, err := newTypeParamSubstituter(v.Type.TypeArguments, typeDecl.TypeParameters)
 	if err != nil {
 		return err
 	}
 	if len(v.Values) != len(fields) {
 		return fmt.Errorf("struct literal of type %q requires %d values, but got %d",
-			namedValueType.TypeName, len(fields), len(v.Values))
+			v.Type.TypeName, len(fields), len(v.Values))
 	}
-	//envChecker := t.NewTypeEnvTypeCheckingVisitor(typeDecl.TypeParameters)
+
 	for i, f := range fields {
 		fieldType, err := t.typeOf(v.Values[i])
 		if err != nil {
@@ -36,7 +32,7 @@ func (t typeVisitor) typeCheckStructLiteral(v ast.ValueLiteral) error {
 		err = t.CheckIsSubtypeOf(fieldType, expectedFieldType)
 		if err != nil {
 			return fmt.Errorf("cannot use %q as field %q of struct %q: %w",
-				v.Values[i], f.Name, namedValueType.TypeName, err)
+				v.Values[i], f.Name, v.Type.TypeName, err)
 		}
 	}
 	return nil

@@ -164,6 +164,10 @@ func (a *AntlrASTBuilder) VisitMethodParameter(ctx *parser.MethodParameterContex
 	}
 }
 
+func (a *AntlrASTBuilder) VisitType(ctx *parser.TypeContext) interface{} {
+	return a.Visit(ctx.GetChild(0).(antlr.ParseTree))
+}
+
 func (a *AntlrASTBuilder) VisitNamedType(ctx *parser.NamedTypeContext) interface{} {
 	namedType := ast.NamedType{
 		TypeName: a.Visit(ctx.TypeName()).(ast.TypeName),
@@ -172,10 +176,6 @@ func (a *AntlrASTBuilder) VisitNamedType(ctx *parser.NamedTypeContext) interface
 		namedType.TypeArguments = a.Visit(ctx.TypeArguments()).([]ast.Type)
 	}
 	return namedType
-}
-
-func (a *AntlrASTBuilder) VisitIntType(ctx *parser.IntTypeContext) interface{} {
-	return a.Visit(ctx.IntegerLiteral())
 }
 
 func (a *AntlrASTBuilder) VisitTypeParameters(ctx *parser.TypeParametersContext) interface{} {
@@ -222,7 +222,7 @@ func (a *AntlrASTBuilder) VisitDecimalLiteral(ctx *parser.DecimalLiteralContext)
 
 func (a *AntlrASTBuilder) VisitValueLiteral(ctx *parser.ValueLiteralContext) interface{} {
 	return ast.ValueLiteral{
-		Type:   a.Visit(ctx.Type_()).(ast.Type),
+		Type:   a.Visit(ctx.NamedType()).(ast.NamedType),
 		Values: a.Visit(ctx.ExpressionList()).([]ast.Expression),
 	}
 }

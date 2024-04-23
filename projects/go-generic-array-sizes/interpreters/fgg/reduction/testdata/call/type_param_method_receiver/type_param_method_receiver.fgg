@@ -5,7 +5,7 @@ type any interface {}
 type Foo [N const, T any] struct {}
 
 func (a Foo[N, T]) new() Foo[N, T] {
-	return Foo[10, any]{}
+	return Foo[N, T]{}.new()
 }
 
 func main() {

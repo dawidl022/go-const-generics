@@ -89,7 +89,7 @@ func (v methodVisitor) valueTypeMethods(typeName ast.TypeName) []ast.MethodSpeci
 			continue
 		}
 		arraySetMethodDecl, isArraySetMethodDecl := decl.(ast.ArraySetMethodDeclaration)
-		if isArraySetMethodDecl {
+		if isArraySetMethodDecl && arraySetMethodDecl.MethodReceiver.TypeName == typeName {
 			res = append(res, arraySetMethodDecl.MethodSpecification())
 		}
 	}

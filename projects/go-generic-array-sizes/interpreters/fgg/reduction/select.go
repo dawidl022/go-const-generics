@@ -15,11 +15,7 @@ func (r ReducingVisitor) VisitSelect(s ast.Select) (ast.Expression, error) {
 	if !isReceiverValue {
 		return nil, fmt.Errorf("cannot access field %q on primitive value %s", s.FieldName, s.Receiver)
 	}
-	namedReceiverType, isNamedReceiverType := receiver.Type.(ast.NamedType)
-	if !isNamedReceiverType {
-		return nil, fmt.Errorf("type %q is not a valid value literal type", receiver.Type)
-	}
-	structFields, err := auxiliary.Fields(r.declarations, namedReceiverType)
+	structFields, err := auxiliary.Fields(r.declarations, receiver.Type)
 	if err != nil {
 		return nil, err
 	}

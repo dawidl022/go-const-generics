@@ -283,7 +283,7 @@ func (v visitor) MapValueLiteral(value ast.ValueLiteral) ast.MapVisitable {
 		monoValues = append(monoValues, v.monomorphise(val).(ast.Expression))
 	}
 	return ast.ValueLiteral{
-		Type:   v.monomorphise(value.Type).(ast.Type),
+		Type:   v.monomorphise(value.Type).(ast.NamedType),
 		Values: monoValues,
 	}
 }

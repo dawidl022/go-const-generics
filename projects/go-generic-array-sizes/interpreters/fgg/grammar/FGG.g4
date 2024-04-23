@@ -37,9 +37,10 @@ methodSignature: '(' methodParams ')' type;
 methodParams: methodParameter? (',' methodParameter)*;
 methodParameter: variable type;
 
-type:
-	typeName typeArguments?	# namedType
-	| integerLiteral			# intType;
+type: namedType | integerLiteral;
+
+namedType: typeName typeArguments?;
+
 
 typeParameters: '[' typeParameter (',' typeParameter)* ']';
 typeParameterConstraint: typeParameter bound;
@@ -53,7 +54,7 @@ expression:
 	integerLiteral										# intLiteral
 	| variable											# var
 	| expression '.' methodName '(' expressionList ')'	# methodCall
-	| type '{' expressionList '}'						# valueLiteral
+	| namedType '{' expressionList '}'						# valueLiteral
 	| expression '.' fieldName							# fieldSelect
 	| expression '[' expression ']'						# arrIndex
 	| expression '+' expression                         # add;

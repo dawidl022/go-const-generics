@@ -1,0 +1,16 @@
+package main
+
+type any interface {}
+
+type Foo [N const, T any] struct {
+	a int
+}
+
+func (a Foo[N, T]) new() int {
+	return Foo[N, T]{}.a +  Foo[N, T]{}.a
+}
+
+func main() {
+	_ = Foo[2, int]{}.new()
+}
+a

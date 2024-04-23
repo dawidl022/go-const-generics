@@ -5,14 +5,14 @@ import (
 	"testing"
 )
 
-//go:embed testdata/struct_literal/generic/generic.go
+//go:embed testdata/struct_literal/generic/generic.fgg
 var structLiteralGenericFgg []byte
 
 func TestTypeCheck_givenStructLiteralWithCorrectlyInstantiatedTypeParameters_returnsNoError(t *testing.T) {
 	assertPassesTypeCheck(t, structLiteralGenericFgg)
 }
 
-//go:embed testdata/struct_literal/illegal_type_arg_subtype/illegal_type_arg_subtype.go
+//go:embed testdata/struct_literal/illegal_type_arg_subtype/illegal_type_arg_subtype.fgg
 var structLiteralIllegalTypeArgSubtypeFgg []byte
 
 func TestTypeCheck_givenStructLiteralWithIncorrectlyInstantiatedTypeParameters_returnsError(t *testing.T) {
@@ -21,7 +21,7 @@ func TestTypeCheck_givenStructLiteralWithIncorrectlyInstantiatedTypeParameters_r
 			`type "int" is not a subtype of "fooer": missing methods: "foo() int"`)
 }
 
-//go:embed testdata/struct_literal/generic_invalid_values/generic_invalid_values.go
+//go:embed testdata/struct_literal/generic_invalid_values/generic_invalid_values.fgg
 var structLiteralGenericInvalidValuesFgg []byte
 
 func TestTypeCheck_givenStructLiteralWithValueNotSubtypeOfField_returnsError(t *testing.T) {

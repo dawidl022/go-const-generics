@@ -106,3 +106,11 @@ func TestTypeCheck_givenArraySetMethodDeclarationWithParameterNameRedeclared_ret
 	assertFailsTypeCheckWithError(t, arraySetRedeclaredParameterNameGo,
 		`ill-typed declaration: array-set method "Arr.set": redeclared "x"`)
 }
+
+//go:embed testdata/array_set_method_declaration/scope_leak/scope_leak.go
+var arraySetMethodDeclarationScopeLeakGo []byte
+
+func TestTypeCheck_givenArraySetMethodOnOneTypeCannotBeAccessedViaAnotherType(t *testing.T) {
+	assertFailsTypeCheckWithError(t, arraySetMethodDeclarationScopeLeakGo,
+		`ill-typed main expression: no method named "set" on receiver of type "Foo"`)
+}

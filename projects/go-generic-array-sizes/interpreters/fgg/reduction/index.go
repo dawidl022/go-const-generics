@@ -38,12 +38,7 @@ func (r ReducingVisitor) arrayIndexWithReducedIndex(a ast.ArrayIndex) (ast.Expre
 func (r ReducingVisitor) reduceArrayIndex(receiver ast.ValueLiteral, argument ast.IntegerLiteral) (ast.Expression, error) {
 	index := argument.IntValue
 
-	namedReceiverType, isNamedReceiverType := receiver.Type.(ast.NamedType)
-	if !isNamedReceiverType {
-		return nil, fmt.Errorf("type %q is not a valid value literal type", receiver.Type)
-	}
-
-	withinBounds, err := inIndexBounds(r.declarations, namedReceiverType, index)
+	withinBounds, err := inIndexBounds(r.declarations, receiver.Type, index)
 	if err != nil {
 		return nil, fmt.Errorf("could not check index bounds of %q: %w", receiver, err)
 	}

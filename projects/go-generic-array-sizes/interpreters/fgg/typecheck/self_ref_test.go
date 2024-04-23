@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-//go:embed testdata/self_ref/self_ref_generic/self_ref_generic.go
+//go:embed testdata/self_ref/self_ref_generic/self_ref_generic.fgg
 var selfRefGenericFgg []byte
 
 func TestTypeCheck_givenGenericTypeIsSelfReferential_returnsError(t *testing.T) {
@@ -14,7 +14,7 @@ func TestTypeCheck_givenGenericTypeIsSelfReferential_returnsError(t *testing.T) 
 			`field "f" of type "Foo"`)
 }
 
-//go:embed testdata/self_ref/self_ref_in_type_arg/self_ref_in_type_arg.go
+//go:embed testdata/self_ref/self_ref_in_type_arg/self_ref_in_type_arg.fgg
 var selfRefInTypeArgFgg []byte
 
 func TestTypeCheck_givenSelfReferenceViaTypeArgument_returnsError(t *testing.T) {
@@ -24,7 +24,7 @@ func TestTypeCheck_givenSelfReferenceViaTypeArgument_returnsError(t *testing.T) 
 			`field "b" of type "Bar"`)
 }
 
-//go:embed testdata/self_ref/self_ref_instantiation/self_ref_instantiation.go
+//go:embed testdata/self_ref/self_ref_instantiation/self_ref_instantiation.fgg
 var selfRefInstantiationFgg []byte
 
 // type instantiations are guaranteed to not be self-referential if the type declaration is not
@@ -32,7 +32,7 @@ func TestTypeCheck_givenTypeIsInstantiatedWithItself_passesTypeCheck(t *testing.
 	assertPassesTypeCheck(t, selfRefInstantiationFgg)
 }
 
-//go:embed testdata/self_ref/self_ref_nested/self_ref_nested.go
+//go:embed testdata/self_ref/self_ref_nested/self_ref_nested.fgg
 var selfRefNestedFgg []byte
 
 func TestTypeCheck_givenNestedSelfReferentialType_returnsError(t *testing.T) {
@@ -43,7 +43,7 @@ func TestTypeCheck_givenNestedSelfReferentialType_returnsError(t *testing.T) {
 			`field "baz" of type "Baz"`)
 }
 
-//go:embed testdata/self_ref/self_ref_indirect/self_ref_indirect.go
+//go:embed testdata/self_ref/self_ref_indirect/self_ref_indirect.fgg
 var selfRefIndirectFgg []byte
 
 // this test program crashes the official Go compiler as of version 1.21.3
@@ -56,7 +56,7 @@ func TestTypeCheck_givenIndirectSelfReferentialType_returnsError(t *testing.T) {
 			`field "baz" of type "Baz"`)
 }
 
-//go:embed testdata/self_ref/self_ref_generic_array/self_ref_generic_array.go
+//go:embed testdata/self_ref/self_ref_generic_array/self_ref_generic_array.fgg
 var selfRefGenericArrayFgg []byte
 
 func TestTypeCheck_givenSelfReferentialGenericArrayType_returnsError(t *testing.T) {
@@ -65,7 +65,7 @@ func TestTypeCheck_givenSelfReferentialGenericArrayType_returnsError(t *testing.
 			`array element type "Arr"`)
 }
 
-//go:embed testdata/self_ref/self_ref_generic_const_array/self_ref_generic_const_array.go
+//go:embed testdata/self_ref/self_ref_generic_const_array/self_ref_generic_const_array.fgg
 var selfRefGenericConstArrayFgg []byte
 
 func TestTypeCheck_givenSelfReferentialConstGenericArrayType_returnsError(t *testing.T) {
@@ -74,7 +74,7 @@ func TestTypeCheck_givenSelfReferentialConstGenericArrayType_returnsError(t *tes
 			`array element type "Arr"`)
 }
 
-//go:embed testdata/self_ref/self_ref_in_type_arg_array/self_ref_in_type_arg_array.go
+//go:embed testdata/self_ref/self_ref_in_type_arg_array/self_ref_in_type_arg_array.fgg
 var selfRefInTypeArgArrayFgg []byte
 
 func TestTypeCheck_givenGenericArraySelfReferenceViaTypeArgument_returnsError(t *testing.T) {
@@ -84,7 +84,7 @@ func TestTypeCheck_givenGenericArraySelfReferenceViaTypeArgument_returnsError(t 
 			`array element type "Bar"`)
 }
 
-//go:embed testdata/self_ref/self_ref_in_type_arg_const_array/self_ref_in_type_arg_const_array.go
+//go:embed testdata/self_ref/self_ref_in_type_arg_const_array/self_ref_in_type_arg_const_array.fgg
 var selfRefInTypeArgConstArrayFgg []byte
 
 func TestTypeCheck_givenConstGenericArraySelfReferenceViaTypeArgument_returnsError(t *testing.T) {
@@ -94,7 +94,7 @@ func TestTypeCheck_givenConstGenericArraySelfReferenceViaTypeArgument_returnsErr
 			`array element type "Bar"`)
 }
 
-//go:embed testdata/self_ref/self_ref_indirect_array/self_ref_indirect_array.go
+//go:embed testdata/self_ref/self_ref_indirect_array/self_ref_indirect_array.fgg
 var selfRefIndirectArrayFgg []byte
 
 // this program also crashes the Go compiler
@@ -106,7 +106,7 @@ func TestTypeCheck_givenIndirectSelfReferentialGenericArray_returnsError(t *test
 			`array element type "Baz"`)
 }
 
-//go:embed testdata/self_ref/self_ref_indirect_const_array/self_ref_indirect_const_array.go
+//go:embed testdata/self_ref/self_ref_indirect_const_array/self_ref_indirect_const_array.fgg
 var selfRefIndirectConstArrayFgg []byte
 
 func TestTypeCheck_givenIndirectSelfReferentialConstGenericArray(t *testing.T) {
@@ -117,21 +117,21 @@ func TestTypeCheck_givenIndirectSelfReferentialConstGenericArray(t *testing.T) {
 			`array element type "Baz"`)
 }
 
-//go:embed testdata/self_ref/self_ref_instantiation_array/self_ref_instantiation_array.go
+//go:embed testdata/self_ref/self_ref_instantiation_array/self_ref_instantiation_array.fgg
 var selfRefInstantiationArrayFgg []byte
 
 func TestTypeCheck_givenGenericArrayInstantiatedWithSameTypeAsItself_passesTypeCheck(t *testing.T) {
 	assertPassesTypeCheck(t, selfRefInstantiationArrayFgg)
 }
 
-//go:embed testdata/self_ref/self_ref_instantiation_const_array/self_ref_instantiation_const_array.go
+//go:embed testdata/self_ref/self_ref_instantiation_const_array/self_ref_instantiation_const_array.fgg
 var selfRefInstantiationConstArrayFgg []byte
 
 func TestTypeCheck_givenConstGenericArrayInstantiatedWithSameTypeAsItself_passesTypeCheck(t *testing.T) {
 	assertPassesTypeCheck(t, selfRefInstantiationConstArrayFgg)
 }
 
-//go:embed testdata/self_ref/self_ref_nested_array/self_ref_nested_array.go
+//go:embed testdata/self_ref/self_ref_nested_array/self_ref_nested_array.fgg
 var selfRefNestedArrayFgg []byte
 
 func TestTypeCheck_givenGenericArrayWithNestedCircularReference_returnsError(t *testing.T) {
@@ -142,7 +142,7 @@ func TestTypeCheck_givenGenericArrayWithNestedCircularReference_returnsError(t *
 			`array element type "Baz"`)
 }
 
-//go:embed testdata/self_ref/self_ref_nested_const_array/self_ref_nested_const_array.go
+//go:embed testdata/self_ref/self_ref_nested_const_array/self_ref_nested_const_array.fgg
 var selfRefNestedConstArrayFgg []byte
 
 func TestTypeCheck_givenConstGenericArrayWithNestedCircularReference_returnsError(t *testing.T) {
@@ -153,21 +153,21 @@ func TestTypeCheck_givenConstGenericArrayWithNestedCircularReference_returnsErro
 			`array element type "Baz"`)
 }
 
-//go:embed testdata/self_ref/self_ref_interface_struct/self_ref_interface_struct.go
+//go:embed testdata/self_ref/self_ref_interface_struct/self_ref_interface_struct.fgg
 var selfRefInterfaceStructFgg []byte
 
 func TestTypeCheck_givenGenericInterfaceReferencingStruct_passesTypeCheck(t *testing.T) {
 	assertPassesTypeCheck(t, selfRefInterfaceStructFgg)
 }
 
-//go:embed testdata/self_ref/self_ref_interface_interface/self_ref_interface_struct.go
+//go:embed testdata/self_ref/self_ref_interface_interface/self_ref_interface_struct.fgg
 var selfRefInterfaceInterfaceFgg []byte
 
 func TestTypeCheck_givenGenericInterfaceReferencingItself_passesTypeCheck(t *testing.T) {
 	assertPassesTypeCheck(t, selfRefInterfaceInterfaceFgg)
 }
 
-//go:embed testdata/self_ref_type_param/recursive_bound_type/recursive_bound_type.go
+//go:embed testdata/self_ref_type_param/recursive_bound_type/recursive_bound_type.fgg
 var selfRefRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
@@ -176,7 +176,7 @@ func TestTypeCheck_givenBoundReferencingTypeBeingDeclared_returnsError(t *testin
 			`bound of "T" references "Eq"`)
 }
 
-//go:embed testdata/self_ref_type_param/nested_recursive_bound_type/nested_recursive_bound_type.go
+//go:embed testdata/self_ref_type_param/nested_recursive_bound_type/nested_recursive_bound_type.fgg
 var selfRefNestedRecursiveBoundTypeFGG []byte
 
 func TestTypeCheck_givenNestedBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
@@ -185,7 +185,7 @@ func TestTypeCheck_givenNestedBoundReferencingTypeBeingDeclared_returnsError(t *
 			`bound of "T" references "Eq"`)
 }
 
-//go:embed testdata/self_ref_type_param/indirect_recursive_bound_type/indirect_recursive_bound_type.go
+//go:embed testdata/self_ref_type_param/indirect_recursive_bound_type/indirect_recursive_bound_type.fgg
 var selfRefIndirectRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenTypeDeclarationWithCircularlyDefinedBounds_returnsError(t *testing.T) {
@@ -195,7 +195,7 @@ func TestTypeCheck_givenTypeDeclarationWithCircularlyDefinedBounds_returnsError(
 			`bound of "T" references "Foo"`)
 }
 
-//go:embed testdata/self_ref_type_param/method_recursive_bound_type/method_recursive_bound_type.go
+//go:embed testdata/self_ref_type_param/method_recursive_bound_type/method_recursive_bound_type.fgg
 var selfRefMethodRecursiveBoundTypeFgg []byte
 
 // TODO figure this out
@@ -213,7 +213,7 @@ func TestTypeCheck_givenTypeDeclarationWithCircularDefinedBoundsViaInterfaceMeth
 		``)
 }
 
-//go:embed testdata/self_ref_type_param/method_rejected_recursive_bound_type/method_rejected_recursive_bound_type.go
+//go:embed testdata/self_ref_type_param/method_rejected_recursive_bound_type/method_rejected_recursive_bound_type.fgg
 var selfRefMethodRejectedRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenTypeDeclarationWithCircularDefinedBoundsViaInterfaceMethodInAnotherOrder_returnsError(t *testing.T) {
@@ -222,7 +222,7 @@ func TestTypeCheck_givenTypeDeclarationWithCircularDefinedBoundsViaInterfaceMeth
 		``)
 }
 
-//go:embed testdata/self_ref_type_param/method_indirect_recursive_bound_type/method_indirect_recursive_bound_type.go
+//go:embed testdata/self_ref_type_param/method_indirect_recursive_bound_type/method_indirect_recursive_bound_type.fgg
 var selfRefMethodIndirectRecursiveBoundTypeFgg []byte
 
 // situation is analogous: this program passes the Go type checker, whereas a different
@@ -233,7 +233,7 @@ func TestTypeCheck_givenTypeDeclarationWithIndirectlyCircularDefinedBoundsViaInt
 		``)
 }
 
-//go:embed testdata/self_ref_type_param/method_rejected_indirect_recursive_bound_type/method_rejected_indirect_recursive_bound_type.go
+//go:embed testdata/self_ref_type_param/method_rejected_indirect_recursive_bound_type/method_rejected_indirect_recursive_bound_type.fgg
 var selfRefMethodRejectedIndirectRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenTypeDeclarationWithIndirectlyCircularDefinedBoundsViaInterfaceMethodInAnotherOrder_returnsError(t *testing.T) {

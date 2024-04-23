@@ -7,21 +7,17 @@ import (
 )
 
 func (t typeVisitor) VisitValueLiteral(v ast.ValueLiteral) (ast.Type, error) {
-	namedType, hasNamedType := v.Type.(ast.NamedType)
-	if !hasNamedType {
-		panic("untested branch")
-	}
-	if t.isStructTypeName(namedType.TypeName) {
-		if err := t.typeCheck(namedType); err != nil {
+	if t.isStructTypeName(v.Type.TypeName) {
+		if err := t.typeCheck(v.Type); err != nil {
 			return nil, err
 		}
 		return v.Type, t.typeCheckStructLiteral(v)
 	}
-	if t.isArrayTypeName(namedType.TypeName) {
-		if err := t.typeCheck(namedType); err != nil {
+	if t.isArrayTypeName(v.Type.TypeName) {
+		if err := t.typeCheck(v.Type); err != nil {
 			return nil, err
 		}
-		return v.Type, t.typeCheckArrayLiteral(v, namedType)
+		return v.Type, t.typeCheckArrayLiteral(v, v.Type)
 	}
 	return nil, fmt.Errorf("undeclared value literal type name: %q", v.Type)
 }

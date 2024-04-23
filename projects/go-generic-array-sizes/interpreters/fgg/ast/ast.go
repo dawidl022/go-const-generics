@@ -155,7 +155,7 @@ type MethodCall struct {
 }
 
 type ValueLiteral struct {
-	Type   Type
+	Type   NamedType
 	Values []Expression
 }
 

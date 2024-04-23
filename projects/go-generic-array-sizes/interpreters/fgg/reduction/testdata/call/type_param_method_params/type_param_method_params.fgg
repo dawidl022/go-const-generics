@@ -1,0 +1,13 @@
+package main
+
+type any interface {}
+
+type Foo [N const, T any] struct {}
+
+func (a Foo[N, T]) new(x Foo[N, T]) Foo[N, T] {
+	return Foo[N, T]{}.new(Foo[N, T]{})
+}
+
+func main() {
+	_ = Foo[2, int]{}.new(Foo[2, int]{})
+}

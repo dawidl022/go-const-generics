@@ -20,16 +20,11 @@ func (r ReducingVisitor) VisitMethodCall(m ast.MethodCall) (ast.Expression, erro
 		return nil, fmt.Errorf("cannot call method %q on primitive value %s", m.MethodName, m.Receiver)
 	}
 
-	namedReceiverType, isNamedReceiverType := receiver.Type.(ast.NamedType)
-	if !isNamedReceiverType {
-		return nil, fmt.Errorf("type %q is not a valid value literal type", receiver.Type)
+	if r.isArraySetMethod(receiver.Type, m.MethodName) {
+		return r.reduceArraySetMethodCall(m, receiver, receiver.Type)
 	}
 
-	if r.isArraySetMethod(namedReceiverType, m.MethodName) {
-		return r.reduceArraySetMethodCall(m, receiver, namedReceiverType)
-	}
-
-	return r.reduceMethodCall(m, namedReceiverType)
+	return r.reduceMethodCall(m, receiver.Type)
 }
 
 func (r ReducingVisitor) methodCallWithReducedReceiver(m ast.MethodCall) (ast.Expression, error) {
@@ -86,7 +81,15 @@ func (r ReducingVisitor) body(receiverType ast.NamedType, methodName string) ([]
 			for _, param := range parameters {
 				parameterNames = append(parameterNames, param.ParameterName)
 			}
-			return parameterNames, methodDecl.ReturnExpression, nil
+			// TODO return expression needs to be type susbstitued
+			//  and
+			substituter, err := newTypeParamSubstituter(
+				methodDecl.MethodReceiver.TypeParameters, receiverType.TypeArguments)
+			if err != nil {
+				return nil, nil, err
+			}
+			returnExpr, err := substituter.substituteTypeParams(methodDecl.ReturnExpression)
+			return parameterNames, returnExpr, nil
 		}
 	}
 	return nil, nil, fmt.Errorf("undeclared method %q on type %q", methodName, receiverType)

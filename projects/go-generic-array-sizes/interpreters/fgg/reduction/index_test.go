@@ -5,14 +5,6 @@ import (
 	"testing"
 )
 
-//go:embed testdata/index/int_val_literal_type/int_val_literal_type.fgg
-var indexIntValLiteralTypeFgg []byte
-
-func TestReduce_givenArrayIndexOnValueLiteralOfIntLiteralType_returnsError(t *testing.T) {
-	assertErrorAfterSingleReduction(t, indexIntValLiteralTypeFgg,
-		`type "1" is not a valid value literal type`)
-}
-
 //go:embed testdata/index/generic_receiver/generic_receiver.fgg
 var indexGenericReceiverFgg []byte
 
@@ -31,7 +23,7 @@ func TestReduce_givenArrayIndexOnValueLiteralWithInvalidConstTypeParam_returnsEr
 			`"int" is not a valid constant type parameter`)
 }
 
-//go:embed testdata/index/uninstantiated_generic_type/uninstantiated_generic_type.go
+//go:embed testdata/index/uninstantiated_generic_type/uninstantiated_generic_type.fgg
 var indexUninstantiatedGenericTypeFgg []byte
 
 func TestReduce_givenArrayIndexOnUninstantiatedGenericValueLiteral_returnsError(t *testing.T) {
@@ -41,7 +33,7 @@ func TestReduce_givenArrayIndexOnUninstantiatedGenericValueLiteral_returnsError(
 			`expected 2 type arguments but got 0`)
 }
 
-//go:embed testdata/index/out_of_bounds/out_of_bounds.go
+//go:embed testdata/index/out_of_bounds/out_of_bounds.fgg
 var indexGenericOutOfBoundsFgg []byte
 
 func TestReduce_givenArrayIndexOutOfBoundsOnGenericType_returnsError(t *testing.T) {
@@ -49,7 +41,7 @@ func TestReduce_givenArrayIndexOutOfBoundsOnGenericType_returnsError(t *testing.
 		`index 2 out of bounds for array of type "Arr[2, int]"`)
 }
 
-//go:embed testdata/index/unbound_length_parameter/unbound_length_parameter.go
+//go:embed testdata/index/unbound_length_parameter/unbound_length_parameter.fgg
 var indexUnboundLengthParameterFgg []byte
 
 func TestReduce_givenArrayGenericTypeHasUnboundLengthParameter_returnsError(t *testing.T) {
@@ -59,7 +51,7 @@ func TestReduce_givenArrayGenericTypeHasUnboundLengthParameter_returnsError(t *t
 			`only integer literals and type parameters may be used as length types`)
 }
 
-//go:embed testdata/index/named_type_length_parameter/named_type_length_parameter.go
+//go:embed testdata/index/named_type_length_parameter/named_type_length_parameter.fgg
 var indexNamedTypeLengthParameter []byte
 
 func TestReduce_givenArrayGenericTypeHasNonConstLengthParameter_returnsError(t *testing.T) {

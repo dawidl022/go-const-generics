@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-//go:embed testdata/type_declaration/struct_const_field/struct_const_field.go
+//go:embed testdata/type_declaration/struct_const_field/struct_const_field.fgg
 var typeDeclStructConstFieldFgg []byte
 
 func TestTypeCheck_givenStructTypeDeclarationWithIntLiteralFieldType_returnsError(t *testing.T) {
@@ -13,14 +13,14 @@ func TestTypeCheck_givenStructTypeDeclarationWithIntLiteralFieldType_returnsErro
 		`ill-typed declaration: type "Foo": cannot use const type "42" as field type`)
 }
 
-//go:embed testdata/type_declaration/struct_type_params/struct_type_params.go
+//go:embed testdata/type_declaration/struct_type_params/struct_type_params.fgg
 var typeDeclStructTypeParams []byte
 
 func TestTypeCheck_givenStructTypeDeclarationWithTypeParameters_returnsNoError(t *testing.T) {
 	assertPassesTypeCheck(t, typeDeclStructTypeParams)
 }
 
-//go:embed testdata/type_declaration/struct_invalid_field_type_args/struct_invalid_field_type_args.go
+//go:embed testdata/type_declaration/struct_invalid_field_type_args/struct_invalid_field_type_args.fgg
 var typeDeclStructInvalidFieldTypeArgsFgg []byte
 
 func TestTypeCheck_givenStructDeclarationWithInvalidTypeArgument_returnsError(t *testing.T) {

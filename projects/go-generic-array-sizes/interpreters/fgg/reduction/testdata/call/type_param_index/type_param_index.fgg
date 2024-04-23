@@ -1,0 +1,17 @@
+package main
+
+type any interface {}
+
+type Arr[T any] [2]T
+
+type Foo [N const, T any] struct {
+	a int
+}
+
+func (a Foo[N, T]) new() int {
+	return Arr[T]{1, 2}[Foo[N, T]{}.a]
+}
+
+func main() {
+	_ = Foo[2, int]{}.new()
+}

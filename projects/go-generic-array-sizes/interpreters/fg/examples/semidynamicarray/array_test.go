@@ -76,7 +76,7 @@ func TestArray_givenElementIsPushedThenPopped_lenDecreasesBackToZero(t *testing.
 }
 
 func TestArrayFG_givenElementIsPushedThenPopped_lenDecreasesBackToZero(t *testing.T) {
-	assert.Equal(t, 0, EmptyArrayFunc{}.call().Push(21).Pop().Len().val())
+	assertReducesTo(t, "0", "EmptyArrayFunc{}.call().Push(21).Pop().Len().val()")
 }
 
 func TestArray_givenTwoElementsArePushed_theyArePoppedInReverseOrder(t *testing.T) {

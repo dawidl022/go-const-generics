@@ -226,7 +226,7 @@ func (t typeParamVisitor) VisitMapValueLiteral(v ast.ValueLiteral) (ast.MappingV
 		return nil, err
 	}
 	return ast.ValueLiteral{
-		Type:   identifiedParams.(ast.Type),
+		Type:   identifiedParams.(ast.NamedType),
 		Values: identifiedValues,
 	}, nil
 }

@@ -97,7 +97,7 @@ func (t typeEnvTypeCheckingVisitor) VisitConstType(c ast.ConstType) error {
 
 func (t typeEnvTypeCheckingVisitor) VisitTypeParameter(typeParam ast.TypeParameter) error {
 	if _, inEnv := t.typeEnv[typeParam]; !inEnv {
-		panic("misidentified type parameter")
+		panic("misidentified type parameter") // FIXME this triggered!
 	}
 	return nil
 }
