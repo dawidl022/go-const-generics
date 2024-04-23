@@ -1,0 +1,12 @@
+package main
+
+type Arr[N const] [N]int
+
+func (a Arr[N]) set(i int, val int) Arr[N] {
+	a[i] = val;
+	return a
+}
+
+func main() {
+ 	_ = 0
+}
