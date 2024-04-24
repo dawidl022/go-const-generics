@@ -12,3 +12,41 @@ those bound by \kw{const}) to integer literals $n$.
 % TODO brief summary (one of main technqiues of impl)
 
 \input{../../projects/go-generic-array-sizes/theory/fgg2go}
+
+\begin{figure}
+    \begin{center}
+        \begin{tikzpicture}
+            \node(m0) {$P_0^\dagger$};
+            \node[anchor=center,right=of m0.center] (mpre1) {$P_1^\skull$};
+            \node[anchor=center,right=of mpre1.center] (m1) {$P_1^\dagger$};
+            \node[anchor=center,right=of m1.center] (mdots) {$...$};
+            \node[anchor=center,right=of mdots.center] (mprei) {$P_n^\skull$};
+            \node[anchor=center,right=of mprei.center] (mi) {$P_n^\dagger$};
+            %
+            \node[anchor=center,above=of m0.center]  (p0) {$P_0$};
+            \node[anchor=center,above=of m1.center] (p1) {$P_1$};
+            \node[anchor=center,right=of p1.center] (pdots) {$...$};
+            \node[anchor=center,above=of mi.center] (pi) {$P_n$};
+            %
+            \draw[->,densely dashed] (p0) -- (m0);
+            %
+            \draw[->] (p0) -- (p1);
+            \draw[->] (m0) -- (mpre1);
+            \draw[->,densely dashed] (mpre1) -- (m1);
+            %
+            \draw[->,densely dashed] (p1) -- (m1);
+            %
+            \draw[->] (p1) -- (pdots);
+            \draw[->] (m1) -- (mdots);
+            %
+            \draw[->] (pdots) -- (pi);
+            \draw[->] (mdots) -- (mprei);
+            \draw[->,densely dashed] (mprei) -- (mi);
+            %
+            \draw[->,densely dashed] (pi) -- (mi);
+        \end{tikzpicture}
+    \end{center}
+
+    \caption{Bisimulation. Solid arrow indicates program reduction step.
+        Dashed line indicates monormorphisation of program.}
+\end{figure}
