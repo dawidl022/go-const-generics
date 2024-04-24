@@ -1,0 +1,34 @@
+\section{Conclusion}
+
+The main contributions this projects achieved:
+
+\begin{itemize}
+    \item Formalisation of arrays in a subset of Go (Featherweight Go with
+          Arrays).
+    \item Formalising an extension of FGA with regular and numerical type
+          parameters that can be used to create arrays of generic sizes.
+    \item Implementing interpreters for the above two languages to dynamically
+          test their safety properties. The implementation underwent rigorous
+          testing with hundreds of small example programs.
+    \item Formalising a translation (monomorphisation) of FGGA to regular Go.
+    \item Implementing the formalised monomorphiser.
+    \item Submitting a formal language feature proposal and discussing the
+          addition with the Go community, including the core Go team.
+    \item Reporting confirmed bugs in actual Go compiler as a result of the
+          rigorous testing.
+\end{itemize}
+
+\subsection{Further work}
+
+\begin{itemize}
+    \item Formal proofs of progress and preservation properties, similar to the
+          original \emph{Featherweight Go} work \autocite{fg}.
+    \item Address Go team's feedback on proposal \autocite{myProposal} and come
+          to consensus with Go community about future of new feature. This may
+          include investigating original vision for generics in Go e.g. from the
+          list of omissions in the accepted proposal \autocite{genericsProposal}
+          and the older contracts proposal \autocite{contractsProposal}.
+    \item Go compiler implementation, which includes integrating the design
+          proposed in this work with Go's ``GCShape stenciling with
+          Dictionaries'' approach for generics \autocite{generics1.18}.
+\end{itemize}
