@@ -1,0 +1,329 @@
+package main
+
+type Deque[N const] struct {
+	arr   Arr[N]
+	front Nat[N]
+	back  Nat[N]
+	cap	  Nat[N]
+}
+
+func (d Deque[N]) PushFront(el int) Deque[N] {
+	return d.succ(d.front).ifEqD(d.back, DequeFunc[N]{d}, PushFrontFunc[N]{d, el})
+}
+func (f PushFrontFunc[N]) call() Deque[N] {
+	return Deque[N]{
+		f.d.arr.set(f.d.front.val(), f.el),
+		f.d.succ(f.d.front), f.d.back,
+		f.d.cap}
+}
+
+func (d Deque[N]) PopFront() Deque[N] {
+	return d.front.ifEqD(d.back, DequeFunc[N]{d}, PopFrontFunc[N]{d})
+}
+func (f PopFrontFunc[N]) call() Deque[N] {
+	return Deque[N]{f.d.arr, f.d.pred(f.d.front), f.d.back, f.d.cap}
+}
+
+func (d Deque[N]) GetFront() int {
+	return d.front.ifEq(d.back,
+		IntFunc{0}, ArrGetFunc[N]{d.arr, d.pred(d.front).val()})
+}
+
+func (d Deque[N]) PushBack(el int) Deque[N] {
+	return d.front.ifEqD(d.pred(d.back), DequeFunc[N]{d}, PushBackFunc[N]{d, el})
+}
+func (f PushBackFunc[N]) call() Deque[N] {
+	return Deque[N]{
+		f.d.arr.set(f.d.pred(f.d.back).val(), f.el),
+		f.d.front, f.d.pred(f.d.back), f.d.cap}
+}
+
+func (d Deque[N]) PopBack() Deque[N] {
+	return d.front.ifEqD(d.back, DequeFunc[N]{d}, PopBackFunc[N]{d})
+}
+func (f PopBackFunc[N]) call() Deque[N] {
+	return Deque[N]{f.d.arr, f.d.front, f.d.succ(f.d.back), f.d.cap}
+}
+
+func (d Deque[N]) GetBack() int {
+	return d.front.ifEq(d.back, IntFunc{0}, ArrGetFunc[N]{d.arr, d.back.val()})
+}
+
+func (d Deque[N]) pred(n Nat[N]) Nat[N] {
+	return n.ifEqN(Zero[N]{}, CapFunc[N]{d}, PredFunc[N]{n})
+}
+
+func (d Deque[N]) succ(n Nat[N]) Nat[N] {
+	return n.ifEqN(d.Cap(), ZeroFunc[N]{}, SuccFunc[N]{n})
+}
+
+func (d Deque[N]) Cap() Nat[N] {
+	return d.cap
+}
+
+type EmptyDequeFunc struct {
+}
+
+func (e EmptyDequeFunc) call() Deque[6] {
+	return Deque[6]{Arr[6]{0, 0, 0, 0, 0, 0}, Zero[6]{}, Zero[6]{}, Succ[6]{Succ[6]{Succ[6]{Succ[6]{Succ[6]{Zero[6]{}}}}}}}
+}
+
+type CapFunc[N const] struct {
+	d Deque[N]
+}
+
+func (f CapFunc[N]) call() Nat[N] {
+	return f.d.Cap()
+}
+
+type PredFunc[N const] struct {
+	n Nat[N]
+}
+
+func (f PredFunc[N]) call() Nat[N] {
+	return f.n.pred()
+}
+
+type ZeroFunc[N const] struct {
+}
+
+func (z ZeroFunc[N]) call() Nat[N] {
+	return Zero[N]{}
+}
+
+type SuccFunc[N const] struct {
+	n Nat[N]
+}
+
+func (f SuccFunc[N]) call() Nat[N] {
+	return Succ[N]{f.n}
+}
+
+type Arr[N const] [N]int
+
+func (a Arr[N]) set(i int, val int) Arr[N] {
+	a[i] = val;
+	return a
+}
+
+type Nat[N const] interface {
+	val() int
+	pred() Nat[N]
+	ifEq(other Nat[N], ifTrue Func, ifFalse Func) int
+	ifEqN(other Nat[N], ifTrue FuncN[N], ifFalse FuncN[N]) Nat[N]
+	ifEqD(other Nat[N], ifTrue FuncD[N], ifFalse FuncD[N]) Deque[N]
+	isZero() Bool
+	isZeroN() BoolN[N]
+	isZeroD() BoolD[N]
+}
+
+type Bool interface {
+	eval(ifTrue Func, ifFalse Func) int
+}
+
+type BoolN[N const] interface {
+	eval(ifTrue FuncN[N], ifFalse FuncN[N]) Nat[N]
+}
+
+type BoolD[N const] interface {
+	eval(ifTrue FuncD[N], ifFalse FuncD[N]) Deque[N]
+}
+
+type Func interface {
+	call() int
+}
+
+type FuncN[N const] interface {
+	call() Nat[N]
+}
+
+type FuncD[N const] interface {
+	call() Deque[N]
+}
+
+type True struct {
+}
+
+type TrueN[N const] struct {
+}
+
+type TrueD[N const] struct {
+}
+
+func (t True) eval(ifTrue Func, ifFalse Func) int {
+	return ifTrue.call()
+}
+
+func (t TrueN[N]) eval(ifTrue FuncN[N], ifFalse FuncN[N]) Nat[N] {
+	return ifTrue.call()
+}
+
+func (t TrueD[N]) eval(ifTrue FuncD[N], ifFalse FuncD[N]) Deque[N] {
+	return ifTrue.call()
+}
+
+type False struct {
+}
+
+type FalseN[N const] struct{}
+
+type FalseD[N const] struct {
+}
+
+func (f False) eval(ifTrue Func, ifFalse Func) int {
+	return ifFalse.call()
+}
+
+func (f FalseN[N]) eval(ifTrue FuncN[N], ifFalse FuncN[N]) Nat[N] {
+	return ifFalse.call()
+}
+
+func (f FalseD[N]) eval(ifTrue FuncD[N], ifFalse FuncD[N]) Deque[N] {
+	return ifFalse.call()
+}
+
+type Zero[N const] struct{}
+
+func (z Zero[N]) val() int {
+	return 0
+}
+
+func (z Zero[N]) pred() Nat[N] {
+	return Zero[N]{}
+}
+
+func (z Zero[N]) ifEq(other Nat[N], ifTrue Func, ifFalse Func) int {
+	return other.isZero().eval(ifTrue, ifFalse)
+}
+
+func (z Zero[N]) ifEqN(other Nat[N], ifTrue FuncN[N], ifFalse FuncN[N]) Nat[N] {
+	return other.isZeroN().eval(ifTrue, ifFalse)
+}
+
+func (z Zero[N]) ifEqD(other Nat[N], ifTrue FuncD[N], ifFalse FuncD[N]) Deque[N] {
+	return other.isZeroD().eval(ifTrue, ifFalse)
+}
+
+func (z Zero[N]) isZero() Bool {
+	return True{}
+}
+
+func (z Zero[N]) isZeroN() BoolN[N] {
+	return TrueN[N]{}
+}
+
+func (z Zero[N]) isZeroD() BoolD[N] {
+	return TrueD[N]{}
+}
+
+type Succ[N const] struct {
+	predF Nat[N]
+}
+
+func (s Succ[N]) val() int {
+	return s.predF.val() + 1
+}
+
+func (s Succ[N]) pred() Nat[N] {
+	return s.predF
+}
+
+func (s Succ[N]) ifEq(other Nat[N], ifTrue Func, ifFalse Func) int {
+	return other.isZero().eval(ifFalse, IfEq[N]{s.pred(), other.pred(), ifTrue, ifFalse})
+}
+
+func (s Succ[N]) ifEqN(other Nat[N], ifTrue FuncN[N], ifFalse FuncN[N]) Nat[N] {
+	return other.isZeroN().eval(ifFalse, IfEqN[N]{s.pred(), other.pred(), ifTrue, ifFalse})
+}
+
+func (s Succ[N]) ifEqD(other Nat[N], ifTrue FuncD[N], ifFalse FuncD[N]) Deque[N] {
+	return other.isZeroD().eval(ifFalse, IfEqD[N]{s.pred(), other.pred(), ifTrue, ifFalse})
+}
+
+type IfEq[N const] struct {
+	a       Nat[N]
+	b       Nat[N]
+	ifTrue  Func
+	ifFalse Func
+}
+
+type IfEqN[N const] struct {
+	a       Nat[N]
+	b       Nat[N]
+	ifTrue  FuncN[N]
+	ifFalse FuncN[N]
+}
+
+type IfEqD[N const] struct {
+	a       Nat[N]
+	b       Nat[N]
+	ifTrue  FuncD[N]
+	ifFalse FuncD[N]
+}
+
+func (i IfEq[N]) call() int {
+	return i.a.ifEq(i.b, i.ifTrue, i.ifFalse)
+}
+
+func (i IfEqN[N]) call() Nat[N] {
+	return i.a.ifEqN(i.b, i.ifTrue, i.ifFalse)
+}
+
+func (i IfEqD[N]) call() Deque[N] {
+	return i.a.ifEqD(i.b, i.ifTrue, i.ifFalse)
+}
+
+func (s Succ[N]) isZero() Bool {
+	return False{}
+}
+
+func (s Succ[N]) isZeroN() BoolN[N] {
+	return FalseN[N]{}
+}
+
+func (s Succ[N]) isZeroD() BoolD[N] {
+	return FalseD[N]{}
+}
+
+type DequeFunc[N const] struct {
+	d Deque[N]
+}
+
+func (f DequeFunc[N]) call() Deque[N] {
+	return f.d
+}
+
+type PushFrontFunc[N const] struct {
+	d  Deque[N]
+	el int
+}
+
+type PopFrontFunc[N const] struct {
+	d Deque[N]
+}
+
+type IntFunc struct {
+	i int
+}
+
+func (f IntFunc) call() int {
+	return f.i
+}
+
+type ArrGetFunc[N const] struct {
+	arr Arr[N]
+	i   int
+}
+
+func (f ArrGetFunc[N]) call() int {
+	return f.arr[f.i]
+}
+
+type PushBackFunc[N const] struct {
+	d  Deque[N]
+	el int
+}
+
+type PopBackFunc[N const] struct {
+	d Deque[N]
+}
