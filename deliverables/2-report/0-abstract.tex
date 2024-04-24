@@ -1,3 +1,16 @@
 \begin{abstract}
-
+    Go is a language developed by Google and the open source community and is
+    widely used in industry. Many have praised Go for its simplicity, while
+    others criticised its lack of certain features, most notably generic
+    programming. While the introduction of generics in Go 1.18 addressed the
+    largest criticism, there are still areas where a more expressive version of
+    the language would benefit users. One such area, which this work focuses on,
+    is generically sized (static) arrays. To achieve this, a new kind of type
+    parameter is introduced --- one which can be instantiated with
+    (compile-time) constant integers \emph{values}. This work formalises a
+    subset of Go, and then extends the formalisation with type parameters, that
+    include the new numerical type parameters. A translation from the extended
+    language to regular Go is also formalised (monomorphisation). To test the
+    formalisations, two interpeters and a monomorphiser have been implemented,
+    along with rigorous testing.
 \end{abstract}
