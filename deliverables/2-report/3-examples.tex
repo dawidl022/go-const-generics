@@ -73,7 +73,7 @@ with the exact same code, or use a code generation tool to do this for us.
 As of Go 1.18, there is a workaround that partially solves the above problem.
 Interface types are now defined in terms of the more general notion of type
 sets, as opposed to method sets pre Go 1.18 \autocites{spec}{specPre1.18}.
-"General interfaces" were introduced, that can only be (as of Go 1.21) used as
+``General interfaces'' were introduced, that can only be (as of Go 1.21) used as
 type parameter constraints, and among its features is the ability to specify a
 union of types. With this, we can define an interface in terms of the union of
 differently sized arrays that we wish to use with our \texttt{reversed} function

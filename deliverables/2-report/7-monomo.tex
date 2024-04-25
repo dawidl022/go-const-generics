@@ -1,17 +1,85 @@
 \section{Monormorphisation from FGGA to Go}
+\label{ch:monomo}
+
+Monormorphisation is an implementation technique for generics (parametric
+polymorphism) which involves translating generic code into non-generic code. For
+every instantiation of a generic type, a non-generic type is produced in the
+output monomorphised program. This approach allows for zero-cost abstractions,
+as there is no runtime penalty of executing monomorphised code as opposed to
+non-generic code. Monormorphisation is used by languages such as Rust to
+implement generics \autocite{rustCompilerGuide}. Monormorphisation was first
+formalised in \emph{Featherweight Go} \autocite{fg}.
+
+There are, however, certain limitations with this approach. Monormorphisation
+can lead to an explosion in the output code size, and not all programs can be
+monomorphised \autocite{fg}. Other approaches have been adopted by many
+languages that support parametric polymorphism. Java uses type erasure
+\autocite{javaSpec}, C\# uses a hybrid of monomorphisation at runtime (as
+opposed to the traditional compile-time) and code sharing
+\autocite{clrGenerics}, and Go uses a hybrid of monormorphisation and dictionary
+passing \autocite{generics1.18}.
+
+Monormorphisation is appropriate for the restricted use of numerical type
+parameters in FGGA, since output code size explosion is not an issue --- for
+every concrete type argument $n$, at most 1 output type will be produced for
+every type depending on the aforementioned parameter $n$ (directly or
+indirectly).
+
+This section presents a formalisation of monomorphisation from FGGA to Go, based
+on \emph{Featherweight Go} \autocite{fg}. Because regular type parameters are
+now part of Go, they are output as is, and only numerical type parameters are
+``eliminated'' in the monomorphisation process.
+
+\subsection{Formalisation}
 
 $\Delta$ is an environment mapping numerical type parameters $\alpha_n$ (i.e.
 those bound by \kw{const}) to integer literals $n$.
 
-% Formal rules describe process in two distinct stages, whereas implementation
-% does both in a single stage (translates as it collects types).
+The monomorphisation process consists of two stages --- type collection and type
+translation. The type collection phase begins by collecting all the referenced
+named types in the main expression. The types are collected into the set
+$\omega$, with one entry for every (type name, sequence of integers) pair. The
+sequence of integers in the pair is the named type's type argument list, with
+all non integer-value arguments removed.
 
-% From the symmetry of the formal rules of the two phases it is clear how this
-% can naturally be implemented in a single phase.
+After the initial collection, we apply the function $G$ on $\omega$, which
+collects further types from type declarations ($\Tclo$) and methods
+($\Mclo$ and $\ASMclo$) of the types in $\omega$.
 
-% TODO brief summary (one of main technqiues of impl)
+This process is repeated, applying $G$ to the output of the previous $G$
+application until the fixed point of $G$ is reached, i.e. when applying $G$
+produces an output that is the same as its input. This notion is captured in the
+I-Prog rule, where $\Omega$ is the fixed point.
+
+Because only referenced types are collected, a side effect of monomorphisation
+is that any unused types are eliminated. This makes sense, because in general,
+if a generic type is never instantiated, we do have any candidates it could
+monomorphise down to.
+
+The second phase translates the main expression, and the collected types in
+$\Omega$ into valid Go code. The main task of this phase is to move all
+numerical type arguments from the collected types into the names of the named
+types (rule M-Named), and remove any numerical type parameters or arguments from
+type parameter/argument lists while preserving any non-numerical type
+parameters/arguments (rules M-Named, M-$\alpha$ and M-Constraints). The
+remainder of the rules either recursively apply type translation to their
+components or are base cases that require no translation at all.
+
+The formal rules describe the process in two distinct stages, whereas thr
+implementation does both in a single stage (translating as it collects types).
+All the information needed to translate a term can be derived from the result of
+type collection on that term. E.g. given $\Delta = \emptyset$ the expression $e
+    = Arr[2, \kw{int}]\{1, 2\}$, we know it produces $\omega = \{Arr[2]\}$ and
+translates to $e^\dagger = \an{Arr, 2}[\kw{int}]\{1, 2\}$, where $\an{t,
+        \ov{n}}$ signifies the output type name. In an implementation, the name should
+be generated such that ideally it doesn't conflict with any other type name that
+the programmer might declare. Additionally, we assume the program has already
+been type-checked before being fed into the monomorphiser (implemenation should
+type-check before monomorphising).
 
 \input{../../projects/go-generic-array-sizes/theory/fgg2go}
+
+\subsection{Bisimulation}
 
 \begin{figure}
     \begin{center}
