@@ -79,7 +79,54 @@ type-check before monomorphising).
 
 \input{../../projects/go-generic-array-sizes/theory/fgg2go}
 
-\subsection{Bisimulation}
+\subsection{Monormorphisation properties}
+
+% TODO what to write about this section? Just a couple of sentences? What is the
+% point of the bisiumulation?? (ask Raymond)
+
+Any well-typed FGGA program $P$ can be monomorphised into $P^\dagger$.
+
+\begin{theorem}[Totality]
+    $P \ok \implies P \mapsto P^\dagger$
+\end{theorem}
+
+Any well-typed FGGA program $P$ is well-typed after monomorphisation, both in
+FGGA and in Go.
+
+\begin{theorem}[Soundess]
+    $P \ok \implies P^\dagger \ok$
+\end{theorem}
+
+Any monomorphised program $P^\dagger$ has a one-to-one correspondence in
+behaviour (reduction equivalence) to the original program $P$ \autocite{fg}.
+I.e. executing program $P$ one step and then monomorphising the resulting
+program, is equivalent to monomorphising program $P$ to $P^\dagger$ and
+executing $P^\dagger$ one step, modulo dead-type elimination. $P_0^\dagger$
+reduces to $P_1^\skull$ --- denoting the program contains dead types, which we
+can eliminate by applying the monomorphisation procedure $P_1^\skull \mapsto
+    P_1^\dagger$. Figure \ref{fig:bisiumulation} visualises this correspondence.
+
+\begin{theorem}[Bisimulation]
+    \begin{mathpar}
+        \inferrule{
+            P_0 \mapsto P^\dagger_0 \\
+            P_0 \becomes P_1 \\
+            P^\dagger_0 \becomes P^\skull_1 \\
+            P^\skull_1 \mapsto P^\dagger_1
+        }{
+            P_1 \mapsto P^\dagger_1
+        }
+
+        \\
+
+        \phantom{a}\hfill \fbox{$P \becomes P'$}
+
+        \inferrule{
+            d \becomes e
+        }{ \package~\main;~\ov{D}~\func~\main()~\br{\un=d} \becomes
+            \package~\main;~\ov{D}~\func~\main()~\br{\un=e} }
+    \end{mathpar}
+\end{theorem}
 
 \begin{figure}
     \begin{center}
@@ -116,5 +163,6 @@ type-check before monomorphising).
     \end{center}
 
     \caption{Bisimulation. Solid arrow indicates program reduction step.
-        Dashed line indicates monormorphisation of program.}
+        Dashed arrow indicates monormorphisation of program.}
+    \label{fig:bisiumulation}
 \end{figure}
