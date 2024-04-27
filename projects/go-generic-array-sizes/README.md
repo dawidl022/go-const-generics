@@ -64,3 +64,8 @@ make run-fgg
 ```bash
 make run-monomo
 ```
+
+The interpreters and monomorphiser can also be used as libraries. The
+`entrypoint` package inside each module provides a facade for the most common
+features. (In fact, the monomorphiser uses the FGGA interpreter as a library to
+perform parsing and type checking before monomorphising a program.)
