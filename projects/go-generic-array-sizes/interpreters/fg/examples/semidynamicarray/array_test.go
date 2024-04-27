@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/entrypoint"
+	fggEntrypoint "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/entrypoint"
 	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/loop"
 )
 
@@ -140,10 +141,15 @@ func TestArray_givenMoreElementsPushedThanCapacityFG_doesNotChangeArray(t *testi
 		"EmptyArrayFunc{}.call().Push(0).Push(1).Push(2).Push(3).Push(4).Push(42)")
 }
 
-// TODO make sure this works with both FG and FGG interpreters
+// tests both under FG and FGG interpreters
 func assertReducesTo(t *testing.T, expected string, main string) {
 	program := arrayLibGo + fmt.Sprintf(mainTemplate, main)
+
 	res, err := entrypoint.Interpret(strings.NewReader(program), io.Discard, loop.UnboundedSteps)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, res)
+
+	res, err = fggEntrypoint.Interpret(strings.NewReader(program), io.Discard, loop.UnboundedSteps)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, res)
 }

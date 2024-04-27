@@ -115,7 +115,6 @@ func (p Program) String() string {
 }
 
 func (t TypeDeclaration) String() string {
-	// TODO type params
 	params := make([]string, 0, len(t.TypeParameters))
 	for _, param := range t.TypeParameters {
 		params = append(params, param.String())
