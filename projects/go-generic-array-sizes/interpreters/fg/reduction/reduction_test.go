@@ -22,8 +22,6 @@ import (
 //go:embed testdata/acceptance/program.go
 var acceptanceProgramGo []byte
 
-// TODO repeat these tests for FGG interpreter
-
 func TestReduceToValue_givenValidProgram_completelyReducesProgram(t *testing.T) {
 	skipIfNotFG(t)
 	p := parseFGProgram(acceptanceProgramGo)

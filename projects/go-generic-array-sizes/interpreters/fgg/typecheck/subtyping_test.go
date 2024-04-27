@@ -70,8 +70,6 @@ func TestTypeCheck_givenValidTwoLevelRecursiveTypeParameter_returnsNoError(t *te
 	assertPassesTypeCheck(t, subtypingTwoLevelRecursiveTypeParameterFgg)
 }
 
-// TODO consider if the following tests belong to the subtyping file
-
 //go:embed testdata/subtyping/nested_type_parameter_bound/nested_type_parameter_bound.fgg
 var subtypingNestedTypeParameterBoundFgg []byte
 

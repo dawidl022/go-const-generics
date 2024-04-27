@@ -43,7 +43,6 @@ func (t typeVisitor) substitutedElementType(namedType ast.NamedType) (ast.Type, 
 	typeParams := t.typeParams(namedType.TypeName)
 	elemType := t.elementType(namedType.TypeName)
 
-	// TODO replace remaining calls to make makeTypeSubstitutions with newTypeParamSubstituter
 	substituter, err := newTypeParamSubstituter(namedType.TypeArguments, typeParams)
 	if err != nil {
 		return nil, err

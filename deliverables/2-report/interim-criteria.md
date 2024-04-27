@@ -5,6 +5,6 @@
 - [x] Standard of literature review (Understanding of the topic area)
 - [x] Identification of potential risks to the project
 - [x] Realistic project milestones and objectives
-- [ ] Proposed solution - correctness of solution proposed
-- [ ] Quality of report - format, structure, figures, tables & references
-- [ ] Quality of slides - format, presentation and structure
+- [x] Proposed solution - correctness of solution proposed
+- [x] Quality of report - format, structure, figures, tables & references
+- [x] Quality of slides - format, presentation and structure

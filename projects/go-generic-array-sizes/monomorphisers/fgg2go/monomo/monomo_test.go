@@ -210,9 +210,6 @@ func TestMonomorphise_givenMethodOnCallOnGenericType(t *testing.T) {
 	assertMonomorphises(t, genericMethodCallInput, genericMethodCallOutput)
 }
 
-// TODO method calls instantiates some other type(s) e.g. one in return type
-// (an interface) and a different one in the body (a struct), and also parameters
-
 //go:embed testdata/method_instantiations/input/method_instantiations.go
 var methodInstantiationsInput []byte
 

@@ -47,7 +47,6 @@ func TestTypeCheck_givenNestedSelfReferentialType_returnsError(t *testing.T) {
 var selfRefIndirectFgg []byte
 
 // this test program crashes the official Go compiler as of version 1.21.3
-// TODO report compiler bug (check if still occurs in pre-release version)
 func TestTypeCheck_givenIndirectSelfReferentialType_returnsError(t *testing.T) {
 	assertFailsTypeCheckWithError(t, selfRefIndirectFgg,
 		`ill-typed declaration: type "Baz": circular reference: `+
@@ -198,8 +197,6 @@ func TestTypeCheck_givenTypeDeclarationWithCircularlyDefinedBounds_returnsError(
 //go:embed testdata/self_ref_type_param/method_recursive_bound_type/method_recursive_bound_type.fgg
 var selfRefMethodRecursiveBoundTypeFgg []byte
 
-// TODO figure this out
-//
 // Interestingly, this program passes the Go type checker, whereas the next program
 // (which differs only in type declaration order) does not. This inconsistency
 // seems to me like a compiler bug. From, the spec, it is unclear to me, which is
