@@ -50,7 +50,7 @@ will behave as expected.
 
 A type declaration is defined as the keyword \type, followed by a declared type
 name, followed by a type literal. A ``declared'' type name can be any identifier
-as defined by \autocite{spec}, except for the predeclared \kw{int}. In Go, it is
+as defined by \textcite{spec}, except for the predeclared \kw{int}. In Go, it is
 actually legal to redefine predeclared type names, such as the built-in
 \kw{int}, however, to keep things simple FGA does not permit this. That is to
 say, the only predeclared type name in FGA is \kw{int}, for values of integer
@@ -195,15 +195,6 @@ expression is of the non-constant \kw{int} type, no other checks are performed
 (statically) (rule T-Array-Index). However, when the index expression is of an
 integer literal type, an index bounds check is also statically performed via the
 type system (rule T-Array-Index-Literal).
-
-Finally, a program is well-typed when all the type declaration names are
-distinct (and do not coincide with the predeclared \kw{int} type name). The
-auxiliary function $\tdecls$ returns all type names declared in the program. The
-method declarations must also be distinct, in the sense that no two methods
-declared on the same type may have the same name. The auxiliary function
-$\mdecls$ returns all pairs of $t_V.m$ (receiver type + method name) declared in
-the program. All declarations along with the main expression must also be
-well-formed (rule T-Prog).
 
 The remainder of the rules are described in appendix \ref{sec:fg-appx-typing}.
 An example of the typing rules being applied to a very simple FGA program can be

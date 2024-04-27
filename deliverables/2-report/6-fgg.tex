@@ -120,13 +120,6 @@ set. Additionally, the method set of a type parameter $\alpha$ is equal to the
 method set of its bound $\gamma$, as specified in the typing environment
 $\Delta$.
 
-Because $\methods_\Delta$ is not defined on \kw{const} (see
-\ref{sec:fgg-appx-typing}), there is an additional subtyping rule that specifies
-that type parameters which are bound by \kw{const}, are also subtypes of
-\kw{const} (rule $\imp_{const-\text{Param}}$). All type parameters are subtypes
-of their bounds, but where the bounds are a regular interface (i.e. not
-\kw{const}), this can already be derived via the $\imp_I$ rule.
-
 The integer literal type can now appear in user programs, although with
 restrictions as to where they can be used. They can only be used as type
 arguments in a named type and as the size parameter of an array type literal but
@@ -178,26 +171,7 @@ declaration \texttt{Eq} cannot have a type parameter $\alpha$ bound by
 % workarounds?
 The check for this restriction is performed via the $\notref$ auxiliary in the
 T-Type rule for each type parameter bound $\gamma$. $\notref$ is defined
-recursively, with the recursive case existing for named types $t[\ov{\tau}]$,
-and the base cases are the remaining type kinds; integer literals cannot be used
-as a type name, and neither can the keyword \kw{const}, so there is no
-possibility of a self-reference for those types. If a type is named the same as
-a type parameter, the type parameter will shadow the type name, and no
-self-reference occurs.
-% TODO verify this is the case in Go (shadowing of type name with type param,
-% both for self and non-self referential)
-When checking for self-reference in a named type, first we check whether the
-named-type's type name $t$ is equal to any of the types we have already seen
-$\ov{t_r}$. Initially, the seen types sequence only contains the type we are
-type checking in T-Type. $\notref$ is performed recursively on all type
-arguments, as those could also be referencing one of the types from $\ov{t_r}$.
-To detect indirect self-references (i.e. circular references), $\notref$ is
-applied on all type parameter bounds of the named type's declaration, appending
-the type name $t$ to the sequence of seen type names $\ov{t_r}$ to check for
-self-references. While theoretically, we could have just a single type $t_r$ to
-check for at a time, rather than a sequence, this would lead to problems when
-checking types that are self-referential, but do not contain the initial type
-$t_r$ in the cycle, as the rule would recurse indefinitely.
+recursively, and described in appendix \ref{fgg-appx-typing-not-ref}.
 
 An array size can now be any valid \kw{const} type, and the element type must be
 a valid non-\kw{const} type, evaluated in the typing environment $\ov{\Phi}$.

@@ -91,3 +91,12 @@ struct type declaration (rule T-Struct-Literal). A field select expression is
 well-typed if the receiver is well-typed and of struct type. The expression is
 of the same type as the field corresponding to the selected field name in the
 struct type declaration (rule T-Field).
+
+Finally, a program is well-typed when all the type declaration names are
+distinct (and do not coincide with the predeclared \kw{int} type name). The
+auxiliary function $\tdecls$ returns all type names declared in the program. The
+method declarations must also be distinct, in the sense that no two methods
+declared on the same type may have the same name. The auxiliary function
+$\mdecls$ returns all pairs of $t_V.m$ (receiver type + method name) declared in
+the program. All declarations along with the main expression must also be
+well-formed (rule T-Prog).

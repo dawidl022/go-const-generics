@@ -1,5 +1,58 @@
 \section{Proposal addendum}
 
+\subsection{More complex \kw{const} bounds}
+\label{sec:proposal-appx-bounds}
+
+What about when two distinct type parameters appear in a
+``constant'' expression, such as in the (somewhat contrived) example below:
+
+\golisting{./examples/expressions/difference.go}
+
+This code is only safe to execute when $N \ge M$. This adds additional
+complexity, as we need to extend our approach from before if we wish to pursue
+the liberal approach. In the implicit model, the compiler would have to reject
+all instantiations of the function where $N < M$. In the explicit model, the
+slicing notation would be allowed to accept constant expressions, and since type
+parameters are constant expressions, they could be used to explicitly constrain
+the type parameters. Go already permits referencing other type parameters,
+including the one that is being constrained, in the constraint of a type
+parameter. The compiler would still need to verify that the bounds specified by
+the programmer make the operation legal for all instantiations.
+
+\golisting{./examples/expressions/differenceexplicit.go}
+
+Another area of concern that may arise with the liberal approach is recursively
+defined functions or types, where the numerical type parameter differs in each
+recursive instantiation (as shown in figure \ref{fig:strange-arr-init}).
+Attempting to monomorphise such code would lead to extreme code bloat, and
+should not be allowed. In both the implicit and explicit models, this is a
+non-issue, as without knowing how the function or type will behave at runtime,
+there is no range of values \texttt{N} that would be guaranteed to not cause an
+underflow/overflow, so such a function cannot be defined. E.g. if in
+\texttt{newArrStrange} we give \texttt{N} an explicit upper bound of $x$, than
+the compiler would complain, since within the body of the function
+\texttt{newArrStrange} could be recursively called with a type argument of $x +
+    1$, which exceeds the type parameter's upper bound.
+
+\begin{figure}
+    \golisting{./examples/expressions/recursive.go}
+    \caption{Contrived recursively defined construction of array}
+    \label{fig:strange-arr-init}
+\end{figure}
+
+\subsection{Slicing generic arrays}
+\label{sec:proposal-appx-slice}
+
+Since in the conservative model, we have no guarantees about the array bounds,
+the only permitted slicing operation is \texttt{[:]}, which creates a slice of
+the entire array. Just as with the index operation, if the programmer wishes to
+move the bounds check to runtime, they can simply reslice the slice obtained
+from \texttt{[:]}. It is worth noting, that as of Go 1.21, slicing a generic
+variable that is constrained by a union of array types is forbidden (even
+\texttt{[:]} is not allowed). The liberal approach could be used to set lower
+bounds on array lengths to allow compile-time safe generic array slicing, other
+than just \texttt{[:]}.
+
 \subsection{The \texttt{len} function}
 \label{sec:proposal-appx-len}
 
