@@ -52,10 +52,10 @@ func TestReduce_givenArrayGenericTypeHasUnboundLengthParameter_returnsError(t *t
 }
 
 //go:embed testdata/index/named_type_length_parameter/named_type_length_parameter.fgg
-var indexNamedTypeLengthParameter []byte
+var indexNamedTypeLengthParameterFgg []byte
 
 func TestReduce_givenArrayGenericTypeHasNonConstLengthParameter_returnsError(t *testing.T) {
-	assertErrorAfterSingleReduction(t, indexNamedTypeLengthParameter,
+	assertErrorAfterSingleReduction(t, indexNamedTypeLengthParameterFgg,
 		`could not check index bounds of "Arr[int]{1, 2}": `+
 			`unexpected length type parameter "Foo" in declaration of type "Arr"; `+
 			`only integer literals and type parameters may be used as length types`)

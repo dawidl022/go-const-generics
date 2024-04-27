@@ -84,8 +84,6 @@ func checkIndexBounds(n int, arrayType ast.NamedType, typeDecl ast.TypeDeclarati
 	}
 }
 
-// TODO unit test trying to use non-type parameter (named type) for array size
-
 func getGenericArrayLength(arrayType ast.NamedType, arrayTypeDecl ast.TypeDeclaration, arrayTypeLit ast.ArrayTypeLiteral) (int, error) {
 	err := checkTypeArgumentsCount(arrayType, arrayTypeDecl)
 	if err != nil {

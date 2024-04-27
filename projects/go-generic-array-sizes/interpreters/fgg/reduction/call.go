@@ -81,8 +81,6 @@ func (r ReducingVisitor) body(receiverType ast.NamedType, methodName string) ([]
 			for _, param := range parameters {
 				parameterNames = append(parameterNames, param.ParameterName)
 			}
-			// TODO return expression needs to be type susbstitued
-			//  and
 			substituter, err := newTypeParamSubstituter(
 				methodDecl.MethodReceiver.TypeParameters, receiverType.TypeArguments)
 			if err != nil {

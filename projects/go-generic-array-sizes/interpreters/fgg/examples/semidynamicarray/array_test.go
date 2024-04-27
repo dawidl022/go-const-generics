@@ -93,7 +93,6 @@ func TestArray_givenMoreElementsPushedThanCapacityFG_doesNotChangeArray(t *testi
 		"EmptyArrayFunc{}.call().Push(0).Push(1).Push(2).Push(3).Push(4).Push(42)")
 }
 
-// TODO make sure this works with both FGG interpreter and monomo
 func assertReducesTo(t *testing.T, expected string, main string) {
 	program := arrayLibGo + fmt.Sprintf(mainTemplate, main)
 	res, err := entrypoint.Interpret(strings.NewReader(program), io.Discard, loop.UnboundedSteps)

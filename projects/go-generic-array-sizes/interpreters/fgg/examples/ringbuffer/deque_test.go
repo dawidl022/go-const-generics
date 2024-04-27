@@ -231,7 +231,6 @@ func TestArrayDequeFG_givenDequeFullInMiddle_pushFrontDoesNotModifyDeque(t *test
 		.PushFront(10)`)
 }
 
-// TODO make sure this works with both FGG interpreter and monomo
 func assertReducesTo(t *testing.T, expected string, main string) {
 	program := dequeLibGo + fmt.Sprintf(mainTemplate, main)
 	res, err := entrypoint.Interpret(strings.NewReader(program), io.Discard, loop.UnboundedSteps)
