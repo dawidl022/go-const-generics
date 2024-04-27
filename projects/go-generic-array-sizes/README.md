@@ -21,7 +21,7 @@ packages under test.
 
 ### Prerequisites
 
-Ensure you have Make and Go[https://go.dev/] installed.
+Ensure you have Make and [Go](https://go.dev/) installed.
 
 ### Testing
 
