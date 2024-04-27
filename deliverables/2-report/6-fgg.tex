@@ -120,21 +120,12 @@ set. Additionally, the method set of a type parameter $\alpha$ is equal to the
 method set of its bound $\gamma$, as specified in the typing environment
 $\Delta$.
 
-The $\methods_\Delta$ auxiliary is now a partial function, not defined on the
-\kw{const} type. This is because there is currently never a context in which the
-$\methods_\Delta$ would need to be applied to \kw{const}. In a future extension,
-type parameters bounded by \kw{const} could be used as expressions (since they will
-be instantiated with integer values in user programs), in which case we could
-define $\methods_\Delta(\const) = \{\}$ so that they implement the empty
-interface. We could then additionally have a rule stating that type parameters
-bounded by \kw{const} implement \kw{int}.
-
-Because $\methods_\Delta$ is not defined on \kw{const}, there is an additional
-subtyping rule that specifies that type parameters which are bound by
-\kw{const}, are also subtypes of \kw{const} (rule $\imp_{const-\text{Param}}$).
-All type parameters are subtypes of their bounds, but where the bounds are a
-regular interface (i.e. not \kw{const}), this can already be derived via the
-$\imp_I$ rule.
+Because $\methods_\Delta$ is not defined on \kw{const} (see
+\ref{sec:fgg-appx-typing}), there is an additional subtyping rule that specifies
+that type parameters which are bound by \kw{const}, are also subtypes of
+\kw{const} (rule $\imp_{const-\text{Param}}$). All type parameters are subtypes
+of their bounds, but where the bounds are a regular interface (i.e. not
+\kw{const}), this can already be derived via the $\imp_I$ rule.
 
 The integer literal type can now appear in user programs, although with
 restrictions as to where they can be used. They can only be used as type
@@ -206,57 +197,34 @@ the type name $t$ to the sequence of seen type names $\ov{t_r}$ to check for
 self-references. While theoretically, we could have just a single type $t_r$ to
 check for at a time, rather than a sequence, this would lead to problems when
 checking types that are self-referential, but do not contain the initial type
-$t_r$ in the cycle, as the rule would recurse indefinitely. Examples of the
-$\notref$ auxiliary being used to type-check type declarations and a detailed
-illustration of the issue of checking a single type $t_r$ at a time can be found
-in the \hyperref[sec:fgg-self-ref-derivation-examples]{appendix}.
+$t_r$ in the cycle, as the rule would recurse indefinitely.
 
-The remainder of the T-Type rule checks that the type declaration's type
-parameters constraints $\ov{\Phi}$ are well-formed (via T-Formal), and that the
-type literal is well-typed in the typing environment formed from $\ov{\Phi}$.
-
-The rule T-Const asserts that \kw{const} type passes the bounds type check in
-the T-Formal rule in any environment $\Delta$. The T-Specification rule has been
-updated to type check the parameter and return types under the typing
-environment $\ov{\Phi}$. Additionally, neither the parameter nor return types
-may be \kw{const} types. T-Struct has similarly been updated to check the field
-types in the environment $\ov{\Phi}$, and to only permit non-\kw{const} field
-types. An array size can now be any valid \kw{const} type, and the element type
-must be a valid non-\kw{const} type, evaluated in the typing environment
-$\ov{\Phi}$. The T-Func and T-Func-Arrayset rules have been updated to look up
-the type parameter constraints based on the receiver type parameters to
-construct typing environments for the updated type-checking rules.
-
-Rules T-Int-Literal, T-Var, T-Call, T-Struct-Literal, T-Field and T-Program are
-all updated to use types $\tau$ and typing environments $\Delta$. The $\lentype$
-auxiliary now has two cases. One as before: when the array size is an integer
-literal (i.e. non-generic). The other is the generic case, where the array size
-is a type parameter, in which case $lentype$ returns the type argument that is
-used to instantiate the array size type parameter (by matching on the type
-parameter position). Array literals in FGGA can only be constructed when the
-$\lentype$ is an integer literal type --- either when the array length type is
-non-generic, or has been instantiated with an integer literal (rule
+An array size can now be any valid \kw{const} type, and the element type must be
+a valid non-\kw{const} type, evaluated in the typing environment $\ov{\Phi}$.
+The $\lentype$ auxiliary now has two cases. One as before: when the array size
+is an integer literal (i.e. non-generic). The other is the generic case, where
+the array size is a type parameter, in which case $lentype$ returns the type
+argument that is used to instantiate the array size type parameter (by matching
+on the type parameter position). Array literals in FGGA can only be constructed
+when the $\lentype$ is an integer literal type --- either when the array length
+type is non-generic, or has been instantiated with an integer literal (rule
 T-Array-Literal). When the array size is instantiated with a type parameter, the
 size is unknown, hence it is not safe to assume the array can hold any elements
 (e.g. it could be instantiated later with a size of 0). In practice, Go's zero
 values could be used to instantiate generically sized arrays, but since FGGA
 does not support them, even empty generic array initialisation is not allowed.
-The supertype of an array literal's elements is determined by type parameter
-substitution on the array's element type.
 
-As before, there are two rules for performing an array index operation, one
-where the type of the index is \kw{int}, and one where the type is an integer
-literal (rules T-Array-Index and T-Array-Index-Literal). It is worth noting that
-generic, non-instantiated arrays (i.e. where $\lentype$ does not return an
-integer literal) can only be indexed using a non-constant integer of type
-\kw{int}. This is to stay consistent with current expectations: indexing into an
-array using a constant integer literal is only allowed to fail at compile-time.
-In line with the Go spirit of type-checking generic code at the declaration
-site, as opposed to the call site, indexing into generic arrays using integer
-literals is not allowed in FGGA, even if the index would remain within bounds
-for all array instantiations in the scope of the current program. The programmer
-may still achieve such behaviour by explicitly assigning the integer literal to
-a non-const \kw{int} variable and then performing an index operation.
+It is worth noting that generic, non-instantiated arrays (i.e. where $\lentype$
+does not return an integer literal) can only be indexed using a non-constant
+integer of type \kw{int}. This is to stay consistent with current expectations:
+indexing into an array using a constant integer literal is only allowed to fail
+at compile-time. In line with the Go spirit of type-checking generic code at the
+declaration site, as opposed to the call site, indexing into generic arrays
+using integer literals is not allowed in FGGA, even if the index would remain
+within bounds for all array instantiations in the scope of the current program.
+The programmer may still achieve such behaviour by explicitly assigning the
+integer literal to a non-const \kw{int} variable and then performing an index
+operation.
 
 \input{../../projects/go-generic-array-sizes/theory/fgg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fgg-typing}

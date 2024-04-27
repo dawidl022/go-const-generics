@@ -110,22 +110,8 @@ syntactically, two statements are allowed within the method body, as there is no
 way in Go to perform an array index assignment and return the array in a single
 expression.
 
-Finally, expressions may take on a number of forms. The most basic expressions
-are integer literals (e.g. 0, 1, 2, 10, -1 etc.). Variables, which in the
-context of FGA happen to be parameter names, are also basic expressions.
-
-Complex expressions may involve 0 or more subexpressions. The first kind are
-method calls, which are recursively defined as an expression, followed by a dot,
-followed by a method name (an identifier), followed by a sequence of expressions
-enclosed in parentheses. Another recursively defined kind of expression is a
-value literal, which consists of a value type name, followed by a sequence of
-expressions enclosed in curly brackets. Value literals are used to instantiate
-structs or arrays. The select expression consists of an expression, followed by
-a dot and the field name (an identifier), which is used to select a field from a
-struct. An array index consists of an expression, followed by another expression
-enclosed in square brackets. The array index expression is used to retrieve an
-element of an array (the first subexpression) at a specified index (the second
-subexpression).
+The expression that are supported are standard, and are described in
+appendix \ref{sec:fg-appx-syntax-expr}.
 
 \input{../../projects/go-generic-array-sizes/theory/fg-syntax}
 
@@ -140,27 +126,6 @@ reduces to expression $e$ in a single step (denoted as $d \to e$), if one of the
 reduction rule templates can be instantiated with the metaexpression $d \to e$
 by pattern matching.
 
-The auxiliary function $\fields$ looks up the struct type name given as an
-argument in the sequence of declarations, and returns the sequence of fields in
-the definition of the struct type. The rule R-Field says that a select
-expression on a struct literal \emph{value} evaluates to the field value
-corresponding to the same position in the struct literal as the field name is in
-the struct type declaration.
-
-The auxiliary function $\indexbounds$ returns a set of valid index indices of an
-array type, i.e. the set of indices that are within the bounds of the array. The
-rule R-Index says an array index expression on an array literal \emph{value}
-with an integer literal $n$ as the index reduces to the element of the array at
-index $n$, if and only if $n$ is within bounds of the array.
-
-The auxiliary function $\mbody$ looks up the method declaration given by the
-type name and method name, and returns the expression in the body of that method
-with a template for the receiver and parameters. The rule R-Call says that a
-method call expression where the receiver is a value and the arguments are also
-values, reduces to the $\mbody$ of the method defined on the $\vtype$ of the
-receiver, with the actual parameters (receiver and arguments) substituted for
-the formal parameters in the $\mbody$ template.
-
 The auxiliary predicate $\isarraysetmethod$ returns true if and only if the
 method given by the type name and method name exists in the sequence of
 declarations and is syntactically an array set method, as defined in figure
@@ -172,24 +137,10 @@ which is replaced with the value in the second argument of the method call. This
 rule can be applied if and only if the method in question is an array set method
 and the integer literal $n$ is within the bounds of the array.
 
-Apart from the 4 computation rules described above, there is also a congruence
-rule defined in terms of evaluation contexts, which says that if $d$ evaluates
-to $e$, then $d$ in the context of $E$ evaluates to $e$ in the same context $E$.
-The evaluation context defines the order of evaluation \autocite{evalContexts},
-when there are multiple subexpressions in a single expression, and where at
-least one of the subexpressions is not a value.
-
-By the evaluation context rules, a method call must first reduce its receiver to
-a value, and subsequently reduce its arguments to values, one by one. A value
-literal has its elements reduced to values, one by one. A select expression must
-first reduce its receiver to a value. An array index must first reduce its
-receiver to an array literal value, and then its index expression to a value.
-
-An example of the reduction rules being applied to a very simple FGA program can
-be found in \hyperref[sec:fg-derivation-example]{the appendix}.
-
-% TODO explicitly capture panicking in reduction rules, in case indexBounds is
-% violated
+The remaining reduction rules are standard, and are described in
+appendix \ref{sec:fg-appx-reduction}. An example of the reduction
+rules being applied to a very simple FGA program can be found in appendix
+\ref{sec:fg-derivation-example}.
 
 \input{../../projects/go-generic-array-sizes/theory/fg-reduction}
 
@@ -215,47 +166,17 @@ interfaces can also implement other interfaces (and themselves).
 
 A type, identified by its name, is considered well-formed when it's either the
 predeclared \kw{int} type (rule T-Int-Type), or it is the type name of one of
-the type declarations in the program (rule T-Named).
+the type declarations in the program (rule T-Named). An array set method is
+well-formed if the 2nd parameter's type is a subtype of the receiver type's
+element type and the receiver type is itself a well-formed array type (rule
+T-Func-Arrayset).
 
-A method specification is considered well-typed if the parameter names are
-distinct (i.e. each parameter name is different) and the parameter and return
-types are themselves well-typed (rule T-Specification).
-
-A struct type literal is well-formed if all of its fields are distinct and the
-field types are themselves well-formed (rule T-Struct). An interface type
-literal is well-formed if all of its method specifications are unique (i.e.
-each method specified in the interface has a different name) and well-formed
-(rule T-Interface). An array type literal is well-formed if the integer literal
-defining the size of the array is greater than or equal to zero, and the array
-element type is well-formed (rule T-Array).
-
-A type declaration is well-formed if its type literal is well-formed (rule
-T-Type). A method declaration is well-formed if the parameters (including the
-receiver) are distinct, the receiver, parameter and return types are well-formed
-and the method expression's type is a subtype of the return type under the
-environment formed from the method parameters (and receiver) (rule T-Func). An
-array set method is well-formed if the 2nd parameter's type is a subtype of the
-receiver type's element type and the receiver type is itself a well-formed
-array type (rule T-Func-Arrayset).
-
-The rule T-Var formally defines what it means for a variable $x$ to be of type
-$t$ under the environment $\Gamma$, i.e. when the pair $x : t$ is in $\Gamma$. A
-method call expression is well-formed and of the type $u$ being the method
-specification's return type, when the receiver expression is well-typed and has
-a method named $m$ in the method set of its type. In addition, all the argument
-expressions must be well-typed, and be subtypes of the formal parameter types
-(rule T-Call). A struct literal expression is well-formed and of the struct type
-that was instantiated, if the struct type is well-formed, and each element's
-type of the struct literal is a subtype of the corresponding field types in the
-struct type declaration (rule T-Struct-Literal). A field select expression is
-well-typed if the receiver is well-typed and of struct type. The expression is
-of the same type as the field corresponding to the selected field name in the
-struct type declaration (rule T-Field). An array literal expression is
-well-formed and of the array type that was instantiated, if the array type is
-well-formed, the number of elements matches the size of the array (note that
-unlike in Go, zero values are not defined in FGA, as such, all elements of an
-array must be explicitly instantiated upfront), and all elements' types are
-subtypes of the array's element type (rule T-Array-Literal).
+An array literal expression is well-formed and of the array type that was
+instantiated, if the array type is well-formed, the number of elements matches
+the size of the array (note that unlike in Go, zero values are not defined in
+FGA, as such, all elements of an array must be explicitly instantiated upfront),
+and all elements' types are subtypes of the array's element type (rule
+T-Array-Literal).
 
 For reasons that will be discussed when type parameters are introduced, integer
 literals are of their own types, e.g. the expression $1$ is of type $1$ (rule
@@ -284,8 +205,9 @@ $\mdecls$ returns all pairs of $t_V.m$ (receiver type + method name) declared in
 the program. All declarations along with the main expression must also be
 well-formed (rule T-Prog).
 
-An example of the typing rules being applied to a very simple FGA program can
-be found in \hyperref[sec:fg-typing-derivation-example]{the appendix}.
+The remainder of the rules are described in appendix \ref{sec:fg-appx-typing}.
+An example of the typing rules being applied to a very simple FGA program can be
+found in appendix \ref{sec:fg-typing-derivation-example}.
 
 \input{../../projects/go-generic-array-sizes/theory/fg-aux}
 \input{../../projects/go-generic-array-sizes/theory/fg-typing}

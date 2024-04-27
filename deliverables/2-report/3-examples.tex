@@ -95,51 +95,21 @@ it is difficult to reliably build array-based data structures that offer better
 performance than slices, since all the operations need to be handwritten and
 optimised. One rule of thumb is that heap allocations are expensive, and it is
 easier to avoid heap allocations (e.g. when making copies) for arrays than for
-slices.
+slices. Figures \ref{lab:arr-semant} and \ref{lab:slice-semant} compare the
+semantics of arrays versus slices, and an accompanying description can be found
+in appendix \ref{ch:arr-semantics-appx}.
 
 \begin{figure}
 	\golisting{./examples/semantics/arrays.go}
 	\caption{Array semantics allow for trivial deep-copying and comparison}
+	\label{lab:arr-semant}
 \end{figure}
 
 \begin{figure}
 	\golisting{./examples/semantics/slices.go}
 	\caption{Slices hold references to underlying data, and cannot be compared}
+	\label{lab:slice-semant}
 \end{figure}
-
-\subsubsection{Value type}
-
-Arrays offer other semantic differences, that may make it more appealing to
-build data structures from for certain use cases. We've seen that arrays are
-value types, and as such, copies can be easily made through simple assignment to
-a variable or passing into a function. While cloning a single slice is not much
-more difficult, if we have a large, nested data structure, that is slice-based,
-performing a deep-copy is a verbose and manual process (there is no standard
-library deep-copy function as of Go 1.21). If instead, the data structure was
-array-based, with no internal pointers (only potentially a top-level pointer to
-the data structure), performing a deep copy becomes trivial.
-
-\subsubsection{Comparison}
-
-Arrays are comparable, while slices are not. Again, for a simple example, one
-could define a function that compares the size and elements of slices to
-determine if two slices are equal in value (not reference). It is slightly more
-difficult to do the same with a nested slice-based data structure (although this
-time around, the standard library does provide \texttt{reflect.DeepEqual} with
-some caveats\footnote{\href{https://pkg.go.dev/reflect\#DeepEqual}{\texttt{reflect.DeepEqual}} differentiates between a nil
-	and an empty slice, despite them semantically being equivalent.
-	\href{https://pkg.go.dev/github.com/google/go-cmp/cmp\#Equal}{\texttt{cmp.Equal}}
-	with the
-	\href{https://pkg.go.dev/github.com/google/go-cmp/cmp/cmpopts\#EquateEmpty}{\texttt{cmpopts.EquateEmpty}}
-	option can be used instead to equate semantically empty slices
-	\autocite{deepEqual}.}), a nested array-based data structure (with no internal
-pointers) can be simply compared with the \texttt{==} operator.
-
-This comparable attribute of arrays becomes extremely important when we wish to
-use a collection of elements as a key in a hash map. Only comparable data
-structures can be used as map keys, which means that arrays can be used as map
-keys, while slices cannot. This also applies recursively, so slice-based data
-structures cannot be used as map keys, while array-based ones can.
 
 \subsubsection{Limitations}
 
@@ -194,5 +164,5 @@ returning the zero-value, or performing a no-op) is chosen instead.
 	{../../projects/go-generic-array-sizes/interpreters/fg/examples/ringbuffer/deque.go}
 	\caption{Double-ended queue (deque) with a fixed underlying ring buffer
 		implemented in FGA. Full code definitions can be
-		found in \hyperref[sec:fg-deque-code]{the appendix}.}
+		found in appendix \ref{sec:fg-deque-code}.}
 \end{figure}

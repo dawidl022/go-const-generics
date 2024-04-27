@@ -1,0 +1,37 @@
+\section{Featherweight Generic Go with Arrays addendum}
+
+\subsection{FGGA Typing}
+\label{sec:fgg-appx-typing}
+
+The $\methods_\Delta$ auxiliary is now a partial function, not defined on the
+\kw{const} type. This is because there is currently never a context in which the
+$\methods_\Delta$ would need to be applied to \kw{const}. In a future extension,
+type parameters bounded by \kw{const} could be used as expressions (since they will
+be instantiated with integer values in user programs), in which case we could
+define $\methods_\Delta(\const) = \{\}$ so that they implement the empty
+interface. We could then additionally have a rule stating that type parameters
+bounded by \kw{const} implement \kw{int}.
+
+The remainder of the T-Type rule checks that the type declaration's type
+parameters constraints $\ov{\Phi}$ are well-formed (via T-Formal), and that the
+type literal is well-typed in the typing environment formed from $\ov{\Phi}$.
+
+The rule T-Const asserts that \kw{const} type passes the bounds type check in
+the T-Formal rule in any environment $\Delta$. The T-Specification rule has been
+updated to type check the parameter and return types under the typing
+environment $\ov{\Phi}$. Additionally, neither the parameter nor return types
+may be \kw{const} types. T-Struct has similarly been updated to check the field
+types in the environment $\ov{\Phi}$, and to only permit non-\kw{const} field
+types.
+
+The T-Func and T-Func-Arrayset rules have been updated to look up the type
+parameter constraints based on the receiver type parameters to construct typing
+environments for the updated type-checking rules. Rules T-Int-Literal, T-Var,
+T-Call, T-Struct-Literal, T-Field and T-Program are all updated to use types
+$\tau$ and typing environments $\Delta$. The supertype of an array literal's
+elements is determined by type parameter substitution on the array's element
+type.
+
+As before, there are two rules for performing an array index operation, one
+where the type of the index is \kw{int}, and one where the type is an integer
+literal (rules T-Array-Index and T-Array-Index-Literal).

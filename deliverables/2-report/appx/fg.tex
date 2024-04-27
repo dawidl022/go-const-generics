@@ -1,0 +1,93 @@
+\section{Featherweight Go with Arrays addendum}
+
+\subsection{FGA Syntax: Expressions}
+\label{sec:fg-appx-syntax-expr}
+
+Expressions may take on a number of forms. The most basic expressions
+are integer literals (e.g. 0, 1, 2, 10, -1 etc.). Variables, which in the
+context of FGA happen to be parameter names, are also basic expressions.
+
+Complex expressions may involve 0 or more subexpressions. The first kind are
+method calls, which are recursively defined as an expression, followed by a dot,
+followed by a method name (an identifier), followed by a sequence of expressions
+enclosed in parentheses. Another recursively defined kind of expression is a
+value literal, which consists of a value type name, followed by a sequence of
+expressions enclosed in curly brackets. Value literals are used to instantiate
+structs or arrays. The select expression consists of an expression, followed by
+a dot and the field name (an identifier), which is used to select a field from a
+struct. An array index consists of an expression, followed by another expression
+enclosed in square brackets. The array index expression is used to retrieve an
+element of an array (the first subexpression) at a specified index (the second
+subexpression).
+
+\subsection{FGA Reduction}
+\label{sec:fg-appx-reduction}
+
+The auxiliary function $\fields$ looks up the struct type name given as an
+argument in the sequence of declarations, and returns the sequence of fields in
+the definition of the struct type. The rule R-Field says that a select
+expression on a struct literal \emph{value} evaluates to the field value
+corresponding to the same position in the struct literal as the field name is in
+the struct type declaration.
+
+The auxiliary function $\indexbounds$ returns a set of valid index indices of an
+array type, i.e. the set of indices that are within the bounds of the array. The
+rule R-Index says an array index expression on an array literal \emph{value}
+with an integer literal $n$ as the index reduces to the element of the array at
+index $n$, if and only if $n$ is within bounds of the array.
+
+The auxiliary function $\mbody$ looks up the method declaration given by the
+type name and method name, and returns the expression in the body of that method
+with a template for the receiver and parameters. The rule R-Call says that a
+method call expression where the receiver is a value and the arguments are also
+values, reduces to the $\mbody$ of the method defined on the $\vtype$ of the
+receiver, with the actual parameters (receiver and arguments) substituted for
+the formal parameters in the $\mbody$ template.
+
+Apart from the computation rules described above, there is also a congruence
+rule defined in terms of evaluation contexts, which says that if $d$ evaluates
+to $e$, then $d$ in the context of $E$ evaluates to $e$ in the same context $E$.
+The evaluation context defines the order of evaluation \autocite{evalContexts},
+when there are multiple subexpressions in a single expression, and where at
+least one of the subexpressions is not a value.
+
+By the evaluation context rules, a method call must first reduce its receiver to
+a value, and subsequently reduce its arguments to values, one by one. A value
+literal has its elements reduced to values, one by one. A select expression must
+first reduce its receiver to a value. An array index must first reduce its
+receiver to an array literal value, and then its index expression to a value.
+
+\subsection{FGA Typing}
+\label{sec:fg-appx-typing}
+
+A method specification is considered well-typed if the parameter names are
+distinct (i.e. each parameter name is different) and the parameter and return
+types are themselves well-typed (rule T-Specification).
+
+A struct type literal is well-formed if all of its fields are distinct and the
+field types are themselves well-formed (rule T-Struct). An interface type
+literal is well-formed if all of its method specifications are unique (i.e.
+each method specified in the interface has a different name) and well-formed
+(rule T-Interface). An array type literal is well-formed if the integer literal
+defining the size of the array is greater than or equal to zero, and the array
+element type is well-formed (rule T-Array).
+
+A type declaration is well-formed if its type literal is well-formed (rule
+T-Type). A method declaration is well-formed if the parameters (including the
+receiver) are distinct, the receiver, parameter and return types are well-formed
+and the method expression's type is a subtype of the return type under the
+environment formed from the method parameters (and receiver) (rule T-Func).
+
+The rule T-Var formally defines what it means for a variable $x$ to be of type
+$t$ under the environment $\Gamma$, i.e. when the pair $x : t$ is in $\Gamma$. A
+method call expression is well-formed and of the type $u$ being the method
+specification's return type, when the receiver expression is well-typed and has
+a method named $m$ in the method set of its type. In addition, all the argument
+expressions must be well-typed, and be subtypes of the formal parameter types
+(rule T-Call). A struct literal expression is well-formed and of the struct type
+that was instantiated, if the struct type is well-formed, and each element's
+type of the struct literal is a subtype of the corresponding field types in the
+struct type declaration (rule T-Struct-Literal). A field select expression is
+well-typed if the receiver is well-typed and of struct type. The expression is
+of the same type as the field corresponding to the selected field name in the
+struct type declaration (rule T-Field).

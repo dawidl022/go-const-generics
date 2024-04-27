@@ -1,0 +1,60 @@
+\section{Proposal addendum}
+
+\subsection{The \texttt{len} function}
+\label{sec:proposal-appx-len}
+
+Go's built-in \texttt{len} function is special in the sense that depending on
+the context, it may or may not be computed at compile time \autocite{spec}. If
+it is computed at compile time, we can assign the result to a \kw{const}
+variable, or use it in any other place that requires a compile-time constant
+non-negative integer value, such as for the length of an array.
+
+An example of a compile-time evaluation of \texttt{len} is when it is applied to
+an array value literal, and an example of a run-time evaluation of \texttt{len}
+is when it is applied to a slice value. The question arises, how should
+\texttt{len} treat generic arrays (specifically, ones that are parameterised on
+size)?
+
+If we take Rust's conservative approach of prohibiting the use of expressions
+that include constant type parameters (except when the expression is a lone type
+parameter) as type arguments \autocite{rustConstBlog}, which include applying
+\texttt{len} to a generically sized array, then it becomes clear why
+\texttt{len} of a generically sized array should yield a non-constant integer
+(as indeed is the case in Rust). Without this restriction, the compiler would
+have to keep track of which constant was derived from an expression containing a
+type-parameter, to prevent the later usage of such a constant in another
+\kw{const} expression used as a type argument. The same logic applies to the
+numerical type parameters themselves: if they could be assigned to constant
+variables, then the constant variable could be used as part of a constant
+expression used to instantiate a \kw{const} type parameter, leading to the
+problems discussed in the previous section. And so, when \kw{const} type
+parameters are used as values, the resulting expression type should be a
+non-constant \kw{int} under the conservative model.
+
+\begin{figure}
+    \golisting{./examples/expressions/len.go}
+    \caption{Expressions derived from a numerical type parameter are non-constant}
+\end{figure}
+
+If we view the generally sized arrays as the union of array types of all sizes
+(similar to the explicitly enumerated array type union we can already represent
+in code), then we can keep things as they are currently in Go. I.e. a generic
+type bound by a union of arrays has a non-constant \texttt{len}.
+
+\begin{figure}
+    \golisting{./examples/werner/const_len_of_interface.go}
+    \caption{As of Go 1.18, \texttt{len} of an array union type set interface
+        value is non-constant}
+\end{figure}
+
+This is likely to avoid constraining the compiler implementation. With a full
+monomorphisation approach, the \kw{const} of the example above is not an issue,
+as each instantiation of the function has its own local \texttt{const n} with a
+distinct value. However, in the current GC Shape Stenciling approach used by the
+Go compiler as of Go 1.18 \autocite{generics1.18}, it is possible to construct a
+union of array types that have the same GC shape, yet the length of the array
+type differs. In such cases, \kw{const}s within a generic function would be
+difficult or even impossible to handle correctly. A simpler explanation is that
+generic types simply always have non-constant lengths (given \texttt{len} is
+defined on all types of the type set), regardless of whether or not values of
+their constraint type could yield a constant length \autocite{spec}.

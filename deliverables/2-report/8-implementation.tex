@@ -38,19 +38,6 @@ ambiguity resulting from the grammar (as discussed in section
 other auxiliary operations. The pattern makes it easy to recursively traverse
 the AST and apply the desired operation.
 
-It allows for the separation of concerns, i.e. each operation can live in its
-own package. Simply defining methods on the AST would force all operations to be
-defined in a single package (in Go, methods on a type can only be defined in the
-same package the type is declared), limiting the code organisation flexibility.
-
-The downside of the visitor pattern is that it produces additional boilerplate
-code, however, IDEs make it easy to generate, and we can place all of it into
-some separate file so it doesn't interfere with writing logic. Another downside
-is the proliferation of type casts (assertions), since the visitor interface
-needs to be generic enough to work with all nodes of the AST, even though we
-know that only a more specific type should be returned from a particular visit
-invocation.
-
 \subsection{Testing}
 
 The programs were written using test-driven development (TDD), where the test
