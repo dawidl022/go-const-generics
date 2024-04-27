@@ -6,12 +6,22 @@ grammar/antlr-4.13.0-complete.jar:
 parser: grammar/antlr-4.13.0-complete.jar grammar/*
 	go generate grammar/generate.go
 
-test: parser
+test-all: parser
 	cd ../fg/reduction && go test -langs=fgg
 	cd ../fg/typecheck && go test -langs=fgg
 	go test ./...
-.PHONY: test
+.PHONY: test-all
+
+test-unit: parser
+	cd ../fg/reduction && go test -langs=fgg
+	cd ../fg/typecheck && go test -langs=fgg
+	go test `go list ./... | grep -v examples`
+.PHONY: test-unit
 
 clean:
 	rm -rf parser
 .PHONY: clean
+
+run:
+	go run cmd/main.go
+.PHONY: run

@@ -6,10 +6,18 @@ grammar/antlr-4.13.0-complete.jar:
 parser: grammar/antlr-4.13.0-complete.jar grammar/*
 	go generate grammar/generate.go
 
-test: parser
+test-all: parser
 	go test ./...
-.PHONY: test
+.PHONY: test-all
+
+test-unit: parser
+	go test `go list ./... | grep -v examples`
+.PHONY: test-unit
 
 clean:
 	rm -rf parser
 .PHONY: clean
+
+run:
+	go run cmd/main.go
+.PHONY: run

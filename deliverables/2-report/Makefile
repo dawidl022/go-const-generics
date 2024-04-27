@@ -1,4 +1,4 @@
-main.pdf: project-plan.pdf *.tex examples/*
+main.pdf: project-plan.pdf *.tex examples/* appx/*
 	pdflatex -shell-escape main
 	biber main
 	pdflatex -shell-escape main
