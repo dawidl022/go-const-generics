@@ -1,12 +1,10 @@
 test-all:
-	cd interpreters/fg && make test-all
-	cd interpreters/fgg && make test-all
+	cd interpreters && make test-all
 	cd monomorphisers/fgg2go && make test-all
 .PHONY: test-all
 
 test-unit:
-	cd interpreters/fg && make test-unit
-	cd interpreters/fgg && make test-unit
+	cd interpreters && make test-unit
 	cd monomorphisers/fgg2go && make test-unit
 .PHONY: test-unit
 

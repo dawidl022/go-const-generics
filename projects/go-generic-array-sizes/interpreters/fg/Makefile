@@ -18,6 +18,6 @@ clean:
 	rm -rf parser
 .PHONY: clean
 
-run:
+run: parser
 	go run cmd/main.go
 .PHONY: run

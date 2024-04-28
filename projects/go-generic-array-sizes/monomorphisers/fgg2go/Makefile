@@ -16,6 +16,6 @@ test-unit: ../../interpreters/fgg/parser
 	go test `go list ./... | grep -v examples`
 .PHONY: test-unit
 
-run:
+run: ../../interpreters/fgg/parser
 	go run cmd/main.go
 .PHONY: run
