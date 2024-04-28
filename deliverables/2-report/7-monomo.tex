@@ -5,7 +5,7 @@ Monormorphisation is an implementation technique for generics (parametric
 polymorphism) which involves translating generic code into non-generic code. For
 every instantiation of a generic type, a non-generic type is produced in the
 output monomorphised program. This approach allows for zero-cost abstractions,
-as there is no runtime penalty of executing monomorphised code as opposed to
+as there is no runtime penalty for executing monomorphised code as opposed to
 non-generic code. Monormorphisation is used by languages such as Rust to
 implement generics \autocite{rustCompilerGuide}. Monormorphisation was first
 formalised in \emph{Featherweight Go} \autocite{fg}.
@@ -53,7 +53,7 @@ I-Prog rule, where $\Omega$ is the fixed point.
 
 Because only referenced types are collected, a side effect of monomorphisation
 is that any unused types are eliminated. This makes sense, because in general,
-if a generic type is never instantiated, we do have any candidates it could
+if a generic type is never instantiated, we don't have any candidates it could
 monomorphise down to.
 
 The second phase translates the main expression, and the collected types in
@@ -65,7 +65,7 @@ parameters/arguments (rules M-Named, M-$\alpha$ and M-Constraints). The
 remainder of the rules either recursively apply type translation to their
 components or are base cases that require no translation at all.
 
-The formal rules describe the process in two distinct stages, whereas thr
+The formal rules describe the process in two distinct stages, whereas the
 implementation does both in a single stage (translating as it collects types).
 All the information needed to translate a term can be derived from the result of
 type collection on that term. E.g. given $\Delta = \emptyset$ the expression $e
@@ -74,8 +74,8 @@ translates to $e^\dagger = \an{Arr, 2}[\kw{int}]\{1, 2\}$, where $\an{t,
         \ov{n}}$ signifies the output type name. In an implementation, the name should
 be generated such that ideally it doesn't conflict with any other type name that
 the programmer might declare. Additionally, we assume the program has already
-been type-checked before being fed into the monomorphiser (implemenation should
-type-check before monomorphising).
+been type-checked before being fed into the monomorphiser (the implemenation
+should type-check before monomorphising).
 
 \input{../../projects/go-generic-array-sizes/theory/fgg2go}
 
@@ -159,7 +159,7 @@ can eliminate by applying the monomorphisation procedure $P_1^\skull \mapsto
         \end{tikzpicture}
     \end{center}
 
-    \caption{Bisimulation. Solid arrow indicates program reduction step.
-        Dashed arrow indicates monormorphisation of program.}
+    \caption{Bisimulation. A solid arrow indicates a program reduction step.
+        A dashed arrow indicates monormorphisation of a program.}
     \label{fig:bisiumulation}
 \end{figure}

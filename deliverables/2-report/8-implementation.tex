@@ -1,16 +1,16 @@
 \section{Implementation}
 \label{ch:interpter-impl}
 
-As part of this work two interpreters were implemented, one for FGA and one for
+As part of this work, two interpreters were implemented, one for FGA and one for
 FGGA. In addition, a monomorphiser was implemented translating FGGA to Go. The
 output of the monomorphiser is a valid subset of FGGA, so it can be interpreted
 by the FGGA interpreter as well as compiled by the official Go compiler.
 
-One of the aims of building the interpreters, was to test the formal syntax,
+One of the aims of building the interpreters was to test the formal syntax,
 reduction and typing rules defined in sections \ref{ch:fg} and \ref{ch:fgg}, and
-amend them when inconsistencies or issue arose. The aim of the monomorphiser was
-to prototype a translation from const-generic Go code, to regular Go code, which
-is a useful first step to actually introducing this feature into the mainstream
+amend them when inconsistencies or issues arose. The aim of the monomorphiser
+was to prototype a translation from const-generic Go code to regular Go code,
+which is a useful first step to introducing this feature into the mainstream
 compiler. One could also extend the monomorphiser to support a proper superset
 of Go, which would allow developers to use generically sized arrays in their
 source code, and use the monomorphiser as the first step of the compilation
@@ -20,7 +20,7 @@ preservation properties as the input program is executed, and terminate upon
 reaching a state that was previously seen (i.e. some forms of infinite loops are
 detected at run-time).
 
-A similar set of programs were found in the set of artifacts in Featherweight Go
+A similar set of programs was found in the set of artifacts in Featherweight Go
 \autocite{fg} --- interpreters for the two languages formalised, and a
 monomorphiser translating generics (the feature introduced by Featherweight Go)
 into code that the official Go compiler at the time could handle.
@@ -48,10 +48,10 @@ Since under TDD no feature may be implemented without an accompanying test, all
 developed features are covered by tests. TDD allows for fearless refactoring,
 since all features are fully covered by tests. Using example programs as test
 inputs allows for arbitrary refactoring of the implementation. During
-development, such a major refactoring was undertaken --- namely moving the type parameter
-substitution (the need for which arising from the grammar ambiguity) from an ad
-hoc basis to a separate preprocessing step (i.e. a separate pass of the AST)
-before any type checking started.
+development, such a major refactoring was undertaken --- namely moving the type
+parameter substitution (the need for which arising from the grammar ambiguity)
+from an ad hoc basis to a separate preprocessing step (i.e. a separate pass of
+the AST) before any type checking started.
 
 A core part of the implementation was coming up with edge cases, writing tests
 to check how the interpreter behaved, and if necessary updating both the formal
@@ -59,10 +59,10 @@ rules and implementation to cover the edge case. E.g in FGGA the $\notref$
 auxiliary had to be updated to instantiate the type literals it recursively
 checks, as a result of the described process.
 
-In fact, following this process, at least once bug in the official Go compiler
-(as of Go 1.22) was caught, causing the compiler to either crash due to stack
-overflow, or incorrectly type check a program (behaviour dependent on input) The
-two errors were subsequently reported as issues on Go's GitHub repository, where
+In fact, following this process, two bugs in the official Go compiler (as of Go
+1.22) were caught, causing the compiler to either crash due to stack overflow,
+or incorrectly type check a program (behaviour dependent on input). The two
+errors were subsequently reported as issues on Go's GitHub repository, where
 exact details can be
 found\footnote{\href{https://github.com/golang/go/issues/65711}{issue 65711} and
     \href{https://github.com/golang/go/issues/65714}{65714}}.

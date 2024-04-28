@@ -74,7 +74,7 @@ constraint on recursive constant type parameter expressions.
 \textcite{tapl} covers core topics in programming languages and type theory
 including how to precisely describe the syntax, evaluation and static type
 system of programming languages, and techniques for proving properties of those
-language. The book formally presents the notion of language type safety
+languages. The book formally presents the notion of language type safety
 consisting of \emph{progress} and \emph{preservation}.
 
 The progress theorem says that well-typed terms (i.e. those that are in the
@@ -118,7 +118,7 @@ back as FORTRAN. Dependent types can be more complex than simple array sizes,
 e.g. we can express balanced trees (by depending on the values of their heights)
 or sorted lists \autocite{dependentAtWork}.
 
-Dependent typing can be found is research functional languages such as Idris and
+Dependent typing can be found in research functional languages such as Idris and
 Agda \autocites{idris}{agda}. Dependent types need not depend on constants (i.e.
 concrete values known at compile time, such as the literal \texttt{1}) --- they
 may depend on arbitrary terms (e.g. variables). Mainstream languages including
@@ -139,10 +139,10 @@ Dependent types are the more general form, whereas refinement types impose a
 restriction that the type must depend on a \emph{predicate} (which itself
 involves values). These predicates are said to refine (narrow down) the set of
 values described by the base type \autocite{refinement}. Moreover, unlike
-dependent types, these predicates cannot be arbitrary expressions, but are
+dependent types, these predicates cannot be arbitrary expressions but are
 rather formed from a more restricted language (than the language they are used
 in). The exact restrictions depend on the specifics of the refinement type
-system. One concrete example are liquid types which enforce decidability of the
+system. One concrete example is liquid types which enforce decidability of the
 predicates. Liquid types have been implemented for several major languages,
 including recently for Java, which shows active development in this area of
 research. \autocites{liquidTypesBlog}{liquidJava}.
@@ -173,7 +173,7 @@ into the non-generic base language.
 \emph{Featherweight Go} formalises a subset of Go through syntax, reduction and
 typing rules, as well as an extended variant with generics. They are used as the
 starting point for the formal rules in this work. In their work, \citeauthor{fg}
-proove the soundness of the FG and FGG type systems using the progress and
+prove the soundness of the FG and FGG type systems using the progress and
 progress theorems described in the previous section.
 
 \citeauthor{fg} argue that both ``featherweight'' and ``complete'' descriptions
