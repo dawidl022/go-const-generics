@@ -13,7 +13,11 @@
 
     \derivrule[T-Type]{
         \axiomrule[T-Interface]{
-            \interface\br{} \ok
+            \emptyset \vdash \interface\br{} \ok
+        }
+        \\
+        \axiomrule{
+            \notref(\any, \interface\br{})
         }
     }{
         D_0 \ok
@@ -43,7 +47,17 @@
         \isconst_{\ov{\Phi}}(\NParam)
     }
 
+    \derivrule[T-Param]{
+        \axiomrule{
+            (\NParam : \kw{const}) \in \ov{\Phi}
+        }
+    }{
+        \ov{\Phi} \vdash \NParam \ok
+    }
+
     \derivrule[T-Array]{
+        \ov{\Phi} \vdash \NParam \ok
+        \\
         \isconst_{\ov{\Phi}}(\NParam)
         \\
         \derivrule[T-Param]{
@@ -58,17 +72,43 @@
             \neg \isconst_{\ov{\Phi}}(\TParam)
         }
     }{
-        [\NParam]\TParam \imp \any
+        \ov{\Phi} \vdash [\NParam]\TParam \ok
+    }
+
+    \axiomrule{
+        \notref_\alpha(\Array, \kw{const})
+    }
+
+    \derivrule{
+        \axiomrule{
+            \Array \neq \any
+        }
+    }{
+        \notref_\alpha(\Array, \any)
+    }
+
+    \derivrule{
+        \axiomrule{
+            \notref(\Array, \TParam)
+        }
+    }{
+        \notref(\Array, [\NParam]\TParam)
     }
 
     \derivrule[T-Type]
     {
-    \ov{\Phi} \ok
-    \\
-    [\NParam]\TParam \imp \any
+        \ov{\Phi} \ok
+        \\
+        \notref_\alpha(\Array, \kw{const})
+        \\
+        \notref_\alpha(\Array, \any)
+        \\
+        \ov{\Phi} \vdash [\NParam]\TParam \ok
+        \\
+        \notref(\Array, [\NParam]\TParam)
     }
     {
-    D_1 \ok
+        D_1 \ok
     }
 
     \axiomrule{

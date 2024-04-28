@@ -16,25 +16,53 @@
         \axiomrule[T-Interface]{
             \interface\br{} \ok
         }
+        \\
+        \axiomrule{
+            \notref(\any, \interface\br{})
+        }
     }{
         D_0 \ok
     }
 
-    \derivrule[T-Type]{
-        \derivrule[T-Array]{
+    \derivrule[T-Array]{
+        \axiomrule{
+            2 \ge 0
+        }
+        \\
+        \derivrule[T-Named]{
             \axiomrule{
-                2 \ge 0
-            }
-            \\
-            \derivrule[T-Named]{
-                \axiomrule{
-                    D_0 \in \ov{D}
-                }
-            }{
-                \any \ok
+                D_0 \in \ov{D}
             }
         }{
-            [2]\any \ok
+            \any \ok
+        }
+    }{
+        [2]\any \ok
+    }
+
+    \derivrule{
+        \axiomrule{
+            D_0 \in \ov{D}
+        }
+        \\
+        \axiomrule{
+            \AnyArrayTwo \neq \any
+        }
+        \\
+        \axiomrule{
+            \notref(\AnyArrayTwo, \any, \interface\br{})
+        }
+    }{
+        \notref(\AnyArrayTwo, \any)
+    }
+
+    \derivrule[T-Type]{
+        [2]\any \ok
+        \\
+        \derivrule{
+            \notref(\AnyArrayTwo, \any)
+        }{
+            \notref(\AnyArrayTwo, [2]\any)
         }
     }{
         D_1 \ok
@@ -78,7 +106,8 @@
     }{
         0 \le 0 < \len(AA2)
     }
-
+\end{mathpar}
+\begin{mathpar}
     \derivrule{
         \axiomrule{
             D_1 \in \ov{D}
@@ -106,9 +135,6 @@
     }{
         \any \imp \any
     }
-
-\end{mathpar}
-\begin{mathpar}
 
     \derivrule[T-Func]{
         \distinct(\this)
@@ -201,7 +227,9 @@
     }{
         \emptyset \vdash e_1 : \any
     }
+\end{mathpar}
 
+\begin{mathpar}
     \derivrule{
         D_0 \ok
         \\
@@ -237,9 +265,7 @@
     }{
         (\Length()~\kw{int}) \in \methods(\AnyArrayTwo)
     }
-\end{mathpar}
 
-\begin{mathpar}
     \derivrule[T-Call]{
         \emptyset \vdash \AnyArrayTwo\br{1, 2} : \AnyArrayTwo
         \\
