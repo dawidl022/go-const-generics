@@ -110,7 +110,6 @@ necessary in [`runner.go`](./benchmarks/runner/runner/runner.go).
 
   const N = 1024
   ```
-
   <figcaption>Example contents of <code>config.go</code></figcaption>
 </figure>
 
