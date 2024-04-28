@@ -29,6 +29,10 @@ func (this AnyArray2) Length() int {
 	return 98_765_432_101
 }
 
+func (this AnyArray2) Sum() int {
+	return 1 + 2
+}
+
 func (this AnyArray2) Set(i int, x any) AnyArray2 {
 	this[i] = x;
 	return this

@@ -1,9 +1,9 @@
 package,testcount,coverage
-ast,---,97.2
+ast,---,97.9
 auxiliary,---,100.0
 codegen,20,100.0
-monomo,27,99.1
+monomo,28,99.1
 parsetree,2,97.6
-preprocessor,1,78.7
-reduction,82,98.4
-typecheck,215,94.1
+preprocessor,1,87.8
+reduction,97,96.0
+typecheck,230,94.5

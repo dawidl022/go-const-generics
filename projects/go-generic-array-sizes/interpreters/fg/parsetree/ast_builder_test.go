@@ -147,6 +147,22 @@ func TestAntlrAstBuilder_givenHelloGoProgram_buildsAst(t *testing.T) {
 				},
 				ReturnExpression: ast.IntegerLiteral{IntValue: 98765432101},
 			},
+			ast.MethodDeclaration{
+				MethodReceiver: ast.MethodParameter{
+					ParameterName: "this",
+					TypeName:      "AnyArray2",
+				},
+				MethodSpecification: ast.MethodSpecification{
+					MethodName: "Sum",
+					MethodSignature: ast.MethodSignature{
+						ReturnTypeName: "int",
+					},
+				},
+				ReturnExpression: ast.Add{
+					Left:  ast.IntegerLiteral{IntValue: 1},
+					Right: ast.IntegerLiteral{IntValue: 2},
+				},
+			},
 			ast.ArraySetMethodDeclaration{
 				MethodReceiver: ast.MethodParameter{
 					ParameterName: "this",
