@@ -65,6 +65,18 @@ make run-fgg
 make run-monomo
 ```
 
+By default, the interpreters run until the program termination, or until a loop
+is detected (repeated main expression).
+
+The interpreters also accept a `maxSteps` flag which sets an upper bound on the
+number of reduction steps. This flag cannot be passed along with the above make
+commands. Instead, execute e.g.:
+
+```bash
+cd interpreters/fg
+go run cmd/main.go -maxSteps=10
+```
+
 The interpreters and monomorphiser can also be used as libraries. The
 `entrypoint` package inside each module provides a facade for the most common
 features. (In fact, the monomorphiser uses the FGGA interpreter as a library to
