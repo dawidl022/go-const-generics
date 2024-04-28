@@ -167,7 +167,7 @@ func (r *Runner) newResults(output *bytes.Buffer) (Results, error) {
 func (r *Runner) matchOutput(output *bytes.Buffer) ([][]byte, error) {
 	groups := r.benchRe.FindSubmatch(output.Bytes())
 	if len(groups) < 4 {
-		return nil, fmt.Errorf("unparsable benchmark outout:\n%s", output.String())
+		return nil, fmt.Errorf("unparsable benchmark output:\n%s", output.String())
 	}
 	return groups, nil
 }
