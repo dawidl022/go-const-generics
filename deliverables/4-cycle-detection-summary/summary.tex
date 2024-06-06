@@ -1,0 +1,175 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathpartir}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{xcolor}
+
+\input{../../projects/go-generic-array-sizes/theory/macros}
+
+\title{Summary of Go cycle detection rules}
+\author{Dawid Lachowicz}
+
+\begin{document}
+
+\maketitle
+
+\section{Syntax}
+
+\begin{minipage}[t]{\textwidth}
+    \begin{tabular}[t]{ll}
+        Type                 & $\tau, \sigma$ ::=                                        \\
+        \quad Type parameter & \quad $\alpha$                                            \\
+        \quad Named type     & \quad $t[\ov{\tau}]$                                      \\                                               \\\\
+        Type Literal         & $T$ ::=                                                   \\
+        \quad Structure      & \quad $\struct~\br{\ov{f~\tau}}$                          \\
+        \quad Interface      & \quad $\interface~\br{\ov{S}}$                            \\
+        \quad Array          & \quad$[n]\tau$                                            \\
+        \\
+        Program              & $P$ ::= $\package~\main;~\ov{D}~\func~\main()~\br{\un=e}$
+    \end{tabular}
+\end{minipage}
+\hspace{-0.5\textwidth}
+\begin{minipage}[t]{0.4\textwidth}
+    \begin{tabular}[t]{ll}
+        Type name              & $t, u$                       \\
+        Type parameter                                        \\
+        declaration            & $\Phi$ ::= $\alpha~\gamma$   \\
+        Type constraint        & $\gamma$ ::= $\tau$          \\
+        \\
+        Declaration            & $D$ ::=                      \\
+        \quad Type declaration & \quad $\type~t[\ov{\Phi}]~T$
+    \end{tabular}
+\end{minipage}
+
+\section{Typing rules}
+
+\noindent Well-formed declarations \hfill \fbox{$D \ok$}
+\begin{mathpar}
+    \inferrule[t-type]
+    {
+    \ov{\Phi \ok}
+    \\
+    \ov{\Phi} = (\ov{\alpha~\gamma})
+    \\
+    \ov{\notref_\alpha(t, \gamma)}
+    \\
+    \ov{\Phi} \vdash~T \ok
+    \\
+    \notcont(t,~T)
+    }
+    { \type~t[\ov{\Phi}]~T \ok }
+\end{mathpar}
+
+\noindent Programs  \hfill \fbox{$P \ok$}
+\begin{mathpar}
+    \inferrule[t-prog]
+    {
+        \distinct(\tdecls(\ov{D}), \kw{int}) \\
+        \distinct(\mdecls(\ov{D})) \\
+        \ov{D \ok} \\
+        \black{\emptyset \stoup}~\emptyset \vdash e : \black{\tau}
+    }
+    { \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \ok }
+\end{mathpar}
+
+\section{Cycle detection rules}
+
+\subsection{Type containment rules}
+
+\noindent Type declaration containment \hfill \fbox{$\notcont(\ov{t}, T)$}
+\begin{mathpar}
+    \inferrule
+    {~}
+    {
+        \notcont(\ov{t_r},~\interface~\br{\ov{S}})
+    }
+    \\
+    \inferrule
+    {
+        \notcont(\ov{t_r}, t)
+    }
+    {
+        \notcont(\ov{t_r},~[n]t)
+    }
+
+    \inferrule
+    {
+        \forall t \in \ov{f~t}.\notcont(\ov{t_r}, t)
+    }
+    {
+        \notcont(\ov{t_r},~\struct \br{\ov{f~t}})
+    }
+\end{mathpar}
+
+\noindent Type declaration containment recursion \hfill \fbox{$\notcont(\ov{t}, \tau)$}
+\begin{mathpar}
+    \inferrule
+    {~}
+    {
+        \notcont(\ov{t_r}, \kw{int})
+    }
+
+    \inferrule
+    {~}
+    {
+        \notcont(\ov{t_r}, \alpha)
+    }
+
+    \inferrule
+    {
+    (\type~t[\ov{\Phi}]~T) \in \ov{D}
+    \\
+    t \notin \ov{t_r}
+    \\
+    \eta = (\ov{\Phi \by \tau})
+    \\
+    \notcont(\ov{t_r}, t, T \llbracket\eta\rrbracket)
+    }
+    {
+    \notcont(\ov{t_r}, t[\ov{\tau}])
+    }
+\end{mathpar}
+
+\begin{itemize}
+    \item Type containment checks can be thought of as one phase of the type
+          declaration cycle detection, checking the structure of type literals,
+          applicable to both generic and non-generic code.
+
+    \item The $\notcont$ relation can be explained as ``asserting a type/type
+          literal doesn't contain any of the \emph{already seen} types where they are
+          not allowed to occur in the type's structure''.
+
+    \item As recursion progresses, the encountered type names $t$ are added to
+          the set of already seen type names ($\notcont(\ov{t_r}, t, T
+              \llbracket\eta\rrbracket)$). This is so we can detect indirect cycles
+          without getting the algorithm into an infinite loop.
+
+    \item Interfaces (and other pointer types) can refer to themselves, and
+          therefore are base cases of the recursion.
+
+    \item $\notcont(\ov{t_r}, \kw{int})$ can be more widely applied to primitive
+          (predeclared) types in Go. Since primitive types may be redefined in a Go
+          program, we'd need to check whether a type name (e.g. $\kw{int}$) indeed
+          still points at a primitive type.
+
+    \item Type parameters shadow type names. Whenever a type parameter is
+          encountered during the containment check, a base case of the recursion is
+          reached.
+
+    \item The $T \llbracket\eta\rrbracket$ notation indicates that the type
+          literal has its type parameters $\alpha$ substituted with type arguments
+          $\tau$.
+
+    \item Anonymous types are free from cycles by their very nature of being
+          anonymous.
+\end{itemize}
+
+\subsection{Type parameter reference rules}
+
+% TODO note that IntelliJ has issues with some rules (check on latest version
+% and mention version).
+
+\end{document}
