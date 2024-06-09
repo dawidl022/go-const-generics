@@ -18,8 +18,6 @@
 
 \section{Syntax}
 
-% TODO extend interface with type sets
-
 \begin{minipage}[t]{\textwidth}
     \begin{tabular}[t]{ll}
         Type                   & $\tau, \sigma$ ::=                                        \\
@@ -40,17 +38,18 @@
 \hspace{-0.5\textwidth}
 \begin{minipage}[t]{0.4\textwidth}
     \begin{tabular}[t]{ll}
-        Type name            & $t, u$                                       \\
-        Type parameter                                                      \\
-        declaration          & $\Phi$ ::= $\alpha~\gamma$                   \\
-        Type constraint      & $\gamma$ ::= $t[\ov{\tau}] \mid T$           \\
+        Type name         & $t, u$                                       \\
+        Type parameter                                                   \\
+        declaration       & $\Phi$ ::= $\alpha~\gamma$                   \\
+        Type constraint   & $\gamma$ ::= $t[\ov{\tau}] \mid T$           \\
         \\
-        Method signature     & $M$ ::= $(\ov{x~\black{\tau}})~\black{\tau}$ \\
-        Method specification & $S$ ::= $mM$                                 \\
+        Method signature  & $M$ ::= $(\ov{x~\black{\tau}})~\black{\tau}$ \\
+        Type union        & $U$ ::= $\ov{\gamma}$                        \\
+        Interface element & $S$ ::= $mM \mid U$                          \\
         \\
-        Field name           & $f$                                          \\
-        Method name          & $m$                                          \\
-        Variable             & $x$
+        Field name        & $f$                                          \\
+        Method name       & $m$                                          \\
+        Variable          & $x$
     \end{tabular}
 \end{minipage}
 
@@ -92,7 +91,9 @@
 \noindent Type declaration containment \hfill \fbox{$\notcont(\ov{t}, T)$}
 \begin{mathpar}
     \inferrule
-    {~}
+    {
+        \forall S \in \ov{S}.\notcont(\ov{t_r}, S)
+    }
     {
         \notcont(\ov{t_r},~\interface~\br{\ov{S}})
     }
@@ -111,6 +112,24 @@
     }
     {
         \notcont(\ov{t_r},~\struct \br{\ov{f~t}})
+    }
+\end{mathpar}
+
+\noindent Interface element containment \hfill \fbox{$\notcont(\ov{t}, S)$}
+
+\begin{mathpar}
+    \inferrule
+    {~}
+    {
+        \notcont(\ov{t_r}, mM)
+    }
+
+    \inferrule
+    {
+        \forall \tau \in \ov{\tau}.\notcont(\ov{t_r},\gamma)
+    }
+    {
+        \notcont(\ov{t_r}, \ov{\gamma})
     }
 \end{mathpar}
 
@@ -157,6 +176,7 @@
               \llbracket\eta\rrbracket)$). This is so we can detect indirect cycles
           without getting the algorithm into an infinite loop.
 
+          % TODO correct this point
     \item Interfaces (and other pointer types) can refer to themselves, and
           therefore are base cases of the recursion.
 
@@ -281,6 +301,14 @@
     }
     {
         \notref_\alpha(\ov{t}, m(\ov{x~\black{\tau}})~\black{\tau})
+    }
+
+    \inferrule
+    {
+        \forall \tau \in \ov{\tau}.\notref_\alpha(\ov{t_r},\gamma)
+    }
+    {
+        \notref_\alpha(\ov{t_r}, \ov{\gamma})
     }
 \end{mathpar}
 
