@@ -18,29 +18,39 @@
 
 \section{Syntax}
 
+% TODO extend interface with type sets
+
 \begin{minipage}[t]{\textwidth}
     \begin{tabular}[t]{ll}
-        Type                 & $\tau, \sigma$ ::=                                        \\
-        \quad Type parameter & \quad $\alpha$                                            \\
-        \quad Named type     & \quad $t[\ov{\tau}]$                                      \\                                               \\\\
-        Type Literal         & $T$ ::=                                                   \\
-        \quad Structure      & \quad $\struct~\br{\ov{f~\tau}}$                          \\
-        \quad Interface      & \quad $\interface~\br{\ov{S}}$                            \\
-        \quad Array          & \quad$[n]\tau$                                            \\
+        Type                   & $\tau, \sigma$ ::=                                        \\
+        \quad Type parameter   & \quad $\alpha$                                            \\
+        \quad Named type       & \quad $t[\ov{\tau}]$                                      \\
+        \quad Anonymous type   & \quad $T$                                                 \\\\
+        Type Literal           & $T$ ::=                                                   \\
+        \quad Structure        & \quad $\struct~\br{\ov{f~\tau}}$                          \\
+        \quad Interface        & \quad $\interface~\br{\ov{S}}$                            \\
+        \quad Array            & \quad$[n]\tau$                                            \\
         \\
-        Program              & $P$ ::= $\package~\main;~\ov{D}~\func~\main()~\br{\un=e}$
+        Declaration            & $D$ ::=                                                   \\
+        \quad Type declaration & \quad $\type~t[\ov{\Phi}]~T$                              \\
+        \\
+        Program                & $P$ ::= $\package~\main;~\ov{D}~\func~\main()~\br{\un=e}$
     \end{tabular}
 \end{minipage}
 \hspace{-0.5\textwidth}
 \begin{minipage}[t]{0.4\textwidth}
     \begin{tabular}[t]{ll}
-        Type name              & $t, u$                       \\
-        Type parameter                                        \\
-        declaration            & $\Phi$ ::= $\alpha~\gamma$   \\
-        Type constraint        & $\gamma$ ::= $\tau$          \\
+        Type name            & $t, u$                                       \\
+        Type parameter                                                      \\
+        declaration          & $\Phi$ ::= $\alpha~\gamma$                   \\
+        Type constraint      & $\gamma$ ::= $t[\ov{\tau}] \mid T$           \\
         \\
-        Declaration            & $D$ ::=                      \\
-        \quad Type declaration & \quad $\type~t[\ov{\Phi}]~T$
+        Method signature     & $M$ ::= $(\ov{x~\black{\tau}})~\black{\tau}$ \\
+        Method specification & $S$ ::= $mM$                                 \\
+        \\
+        Field name           & $f$                                          \\
+        Method name          & $m$                                          \\
+        Variable             & $x$
     \end{tabular}
 \end{minipage}
 
@@ -163,13 +173,126 @@
           literal has its type parameters $\alpha$ substituted with type arguments
           $\tau$.
 
-    \item Anonymous types are free from cycles by their very nature of being
-          anonymous.
+    \item Anonymous types, when by themselves, are free from cycles by their
+          very nature of being anonymous. However, they may form a part of a
+          cycle when embedded into another type.
 \end{itemize}
 
 \subsection{Type parameter reference rules}
 
 % TODO note that IntelliJ has issues with some rules (check on latest version
 % and mention version).
+
+\noindent Type parameter constraint reference \hfill \fbox{$\notref_\alpha(\ov{t}, \tau)$}
+\begin{mathpar}
+    \axiomrule{
+        \notref_\alpha(\ov{t_r},~\alpha)
+    }
+
+    \inferrule
+    {
+        \ov{\notref_\alpha(\ov{t_r},~\tau)}
+        \\
+        t \notin \ov{t_r}
+        \\
+        (\ov{\alpha~\gamma}) = \typeparams(t)
+        \\
+        \ov{
+            \notref_\alpha(\ov{t_r}, t, \gamma)
+        }
+    }
+    {
+        \notref_\alpha(\ov{t_r},~t[\ov{\tau}])
+    }
+\end{mathpar}
+
+\begin{itemize}
+    \item Type parameter constraint reference checks can be thought of as
+          another phase of type declaration cycle detection, checking the structure of
+          type parameter lists, applicable to generic code only.
+    \item The $\notref_\alpha$ relation can be explained as ``asserting a type
+          constraint doesn't contain any of the \emph{already seen} types''. It
+          aims to capture the following part of the spec: ``Within a type
+          parameter list of a generic type T, a type constraint may not
+          (directly, or indirectly through the type parameter list of another
+          generic type) refer to T.''
+    \item When checking a named type constraint, we must recursively check its
+          type arguments, and recursively check the bounds of the type parameter
+          list of the named type, adding that named type to the set of already
+          seen types in the latter case (again, for indirect cycle detection).
+    \item The base case of the recursion is encountering a non-generic named
+          type (there will be no type arguments or constraints to recurse on),
+          or encountering a type parameter, which is always okay to have within
+          the structure of a type constraint (i.e. in type parameter list or
+          type literal).
+    \item Once again, type parameters shadow declared types in the type
+          parameter list.
+    \item IDEs like JetBrains GoLand struggle with these rules in particular,
+          e.g. failing to report a cycle (false negative), or failing to
+          recognise that a type parameter has shadowed a generic type, raising
+          an error (false positive).
+
+          % TODO introduce rule for anonomous type constraints
+\end{itemize}
+
+\subsection{Anonymous type parameter constraints}
+
+\begin{mathpar}
+
+\end{mathpar}
+
+\noindent Anonymous type parameter constraint reference \hfill
+\fbox{$\notref_\alpha(\ov{t}, T)$}
+
+\begin{mathpar}
+    \inferrule
+    {
+        \forall S \in \ov{S}.\notref_\alpha(\ov{t_r}, S)
+    }
+    {
+        \notref_\alpha(\ov{t_r},~\interface~\br{\ov{S}})
+    }
+    \\
+    \inferrule
+    {
+        \notref_\alpha(\ov{t_r}, t)
+    }
+    {
+        \notref_\alpha(\ov{t_r},~[n]t)
+    }
+
+    \inferrule
+    {
+        \forall t \in \ov{f~t}.\notref_\alpha(\ov{t_r}, t)
+    }
+    {
+        \notref_\alpha(\ov{t_r},~\struct \br{\ov{f~t}})
+    }
+\end{mathpar}
+
+\noindent Method specification reference \hfill
+\fbox{$\notref_\alpha(\ov{t}, S)$}
+
+\begin{mathpar}
+    \inferrule
+    {
+        \ov{\notref_\alpha(\ov{t_r}, \tau)} \\
+        \notref_\alpha(\ov{t_r}, \tau)
+    }
+    {
+        \notref_\alpha(\ov{t}, m(\ov{x~\black{\tau}})~\black{\tau})
+    }
+\end{mathpar}
+
+\begin{itemize}
+    \item When anonymous types are used as type parameter constraints, they may
+          not reference the type being defined anywhere in their structure. This
+          also applies interface types this time (and any pointer types in
+          general).
+    \item Additionally, any named type in the structure of anonymous types
+          constraints have their type parameter constraints recursively checked
+          for cycles.
+    \item Anonymous types may be nested --- the same recursive rules applies.
+\end{itemize}
 
 \end{document}
