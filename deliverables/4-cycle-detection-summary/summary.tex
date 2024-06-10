@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage{stmaryrd}
 \usepackage{xcolor}
+\usepackage{hyperref}
 
 \input{../../projects/go-generic-array-sizes/theory/macros}
 
@@ -176,9 +177,9 @@
               \llbracket\eta\rrbracket)$). This is so we can detect indirect cycles
           without getting the algorithm into an infinite loop.
 
-          % TODO correct this point
-    \item Interfaces (and other pointer types) can refer to themselves, and
-          therefore are base cases of the recursion.
+    \item Basic interfaces (and other pointer types) can refer to themselves, and
+          therefore are base cases of the recursion. Type sets (unions) in
+          general interfaces on the other hand are checked for cycles.
 
     \item $\notcont(\ov{t_r}, \kw{int})$ can be more widely applied to primitive
           (predeclared) types in Go. Since primitive types may be redefined in a Go
@@ -196,12 +197,17 @@
     \item Anonymous types, when by themselves, are free from cycles by their
           very nature of being anonymous. However, they may form a part of a
           cycle when embedded into another type.
+
+    \item Note in particular, that these rules do not recurse on type parameter
+          constraints of the checked types.
+          \href{https://github.com/golang/go/issues/65714}{Issue \#65714}
+          demonstrates a family of programs where the type checker sometimes
+          rejects programs based on cycles mixing containment rules and type
+          parameter constraint reference rules (described in the next section),
+          depending on the ordering of type declarations.
 \end{itemize}
 
 \subsection{Type parameter reference rules}
-
-% TODO note that IntelliJ has issues with some rules (check on latest version
-% and mention version).
 
 \noindent Type parameter constraint reference \hfill \fbox{$\notref_\alpha(\ov{t}, \tau)$}
 \begin{mathpar}
@@ -251,8 +257,6 @@
           e.g. failing to report a cycle (false negative), or failing to
           recognise that a type parameter has shadowed a generic type, raising
           an error (false positive).
-
-          % TODO introduce rule for anonomous type constraints
 \end{itemize}
 
 \subsection{Anonymous type parameter constraints}
@@ -320,7 +324,7 @@
     \item Additionally, any named type in the structure of anonymous types
           constraints have their type parameter constraints recursively checked
           for cycles.
-    \item Anonymous types may be nested --- the same recursive rules applies.
+    \item Anonymous types may be nested --- the same recursive rules apply.
 \end{itemize}
 
 \end{document}
