@@ -23,8 +23,7 @@
     \begin{tabular}[t]{ll}
         Type                   & $\tau, \sigma$ ::=                                        \\
         \quad Type parameter   & \quad $\alpha$                                            \\
-        \quad Named type       & \quad $t[\ov{\tau}]$                                      \\
-        \quad Anonymous type   & \quad $T$                                                 \\\\
+        \quad Named type       & \quad $t[\ov{\tau}]$                                      \\\\
         Type Literal           & $T$ ::=                                                   \\
         \quad Structure        & \quad $\struct~\br{\ov{f~\tau}}$                          \\
         \quad Interface        & \quad $\interface~\br{\ov{S}}$                            \\
@@ -42,11 +41,10 @@
         Type name         & $t, u$                                       \\
         Type parameter                                                   \\
         declaration       & $\Phi$ ::= $\alpha~\gamma$                   \\
-        Type constraint   & $\gamma$ ::= $t[\ov{\tau}] \mid T$           \\
+        Type constraint   & $\gamma$ ::= $t[\ov{\tau}]$                  \\
         \\
         Method signature  & $M$ ::= $(\ov{x~\black{\tau}})~\black{\tau}$ \\
-        Type union        & $U$ ::= $\ov{\gamma}$                        \\
-        Interface element & $S$ ::= $mM \mid U$                          \\
+        Interface element & $S$ ::= $mM$                                 \\
         \\
         Field name        & $f$                                          \\
         Method name       & $m$                                          \\
@@ -92,9 +90,7 @@
 \noindent Type declaration containment \hfill \fbox{$\notcont(\ov{t}, T)$}
 \begin{mathpar}
     \inferrule
-    {
-        \forall S \in \ov{S}.\notcont(\ov{t_r}, S)
-    }
+    {~}
     {
         \notcont(\ov{t_r},~\interface~\br{\ov{S}})
     }
@@ -113,24 +109,6 @@
     }
     {
         \notcont(\ov{t_r},~\struct \br{\ov{f~t}})
-    }
-\end{mathpar}
-
-\noindent Interface element containment \hfill \fbox{$\notcont(\ov{t}, S)$}
-
-\begin{mathpar}
-    \inferrule
-    {~}
-    {
-        \notcont(\ov{t_r}, mM)
-    }
-
-    \inferrule
-    {
-        \forall \tau \in \ov{\tau}.\notcont(\ov{t_r},\gamma)
-    }
-    {
-        \notcont(\ov{t_r}, \ov{\gamma})
     }
 \end{mathpar}
 
@@ -177,9 +155,9 @@
               \llbracket\eta\rrbracket)$). This is so we can detect indirect cycles
           without getting the algorithm into an infinite loop.
 
-    \item Basic interfaces (and other pointer types) can refer to themselves, and
-          therefore are base cases of the recursion. Type sets (unions) in
-          general interfaces on the other hand are checked for cycles.
+    \item Basic interfaces (and other pointer types) can refer to the type being
+          defined in their structure, and therefore are base cases of the
+          recursion.
 
     \item $\notcont(\ov{t_r}, \kw{int})$ can be more widely applied to primitive
           (predeclared) types in Go. Since primitive types may be redefined in a Go
@@ -193,10 +171,6 @@
     \item The $T \llbracket\eta\rrbracket$ notation indicates that the type
           literal has its type parameters $\alpha$ substituted with type arguments
           $\tau$.
-
-    \item Anonymous types, when by themselves, are free from cycles by their
-          very nature of being anonymous. However, they may form a part of a
-          cycle when embedded into another type.
 
     \item Note in particular, that these rules do not recurse on type parameter
           constraints of the checked types.
@@ -257,74 +231,6 @@
           e.g. failing to report a cycle (false negative), or failing to
           recognise that a type parameter has shadowed a generic type, raising
           an error (false positive).
-\end{itemize}
-
-\subsection{Anonymous type parameter constraints}
-
-\begin{mathpar}
-
-\end{mathpar}
-
-\noindent Anonymous type parameter constraint reference \hfill
-\fbox{$\notref_\alpha(\ov{t}, T)$}
-
-\begin{mathpar}
-    \inferrule
-    {
-        \forall S \in \ov{S}.\notref_\alpha(\ov{t_r}, S)
-    }
-    {
-        \notref_\alpha(\ov{t_r},~\interface~\br{\ov{S}})
-    }
-    \\
-    \inferrule
-    {
-        \notref_\alpha(\ov{t_r}, t)
-    }
-    {
-        \notref_\alpha(\ov{t_r},~[n]t)
-    }
-
-    \inferrule
-    {
-        \forall t \in \ov{f~t}.\notref_\alpha(\ov{t_r}, t)
-    }
-    {
-        \notref_\alpha(\ov{t_r},~\struct \br{\ov{f~t}})
-    }
-\end{mathpar}
-
-\noindent Method specification reference \hfill
-\fbox{$\notref_\alpha(\ov{t}, S)$}
-
-\begin{mathpar}
-    \inferrule
-    {
-        \ov{\notref_\alpha(\ov{t_r}, \tau)} \\
-        \notref_\alpha(\ov{t_r}, \tau)
-    }
-    {
-        \notref_\alpha(\ov{t}, m(\ov{x~\black{\tau}})~\black{\tau})
-    }
-
-    \inferrule
-    {
-        \forall \tau \in \ov{\tau}.\notref_\alpha(\ov{t_r},\gamma)
-    }
-    {
-        \notref_\alpha(\ov{t_r}, \ov{\gamma})
-    }
-\end{mathpar}
-
-\begin{itemize}
-    \item When anonymous types are used as type parameter constraints, they may
-          not reference the type being defined anywhere in their structure. This
-          also applies interface types this time (and any pointer types in
-          general).
-    \item Additionally, any named type in the structure of anonymous types
-          constraints have their type parameter constraints recursively checked
-          for cycles.
-    \item Anonymous types may be nested --- the same recursive rules apply.
 \end{itemize}
 
 \end{document}
