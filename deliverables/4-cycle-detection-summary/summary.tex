@@ -101,18 +101,18 @@
     \\
     \inferrule
     {
-        \notcont(\ov{t_r}, t)
+        \notcont(\ov{t_r}, \tau)
     }
     {
-        \notcont(\ov{t_r},~[n]t)
+        \notcont(\ov{t_r},~[n]\tau)
     }
 
     \inferrule
     {
-        \forall t \in \ov{f~t}.\notcont(\ov{t_r}, t)
+        \forall \tau \in \ov{f~\tau}.\notcont(\ov{t_r}, \tau)
     }
     {
-        \notcont(\ov{t_r},~\struct \br{\ov{f~t}})
+        \notcont(\ov{t_r},~\struct \br{\ov{f~\tau}})
     }
 \end{mathpar}
 
