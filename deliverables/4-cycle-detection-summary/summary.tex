@@ -179,4 +179,15 @@
           depending on the ordering of type declarations.
 \end{itemize}
 
+\subsection{Lifting type parameter reference rules}
+
+\begin{itemize}
+    \item The Go spec currently states: ``Within a type
+          parameter list of a generic type T, a type constraint may not
+          (directly, or indirectly through the type parameter list of another
+          generic type) refer to T.'' In this section we explore the
+          consequences of lifting this restriction, i.e. allowing type parameter
+          constraints to refer to the type T being defined.
+\end{itemize}
+
 \end{document}
