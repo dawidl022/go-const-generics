@@ -7,14 +7,14 @@ import "fmt"
 // this constraint can be instantiated with is Bar (struct type).
 //
 // This code compiles in this declaration order, but fails to compile if
-// we reverse the order of struct declaration.
+// we reverse the order of struct declarations.
 //
-// The code also (rightfully so), fails to compile if we add a field of type b,
+// The code also (rightfully so) fails to compile if we add a field of type b,
 // as this would violate the notContains constraint. However e.g. a field of type
 // pointer to b is fine.
 //
-// I.e. by introducing type set interfaces, we need to perform notContains
-// checks for type parameters in generic types.
+// I.e. by introducing type set interfaces, we need to extend notContains
+// checks to type parameters in generic types.
 type Foo[b Bar] struct {
 	// x b // fails to compile
 	x *b
