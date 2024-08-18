@@ -1,0 +1,173 @@
+\register{Foo}
+\alias{BarType}{Bar}
+\register{any}
+\aliasparam{T}
+
+\begin{align*}
+    D_0    & = \type~\any~\interface~\br{}                       \\
+    D_1    & = \type~\Foo[\TParam~\any]~\struct~\br{ x~\TParam } \\
+    D_2    & = \type~\BarType~\struct~\br{ x~\Foo[\BarType] }    \\
+    \ov{D} & = \{D_0, D_1, D_2\}
+\end{align*}
+
+\begin{mathpar}
+    \derivrule[T-Type]{
+        \axiomrule[T-Interface]{
+            \emptyset \vdash \interface~\br{} \ok
+        }
+        \\
+        \axiomrule{
+            \notcont(\any, \interface~\br{})
+        }
+    }{
+        D_0 \ok
+    }
+
+    \derivrule[T-Named]{
+        \axiomrule{
+            D_0 \in \ov{D}
+        }
+    }{
+        (\TParam~\any) \vdash \any \ok
+    }
+
+    \derivrule[T-Formal]{
+        \axiomrule{
+            \distinct(\TParam)
+        }
+        \\
+        (\TParam~\any) \vdash \any \ok
+    }{
+        (\TParam~\any) \ok
+    }
+
+    \derivrule[T-Struct]{
+        \axiomrule{
+            \distinct(f)
+        }
+        \\
+        \derivrule[T-Param]{
+            \axiomrule{
+                (\TParam~\any) \in (\TParam~\any)
+            }
+        }{
+            (\TParam~\any) \vdash \TParam \ok
+        }
+    }{
+        (\TParam~\any) \vdash \struct~\br{ x~\TParam }  \ok
+    }
+
+    \derivrule{
+        \axiomrule{
+            \notcont(\Foo,\TParam)
+        }
+    }{
+        \notcont(\Foo, \struct~\br{ x~\TParam })
+    }
+
+\end{mathpar}
+\begin{mathpar}
+    \derivrule[T-Type]{
+        (\TParam~\any) \ok \\
+        (\TParam~\any) \vdash \struct~\br{ x~\TParam }  \ok \\
+        \notcont(\Foo, \struct~\br{ x~\TParam })
+    }{
+        D_1 \ok
+    }
+
+    \derivrule[T-Named]{
+        D_2 \in \ov{D}
+    }{
+        \emptyset \vdash \BarType \ok
+    }
+
+    \derivrule{
+        \eta = (\TParam \by \BarType)
+    }{
+        \eta = ((\TParam~\any) \by \BarType)
+    }
+
+    \derivrule[$\imp_{\text{I}}$]{
+        \axiomrule{
+            \methods_\emptyset(\BarType) \supseteq \methods_\emptyset(\any)
+        }
+    }{
+        \emptyset \vdash (\BarType\imp \any)
+    }
+
+    \derivrule{
+        \eta = ((\TParam~\any) \by \BarType)
+        \\
+        \derivrule{
+            \emptyset \vdash (\BarType\imp \any)
+        }{
+            \emptyset \vdash (\TParam \imp \any)[\eta]
+        }
+    }{
+        \eta = ((\TParam~\any) \by_\emptyset \BarType)
+    }
+
+    \derivrule[T-Named]{
+        \emptyset \vdash \BarType \ok
+        \\
+        (\type \Foo[\TParam~\any]) \in \ov{D}
+        \\
+        \eta = ((\TParam~\any) \by_\emptyset \BarType)
+    }{
+        \emptyset \vdash \Foo[\BarType] \ok
+    }
+
+    \derivrule[T-Struct]{
+        \axiomrule{
+            \distinct(x)
+        }
+        \\
+        \emptyset \vdash \Foo[\BarType] \ok
+    }{
+        \emptyset \vdash \struct~\br{ x~\Foo[\BarType] } \ok
+    }
+
+    \derivrule{
+        \derivrule{
+            \derivrule{
+                \derivrule{
+                    \perp
+                }{
+                    \BarType \notin \{ \BarType, \Foo \}
+                }
+            }{
+                \notcont(\BarType, \Foo, \BarType)
+            }
+        }{
+            \notcont(\BarType, \Foo, \struct~\br{ x~\BarType })
+        }
+    }{
+        \notcont(\BarType, \Foo, \struct~\br{ x~\TParam }[\eta])
+    }
+
+    \derivrule{
+        (\type~\Foo[\TParam~\any]~\struct~\br{ x~\TParam }) \in \ov{D}
+        \\
+        \Foo \notin \{ \BarType \}
+        \\
+        \eta = ((\TParam~\any) \by \BarType)
+        \\
+        \notcont(\BarType, \Foo, \struct~\br{ x~\TParam }[\eta])
+    }{
+        \notcont(\BarType, \Foo[\BarType])
+    }
+
+    \derivrule{
+        \notcont(\BarType, \Foo[\BarType])
+    }{
+        \notcont(\BarType, \struct~\br{ x~\Foo[\BarType] })
+    }
+
+    \derivrule[T-Type]{
+        \emptyset \vdash \struct~\br{ x~\Foo[\BarType] } \ok
+        \\
+        \notcont(\BarType, \struct~\br{ x~\Foo[\BarType] })
+    }{
+        D_2 \ok
+    }
+\end{mathpar}
