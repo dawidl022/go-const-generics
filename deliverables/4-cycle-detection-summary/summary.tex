@@ -61,8 +61,6 @@
     {
     \ov{\Phi \ok}
     \\
-    \ov{\Phi} = (\ov{\alpha~\gamma})
-    \\
     \ov{\Phi} \vdash~T \ok
     \\
     \notcont(t,~T)
@@ -180,18 +178,23 @@
           depending on the ordering of type declarations.
 \end{itemize}
 
+% TODO mention that non-basic interfaces (e.g. embedded or type set interfaces)
+% need to be checked for containment cycles
+
 \subsection{Lifting type parameter reference rules}
 
 \begin{itemize}
-    \item The Go spec currently states: ``Within a type
-          parameter list of a generic type T, a type constraint may not
-          (directly, or indirectly through the type parameter list of another
-          generic type) refer to T.'' In this section we explore the
-          consequences of lifting this restriction, i.e. allowing type parameter
+    \item The Go spec currently states: ``Within a type parameter list of a
+          generic type T, a type constraint may not (directly, or indirectly
+          through the type parameter list of another generic type) refer to T.''
+          We can in fact life this restriction, i.e. allowing type parameter
           constraints to refer to the type T being defined.
 \end{itemize}
 
 \section{Examples}
+
+\subsection{Containment check in generic type}
+
 \noindent\begin{minipage}[t]{.45\linewidth}
     \lstinputlisting[language=Go, tabsize=4, firstline=3]
     {./examples/generic-containment-any.go}
@@ -215,12 +218,42 @@
 
 \end{minipage}
 
-\subsection{Type checking derivation with contradiction}
+\subsubsection{Type checking derivation with contradiction}
 
 Below, we derive a contradiction while type checking the above program on the
 left, showing that the $\notcont$ rule is sufficient for detecting structural
 cycles in generic types.
 
 \input{generic-containment-any}
+
+\subsection{Issue \#51244}
+
+\href{https://github.com/golang/go/issues/51244}{Issue \#51244} demonstrates
+another case where the compiler's cycle detection accepts or rejects the program
+depending on the order of type declarations. According to the above defined
+rules, the program should be accepted. One of the participants of the issue
+(\href{https://github.com/findleyr}{findleyr}) also suggested removing the
+restriction of cycles through type parameter constraints.
+
+\subsubsection{Accepting type checking derivation}
+
+\golisting{./examples/issue-51244.go}
+
+\noindent
+Below is a derivation of the program in the issue, with minor adjustments to
+fit a Featherweight Go-like syntax used in this document.
+
+\input{issue-51244}
+
+% TODO appendix will define remaining rules that have been referenced in rules
+% or derivations
+
+\subsection{Self-referential type parameter constraints}
+
+\subsubsection{Positive examples}
+
+% TODO mention Go's structural subtyping
+
+\subsubsection{Negative example}
 
 \end{document}
