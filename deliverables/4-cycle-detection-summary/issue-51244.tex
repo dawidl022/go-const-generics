@@ -1,0 +1,161 @@
+\register{A}
+\register{M}
+\register{B}
+\register{T}
+
+\begin{align*}
+    D_0    & = \type~\A~\interface~\br{ \M(b~\B[\T])~\T }    \\
+    D_1    & = \type~\B[a~\A]~\struct~\br{ }                 \\
+    D_2    & = \type~\T~\struct~\br{ }                       \\
+    D_3    & = \func~(t~\T)~\M(b~\B[\T])~\T~\br{~\return~t~} \\
+    \ov{D} & = \{D_0, D_1, D_2, D_3\}
+\end{align*}
+
+\begin{mathpar}
+    \derivrule[T-Interface]{
+        \axiomrule{
+            \unique(\M(b~\B[\T])~\T)
+        }
+        \\
+        \emptyset \vdash \M(b~\B[\T])~\T \ok
+    }{
+        \emptyset \vdash \interface~\br{ \M(b~\B[\T])~\T } \ok \\
+    }
+
+    \derivrule{
+        \derivrule{
+            \eta = (a \by \T)
+        }{
+            \eta = ((a~\A) \by \T)
+        }
+        \\
+        \derivrule{
+            \derivrule[$\imp_I$]{
+                \derivrule{
+                    \axiomrule{
+                        \{~\M(b~\B[\T])~\T~\} \supseteq \{~\M(b~\B[\T])~\T~\}
+                    }
+                }{
+                    \methods_\emptyset(\T) \supseteq \methods_\emptyset(\A)
+                }
+            }{
+                \emptyset \vdash T \imp A
+            }
+        }{
+            \emptyset \vdash (a \imp A)\llbracket\eta\rrbracket
+        }
+    }{
+        \eta = ((a~\A) \by_\emptyset \T)
+    }
+
+    \derivrule[T-Named]{
+        \emptyset \vdash \T \ok
+        \\
+        (\type~\B[a~\A]~\struct~\br{ }) \in \ov{D}
+        \\
+        \eta = ((a~\A) \by_\emptyset \T)
+    }{
+        \emptyset \vdash \B[\T] \ok
+    }
+
+    \derivrule[T-Specification]{
+        \axiomrule{
+            \distinct(b)
+        }
+        \\
+        \emptyset \vdash \B[\T] \ok
+        \\
+        \emptyset \vdash \T \ok
+    }{
+        \emptyset \vdash \M(b~\B[\T])~\T \ok
+    }
+\end{mathpar}
+
+\begin{mathpar}
+    \derivrule[T-Type]{
+        \emptyset \vdash \interface~\br{ \M(b~\B[\T])~\T } \ok~~~~~
+        \axiomrule{
+            \notcont(\A,~\interface~\br{ \M(b~\B[\T])~\T })
+        }
+    }{
+        D_0 \ok
+    }
+
+    \derivrule[T-Formal]{
+        \axiomrule{
+            \distinct(a)
+        }
+        \\
+        \derivrule[T-Named]{
+            \axiomrule{
+                (\type~\A~\interface~\br{ \M(b~\B[\T])~\T }) \in \ov{D}
+            }
+        }{
+            (a~\A) \vdash \A \ok
+        }
+    }{
+        (a~\A) \ok
+    }
+
+    \derivrule[T-Type]{
+        (a~\A) \ok
+        \\
+        \axiomrule[T-Struct]{
+            (a~\A) \vdash \struct~\br{ } \ok
+        }
+        \\
+        \axiomrule{
+            \notcont(\B,~\struct~\br{ })
+        }
+    }{
+        D_1 \ok
+    }
+
+    \derivrule[T-Type]{
+        \axiomrule[T-Struct]{
+            \emptyset \vdash \struct~\br{ } \ok
+        }
+        \\
+        \axiomrule{
+            \notcont(\T,~\struct~\br{ })
+        }
+    }{
+        D_2 \ok
+    }
+
+    \derivrule{
+        \axiomrule{
+            (\type~T~\struct~\br{ }) \in \ov{D}
+        }
+    }{
+        \emptyset = \typeparams(T)
+    }
+
+    \derivrule[T-Var]{
+        \axiomrule{
+            (t:\T) \in (t:\T,b:\B[\T])
+        }
+    }{
+        \emptyset;t:\T,b:\B[\T] \vdash t : \T
+    }
+
+    \axiomrule[$\imp_V$]{
+        \emptyset \vdash T \imp T
+    }
+
+    \derivrule[T-Func]{
+        \axiomrule{
+            \distinct(t, b)
+        }
+        \\
+        \emptyset = \typeparams(T)
+        \\
+        \emptyset \vdash \M(b~\B[\T])~\T \ok
+        \\
+        \emptyset;t:\T,b:\B[\T] \vdash t : \T
+        \\
+        \emptyset \vdash T \imp T
+    }{
+        D_3 \ok
+    }
+\end{mathpar}

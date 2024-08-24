@@ -7,6 +7,7 @@
 \usepackage{stmaryrd}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage{listings}
 
 \input{../../projects/go-generic-array-sizes/theory/macros}
 
@@ -23,8 +24,7 @@
     \begin{tabular}[t]{ll}
         Type                   & $\tau, \sigma$ ::=                                        \\
         \quad Type parameter   & \quad $\alpha$                                            \\
-        \quad Named type       & \quad $t[\ov{\tau}]$                                      \\
-        \quad Anonymous type   & \quad $T$                                                 \\\\
+        \quad Named type       & \quad $t[\ov{\tau}]$                                      \\\\
         Type Literal           & $T$ ::=                                                   \\
         \quad Structure        & \quad $\struct~\br{\ov{f~\tau}}$                          \\
         \quad Interface        & \quad $\interface~\br{\ov{S}}$                            \\
@@ -42,11 +42,10 @@
         Type name         & $t, u$                                       \\
         Type parameter                                                   \\
         declaration       & $\Phi$ ::= $\alpha~\gamma$                   \\
-        Type constraint   & $\gamma$ ::= $t[\ov{\tau}] \mid T$           \\
+        Type constraint   & $\gamma$ ::= $t[\ov{\tau}]$                  \\
         \\
         Method signature  & $M$ ::= $(\ov{x~\black{\tau}})~\black{\tau}$ \\
-        Type union        & $U$ ::= $\ov{\gamma}$                        \\
-        Interface element & $S$ ::= $mM \mid U$                          \\
+        Interface element & $S$ ::= $mM$                                 \\
         \\
         Field name        & $f$                                          \\
         Method name       & $m$                                          \\
@@ -61,10 +60,6 @@
     \inferrule[t-type]
     {
     \ov{\Phi \ok}
-    \\
-    \ov{\Phi} = (\ov{\alpha~\gamma})
-    \\
-    \ov{\notref_\alpha(t, \gamma)}
     \\
     \ov{\Phi} \vdash~T \ok
     \\
@@ -92,9 +87,7 @@
 \noindent Type declaration containment \hfill \fbox{$\notcont(\ov{t}, T)$}
 \begin{mathpar}
     \inferrule
-    {
-        \forall S \in \ov{S}.\notcont(\ov{t_r}, S)
-    }
+    {~}
     {
         \notcont(\ov{t_r},~\interface~\br{\ov{S}})
     }
@@ -113,24 +106,6 @@
     }
     {
         \notcont(\ov{t_r},~\struct \br{\ov{f~\tau}})
-    }
-\end{mathpar}
-
-\noindent Interface element containment \hfill \fbox{$\notcont(\ov{t}, S)$}
-
-\begin{mathpar}
-    \inferrule
-    {~}
-    {
-        \notcont(\ov{t_r}, mM)
-    }
-
-    \inferrule
-    {
-        \forall \tau \in \ov{\tau}.\notcont(\ov{t_r},\gamma)
-    }
-    {
-        \notcont(\ov{t_r}, \ov{\gamma})
     }
 \end{mathpar}
 
@@ -177,9 +152,9 @@
               \llbracket\eta\rrbracket)$). This is so we can detect indirect cycles
           without getting the algorithm into an infinite loop.
 
-    \item Basic interfaces (and other pointer types) can refer to themselves, and
-          therefore are base cases of the recursion. Type sets (unions) in
-          general interfaces on the other hand are checked for cycles.
+    \item Basic interfaces (and other pointer types) can refer to the type being
+          defined in their structure, and therefore are base cases of the
+          recursion.
 
     \item $\notcont(\ov{t_r}, \kw{int})$ can be more widely applied to primitive
           (predeclared) types in Go. Since primitive types may be redefined in a Go
@@ -194,10 +169,6 @@
           literal has its type parameters $\alpha$ substituted with type arguments
           $\tau$.
 
-    \item Anonymous types, when by themselves, are free from cycles by their
-          very nature of being anonymous. However, they may form a part of a
-          cycle when embedded into another type.
-
     \item Note in particular, that these rules do not recurse on type parameter
           constraints of the checked types.
           \href{https://github.com/golang/go/issues/65714}{Issue \#65714}
@@ -207,124 +178,82 @@
           depending on the ordering of type declarations.
 \end{itemize}
 
-\subsection{Type parameter reference rules}
+% TODO mention that non-basic interfaces (e.g. embedded or type set interfaces)
+% need to be checked for containment cycles
 
-\noindent Type parameter constraint reference \hfill \fbox{$\notref_\alpha(\ov{t}, \tau)$}
-\begin{mathpar}
-    \axiomrule{
-        \notref_\alpha(\ov{t_r},~\alpha)
-    }
-
-    \inferrule
-    {
-        \ov{\notref_\alpha(\ov{t_r},~\tau)}
-        \\
-        t \notin \ov{t_r}
-        \\
-        (\ov{\alpha~\gamma}) = \typeparams(t)
-        \\
-        \ov{
-            \notref_\alpha(\ov{t_r}, t, \gamma)
-        }
-    }
-    {
-        \notref_\alpha(\ov{t_r},~t[\ov{\tau}])
-    }
-\end{mathpar}
+\subsection{Lifting type parameter reference rules}
 
 \begin{itemize}
-    \item Type parameter constraint reference checks can be thought of as
-          another phase of type declaration cycle detection, checking the structure of
-          type parameter lists, applicable to generic code only.
-    \item The $\notref_\alpha$ relation can be explained as ``asserting a type
-          constraint doesn't contain any of the \emph{already seen} types''. It
-          aims to capture the following part of the spec: ``Within a type
-          parameter list of a generic type T, a type constraint may not
-          (directly, or indirectly through the type parameter list of another
-          generic type) refer to T.''
-    \item When checking a named type constraint, we must recursively check its
-          type arguments, and recursively check the bounds of the type parameter
-          list of the named type, adding that named type to the set of already
-          seen types in the latter case (again, for indirect cycle detection).
-    \item The base case of the recursion is encountering a non-generic named
-          type (there will be no type arguments or constraints to recurse on),
-          or encountering a type parameter, which is always okay to have within
-          the structure of a type constraint (i.e. in type parameter list or
-          type literal).
-    \item Once again, type parameters shadow declared types in the type
-          parameter list.
-    \item IDEs like JetBrains GoLand struggle with these rules in particular,
-          e.g. failing to report a cycle (false negative), or failing to
-          recognise that a type parameter has shadowed a generic type, raising
-          an error (false positive).
+    \item The Go spec currently states: ``Within a type parameter list of a
+          generic type T, a type constraint may not (directly, or indirectly
+          through the type parameter list of another generic type) refer to T.''
+          We can in fact life this restriction, i.e. allowing type parameter
+          constraints to refer to the type T being defined.
 \end{itemize}
 
-\subsection{Anonymous type parameter constraints}
+\section{Examples}
 
-\begin{mathpar}
+\subsection{Containment check in generic type}
 
-\end{mathpar}
+\noindent\begin{minipage}[t]{.45\linewidth}
+    \lstinputlisting[language=Go, tabsize=4, firstline=3]
+    {./examples/generic-containment-any.go}
 
-\noindent Anonymous type parameter constraint reference \hfill
-\fbox{$\notref_\alpha(\ov{t}, T)$}
+    The definition of \texttt{Bar} should be rejected, since it creates a type
+    containment cycle via \texttt{Foo}. The compiler correctly reports \texttt{Bar}
+    as an invalid recursive type.
+\end{minipage}
+\hfill
+\noindent\begin{minipage}[t]{.45\linewidth}
+    \lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=35]
+    {./examples/generic-containment-clean.go}
 
-\begin{mathpar}
-    \inferrule
-    {
-        \forall S \in \ov{S}.\notref_\alpha(\ov{t_r}, S)
-    }
-    {
-        \notref_\alpha(\ov{t_r},~\interface~\br{\ov{S}})
-    }
-    \\
-    \inferrule
-    {
-        \notref_\alpha(\ov{t_r}, t)
-    }
-    {
-        \notref_\alpha(\ov{t_r},~[n]t)
-    }
+    Using e.g. a pointer to \texttt{T} in the
+    definition of \texttt{Foo} would make the program valid. We can even
+    change the type constraint of \texttt{T} from \texttt{any} to \texttt{Bar}, and
+    the type checker should behave the same. However, as of Go 1.23, such a program
+    is either rejected or accepted by the type checker depending on the order of the
+    struct declarations (similar to \href{https://github.com/golang/go/issues/65714}{Issue
+        \#65714}).
 
-    \inferrule
-    {
-        \forall t \in \ov{f~t}.\notref_\alpha(\ov{t_r}, t)
-    }
-    {
-        \notref_\alpha(\ov{t_r},~\struct \br{\ov{f~t}})
-    }
-\end{mathpar}
+\end{minipage}
 
-\noindent Method specification reference \hfill
-\fbox{$\notref_\alpha(\ov{t}, S)$}
+\subsubsection{Type checking derivation with contradiction}
 
-\begin{mathpar}
-    \inferrule
-    {
-        \ov{\notref_\alpha(\ov{t_r}, \tau)} \\
-        \notref_\alpha(\ov{t_r}, \tau)
-    }
-    {
-        \notref_\alpha(\ov{t}, m(\ov{x~\black{\tau}})~\black{\tau})
-    }
+Below, we derive a contradiction while type checking the above program on the
+left, showing that the $\notcont$ rule is sufficient for detecting structural
+cycles in generic types.
 
-    \inferrule
-    {
-        \forall \tau \in \ov{\tau}.\notref_\alpha(\ov{t_r},\gamma)
-    }
-    {
-        \notref_\alpha(\ov{t_r}, \ov{\gamma})
-    }
-\end{mathpar}
+\input{generic-containment-any}
 
-\begin{itemize}
-    \item When anonymous types are used as type parameter constraints, they may
-          not reference the type being defined anywhere in their structure. This
-          also applies interface types this time (and any pointer types in
-          general).
-    \item Additionally, any named type in the structure of anonymous types
-          constraints have their type parameter constraints recursively checked
-          for cycles.
-    \item Anonymous types may be nested --- the same recursive rules apply.
-\end{itemize}
+\subsection{Issue \#51244}
+
+\href{https://github.com/golang/go/issues/51244}{Issue \#51244} demonstrates
+another case where the compiler's cycle detection accepts or rejects the program
+depending on the order of type declarations. According to the above defined
+rules, the program should be accepted. One of the participants of the issue
+(\href{https://github.com/findleyr}{findleyr}) also suggested removing the
+restriction of cycles through type parameter constraints.
+
+\subsubsection{Accepting type checking derivation}
+
+\golisting{./examples/issue-51244.go}
+
+\noindent
+Below is a derivation of the program in the issue, with minor adjustments to
+fit a Featherweight Go-like syntax used in this document.
+
+\input{issue-51244}
+
+% TODO appendix will define remaining rules that have been referenced in rules
+% or derivations
+
+\subsection{Self-referential type parameter constraints}
+
+\subsubsection{Positive examples}
+
+% TODO mention Go's structural subtyping
+
+\subsubsection{Negative example}
 
 \end{document}
