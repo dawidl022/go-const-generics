@@ -1,0 +1,246 @@
+\register{F}
+\register{E}
+
+\begin{align*}
+    D_0    & = \type~\Foo[\F~\Foo[\F]]~\interface~\br{~m(f~\F)~\F~}         \\
+    D_1    & = \type~\BarType[\B~\BarType[\B]]~\interface~\br{~m(b~\B)~\B~} \\
+    D_2    & = \type~\E[\F~\Foo[\B],~\B~\BarType[\F]]~\struct~\br{ }        \\
+    \ov{D} & = \{D_0, D_1, D_2\}
+\end{align*}
+
+\begin{mathpar}
+    \derivrule[T-Param]{
+        \axiomrule{
+            (\F:\Foo[\F]) \in (\F~\Foo[\F])
+        }
+    }{
+        (\F~\Foo[\F]) \vdash \F \ok
+    }
+
+    \derivrule{
+        \derivrule{
+            \eta_0 = (\F \by \F)
+        }{
+            \eta_2 = ((\F \Foo[\F]) \by \F)
+        }
+        \\
+        \derivrule{
+            \derivrule[$\imp_I$]{
+                \derivrule{
+                    \derivrule{
+                        \axiomrule{
+                            (\F:\Foo[\F]) \in (\F~\Foo[\F])
+                        }
+                    }{
+                        \methods_{(\F~\Foo[\F])}(\F) = \methods_{(\F~\Foo[\F])}(\Foo[\F])
+                    }
+                }{
+                    \methods_{(\F~\Foo[\F])}(\F) \supseteq \methods_{(\F~\Foo[\F])}(\Foo[\F])
+                }
+            }{
+                (\F~\Foo[\F]) \vdash (\F \imp \Foo[\F])
+            }
+        }{
+            (\F~\Foo[\F]) \vdash (\F \imp \Foo[\F])\llbracket \eta_0 \rrbracket
+        }
+    }{
+        \eta_0 = ((\F~\Foo[\F]) \by_{(\F~\Foo[\F])} \F)
+    }
+
+    \derivrule[T-Named]{
+        (\F~\Foo[\F]) \vdash \F \ok
+        \\
+        \axiomrule{
+            (\type~\Foo[\F~\Foo[\F]]~\interface~\br{~m(f~\F)~\F~}) \in \ov{D}
+        }
+        \\
+        \eta_0 = ((\F~\Foo[\F]) \by_{(\F~\Foo[\F])} \F)
+    }{
+        (\F~\Foo[\F]) \vdash \Foo[\F] \ok
+    }
+
+    \derivrule[T-Formal]{
+        \axiomrule{
+            \distinct(F)
+        }
+        \\
+        (\F~\Foo[\F]) \vdash \Foo[\F] \ok
+    }{
+        (\F~\Foo[\F]) \ok
+    }
+
+    \derivrule[T-Specification]{
+        \axiomrule{
+            \distinct(f)
+        }
+        \\
+        \derivrule[T-Param]{
+            \axiomrule{
+                (\F:\Foo[\F]) \in (\F~\Foo[\F])
+            }
+        }{
+            (\F~\Foo[\F]) \vdash \F \ok
+        }
+    }{
+        (\F~\Foo[\F]) \vdash m(f~\F)~\F \ok
+    }
+
+    \derivrule[T-Interface]{
+        \axiomrule{
+            \unique(m(f~\F)~\F)
+        }
+        \\
+        (\F~\Foo[\F]) \vdash m(f~\F)~\F \ok
+    }{
+        (\F~\Foo[\F]) \vdash \interface~\br{~m(f~\F)~\F~} \ok
+    }
+
+    \axiomrule{
+        \notcont(Foo,~\interface~\br{~m(f~\F)~\F~})
+    }
+
+\end{mathpar}
+\begin{mathpar}
+    \derivrule[T-Type]{
+        (\F~\Foo[\F]) \ok
+        \\
+        (\F~\Foo[\F]) \vdash \interface~\br{~m(f~\F)~\F~} \ok
+        \\
+        \notcont(Foo,~\interface~\br{~m(f~\F)~\F~})
+    }{
+        D_0 \ok
+    }
+\end{mathpar}
+
+An analogous tree can be derived for $D_1$ (\texttt{Bar} is isomorphic to
+\texttt{Foo}).
+
+\begin{mathpar}
+    \derivrule[T-Param]{
+        \axiomrule{
+            (\B~\BarType[\F]) \in (\F~\Foo[\B],~\B~\BarType[\F])
+        }
+    }{
+        (\F~\Foo[\B],~\B~\BarType[\F]) \vdash \B \ok
+    }
+
+    \axiomrule{
+        (\type~\Foo[\F~\Foo[\F]]~\interface~\br{~m(f~\F)~\F~}) \in \ov{D}
+    }
+
+    \derivrule{
+        (\B:\BarType[\F]) \in (\F~\Foo[\B],~\B~\BarType[\F])
+    }{
+        \methods_{(\F~\Foo[\B],~\B~\BarType[\F])}(\B) = \methods_{(\F~\Foo[\B],~\B~\BarType[\F])}(\BarType[\F])
+    }
+
+    \derivrule{
+        \derivrule{
+            \axiomrule{
+                (\type~\BarType[\B~\BarType[\B]]~\interface~\br{~m(b~\B)~\B~}) \in \ov{D}
+            }
+            \\
+            \derivrule{
+                \eta_3 = (\B \by \F)
+            }{
+                \eta_3 = (\B~\BarType[\B] \by \F)
+            }
+        }{
+            \methods_{(\F~\Foo[\B],~\B~\BarType[\F])}(\BarType[\F]) = \br{~m(b~\B)~\B~}\llbracket \eta_3 \rrbracket
+        }
+    }{
+        \methods_{(\F~\Foo[\B],~\B~\BarType[\F])}(\BarType[\F]) = \br{~m(b~\F)~\F~}
+    }
+
+    \derivrule{
+        \derivrule{
+            \axiomrule{
+                \type~\Foo[\F~\Foo[\F]]~\interface~\br{~m(f~\F)~\F~}
+            }
+            \\
+            \derivrule{
+                \eta_2 = (\F \by \B)
+            }{
+                \eta_2 = ((\F~\Foo[\F]) \by \B)
+            }
+        }{
+            \methods_{(\F~\Foo[\B],~\B~\BarType[\F])}(\Foo[\B]) = \br{~m(f~\F)~\F~}\;\llbracket \eta_2 \rrbracket
+        }
+    }{
+        \methods_{(\F~\Foo[\B],~\B~\BarType[\F])}(\Foo[\B]) = \br{~m(f~\B)~\B~}
+    }
+
+    \derivrule{
+        \derivrule[$\imp_I$]{
+            \derivrule{
+                \derivrule{
+                    \derivrule{
+                        \bot
+                    }{
+                        \br{~m(b~\F)~\F~} \supseteq \br{~m(f~\B)~\B~}
+                    }
+                }{
+                    \methods_{(\F~\Foo[\B],~\B~\BarType[\F])}(\BarType[\F]) \supseteq \methods_{(\F~\Foo[\B],~\B~\BarType[\F])}(\Foo[\B])
+                }
+            }{
+                \methods_{(\F~\Foo[\B],~\B~\BarType[\F])}(\B) \supseteq \methods_{(\F~\Foo[\B],~\B~\BarType[\F])}(\Foo[\B])
+            }
+        }{
+            (\F~\Foo[\B],~\B~\BarType[\F]) \vdash (\B \imp \Foo[\B])
+        }
+    }{
+        (\F~\Foo[\B],~\B~\BarType[\F]) \vdash (\F \imp \Foo[\B])\llbracket \eta_2 \rrbracket
+    }
+
+    \derivrule{
+        \derivrule{
+            \eta_2 = (\F \by \B)
+        }{
+            \eta_2 = ((\F~\Foo[\F]) \by \B)
+        }
+        \\
+        (\F~\Foo[\B],~\B~\BarType[\F]) \vdash (\F \imp \Foo[\B])\llbracket \eta_2 \rrbracket
+        \\
+        (\F~\Foo[\B],~\B~\BarType[\F]) \vdash (\B \imp \BarType[\F])\llbracket \eta_2 \rrbracket
+    }{
+        \eta_2 = ((\F~\Foo[\F]) \by_{(\F~\Foo[\B],~\B~\BarType[\F])} \B)
+    }
+\end{mathpar}
+
+\begin{mathpar}
+    \derivrule[T-Named]{
+        (\F~\Foo[\B],~\B~\BarType[\F]) \vdash \B \ok
+        \\
+        (\type~\Foo[\F~\Foo[\F]]~\interface~\br{~m(f~\F)~\F~}) \in \ov{D}
+        \\
+        \eta_2 = ((\F~\Foo[\F]) \by_{(\F~\Foo[\B],~\B~\BarType[\F])} \B)
+    }{
+        (\F~\Foo[\B],~\B~\BarType[\F]) \vdash \Foo[\B] \ok
+    }
+
+    \derivrule[T-Formal]{
+        \axiomrule{
+            \distinct(\F,\B)
+        }
+        \\
+        (\F~\Foo[\B],~\B~\BarType[\F]) \vdash \Foo[\B] \ok
+        \\
+        (\F~\Foo[\B],~\B~\BarType[\F]) \vdash \BarType[\F] \ok
+    }{
+        (\F~\Foo[\B],~\B~\BarType[\F]) \ok
+    }
+
+    \derivrule[T-Type]{
+        \axiomrule{
+            (\F~\Foo[\B],~\B~\BarType[\F]) \vdash \struct~\br{ } \ok
+        }
+        \\
+        \axiomrule{
+            \notcont(\E,~\struct~\br{ })
+        }
+        \\
+        (\F~\Foo[\B],~\B~\BarType[\F]) \ok
+    }{
+        D_2 \ok
+    }
+\end{mathpar}
