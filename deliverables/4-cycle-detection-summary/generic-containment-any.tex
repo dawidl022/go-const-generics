@@ -65,8 +65,6 @@
         \notcont(\Foo, \struct~\br{ x~\TParam })
     }
 
-\end{mathpar}
-\begin{mathpar}
     \derivrule[T-Type]{
         (\TParam~\any) \ok \\
         (\TParam~\any) \vdash \struct~\br{ x~\TParam }  \ok \\
@@ -126,6 +124,9 @@
     }{
         \emptyset \vdash \struct~\br{ x~\Foo[\BarType] } \ok
     }
+
+\end{mathpar}
+\begin{mathpar}
 
     \derivrule{
         \derivrule{

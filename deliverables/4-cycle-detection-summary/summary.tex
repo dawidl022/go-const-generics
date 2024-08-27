@@ -281,7 +281,8 @@ references, and also self-references (recursion).
 \subsubsection{Negative example}
 
 In this example, the type \texttt{E} is not well-typed, since it ``flips'' the
-bounds between \texttt{Foo} and \texttt{Bar}.
+bounds between \texttt{Foo} and \texttt{Bar}. A contradiction is reached during
+the type checking derivation.
 
 % TODO check what happens in a simpler program with one type Foo, and E:
 % type E[F1 Foo[F2], F2 Foo[F1]].
