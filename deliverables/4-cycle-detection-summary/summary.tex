@@ -57,7 +57,7 @@
 
 \noindent Well-formed declarations \hfill \fbox{$D \ok$}
 \begin{mathpar}
-    \inferrule[t-type]
+    \inferrule[T-Type]
     {
     \ov{\Phi \ok}
     \\
@@ -70,7 +70,7 @@
 
 \noindent Programs  \hfill \fbox{$P \ok$}
 \begin{mathpar}
-    \inferrule[t-prog]
+    \inferrule[T-Prog]
     {
         \distinct(\tdecls(\ov{D}), \kw{int}) \\
         \distinct(\mdecls(\ov{D})) \\
@@ -79,6 +79,10 @@
     }
     { \package~\main;~\ov{D}~\func~\main()~\br{\un=e} \ok }
 \end{mathpar}
+
+The remaining type checking rules (e.g. ones used in the examples) are provided
+in section \ref{sec:remaining-rules}. They are omitted here to focus the
+discussion on cycle detection.
 
 \section{Cycle detection rules}
 
@@ -139,9 +143,8 @@
 \end{mathpar}
 
 \begin{itemize}
-    \item Type containment checks can be thought of as one phase of the type
-          declaration cycle detection, checking the structure of type literals,
-          applicable to both generic and non-generic code.
+    \item Type containment checks can be thought of as checking the structure of
+          type literals, applicable to both generic and non-generic code.
 
     \item The $\notcont$ relation can be explained as ``asserting a type/type
           literal doesn't contain any of the \emph{already seen} types where they are
@@ -189,6 +192,13 @@
           through the type parameter list of another generic type) refer to T.''
           We can in fact life this restriction, i.e. allowing type parameter
           constraints to refer to the type T being defined.
+    \item The next section contains a few examples of programs that either the
+          the compiler currently struggles with, or are currently disallowed by
+          the compiler due to the above-mentioned rule in the spec, but do not
+          actually cause any problems during type-checking and could be allowed.
+          Both positive (well-typed programs) and negative (badly-typed
+          programs) examples are presented, to demonstrate that the rules
+          presented in this document are sufficient for both cases.
 \end{itemize}
 
 \section{Examples}
@@ -208,13 +218,13 @@
     \lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=35]
     {./examples/generic-containment-clean.go}
 
-    Using e.g. a pointer to \texttt{T} in the
-    definition of \texttt{Foo} would make the program valid. We can even
-    change the type constraint of \texttt{T} from \texttt{any} to \texttt{Bar}, and
-    the type checker should behave the same. However, as of Go 1.23, such a program
-    is either rejected or accepted by the type checker depending on the order of the
-    struct declarations (similar to \href{https://github.com/golang/go/issues/65714}{Issue
-        \#65714}).
+    Using e.g. a pointer to \texttt{T} in the definition of \texttt{Foo} would
+    make the program valid. We can even change the type constraint of \texttt{T}
+    from \texttt{any} to \texttt{Bar}, and the type checker should behave the
+    same (since \texttt{Bar} is a subtype of \texttt{any}). However, as of Go
+    1.23, such a program is either rejected or accepted by the type checker
+    depending on the order of the struct declarations (similar to
+    \href{https://github.com/golang/go/issues/65714}{Issue \#65714}).
 
 \end{minipage}
 
@@ -250,11 +260,24 @@ fit a Featherweight Go-like syntax used in this document.
 
 \subsection{Self-referential type parameter constraints}
 
-% TODO some writeup about how Featherweight Generic Go allowed self-referential
-% type parameter constraints, but the current Go spec and compiler disallow
-% this.
+The following two examples show the rules applying to types where the type
+parameter constraints refer to the type being defined (currently disallowed by
+spec). While the type parameters are recursive, the type checking algorithms do
+not recurse infinitely. The intuition behind this is that while type checking
+some declaration $D$, lookups in the global $\ov{D}$ do not depend on the types
+in $\ov{D}$ to have already been type checked. Similarly, when type checking
+some type parameter constraints $\ov{\Phi}$, lookups in the same $\ov{\Phi}$ do
+not require the type parameter constraints in $\ov{\Phi}$ to have already been
+type checked. This is crucial in order to allow for backward and forward
+references, and also self-references (recursion).
 
 \subsubsection{Negative example}
+
+In this example, the type \texttt{E} is not well-typed, since it ``flips'' the
+bounds between \texttt{Foo} and \texttt{Bar}.
+
+% TODO check what happens in a simpler program with one type Foo, and E:
+% type E[F1 Foo[F2], F2 Foo[F1]].
 
 \golisting{./examples/self-ref-invalid.go}
 
@@ -266,6 +289,198 @@ fit a Featherweight Go-like syntax used in this document.
 
 \input{self-ref-valid}
 
-% TODO mention Go's structural subtyping
+\section{Remaining rules}
+\label{sec:remaining-rules}
+
+\subsection{Syntax}
+
+\begin{minipage}[t]{\textwidth}
+    \begin{tabular}[t]{ll}
+        Structure type name      & $t_S, u_S$                                           \\
+        Interface type name      & $t_I, u_I$                                           \\
+        Array type name          & $t_A, u_A$                                           \\
+        Value type name          & $t_V, u_V$ ::= $t_S \mid t_A$                        \\
+        Type name                & $t, u$ ::= $t_V \mid t_I$                            \\
+        Declaration              & $D$ ::=                                              \\
+        \quad Type declaration   & \quad $\type~t[\ov{\Phi}]~T$                         \\
+        \quad Method declaration & \quad $\func~(x~t_V[\ov{\alpha}])~mM~\br{\return~e}$ \\
+    \end{tabular}
+\end{minipage}
+\hspace{-0.5\textwidth}
+\begin{minipage}[t]{0.4\textwidth}
+    \begin{tabular}[t]{ll}
+        Structure type & $\tau_S, \sigma_S$ ::= $t_S[\ov{\tau}]$     \\
+        Interface type & $\tau_I, \sigma_I$ ::= $t_I[\ov{\tau}]$     \\
+        Array type     & $\tau_A, \sigma_A$ ::= $t_A[\ov{\tau}]$     \\
+        Value type     & $\tau_V, \sigma_V$ ::= $\tau_S \mid \tau_A$ \\
+    \end{tabular}
+\end{minipage}
+
+Well-formed type formals
+\hfill \fbox{$\ov{\Phi} \ok$}
+\begin{mathpar}
+    \inferrule[T-Formal]
+    {
+        (\ov{\alpha~\gamma}) = \ov{\Phi} \\
+        \distinct(\ov{\alpha}) \\
+        \ov{\Phi} \vdash \ov{\gamma \ok}
+    }
+    { \ov{\Phi} \ok}
+\end{mathpar}
+
+Well-formed type
+\hfill \fbox{$\Delta \vdash \tau \ok$}
+\begin{mathpar}
+    \inferrule[t-param]
+    { (\alpha : \gamma) \in \Delta }
+    { \Delta \vdash \alpha \ok }
+
+    \inferrule[t-named]
+    {
+        \black{\Delta \vdash \ov{\tau \ok}}
+        \and
+        (\type~t\black{[\ov{\Phi}]}~T) \in \ov{D}
+        \and
+        \black{\eta = (\ov{\Phi \by_\Delta \tau})}
+    }
+    { \black{\Delta \vdash}~t\black{[\ov{\tau}]} \ok }
+\end{mathpar}
+
+\begin{mathpar}
+    \inferrule
+    {
+        (\ov{\alpha~\gamma}) = \ov{\Phi} \\
+        \eta = (\ov{\alpha \by \tau})
+    }
+    {(\ov{\Phi \by \tau}) = \eta}
+
+    \inferrule
+    {
+        (\ov{\alpha~\gamma}) = \ov{\Phi} \\
+        \eta = (\ov{\Phi \by \tau}) \\
+        \Delta \vdash (\ov{\alpha \imp \gamma})\llbracket\eta\rrbracket \\
+    }
+    {(\ov{\Phi \by_\Delta \tau}) = \eta}
+\end{mathpar}
+
+Well-formed method specifications and type literals
+\hfill \fbox{$\ov{\Phi} \vdash S \ok$} \qquad \fbox{$\ov{\Phi} \vdash T \ok$}
+\begin{mathpar}
+    \inferrule[t-specification]
+    {
+        \distinct(\ov{x}) \\
+        \black{\ov{\Phi} \vdash \ov{\tau \ok}}\\
+        \black{\ov{\Phi} \vdash \tau \ok}\\
+    }
+    { \black{\ov{\Phi} \vdash}~m(\ov{x~\black{\tau}})~\black{\tau} \ok }
+
+    \inferrule[t-struct]
+    {
+        \distinct(\ov{f}) \\
+        \black{\ov{\Phi} \vdash \ov{\tau \ok}}\\
+    }
+    { \black{\ov{\Phi} \vdash}~\struct~\br{\ov{f~\black{\tau}}} \ok }
+
+    \inferrule[t-interface]
+    {
+        \unique(\ov{S}) \\
+        \black{\ov{\Phi} \vdash}~\ov{S \ok}
+    }
+    { \black{\ov{\Phi} \vdash}~\interface~\br{\ov{S}} }
+
+    \inferrule[t-array]
+    {
+    \black{\ov{\Phi} \vdash \tau \ok}\\
+    }
+    {
+    \ov{\Phi} \vdash~[n]\tau \ok
+    }
+\end{mathpar}
+
+Well-formed method declarations \hfill \fbox{$D \ok$}
+\begin{mathpar}
+    \inferrule[t-func]
+    {
+        \distinct(x, \ov{x}) \\
+        \black{\ov{\Phi} = \typeparams(t_V)}\\
+        \black{(\ov{\alpha~\gamma}) = \ov{\Phi}}\\
+        \black{\ov{\Phi} \vdash}~m(\ov{x~\black{\tau}})~\black{\sigma} \ok \\
+        \black{\ov{\Phi} \stoup}
+        x : t_V\black{[\ov{\alpha}]} \comma \ov{x : \black{\tau}} \vdash e : \black{\tau} \\
+        \black{\ov{\Phi} \vdash \tau} \imp \black{\sigma} \\
+    }
+    { \func~(x~t_V\black{[\ov{\alpha}]})~m(\ov{x~\black{\tau}})~\black{\sigma}~\br{\return~e} \ok }
+\end{mathpar}
+
+Implements
+\hfill \fbox{$\Delta \vdash \tau \imp \sigma$}
+\begin{mathpar}
+
+    \inferrule[$\imp_{\text{Param}}$]
+    { ~ }
+    { \Delta \vdash \alpha \imp \alpha }
+
+    \inferrule[$\imp_V$]
+    { ~ }
+    { \black{\Delta \vdash}~\tau_V \imp \tau_V }
+
+    \inferrule[$\imp_I$]
+    {
+        \methods_\black{\Delta}(\black{\tau}) \supseteq \methods_\black{\Delta}(\black{\tau}_I) \\
+    }
+    { \black{\Delta \vdash}~\tau \imp \tau_I }
+
+    \inferrule
+    {
+        \black{ \eta = (\ov{\Phi \by \tau}) }
+        \\
+        \black{ \ov{\Phi} = \typeparams(t_V) }
+    }
+    {
+        \methods_\black{\Delta}(t_V\black{[\ov{\tau}]}) =
+        \{(mM)\black{\llbracket\eta\rrbracket}
+        \mid (\func~(x~t_V\black{[\ov{\alpha}]})~mM~\br{\return~e}) \in \ov{D}
+        \}
+    }
+
+    \inferrule
+    {
+        \type~t_I\black{[\ov{\Phi}]}~\interface~\br{\ov{S}} \in \ov{D} \\
+        \black{ \eta = (\ov{\Phi \by \tau})}}
+    {
+        \methods_\black{\Delta}(t_I\black{[\ov{\tau}]}) =
+        \ov{S}\black{\llbracket\eta\rrbracket}
+    }
+
+    \inferrule
+    {(\alpha : \black{\gamma}) \in \Delta}
+    {\methods_\Delta(\alpha) = \methods_\Delta(\gamma)}
+
+    \inferrule
+    {(\type~t[\ov{\Phi}]~T) \in \ov{D}}
+    {\ov{\Phi} = \typeparams(t)}
+\end{mathpar}
+
+Expressions \hfill \fbox{$\Delta \stoup \Gamma \vdash e : \tau$}
+\begin{mathpar}
+    \inferrule[t-var]
+    {
+        (x : \black{\tau}) \in \Gamma
+    }
+    { \black{\Delta \stoup}~\Gamma \vdash x : \black{\tau} }
+
+    \inferrule[t-struct-literal]
+    {
+        \black{\Delta \vdash \tau}_S \ok
+        \\
+        \black{\Delta \stoup}~\Gamma \vdash \ov{e : \black{\tau}}
+        \\
+        (\ov{f~\black{\sigma}}) = \fields(\black{\tau}_S)
+        \\
+        \black{\Delta \vdash}~\ov{\black{\tau} \imp \black{\sigma}}
+    }
+    { \black{\Delta \stoup}~\Gamma \vdash \black{\tau}_S\br{\ov{e}} : \black{\tau}_S
+    }
+\end{mathpar}
 
 \end{document}

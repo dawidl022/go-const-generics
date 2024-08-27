@@ -84,7 +84,9 @@
     }{
         (\F~\Foo[\F]) \vdash m(f~\F)~\F \ok
     }
+\end{mathpar}
 
+\begin{mathpar}
     \derivrule[T-Interface]{
         \axiomrule{
             \unique(m(f~\F)~\F)
@@ -99,8 +101,6 @@
         \notcont(Foo,~\interface~\br{~m(f~\F)~\F~})
     }
 
-\end{mathpar}
-\begin{mathpar}
     \derivrule[T-Type]{
         (\F~\Foo[\F]) \ok
         \\
@@ -191,7 +191,9 @@ An analogous tree can be derived for $D_1$ (\texttt{Bar} is isomorphic to
     }{
         (\F~\Foo[\B],~\B~\BarType[\F]) \vdash (\F \imp \Foo[\B])\llbracket \eta_2 \rrbracket
     }
+\end{mathpar}
 
+\begin{mathpar}
     \derivrule{
         \derivrule{
             \eta_2 = (\F \by \B)
@@ -205,9 +207,6 @@ An analogous tree can be derived for $D_1$ (\texttt{Bar} is isomorphic to
     }{
         \eta_2 = ((\F~\Foo[\F]) \by_{(\F~\Foo[\B],~\B~\BarType[\F])} \B)
     }
-\end{mathpar}
-
-\begin{mathpar}
     \derivrule[T-Named]{
         (\F~\Foo[\B],~\B~\BarType[\F]) \vdash \B \ok
         \\
