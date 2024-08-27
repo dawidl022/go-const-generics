@@ -199,7 +199,17 @@ discussion on cycle detection.
           Both positive (well-typed programs) and negative (badly-typed
           programs) examples are presented, to demonstrate that the rules
           presented in this document are sufficient for both cases.
+    \item Some self-referential type parameters may be uninstantiable, however,
+          Go already permits defining non-instantiable types, and defining empty
+          type sets is also allowed. This is fine since types need to be
+          explicitly instantiated, and checks also occur upon type
+          instantiation. Type containment checks are critical however, since
+          values can be instantiated implicitly via zero values, and so the type
+          declaration (or instantiation in the case of generic types) must
+          ensure that valid (non-infinite) zero values can be constructed.
 \end{itemize}
+
+\golisting{./examples/empty-type-set.go}
 
 \section{Examples}
 
@@ -254,9 +264,6 @@ Below is a derivation of the program in the issue, with minor adjustments to
 fit a Featherweight Go-like syntax used in this document.
 
 \input{issue-51244}
-
-% TODO appendix will define remaining rules that have been referenced in rules
-% or derivations
 
 \subsection{Self-referential type parameter constraints}
 
