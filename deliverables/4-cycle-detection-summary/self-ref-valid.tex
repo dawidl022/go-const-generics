@@ -1,0 +1,171 @@
+\begin{align*}
+    D_0    & = \type~\Foo[\F~\Foo[\F]]~\interface~\br{~m(f~\F)~\F~}         \\
+    D_1    & = \type~\BarType[\B~\BarType[\B]]~\interface~\br{~m(b~\B)~\B~} \\
+    D_2    & = \type~\E[\F~\Foo[\F],~\B~\BarType[\B]]~\struct~\br{ }        \\
+    D_3    & = \type~\T~\struct~\br{ }                                      \\
+    D_4    & = \func~(t~\T)~m(t2~\T)~\T~\br{~\return~t~}                    \\
+    \ov{D} & = \{D_0, D_1, D_2, D_3, D_4\}                                  \\
+    e      & = \E[\T,~\T]\br{}
+\end{align*}
+
+The derivations for $D_0$, $D_1$, and $D_3$ were shown in previous examples.
+
+\begin{mathpar}
+    \derivrule[T-Specification]{
+        \axiomrule{
+            \distinct(t2)
+        }
+        \\
+        \derivrule[T-Named]{
+            (\type~\T~\struct~\br{ }) \in \ov{D}
+        }{
+            \emptyset \vdash \T \ok
+        }
+    }{
+        \emptyset \vdash m(t2~\T)~\T \ok
+    }
+
+    \derivrule[T-Var]{
+        \axiomrule{
+            (t:\T) \in (t:\T,t2:\T)
+        }
+    }{
+        \emptyset;t:\T,t2:\T \vdash t: \T
+    }
+
+    \derivrule[T-Func]{
+        \axiomrule{
+            \distinct(t,t2)
+        }
+        \\
+        \axiomrule{
+            \emptyset = \typeparams(\T)
+        }
+        \\
+        \emptyset \vdash m(t2~\T)~\T \ok
+        \\
+        \emptyset;t:\T,t2:\T \vdash t: \T
+        \\
+        \axiomrule[$\imp_V$]{
+            \T \imp \T
+        }
+    }{
+        D_4 \ok
+    }
+\end{mathpar}
+
+$(\F~\Foo[\F],~\B~\BarType[\B]) \vdash \Foo[\F] \ok$ can be derived analogously
+to $(\F~\Foo[\F]) \vdash \Foo[\F] \ok$ in the previous example. The same applies
+for $(\F~\Foo[\F],~\B~\BarType[\B]) \vdash \BarType[\B] \ok$.
+
+\begin{mathpar}
+    \derivrule[T-Formal]{
+        \axiomrule{
+            \distinct(\F,\B)
+        }
+        \\
+        (\F~\Foo[\F],~\B~\BarType[\B]) \vdash \Foo[\F] \ok
+        \\
+        (\F~\Foo[\F],~\B~\BarType[\B]) \vdash \BarType[\B] \ok
+    }{
+        (\F~\Foo[\F],~\B~\BarType[\B]) \ok
+    }
+
+    \derivrule[T-Type]{
+        (\F~\Foo[\F],~\B~\BarType[\B]) \ok
+        \\
+        \axiomrule{
+            \F~\Foo[\F],~\B~\BarType[\B] \vdash \struct\br{} \ok
+        }
+        \\
+        \axiomrule{
+            \notcont(\E,~\struct\br{})
+        }
+    }{
+        D_2 \ok
+    }
+
+    \derivrule{
+        \axiomrule{
+            \emptyset = \typeparams(\T)
+        }
+    }{
+        \methods_\emptyset(T) = \br{~m(t2~\T)~\T~}
+    }
+
+    \derivrule{
+        \derivrule{
+            (\type~\Foo[\F~\Foo[\F]]~\interface~\br{~m(f~\F)~\F~}) \in \ov{D}
+            \\
+            \derivrule{
+                \eta_5 = (\F \by \T)
+            }{
+                \eta_5 = (\F~\Foo[\F] \by \T)
+            }
+        }{
+            \methods_\emptyset(\Foo[\T]) = \br{~m(f~\F)~\F~} \llbracket \eta_5 \rrbracket
+        }
+    }{
+        \methods_\emptyset(\Foo[\T]) = \br{~m(f~\T)~\T~}
+    }
+
+\end{mathpar}
+
+$\emptyset \vdash (\T \imp \BarType[\T])$ can be derived analogously to $\emptyset \vdash (\T \imp \Foo[\T])$.
+
+\begin{mathpar}
+
+    \derivrule{
+        \derivrule[$\imp_I$]{
+            \derivrule{
+                \axiomrule{
+                    \br{~m(t2~\T)~\T~} \supseteq \br{~m(f~\T)~\T~}
+                }
+            }{
+                \methods_\emptyset(T) \supseteq \methods_\emptyset(\Foo[\T])
+            }
+        }{
+            \emptyset \vdash (\T \imp \Foo[\T])
+        }
+    }{
+        \emptyset \vdash (\F \imp \Foo[\F])[\eta_4]
+    }
+
+    \derivrule{
+        \emptyset \vdash (\T \imp \BarType[\T])
+    }{
+        \emptyset \vdash (\B \imp \BarType[\B])[\eta_4]
+    }
+
+    \derivrule{
+        \derivrule{
+            \eta_4 = (\F \by \T,~\B \by \T)
+        }{
+            \eta_4 = (\F~\Foo[\F] \by \T,~\B~\BarType[\B] \by \T)
+        }
+        \\
+        \emptyset \vdash (\F \imp \Foo[\F])[\eta_4]
+        ~~~~
+        \emptyset \vdash (\B \imp \BarType[\B])[\eta_4]
+    }{
+        \eta_4 = (\F~\Foo[\F] \by_\emptyset \T,~\B~\BarType[\B] \by_\emptyset \T)
+    }
+
+    \derivrule[T-Named]{
+        \emptyset \vdash \T \ok
+        \\
+        \axiomrule{
+            (\type~\E[\F~\Foo[\F],~\B~\BarType[\B]]~\struct~\br{ }) \in \ov{D}
+        }
+        \\
+        \eta_4 = (\F~\Foo[\F] \by_\emptyset \T,~\B~\BarType[\B] \by_\emptyset \T)
+    }{
+        \emptyset \vdash \E[\T,\T] \ok
+    }
+
+    \derivrule[T-Struct-Literal]{
+        \emptyset \vdash \E[\T,\T] \ok
+    }{
+        \emptyset;\emptyset \vdash \E[\T,\T]\br{} : \E[\T,\T]
+    }
+\end{mathpar}
