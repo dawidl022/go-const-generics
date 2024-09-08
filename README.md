@@ -6,6 +6,18 @@ Go, based on [Featherweight Go](https://dl.acm.org/doi/10.1145/3428217).
 This monorepo contains all the work done as part of my undergraduate final year
 project, from the initial proposals, to the implementation and report.
 
+## Documentation
+
+The following documentation is deployed to GitHub pages:
+
+- [report.pdf](https://dawidl022.github.io/go-const-generics/report.pdf) -
+  introduces and explains in depth the theory behind const generics in Go,
+  including formal definitions.
+- [presentation](https://dawidl022.github.io/go-const-generics/presentation) -
+  used to accompany talks introducing this project.
+- [cycle-detection-summary.pdf](https://dawidl022.github.io/go-const-generics/cycle-detection-summary.pdf) - formalises cycle detection rules in Go to aid in resolving issues with cycle
+   detection in the Go compiler (as of version 1.23).
+
 ## Repo structure
 
 - [`docs`](./docs/) contains the initial project definition, presentation
