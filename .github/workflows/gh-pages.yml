@@ -26,21 +26,29 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up TexLive
-        run: sudo apt update && sudo apt install texlive-full
+      - name: Clone reveal.js
+        run: git clone git@github.com:hakimel/reveal.js.git public
 
-      - name: Set up Mermaid CLI
-        run: npm install -g @mermaid-js/mermaid-cli
+      - name: Remove default reveal.js slides
+        run: rm public/*.html
 
-      - name: Set up GH pages directory
-        run: mkdir public
+      - name: Copy presentation slides to GH pages directory
+        run: |
+          cp docs/3-presentation/dist/index.html public/presentation.html
+          cp docs/3-presentation/presentation.md public/presentation.md
 
-      - name: Compile LaTeX report
-        working-directory: docs/2-report
-        run: make main.pdf
+      # - name: Set up TexLive
+      #   run: sudo apt update && sudo apt install texlive-full
 
-      - name: Copy report to GH pages directory
-        run: cp docs/2-report/main.pdf public/report.pdf
+      # - name: Set up Mermaid CLI
+      #   run: npm install -g @mermaid-js/mermaid-cli
+
+      # - name: Compile LaTeX report
+      #   working-directory: docs/2-report
+      #   run: make main.pdf
+
+      # - name: Copy report to GH pages directory
+      #   run: cp docs/2-report/main.pdf public/report.pdf
 
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3
