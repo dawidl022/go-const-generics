@@ -52,7 +52,7 @@ jobs:
 
       - name: Compile cycle detection summary
         working-directory: docs/4-cycle-detection-summary
-        run: pdflatex -shell-escape summary
+        run: make summary.pdf
 
       - name: Copy cycle detection summary GH pages directory
         run: cp docs/4-cycle-detection-summary/summary.pdf public/cycle-detection-summary.pdf
