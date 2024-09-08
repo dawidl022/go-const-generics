@@ -38,6 +38,9 @@ packages under test.
 
 ## Local development
 
+All following commands are to be executed from the `src` directory, unless
+noted otherwise.
+
 ### Prerequisites
 
 Ensure you have Make, [Go](https://go.dev/) and [Java](https://openjdk.org/)
