@@ -156,7 +156,7 @@ Constant expressions evaluate to constant integers, of which non-negative ones
 can be used as \kw{const} type arguments. This brings us to our first problem,
 not all constant expressions yield non-negative integers, and we cannot tell
 what the sign of a ``constant'' expression involving a type parameter will be
-until the use has instantiated a generic type or function. Go type checks
+until the user has instantiated a generic type or function. Go type checks
 generic functions/types at the declaration site, rather than the call site, so
 we need to ensure our approach fits that model.
 
@@ -224,10 +224,10 @@ language servers show the inferred bounds to the programmer. Due to the
 complexity of the liberal model, Rust has also opted for the conservative
 approach for the time being \autocite{rustConstBlog}.
 
-is a topic for future work. Appendix \ref{sec:proposal-appx-bounds} discusses
-some more complex scenarios under the liberal approach. Investigating in full
-detail the feasibility and safety of the liberal approach The following sections
-of this work consider the conservative model only.
+Appendix \ref{sec:proposal-appx-bounds} discusses some more complex scenarios
+under the liberal approach. Investigating in full detail the feasibility and
+safety of the liberal approach is a topic for future work. The following
+sections of this work consider the conservative model only.
 
 \subsection{Allowed operations on generic arrays}
 
