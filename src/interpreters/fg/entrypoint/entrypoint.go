@@ -3,12 +3,12 @@ package entrypoint
 import (
 	"io"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parsetree"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/typecheck"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/loop"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/parse"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/parser"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/parsetree"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/typecheck"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/loop"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/parse"
 )
 
 func Interpret(program io.Reader, debugOutput io.Writer, maxSteps int) (string, error) {

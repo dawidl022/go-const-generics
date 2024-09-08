@@ -3,9 +3,9 @@ package parsetree
 import (
 	"github.com/antlr4-go/antlr/v4"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/parse"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/parser"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/parse"
 )
 
 type ParseFGGActions struct {

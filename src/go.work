@@ -8,5 +8,5 @@ use (
 )
 
 replace (
-	github.com/dawidl022/go-generic-array-sizes/interpreters/fgg v0.1.0 => ./interpreters/fgg
+	github.com/dawidl022/go-const-generics/interpreters/fgg v0.1.0 => ./interpreters/fgg
 )

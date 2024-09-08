@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io"
 
-	fgg "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/entrypoint"
-	"github.com/dawidl022/go-generic-array-sizes/monomorphisers/fgg2go/codegen"
-	"github.com/dawidl022/go-generic-array-sizes/monomorphisers/fgg2go/monomo"
+	fgg "github.com/dawidl022/go-const-generics/interpreters/fgg/entrypoint"
+	"github.com/dawidl022/go-const-generics/monomorphisers/fgg2go/codegen"
+	"github.com/dawidl022/go-const-generics/monomorphisers/fgg2go/monomo"
 )
 
 func Monomorphise(program io.Reader) (string, error) {

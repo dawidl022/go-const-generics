@@ -3,7 +3,7 @@ package typecheck
 import (
 	"fmt"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/ast"
 )
 
 func (t typeVisitor) VisitField(s ast.Select) (ast.Type, error) {

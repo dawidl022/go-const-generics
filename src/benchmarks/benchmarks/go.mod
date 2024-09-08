@@ -1,4 +1,4 @@
-module github.com/dawidl022/go-generic-array-sizes/benchmarks/benchmarks
+module github.com/dawidl022/go-const-generics/benchmarks/benchmarks
 
 go 1.21.3
 

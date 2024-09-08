@@ -3,7 +3,7 @@ package typecheck
 import (
 	"fmt"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
 )
 
 func (t typeVisitor) VisitVariable(v ast.Variable) (ast.Type, error) {

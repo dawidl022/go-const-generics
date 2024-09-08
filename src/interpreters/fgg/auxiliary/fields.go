@@ -3,7 +3,7 @@ package auxiliary
 import (
 	"fmt"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
 )
 
 func Fields(declarations []ast.Declaration, typ ast.NamedType) ([]ast.Field, error) {

@@ -3,7 +3,7 @@ package typecheck
 import (
 	"reflect"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/ast"
 )
 
 type MethodSet []ast.MethodSpecification

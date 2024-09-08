@@ -8,8 +8,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/entrypoint"
-	"github.com/dawidl022/go-generic-array-sizes/monomorphisers/fgg2go/monomo"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/entrypoint"
+	"github.com/dawidl022/go-const-generics/monomorphisers/fgg2go/monomo"
 )
 
 //go:embed testdata/array.fgg

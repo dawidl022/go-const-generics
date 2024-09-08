@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/auxiliary"
 )
 
 func (t TypeCheckingVisitor) typeDeclarationOf(typeName ast.TypeName) ast.TypeDeclaration {

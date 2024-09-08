@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dawidl022/go-generic-array-sizes/monomorphisers/fgg2go/entrypoint"
+	"github.com/dawidl022/go-const-generics/monomorphisers/fgg2go/entrypoint"
 )
 
 func main() {

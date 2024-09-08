@@ -3,8 +3,8 @@ package reduction
 import (
 	"fmt"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/auxiliary"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/auxiliary"
 )
 
 func (r ReducingVisitor) VisitSelect(s ast.Select) (ast.Expression, error) {

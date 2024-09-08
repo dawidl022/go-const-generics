@@ -1,7 +1,7 @@
 \begin{tikzpicture}
-    
+
     \pgfplotsset{set layers}
-    
+
     \begin{loglogaxis}[
             scale only axis,
             height=12cm,
@@ -9,8 +9,8 @@
             ylabel={Runtime (ns/op)},
             legend pos=north west,
             legend entries={
-                BenchmarkReversedArray,BenchmarkReversedSlice,
-            },
+                    BenchmarkReversedArray,BenchmarkReversedSlice,
+                },
             xmin=2,
             xmax=33554432, axis y line*=left,
             log basis x={2},
@@ -20,13 +20,13 @@
             grid style=dashed,
         ]
 
-        
-        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/BenchmarkReversedArray.dat};
-        
-        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/BenchmarkReversedSlice.dat};
-        
+
+        \addplot table {../../src/benchmarks/runner/outputs/reversed/BenchmarkReversedArray.dat};
+
+        \addplot table {../../src/benchmarks/runner/outputs/reversed/BenchmarkReversedSlice.dat};
+
     \end{loglogaxis}
-    
+
     \begin{semilogxaxis}[
             scale only axis,
             xmin=2,
@@ -40,9 +40,9 @@
             extra y tick labels = ,
             extra y tick style  = { grid = major },
         ]
-        \addplot [gray] table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/ArraySlice/speedup.dat};
+        \addplot [gray] table {../../src/benchmarks/runner/outputs/reversed/ArraySlice/speedup.dat};
     \end{semilogxaxis}
-    
+
 \end{tikzpicture}
 
 % GOOS: darwin

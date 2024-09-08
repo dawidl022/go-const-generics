@@ -3,7 +3,7 @@ package reduction
 import (
 	"fmt"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
 )
 
 func (r ReducingVisitor) isArraySetMethod(receiverType ast.NamedType, methodName string) bool {

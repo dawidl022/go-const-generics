@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/ast"
 )
 
 //go:embed testdata/field/basic/basic.go

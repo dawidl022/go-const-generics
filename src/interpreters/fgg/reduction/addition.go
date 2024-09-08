@@ -1,6 +1,6 @@
 package reduction
 
-import "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+import "github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
 
 func (r ReducingVisitor) VisitAdd(a ast.Add) (ast.Expression, error) {
 	left, isLeftIntLiteral := a.Left.(ast.IntegerLiteral)

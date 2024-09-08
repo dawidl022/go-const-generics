@@ -7,10 +7,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/parse"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/parser"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/parsetree"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/parse"
 )
 
 //go:embed testdata/trivial/trivial.go

@@ -14,8 +14,8 @@ The first function we'll examine creates a reversed copy of an array/slice.
 Below is a side-by-side view of the two functions: the first operating on
 arrays, and the second operating on slices.
 
-\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/arrays.go}
-\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/reversed/slices.go}
+\golisting{../../src/benchmarks/benchmarks/reversed/arrays.go}
+\golisting{../../src/benchmarks/benchmarks/reversed/slices.go}
 
 The slice function is almost identical to the array function, except that we
 need to explicitly allocate a new slice for the result. Arrays are value types,
@@ -42,7 +42,7 @@ prevent the compiler optimiser from eliminating the benchmarked code
 \autocite{benchPits}.
 
 \begin{figure}
-	\input{../../projects/go-generic-array-sizes/benchmarks/runner/outputs/reversed/ArraySlice/reversed}
+	\input{../../src/benchmarks/runner/outputs/reversed/ArraySlice/reversed}
 	\caption{Comparison of \texttt{reversed} function benchmarks captured on
 		Apple M1 Pro}
 \end{figure}
@@ -140,12 +140,12 @@ returning the zero-value, or performing a no-op) is chosen instead.
 \begin{figure}
 	\noindent\begin{minipage}[t]{.45\linewidth}
 		\lstinputlisting[language=Go, tabsize=4, firstline=3]
-		{../../projects/go-generic-array-sizes/benchmarks/benchmarks/semidynamicarray/array.go}
+		{../../src/benchmarks/benchmarks/semidynamicarray/array.go}
 	\end{minipage}
 	\hfill
 	\noindent\begin{minipage}[t]{.45\linewidth}
 		\lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=35]
-		{../../projects/go-generic-array-sizes/interpreters/fg/examples/semidynamicarray/array.go}
+		{../../src/interpreters/fg/examples/semidynamicarray/array.go}
 	\end{minipage}
 	\caption{ ``Resizeable'' array with a fixed underlying buffer. The left-hand side
 		shows idiomatic Go implementation, while the right-hand side shows FGA
@@ -155,13 +155,13 @@ returning the zero-value, or performing a no-op) is chosen instead.
 \end{figure}
 
 \begin{figure}
-	\golisting{../../projects/go-generic-array-sizes/benchmarks/benchmarks/ringbuffer/deque.go}
+	\golisting{../../src/benchmarks/benchmarks/ringbuffer/deque.go}
 	\caption{Double-ended queue (deque) with a fixed underlying ring buffer implemented in idiomatic Go}
 \end{figure}
 
 \begin{figure}
 	\lstinputlisting[language=Go, tabsize=4, firstline=3, lastline=48, basicstyle=\small\ttfamily, emptylines=0]
-	{../../projects/go-generic-array-sizes/interpreters/fg/examples/ringbuffer/deque.go}
+	{../../src/interpreters/fg/examples/ringbuffer/deque.go}
 	\caption{Double-ended queue (deque) with a fixed underlying ring buffer
 		implemented in FGA. Full code definitions can be
 		found in appendix \ref{sec:fg-deque-code}.}

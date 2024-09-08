@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/exp/maps"
 
-	"github.com/dawidl022/go-generic-array-sizes/benchmarks/runner/runner"
+	"github.com/dawidl022/go-const-generics/benchmarks/runner/runner"
 )
 
 type Table []string

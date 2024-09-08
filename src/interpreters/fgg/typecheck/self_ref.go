@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"maps"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
 )
 
 type selfRefTracker struct {

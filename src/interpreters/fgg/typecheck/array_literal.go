@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
 )
 
 func (t typeCheckingVisitor) elementType(typeName ast.TypeName) ast.Type {

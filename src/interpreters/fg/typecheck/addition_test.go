@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/ast"
 )
 
 //go:embed testdata/addition/simple-literal/simple-literal.go

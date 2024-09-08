@@ -9,9 +9,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/entrypoint"
-	fggEntrypoint "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/entrypoint"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/loop"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/entrypoint"
+	fggEntrypoint "github.com/dawidl022/go-const-generics/interpreters/fgg/entrypoint"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/loop"
 )
 
 //go:embed array.go

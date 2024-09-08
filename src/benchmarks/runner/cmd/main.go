@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/dawidl022/go-generic-array-sizes/benchmarks/runner/entrypoint"
+	"github.com/dawidl022/go-const-generics/benchmarks/runner/entrypoint"
 )
 
 func main() {

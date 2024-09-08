@@ -3,8 +3,8 @@ package typecheck
 import (
 	"fmt"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/auxiliary"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/auxiliary"
 )
 
 func checkDistinctTypeDeclarations(p ast.Program) error {

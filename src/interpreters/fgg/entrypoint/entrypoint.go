@@ -3,14 +3,14 @@ package entrypoint
 import (
 	"io"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/preprocessor"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/reduction"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/typecheck"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/loop"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/parse"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/parser"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/parsetree"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/preprocessor"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/reduction"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/typecheck"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/loop"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/parse"
 )
 
 func Interpret(program io.Reader, debugOutput io.Writer, maxSteps int) (string, error) {

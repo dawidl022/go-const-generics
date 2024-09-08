@@ -1,11 +1,11 @@
-module github.com/dawidl022/go-generic-array-sizes/interpreters/fg
+module github.com/dawidl022/go-const-generics/interpreters/fg
 
 go 1.21.0
 
 require (
 	github.com/antlr4-go/antlr/v4 v4.13.0
-	github.com/dawidl022/go-generic-array-sizes/interpreters/fgg v0.1.0
-	github.com/dawidl022/go-generic-array-sizes/interpreters/shared v0.1.0
+	github.com/dawidl022/go-const-generics/interpreters/fgg v0.1.0
+	github.com/dawidl022/go-const-generics/interpreters/shared v0.1.0
 	github.com/stretchr/testify v1.8.4
 )
 
@@ -18,6 +18,6 @@ require (
 )
 
 replace (
-	github.com/dawidl022/go-generic-array-sizes/interpreters/fgg v0.1.0 => ../fgg
-	github.com/dawidl022/go-generic-array-sizes/interpreters/shared v0.1.0 => ../shared
+	github.com/dawidl022/go-const-generics/interpreters/fgg v0.1.0 => ../fgg
+	github.com/dawidl022/go-const-generics/interpreters/shared v0.1.0 => ../shared
 )

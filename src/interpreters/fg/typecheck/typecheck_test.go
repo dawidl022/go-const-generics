@@ -4,14 +4,14 @@ import (
 	_ "embed"
 	"testing"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parsetree"
-	fggAst "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
-	fggParser "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
-	fggParsetree "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
-	fggTypecheck "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/typecheck"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/parser"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/parsetree"
+	fggAst "github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
+	fggParser "github.com/dawidl022/go-const-generics/interpreters/fgg/parser"
+	fggParsetree "github.com/dawidl022/go-const-generics/interpreters/fgg/parsetree"
+	fggTypecheck "github.com/dawidl022/go-const-generics/interpreters/fgg/typecheck"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/testrunners"
 )
 
 //go:embed testdata/acceptance/program.go

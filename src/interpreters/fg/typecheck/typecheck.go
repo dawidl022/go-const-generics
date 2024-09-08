@@ -1,7 +1,7 @@
 package typecheck
 
 import (
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/ast"
 )
 
 func TypeCheck(p ast.Program) error {

@@ -3,8 +3,8 @@ package reduction
 import (
 	"fmt"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/testconf"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/testconf"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/testrunners"
 )
 
 func reductionTests() []testrunners.ReductionTestCase {

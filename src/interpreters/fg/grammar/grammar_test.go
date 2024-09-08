@@ -7,8 +7,8 @@ import (
 
 	"github.com/antlr4-go/antlr/v4"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/parser"
-	fggParser "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/parser"
+	fggParser "github.com/dawidl022/go-const-generics/interpreters/fgg/parser"
 )
 
 //go:embed testdata/hello.go

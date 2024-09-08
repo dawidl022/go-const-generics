@@ -21,7 +21,7 @@
         ]
 
         {{ range $i, $funcName := .FuncNames }}
-        \addplot table {../../projects/go-generic-array-sizes/benchmarks/runner/outputs/{{ $.PackageName }}/{{ $funcName }}.dat};
+        \addplot table {../../src/benchmarks/runner/outputs/{{ $.PackageName }}/{{ $funcName }}.dat};
         {{ end }}
     \end{loglogaxis}
     {{ if .Comparison }}
@@ -38,7 +38,7 @@
             extra y tick labels = ,
             extra y tick style  = { grid = major },
         ]
-        \addplot [gray] table {../../projects/go-generic-array-sizes/benchmarks/runner/{{ .OutputPath }}/speedup.dat};
+        \addplot [gray] table {../../src/benchmarks/runner/{{ .OutputPath }}/speedup.dat};
     \end{semilogxaxis}
     {{ end }}
 \end{tikzpicture}

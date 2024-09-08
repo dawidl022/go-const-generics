@@ -1,8 +1,8 @@
 package typecheck
 
 import (
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/testconf"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/testconf"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/testrunners"
 )
 
 func testCases() []testrunners.TypeTestCase {

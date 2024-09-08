@@ -6,9 +6,9 @@ import (
 	"os"
 	"path"
 
-	"github.com/dawidl022/go-generic-array-sizes/benchmarks/runner/pgfplots"
-	"github.com/dawidl022/go-generic-array-sizes/benchmarks/runner/runner"
-	"github.com/dawidl022/go-generic-array-sizes/benchmarks/runner/stats"
+	"github.com/dawidl022/go-const-generics/benchmarks/runner/pgfplots"
+	"github.com/dawidl022/go-const-generics/benchmarks/runner/runner"
+	"github.com/dawidl022/go-const-generics/benchmarks/runner/stats"
 )
 
 func Run(packagePath, benchPattern string, comparison *[2]string, output io.Writer) error {

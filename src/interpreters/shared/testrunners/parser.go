@@ -5,7 +5,7 @@ import (
 
 	"github.com/antlr4-go/antlr/v4"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/parse"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/parse"
 )
 
 func ParseProgram[T any, P antlr.Parser](code []byte, actions parse.Actionable[T, P]) T {

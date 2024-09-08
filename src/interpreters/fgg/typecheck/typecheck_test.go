@@ -3,11 +3,11 @@ package typecheck
 import (
 	"testing"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parser"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/parsetree"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/preprocessor"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/testrunners"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/parser"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/parsetree"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/preprocessor"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/testrunners"
 )
 
 func parseFGGProgram(code []byte) (ast.Program, error) {

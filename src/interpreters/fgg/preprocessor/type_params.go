@@ -3,7 +3,7 @@ package preprocessor
 import (
 	"fmt"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
 )
 
 func IdentifyTypeParams(p ast.Program) (ast.Program, error) {

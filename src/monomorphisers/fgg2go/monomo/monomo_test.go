@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
-	fgg "github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/entrypoint"
-	"github.com/dawidl022/go-generic-array-sizes/monomorphisers/fgg2go/codegen"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
+	fgg "github.com/dawidl022/go-const-generics/interpreters/fgg/entrypoint"
+	"github.com/dawidl022/go-const-generics/monomorphisers/fgg2go/codegen"
 )
 
 //go:embed testdata/simple_array_literal/input/simple_array_literal.go

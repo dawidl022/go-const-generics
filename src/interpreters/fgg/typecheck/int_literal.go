@@ -3,7 +3,7 @@ package typecheck
 import (
 	"errors"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fgg/ast"
+	"github.com/dawidl022/go-const-generics/interpreters/fgg/ast"
 )
 
 func (t typeVisitor) VisitIntegerLiteral(i ast.IntegerLiteral) (ast.Type, error) {

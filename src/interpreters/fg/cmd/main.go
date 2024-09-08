@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/fg/entrypoint"
-	"github.com/dawidl022/go-generic-array-sizes/interpreters/shared/loop"
+	"github.com/dawidl022/go-const-generics/interpreters/fg/entrypoint"
+	"github.com/dawidl022/go-const-generics/interpreters/shared/loop"
 )
 
 func main() {
