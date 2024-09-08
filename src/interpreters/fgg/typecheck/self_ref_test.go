@@ -223,3 +223,40 @@ var selfRefMethodRejectedIndirectRecursiveBoundTypeFgg []byte
 func TestTypeCheck_givenTypeDeclarationWithIndirectlyCircularDefinedBoundsViaInterfaceMethodInAnotherOrder_returnsError(t *testing.T) {
 	assertPassesTypeCheck(t, selfRefMethodRejectedIndirectRecursiveBoundTypeFgg)
 }
+
+//go:embed testdata/self_ref_type_param/issue-51244/issue-51244.go
+var issue51244Fgg []byte
+
+func TestTypeCheck_givenDeclarationsInIssue51244_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, issue51244Fgg)
+}
+
+//go:embed testdata/self_ref/self_ref_in_type_arg_via_interface/self_ref_in_type_arg_via_interface.go
+var selfRefInTypeArgViaInterfaceFgg []byte
+
+func TestTypeCheck_givenSelfRefInTypeArgViaInterface_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, selfRefInTypeArgViaInterfaceFgg)
+}
+
+//go:embed testdata/self_ref_type_param/isomorphic_interfaces/isomorphic_interfaces.go
+var selfRefIsomorphicInterfacesFgg []byte
+
+// Small implementation detail difference compared to example in cycle-detection-summary:
+// Method param names must be the same both in the struct implementation and interface in
+// FGGA. This is of course not the case in Go - method params names are irrelevant
+// to subtyping.
+func TestTypeCheck_givenIsomorphicInterfaceBoundsAreFBounded_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, selfRefIsomorphicInterfacesFgg)
+}
+
+//go:embed testdata/self_ref_type_param/isomorphic_interfaces_swapped/isomorphic_interfaces_swapped.go
+var selfRefIsomorphicInterfacesSwappedFgg []byte
+
+func TestTypeCheck_givenIsomorphicInterfaceBoundsAreSwapped_returnsErrorDueToNotImplementedMethods(t *testing.T) {
+	assertFailsTypeCheckWithError(t, selfRefIsomorphicInterfacesSwappedFgg,
+		`ill-typed declaration: type "E": `+
+			`illegal bound of type parameter "F": `+
+			`type "Foo" badly instantiated: `+
+			`type "B" is not a subtype of "Foo[B]": `+
+			`missing methods: "m(f B) B"`)
+}
