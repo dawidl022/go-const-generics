@@ -1,0 +1,35 @@
+name: Build docs on GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/**"
+      - ".github/workflows/gh-pages.yml"
+
+jobs:
+  build-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up TexLive
+        run: sudo apt update && sudo apt install texlive-full
+
+      - name: Set up Mermaid CLI
+        run: npm install -g @mermaid-js/mermaid-cli
+
+      - name: Set up GH pages directory
+        run: mkdir public
+
+      - name: Compile LaTeX report
+        working-directory: docs/2-report
+        run: make main.pdf
+
+      - name: Copy report to GH pages directory
+        run: cp docs/2-report/main.pdf public/report.pdf
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
