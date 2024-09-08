@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Clone reveal.js
-        run: git clone git@github.com:hakimel/reveal.js.git public
+        run: git clone https://github.com/hakimel/reveal.js.git public
 
       - name: Remove default reveal.js slides
         run: rm public/*.html
