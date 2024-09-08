@@ -28,10 +28,6 @@ func (t typeCheckingVisitor) VisitTypeDeclaration(d ast.TypeDeclaration) error {
 	if err != nil {
 		return fmt.Errorf("type %q: circular reference: %w", d.TypeName, err)
 	}
-	err = newTypeParamRefCheckingVisitor(d.TypeName, t.declarations).checkSelfRefOfNamedType(d.TypeName)
-	if err != nil {
-		return fmt.Errorf("type %q: circular reference via type parameter: %w", d.TypeName, err)
-	}
 	return nil
 }
 

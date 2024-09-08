@@ -169,29 +169,22 @@ func TestTypeCheck_givenGenericInterfaceReferencingItself_passesTypeCheck(t *tes
 //go:embed testdata/self_ref_type_param/recursive_bound_type/recursive_bound_type.fgg
 var selfRefRecursiveBoundTypeFgg []byte
 
-func TestTypeCheck_givenBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, selfRefRecursiveBoundTypeFgg,
-		`ill-typed declaration: type "Eq": circular reference via type parameter: `+
-			`bound of "T" references "Eq"`)
+func TestTypeCheck_givenBoundReferencingTypeBeingDeclared_returnsNoError(t *testing.T) {
+	assertPassesTypeCheck(t, selfRefRecursiveBoundTypeFgg)
 }
 
 //go:embed testdata/self_ref_type_param/nested_recursive_bound_type/nested_recursive_bound_type.fgg
 var selfRefNestedRecursiveBoundTypeFGG []byte
 
 func TestTypeCheck_givenNestedBoundReferencingTypeBeingDeclared_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, selfRefNestedRecursiveBoundTypeFGG,
-		`ill-typed declaration: type "Eq": circular reference via type parameter: `+
-			`bound of "T" references "Eq"`)
+	assertPassesTypeCheck(t, selfRefNestedRecursiveBoundTypeFGG)
 }
 
 //go:embed testdata/self_ref_type_param/indirect_recursive_bound_type/indirect_recursive_bound_type.fgg
 var selfRefIndirectRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenTypeDeclarationWithCircularlyDefinedBounds_returnsError(t *testing.T) {
-	assertFailsTypeCheckWithError(t, selfRefIndirectRecursiveBoundTypeFgg,
-		`ill-typed declaration: type "Foo": circular reference via type parameter: `+
-			`bound of "T" references "Bar", where: `+
-			`bound of "T" references "Foo"`)
+	assertPassesTypeCheck(t, selfRefIndirectRecursiveBoundTypeFgg)
 }
 
 //go:embed testdata/self_ref_type_param/method_recursive_bound_type/method_recursive_bound_type.fgg
@@ -205,18 +198,14 @@ var selfRefMethodRecursiveBoundTypeFgg []byte
 // If we inline the Bar constraint, then the Go type checker DOES reject the program,
 // which is shown in the Go spec.
 func TestTypeCheck_givenTypeDeclarationWithCircularDefinedBoundsViaInterfaceMethod_returnsError(t *testing.T) {
-	t.Skip()
-	assertFailsTypeCheckWithError(t, selfRefMethodRecursiveBoundTypeFgg,
-		``)
+	assertPassesTypeCheck(t, selfRefMethodRecursiveBoundTypeFgg)
 }
 
 //go:embed testdata/self_ref_type_param/method_rejected_recursive_bound_type/method_rejected_recursive_bound_type.fgg
 var selfRefMethodRejectedRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenTypeDeclarationWithCircularDefinedBoundsViaInterfaceMethodInAnotherOrder_returnsError(t *testing.T) {
-	t.Skip()
-	assertFailsTypeCheckWithError(t, selfRefMethodRejectedRecursiveBoundTypeFgg,
-		``)
+	assertPassesTypeCheck(t, selfRefMethodRejectedRecursiveBoundTypeFgg)
 }
 
 //go:embed testdata/self_ref_type_param/method_indirect_recursive_bound_type/method_indirect_recursive_bound_type.fgg
@@ -225,16 +214,12 @@ var selfRefMethodIndirectRecursiveBoundTypeFgg []byte
 // situation is analogous: this program passes the Go type checker, whereas a different
 // permutation of type declarations (e.g. the next test program) does not
 func TestTypeCheck_givenTypeDeclarationWithIndirectlyCircularDefinedBoundsViaInterfaceMethod_returnsError(t *testing.T) {
-	t.Skip()
-	assertFailsTypeCheckWithError(t, selfRefMethodIndirectRecursiveBoundTypeFgg,
-		``)
+	assertPassesTypeCheck(t, selfRefMethodIndirectRecursiveBoundTypeFgg)
 }
 
 //go:embed testdata/self_ref_type_param/method_rejected_indirect_recursive_bound_type/method_rejected_indirect_recursive_bound_type.fgg
 var selfRefMethodRejectedIndirectRecursiveBoundTypeFgg []byte
 
 func TestTypeCheck_givenTypeDeclarationWithIndirectlyCircularDefinedBoundsViaInterfaceMethodInAnotherOrder_returnsError(t *testing.T) {
-	t.Skip()
-	assertFailsTypeCheckWithError(t, selfRefMethodIndirectRecursiveBoundTypeFgg,
-		``)
+	assertPassesTypeCheck(t, selfRefMethodRejectedIndirectRecursiveBoundTypeFgg)
 }
