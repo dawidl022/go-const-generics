@@ -1,7 +1,5 @@
 # Generically sized arrays in Go
 
-Student number: 210150908
-
 Dawid Lachowicz
 
 Supervisor: Raymond Hu
