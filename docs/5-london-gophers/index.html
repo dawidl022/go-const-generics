@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Generically sized arrays in Go</title>
+
+  <link rel="stylesheet" href="/node_modules/reveal.js/dist/reset.css">
+  <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css">
+  <link rel="stylesheet" href="/node_modules/reveal.js/dist/theme/black.css">
+
+  <!-- Theme used for syntax highlighted code -->
+  <link rel="stylesheet" href="/node_modules/reveal.js/plugin/highlight/monokai.css">
+
+  <style>
+    .flex-container {
+      display: flex;
+      gap: 2rem;
+      background-color: #262829;
+      padding: 1rem;
+    }
+
+    .grid-container {
+      display: grid;
+      gap: 2rem;
+      background-color: #262829;
+      padding: 1rem;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: end;
+    }
+
+    .grid-container img {
+      height: auto;
+    }
+
+    .flex-item {
+      flex: 1;
+      font-size: 2rem;
+    }
+
+    .reveal .no-background {
+      width: 100%;
+      overflow: visible;
+      font-size: inherit;
+      box-shadow: none;
+      margin: 0;
+    }
+
+    .no-background code {
+      background: none;
+      overflow: visible;
+      margin: 0;
+    }
+
+    h2 br {
+      line-height: 2.4;
+    }
+
+    small {
+      font-size: 0.3em !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section data-markdown="presentation.md" data-transition="none"></section>
+    </div>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+
+</html>
