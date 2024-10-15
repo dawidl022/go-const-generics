@@ -187,19 +187,35 @@ type const interface {
 
 ---
 
-## Methodology: Formal rules
+## Programming languages and compilers
 
-Syntax, reduction and typing rules for Featherweight Go with arrays
+<p class="fragment">Implementations of Go:</p>
+<ul>
+<li class="fragment"><a href="https://github.com/golang/go">gc</a> (main compiler implementation)</li>
+<li class="fragment"><a href="https://github.com/golang/gofrontend">gofrontend</a> (alt. frontend used with gcc/llvm backend)</li>
+<li class="fragment"><a href="https://github.com/gopherjs/gopherjs">GopherJS</a></li>
+</ul>
+
+<figure class="fragment">
+<q>The Go language has always been defined by a spec, not an implementation.</q>
+<figcaption>
+(Taylor, 2012)
+</figcaption>
+</figure>
+
+---
+
+## Programming languages - a formal perspective
 
 <div class="flex-container">
-<div class="flex-item">
+<div class="flex-item fragment">
 
 Syntax
 
 $T ::= [n]t$ 
 
 </div>
-<div class="flex-item">
+<div class="flex-item fragment">
 
 Reduction
 
@@ -211,7 +227,7 @@ Reduction
 $$`
 
 </div>
-<div class="flex-item">
+<div class="flex-item fragment">
 
 Typing
 
@@ -223,6 +239,19 @@ Typing
 $$`
 
 </div>
+
+---
+
+<img src="./langs_tier1.svg" height="670px">
+
+---
+
+<img src="./langs_tier2.svg" height="670px">
+
+---
+
+<img src="./langs.svg" height="670px">
+
 ---
 
 ## Methodology: Interpreter implementation
@@ -290,8 +319,6 @@ style="filter: invert(0.9);">
 
 ---
 
-## Questions
-
 References:
 
 <small>
@@ -305,13 +332,22 @@ Rust Blog. Available from:
 https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html [Accessed
 November 12, 2023].
 
+Talyor, IL., 2012. Gccgo in GCC 4.7.1 [Online]. The Go Blog. Available from:
+https://go.dev/blog/gccgo-in-gcc-471 [Accessed October 15, 2024].
+
 </small>
 
 
-Images:
+Graphics:
 
 <small>
 
 https://github.com/primer/octicons
+
+https://github.com/golang-samples/gopher-vector
+
+https://github.com/MariaLetta/free-gophers-pack
+
+https://rustacean.net/
 
 </small>
