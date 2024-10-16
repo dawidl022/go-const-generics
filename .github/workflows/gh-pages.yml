@@ -37,15 +37,15 @@ jobs:
           cp docs/3-presentation/dist/index.html public/presentation.html
           cp docs/3-presentation/presentation.md public/presentation.md
 
-      - name: Set up TexLive
-        run: sudo apt update && sudo apt install texlive-full
+      # - name: Set up TexLive
+      #   run: sudo apt update && sudo apt install texlive-full
 
       - name: Set up Mermaid CLI
         run: npm install -g @mermaid-js/mermaid-cli
 
       - name: Compile LaTeX report
         working-directory: docs/2-report
-        run: make main.pdf
+        run: aa-exec --profile=chrome make main.pdf
 
       - name: Copy report to GH pages directory
         run: cp docs/2-report/main.pdf public/report.pdf
