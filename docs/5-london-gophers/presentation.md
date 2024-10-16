@@ -254,7 +254,29 @@ $$`
 
 ---
 
-## Methodology: Interpreter implementation
+<section
+	data-background-image="https://raw.githubusercontent.com/MariaLetta/free-gophers-pack/refs/heads/master/characters/svg/48.svg"
+	data-background-size="23%"
+	data-background-position="bottom right 10px"
+	data-transition="none"
+>
+
+## Compiler pipeline
+
+<img src="./pipeline.svg" height="170px">
+
+</section>
+
+---
+
+## Prototype interpreter
+
+<ul>
+<li class="fragment">Dynamically testing the theory</li>
+<li class="fragment">Caught two bugs in gc (issues <a href="https://github.com/golang/go/issues/65711">65711</a> and <a href="https://github.com/golang/go/issues/65714">65714</a>)</li>
+</ul>
+
+<div class="fragment">
 
 ```
 reduction step 1: Arr{4, 6}[Foo{3, Arr{1, 2}}.y.first()]
@@ -273,9 +295,11 @@ reduction step 5: 6
 program well typed
 ```
 
+</div class="fragment>
+
 ---
 
-## Next steps: Monomorphiser implementation
+## Prototype monomorphiser
 
 <div class="flex-item">
 
@@ -310,12 +334,39 @@ func main() {
 
 ---
 
-## Next steps: Proposal + compiler implementation
+<section
+	data-background-image="./img/45.svg"
+	data-background-size="23%"
+	data-background-position="bottom 70px right 10px"
+	data-transition="none"
+>
 
-<img
-src="https://raw.githubusercontent.com/primer/octicons/main/icons/git-pull-request-16.svg"
-height="200"
-style="filter: invert(0.9);">
+## Contributing to the Go compiler - live coding
+
+Just the parser happy path!
+
+</section>
+
+---
+
+## Questions
+
+<div class="transparent-flex-container">
+
+<div class="flex-item">
+
+Contact me:
+
+<ul>
+<li><a href="linkedin.com/in/dawid-k-lachowicz">LinkedIn: Dawid Lachowicz</a></li>
+<li><a href="https://github.com/dawidl022">GitHub: dawidl022</a></li>
+</ul>
+
+</div>
+<img src="./img/linkedin.png" height="400px" style="margin: 0">
+</div>
+
+Participate in the proposal discussion: [issue 65555](https://github.com/golang/go/issues/65555)
 
 ---
 
