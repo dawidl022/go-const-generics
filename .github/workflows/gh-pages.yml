@@ -32,10 +32,16 @@ jobs:
       - name: Remove default reveal.js slides
         run: rm public/*.html
 
-      - name: Copy presentation slides to GH pages directory
+      - name: Copy basic presentation slides to GH pages directory
         run: |
           cp docs/3-presentation/dist/index.html public/presentation.html
           cp docs/3-presentation/presentation.md public/presentation.md
+
+      - name: Copy London Gophers presentation slides to GH pages directory
+        run: |
+          cp docs/5-london-gophers/dist/index.html public/presentation.html
+          cp docs/5-london-gophers/presentation.md public/presentation.md
+          cp -r docs/5-london-gophers/img public/img
 
       # - name: Set up TexLive
       #   run: sudo apt update && sudo apt install texlive-full
