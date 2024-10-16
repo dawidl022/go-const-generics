@@ -39,6 +39,7 @@ jobs:
 
       - name: Copy London Gophers presentation slides to GH pages directory
         run: |
+          mkdir public/london-gophers
           cp docs/5-london-gophers/dist/index.html public/london-gophers.html
           cp docs/5-london-gophers/presentation.md public/london-gophers/presentation.md
           cp -r docs/5-london-gophers/img public/img
