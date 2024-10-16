@@ -242,15 +242,15 @@ $$`
 
 ---
 
-<img src="./langs_tier1.svg" height="670px">
+<img src="./img/langs_tier1.svg" height="670px">
 
 ---
 
-<img src="./langs_tier2.svg" height="670px">
+<img src="./img/langs_tier2.svg" height="670px">
 
 ---
 
-<img src="./langs.svg" height="670px">
+<img src="./img/langs.svg" height="670px">
 
 ---
 
@@ -263,7 +263,7 @@ $$`
 
 ## Compiler pipeline
 
-<img src="./pipeline.svg" height="170px">
+<img src="./img/pipeline.svg" height="170px">
 
 </section>
 
