@@ -254,18 +254,11 @@ $$`
 
 ---
 
-<section
-	data-background-image="https://raw.githubusercontent.com/MariaLetta/free-gophers-pack/refs/heads/master/characters/svg/48.svg"
-	data-background-size="23%"
-	data-background-position="bottom right 10px"
-	data-transition="none"
->
+## Featherweight Go with Arrays: Formal rules
 
-## Compiler pipeline
+<li class="fragment">Based on Featherweight Go (Griesemer et al., 2020)</li>
 
-<img src="./img/pipeline.svg" height="170px">
-
-</section>
+<img class="fragment" src="./img/rules-screenshots.png">
 
 ---
 
@@ -335,6 +328,21 @@ func main() {
 ---
 
 <section
+	data-background-image="https://raw.githubusercontent.com/MariaLetta/free-gophers-pack/refs/heads/master/characters/svg/48.svg"
+	data-background-size="23%"
+	data-background-position="bottom right 10px"
+	data-transition="none"
+>
+
+## Compiler pipeline
+
+<img src="./img/pipeline.svg" height="170px">
+
+</section>
+
+---
+
+<section
 	data-background-image="./img/45.svg"
 	data-background-size="23%"
 	data-background-position="bottom 70px right 10px"
@@ -343,7 +351,7 @@ func main() {
 
 ## Contributing to the Go compiler - live coding
 
-Just the parser happy path!
+Just one parser happy path!
 
 </section>
 
@@ -366,7 +374,10 @@ Contact me:
 <img src="./img/linkedin.png" height="400px" style="margin: 0">
 </div>
 
-Participate in the proposal discussion: [issue 65555](https://github.com/golang/go/issues/65555)
+Participate in the proposal discussion: [issue
+65555](https://github.com/golang/go/issues/65555)
+
+Detailed writeup and prototype: https://github.com/dawidl022/go-const-generics
 
 ---
 
