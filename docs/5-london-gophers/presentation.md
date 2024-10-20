@@ -381,6 +381,12 @@ Detailed writeup and prototype: https://github.com/dawidl022/go-const-generics
 
 ---
 
+## Your feedback is appreciated!
+
+<img src="./img/feedback-qr.svg" height="300px" style="margin: 0">
+
+---
+
 References:
 
 <small>
