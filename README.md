@@ -14,7 +14,10 @@ The following documentation is deployed to GitHub pages:
   introduces and explains in depth the theory behind const generics in Go,
   including formal definitions.
 - [presentation](https://dawidl022.github.io/go-const-generics/presentation) -
-  used to accompany talks introducing this project.
+  used to accompany short talks introducing this project.
+- [London Gophers Oct
+  2024](https://dawidl022.github.io/go-const-generics/london-gophers) - slides
+  used for slightly longer talk.
 - [cycle-detection-summary.pdf](https://dawidl022.github.io/go-const-generics/cycle-detection-summary.pdf) - formalises cycle detection rules in Go to aid in resolving issues with cycle
    detection in the Go compiler (as of version 1.23).
 
