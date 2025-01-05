@@ -25,8 +25,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Clone reveal.js
         run: git clone https://github.com/hakimel/reveal.js.git public
@@ -72,6 +70,7 @@ jobs:
           path-to-root: public
           base-url-path: https://dawidl022.github.io/go-const-generics/
           include-pdf: true
+          exclude-paths: examples/ test/ plugin/
 
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3
