@@ -30,7 +30,7 @@ jobs:
         run: git clone https://github.com/hakimel/reveal.js.git public
 
       - name: Remove default reveal.js slides
-        run: rm -r public/*.html public/examples public/test public/README.md
+        run: rm public/*.html
 
       - name: Copy basic presentation slides to GH pages directory
         run: |
@@ -70,7 +70,7 @@ jobs:
           path-to-root: public
           base-url-path: https://dawidl022.github.io/go-const-generics/
           include-pdf: true
-          exclude-paths: plugin/
+          exclude-paths: examples/ test/ plugin/
 
       - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3
